@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AK Brands Marketing - Trusted Liquidation Stock Lot Service</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero {
+            background: #f8f9fa;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .service-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .contact-section h2 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .contact-methods {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+        
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+        
+        .contact-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+        }
+        
+        .call-btn {
+            background: #667eea;
+            color: white;
+        }
+        
+        .email-btn {
+            background: #764ba2;
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .submit-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25D366;
+            color: white;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+        
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.5rem;
+            }
+            
+            .contact-methods {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contact-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AK Brands Marketing</h1>
+        <p>Trusted Liquidation Stock Lot Service</p>
+    </div>
+    
+    <div class="container">
+        <div class="hero">
+            <h2>Your Trusted Partner in Liquidation Stock Solutions</h2>
+            <p>We specialize in providing quality liquidation stock lots for businesses looking for great deals on bulk inventory. With years of experience and a commitment to excellence, AK Brands Marketing is your reliable source for liquidation services.</p>
+        </div>
+        
+        <div class="services">
+            <div class="service-card">
+                <h3>📦 Quality Stock Lots</h3>
+                <p>Carefully curated liquidation stock from trusted sources, ensuring quality and value for your business.</p>
+            </div>
+            <div class="service-card">
+                <h3>🤝 Trusted Service</h3>
+                <p>Built on trust and reliability, we've helped countless businesses find the perfect inventory solutions.</p>
+            </div>
+            <div class="service-card">
+                <h3>💼 Business Solutions</h3>
+                <p>Tailored liquidation services to meet your specific business needs and budget requirements.</p>
+            </div>
+            <div class="service-card">
+                <h3>🚚 Fast Delivery</h3>
+                <p>Efficient logistics and delivery systems to get your stock where it needs to be, when you need it.</p>
+            </div>
+        </div>
+        
+        <div class="contact-section">
+            <h2>Get In Touch With Us</h2>
+            
+            <div class="contact-methods">
+                <a href="https://wa.me/918660502217?text=Hi%20AK%20Brands%20Marketing,%20I'm%20interested%20in%20your%20liquidation%20stock%20services" class="contact-btn whatsapp-btn" target="_blank">
+                    💬 WhatsApp Us
+                </a>
+                <a href="tel:+918660502217" class="contact-btn call-btn">
+                    📞 Call Now
+                </a>
+                <a href="mailto:abdul@akbrandsmarketing.com" class="contact-btn email-btn">
+                    ✉️ Email Us
+                </a>
+            </div>
+            
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inquiry">Inquiry Type *</label>
+                    <select id="inquiry" name="inquiry" required>
+                        <option value="">Select an option</option>
+                        <option value="stock-inquiry">Stock Lot Inquiry</option>
+                        <option value="pricing">Pricing Information</option>
+                        <option value="partnership">Partnership Opportunity</option>
+                        <option value="general">General Question</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Your Message *</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Send Inquiry</button>
+            </form>
+        </div>
+    </div>
+    
+    <a href="https://wa.me/918660502217?text=Hi%20AK%20Brands%20Marketing,%20I'm%20interested%20in%20your%20liquidation%20stock%20services" class="whatsapp-float" target="_blank">
+        💬
+    </a>
+    
+    <div class="footer">
+        <p><strong>AK Brands Marketing</strong></p>
+        <p>Email: abdul@akbrandsmarketing.com | Phone: +91 8660502217</p>
+        <p>&copy; 2025 AK Brands Marketing. All rights reserved.</p>
+    </div>
+    
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const inquiry = document.getElementById('inquiry').value;
+            const message = document.getElementById('message').value;
+            
+            const subject = `New Inquiry: ${inquiry} - ${name}`;
+            const body = `Name: ${name}%0D%0AEmail: ${email}%0D%0APhone: ${phone}%0D%0AInquiry Type: ${inquiry}%0D%0A%0D%0AMessage:%0D%0A${message}`;
+            
+            window.location.href = `mailto:abdul@akbrandsmarketing.com?subject=${subject}&body=${body}`;
+            
+            alert('Thank you for your inquiry! Your email client will open to send the message.');
+        });
+    </script>
+</body>
+</html>
