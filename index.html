@@ -20,22 +20,24 @@
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 1.5rem 0;
-            text-align: center;
+            padding: 2rem 0;
+            position: relative;
+            overflow: hidden;
         }
         
-        .logo-container {
-            max-width: 250px;
-            margin: 0 auto 1rem;
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
+            position: relative;
+            z-index: 2;
         }
         
-        .logo-container img {
-            width: 100%;
-            height: auto;
-            display: block;
+        .header-text {
+            flex: 1;
         }
         
         .header h1 {
@@ -46,6 +48,69 @@
         .header p {
             font-size: 1.2rem;
             opacity: 0.9;
+        }
+        
+        .logo-container {
+            width: 200px;
+            height: 200px;
+            flex-shrink: 0;
+            margin-left: 2rem;
+        }
+        
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+        
+        .product-showcase {
+            margin-top: 2rem;
+            padding: 2rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+        }
+        
+        .product-showcase h3 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .product-item {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .product-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        
+        .product-item .icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-item .name {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
         
         .container {
@@ -546,8 +611,29 @@
         }
         
         @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-container {
+                margin-left: 0;
+                margin-top: 1.5rem;
+                width: 150px;
+                height: 150px;
+            }
+            
             .header h1 {
                 font-size: 1.8rem;
+            }
+            
+            .product-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 1rem;
+            }
+            
+            .product-item .icon {
+                font-size: 2rem;
             }
             
             .hero h2 {
@@ -568,10 +654,6 @@
                 grid-template-columns: 1fr;
             }
             
-            .logo-container {
-                max-width: 200px;
-            }
-            
             .categories-grid {
                 grid-template-columns: 1fr;
             }
@@ -584,11 +666,77 @@
 </head>
 <body>
     <div class="header">
-        <div class="logo-container">
-            <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T04-07-02-217Z-cd7a780d-chat-image-1764821222198-0.jpg" alt="AK Brands Marketing Logo">
+        <div class="header-content">
+            <div class="header-text">
+                <h1>AK Brands Marketing</h1>
+                <p>Trusted firm</p>
+            </div>
+            <div class="logo-container">
+                <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T04-07-02-217Z-cd7a780d-chat-image-1764821222198-0.jpg" alt="AK Brands Marketing Logo">
+            </div>
         </div>
-        <h1>AK Brands Marketing</h1>
-        <p>Trusted firm</p>
+        
+        <div class="product-showcase">
+            <h3>🎯 Our Liquidation Stock Categories</h3>
+            <div class="product-grid">
+                <div class="product-item">
+                    <div class="icon">📦</div>
+                    <div class="name">Return Inventory</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">👟</div>
+                    <div class="name">Footwear</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">👕</div>
+                    <div class="name">Apparels</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">🧸</div>
+                    <div class="name">Toys</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">📱</div>
+                    <div class="name">Mobile Accessories</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">💻</div>
+                    <div class="name">Electronics</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">🛋️</div>
+                    <div class="name">Furniture</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">🧳</div>
+                    <div class="name">Trolley Bags</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">🏠</div>
+                    <div class="name">Home Appliances</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">🍳</div>
+                    <div class="name">Kitchen Appliances</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">🛒</div>
+                    <div class="name">FMCG</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">🥫</div>
+                    <div class="name">Grocery</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">🔧</div>
+                    <div class="name">Hardware Items</div>
+                </div>
+                <div class="product-item">
+                    <div class="icon">📦</div>
+                    <div class="name">Bulk Boxes</div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <div class="container">
