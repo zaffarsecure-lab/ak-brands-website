@@ -691,10 +691,10 @@
                     <label for="inquiry">Inquiry Type *</label>
                     <select id="inquiry" name="inquiry" required>
                         <option value="">Select an option</option>
-                        <option value="stock-inquiry">Stock Lot Inquiry</option>
-                        <option value="pricing">Pricing Information</option>
-                        <option value="partnership">Partnership Opportunity</option>
-                        <option value="general">General Question</option>
+                        <option value="Stock Lot Inquiry">Stock Lot Inquiry</option>
+                        <option value="Pricing Information">Pricing Information</option>
+                        <option value="Partnership Opportunity">Partnership Opportunity</option>
+                        <option value="General Question">General Question</option>
                     </select>
                 </div>
                 
@@ -745,8 +745,8 @@
             };
             
             try {
-                // Submit to Google Forms (you'll need to set this up)
-                const response = await fetch('https://script.google.com/macros/s/AKfycbwYOUR_SCRIPT_ID/exec', {
+                // Submit to Google Apps Script
+                const response = await fetch('https://script.google.com/macros/s/AKfycbyWTGXCS24tK4u9ZsdSFX4xeAc26fsqahn-4tDbnNeBWoJwMvDplHzuIelZ7iUUjWQS/exec', {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: {
@@ -759,15 +759,15 @@
                 successMessage.style.display = 'block';
                 
                 // Send WhatsApp notification
-                const whatsappMessage = `🔔 *New Website Inquiry*%0A%0A` +
+                const whatsappMessage = `🔔 *New Website Inquiry - AK Brands*%0A%0A` +
                     `👤 *Name:* ${formData.name}%0A` +
                     `📧 *Email:* ${formData.email}%0A` +
                     `📱 *Phone:* ${formData.phone}%0A` +
-                    `📋 *Inquiry Type:* ${formData.inquiry}%0A` +
+                    `📋 *Type:* ${formData.inquiry}%0A` +
                     `💬 *Message:* ${formData.message}%0A` +
                     `🕐 *Time:* ${formData.timestamp}`;
                 
-                // Open WhatsApp with the message (optional - auto-send to your number)
+                // Open WhatsApp with the message
                 setTimeout(() => {
                     window.open(`https://wa.me/918660502217?text=${whatsappMessage}`, '_blank');
                 }, 1000);
@@ -775,9 +775,13 @@
                 // Reset form
                 document.getElementById('contactForm').reset();
                 
+                // Scroll to success message
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
             } catch (error) {
                 console.error('Error:', error);
                 errorMessage.style.display = 'block';
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } finally {
                 // Re-enable submit button
                 submitBtn.disabled = false;
