@@ -149,6 +149,65 @@
             border-radius: 5px;
         }
         
+        .addresses-section {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+        }
+        
+        .addresses-section h2 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 2rem;
+        }
+        
+        .addresses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .address-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .address-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .address-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .address-card .icon {
+            font-size: 1.5rem;
+        }
+        
+        .address-card p {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        
+        .address-card .location {
+            font-weight: 600;
+            color: #333;
+            margin-top: 0.5rem;
+        }
+        
         .categories-section {
             background: #f8f9fa;
             padding: 3rem 2rem;
@@ -453,6 +512,15 @@
             margin-top: 3rem;
         }
         
+        .footer-addresses {
+            margin: 1.5rem 0;
+            line-height: 2;
+        }
+        
+        .footer-addresses p {
+            margin: 0.5rem 0;
+        }
+        
         .whatsapp-float {
             position: fixed;
             width: 60px;
@@ -507,6 +575,10 @@
             .categories-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .addresses-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -547,6 +619,34 @@
             <p>
                 <strong>Operating across India</strong>, we help sellers and companies effectively liquidate their excess inventories through our comprehensive marketplace that connects buyers and sellers seamlessly.
             </p>
+        </div>
+        
+        <div class="addresses-section">
+            <h2>Our Locations</h2>
+            <div class="addresses-grid">
+                <div class="address-card">
+                    <h3><span class="icon">🏢</span> Registered Office</h3>
+                    <p class="location">Ahmed Nagar Main Road</p>
+                    <p>Near Nasir Medical</p>
+                    <p>Davanagere - 577001</p>
+                    <p>Karnataka, India</p>
+                </div>
+                
+                <div class="address-card">
+                    <h3><span class="icon">💼</span> Working Office</h3>
+                    <p class="location">HBR Layout</p>
+                    <p>Near Narendra Tents</p>
+                    <p>Bengaluru - 560043</p>
+                    <p>Karnataka, India</p>
+                </div>
+                
+                <div class="address-card">
+                    <h3><span class="icon">📦</span> Warehouse</h3>
+                    <p class="location">Nehru Nagar</p>
+                    <p>Chitradurga - 577501</p>
+                    <p>Karnataka, India</p>
+                </div>
+            </div>
         </div>
         
         <div class="categories-section">
@@ -715,6 +815,13 @@
     <div class="footer">
         <p><strong>AK Brands Marketing</strong></p>
         <p>GSTIN: 29BHXPA2325K1ZO</p>
+        
+        <div class="footer-addresses">
+            <p><strong>📍 Registered Office:</strong> Ahmed Nagar Main Road, Near Nasir Medical, Davanagere - 577001, Karnataka</p>
+            <p><strong>📍 Working Office:</strong> HBR Layout, Near Narendra Tents, Bengaluru - 560043, Karnataka</p>
+            <p><strong>📍 Warehouse:</strong> Nehru Nagar, Chitradurga - 577501, Karnataka</p>
+        </div>
+        
         <p>Email: abdul@akbrandsmarketing.com | Phone: +91 8660502217</p>
         <p>&copy; 2025 AK Brands Marketing. All rights reserved.</p>
     </div>
