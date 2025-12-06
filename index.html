@@ -164,7 +164,7 @@
             overflow-x: hidden;
         }
         
-        /* Animated Background with Stock Items */
+        /* Animated Background - Simple gradient */
         .animated-bg {
             position: fixed;
             top: 0;
@@ -173,33 +173,6 @@
             height: 100%;
             z-index: -1;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            overflow: hidden;
-        }
-        
-        .stock-item {
-            position: absolute;
-            font-size: 4rem;
-            opacity: 0.4;
-            animation: floatItems 20s infinite linear;
-            filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.4));
-            will-change: transform;
-        }
-        
-        @keyframes floatItems {
-            0% {
-                transform: translateY(110vh) translateX(0) rotate(0deg) scale(1);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.4;
-            }
-            90% {
-                opacity: 0.4;
-            }
-            100% {
-                transform: translateY(-20vh) translateX(100px) rotate(360deg) scale(1.2);
-                opacity: 0;
-            }
         }
         
         /* Navigation Bar */
@@ -311,13 +284,45 @@
             width: 100%;
         }
         
-        /* Home Section */
+        /* Home Section with Product Background */
         #home {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            position: relative;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+            overflow: hidden;
+        }
+        
+        /* Product Background Collage */
+        .product-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 10px;
+            padding: 20px;
+            opacity: 0.15;
+            z-index: 0;
+        }
+        
+        .product-bg-item {
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .product-bg-item:hover {
+            transform: scale(1.05);
+            opacity: 1;
         }
         
         .home-content {
             text-align: center;
+            position: relative;
+            z-index: 1;
         }
         
         .home-logo {
@@ -325,6 +330,12 @@
             height: 200px;
             margin: 0 auto 2rem;
             animation: pulse 2s infinite;
+            position: relative;
+            z-index: 2;
+            background: white;
+            border-radius: 50%;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         
         @keyframes pulse {
@@ -336,32 +347,34 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
         }
         
         .home-title {
             font-size: 3rem;
-            color: #667eea;
+            color: white;
             margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         
         .home-tagline {
             font-size: 1.5rem;
-            color: #2c3e50;
+            color: white;
             font-weight: bold;
             margin-bottom: 1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
         
         .home-description {
             font-size: 1.2rem;
-            color: #555;
+            color: white;
             margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
         
         .product-showcase {
             margin-top: 3rem;
             padding: 2rem;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
@@ -772,15 +785,16 @@
                 grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             }
             
-            .stock-item {
-                font-size: 2.5rem;
+            .product-background {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(6, 1fr);
             }
         }
     </style>
 </head>
 <body>
-    <!-- Animated Background with Stock Items -->
-    <div class="animated-bg" id="animatedBg"></div>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
     
     <!-- Navigation Bar -->
     <nav class="navbar">
@@ -831,6 +845,9 @@
     <div class="main-content">
         <!-- Home Section -->
         <section id="home">
+            <!-- Product Background Collage -->
+            <div class="product-background" id="productBg"></div>
+            
             <div class="section-content home-content">
                 <div class="home-logo">
                     <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T04-07-02-217Z-cd7a780d-chat-image-1764821222198-0.jpg" alt="AK Brands Marketing">
@@ -838,7 +855,7 @@
                 <h1 class="home-title">AK Brands Marketing</h1>
                 <p class="home-tagline">Trusted Firm</p>
                 <p class="home-description">Leading B2B Liquidation Platform in India</p>
-                <p style="color: #666; margin-bottom: 2rem;">GSTIN: 29BHXPA2325K1ZO</p>
+                <p style="color: white; margin-bottom: 2rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">GSTIN: 29BHXPA2325K1ZO</p>
                 
                 <div class="product-showcase">
                     <h3>🎯 Our Liquidation Stock Categories</h3>
@@ -1113,53 +1130,53 @@
     </a>
     
     <script>
-        // Create animated background with stock items
-        function createStockItems() {
-            const bg = document.getElementById('animatedBg');
+        // Create product background collage using Unsplash images
+        function createProductBackground() {
+            const bg = document.getElementById('productBg');
             if (!bg) return;
             
-            // Stock lot items emojis
-            const stockItems = [
-                '📦', '📦', '📦', '📦', '📦', '📦', '📦', '📦', // More boxes
-                '👕', '👕', '👔', '👗', '🧥', // Garments
-                '👟', '👟', '👠', '🥾', '👞', // Footwear
-                '🧳', '🎒', '👜', // Bags
-                '📱', '💻', '⌚', // Electronics
-                '🛋️', '🪑', // Furniture
-                '🧸', '🎮', // Toys
-                '🍳', '🔧', '🛒', // Kitchen & Hardware
+            // Product categories with Unsplash search terms
+            const productImages = [
+                'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=400&h=300&fit=crop', // Shoes
+                'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&h=300&fit=crop', // Clothing
+                'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=400&h=300&fit=crop', // Toys
+                'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop', // Phone
+                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop', // Headphones
+                'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop', // Furniture
+                'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=400&h=300&fit=crop', // Sneakers
+                'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop', // Red shoes
+                'https://images.unsplash.com/photo-1556906781-9a412961c28c?w=400&h=300&fit=crop', // Bags
+                'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=400&h=300&fit=crop', // Kitchen
+                'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=400&h=300&fit=crop', // Tools
+                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop', // Electronics
+                'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=300&fit=crop', // Sunglasses
+                'https://images.unsplash.com/photo-1560343090-f0409e92791a?w=400&h=300&fit=crop', // Watch
+                'https://images.unsplash.com/photo-1503602642458-232111445657?w=400&h=300&fit=crop', // Backpack
+                'https://images.unsplash.com/photo-1598662957477-64e78f4fd663?w=400&h=300&fit=crop', // Luggage
+                'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=300&fit=crop', // Laptop
+                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop', // Headphones
+                'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop', // Store
+                'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&h=300&fit=crop', // Sneakers
+                'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop', // Clothing rack
+                'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=400&h=300&fit=crop', // Shopping
+                'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop', // Watch
+                'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=300&fit=crop', // Accessories
             ];
             
-            const itemCount = 50;
-            
-            for (let i = 0; i < itemCount; i++) {
+            // Create grid items
+            productImages.forEach((imageUrl, index) => {
                 const item = document.createElement('div');
-                item.className = 'stock-item';
-                
-                // Random stock item
-                const randomItem = stockItems[Math.floor(Math.random() * stockItems.length)];
-                item.textContent = randomItem;
-                
-                // Random positioning
-                item.style.left = Math.random() * 100 + '%';
-                item.style.bottom = '-10%';
-                
-                // Random animation delay
-                item.style.animationDelay = (Math.random() * 10) + 's';
-                
-                // Random size variation
-                const size = Math.random() * 2 + 3;
-                item.style.fontSize = size + 'rem';
-                
+                item.className = 'product-bg-item';
+                item.style.backgroundImage = `url('${imageUrl}')`;
                 bg.appendChild(item);
-            }
+            });
         }
         
         // Initialize on page load
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', createStockItems);
+            document.addEventListener('DOMContentLoaded', createProductBackground);
         } else {
-            createStockItems();
+            createProductBackground();
         }
         
         // Navigation active state
