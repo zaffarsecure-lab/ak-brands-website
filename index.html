@@ -203,14 +203,30 @@
             gap: 1rem;
             text-decoration: none;
             color: #667eea;
-            font-weight: bold;
-            font-size: 1.3rem;
         }
         
         .nav-logo img {
             width: 50px;
             height: 50px;
             object-fit: contain;
+        }
+        
+        .nav-logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nav-logo-title {
+            font-weight: bold;
+            font-size: 1.3rem;
+            line-height: 1.2;
+        }
+        
+        .nav-logo-tagline {
+            font-size: 0.75rem;
+            color: #764ba2;
+            font-weight: 500;
+            margin-top: 2px;
         }
         
         .nav-menu {
@@ -224,20 +240,31 @@
         }
         
         .nav-link {
-            display: block;
-            padding: 1.2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
             text-decoration: none;
             color: #333;
             font-weight: 500;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: all 0.3s;
             border-bottom: 3px solid transparent;
+        }
+        
+        .nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 0.2rem;
         }
         
         .nav-link:hover {
             color: #667eea;
             border-bottom-color: #667eea;
             background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .nav-link:hover .nav-icon {
+            transform: scale(1.1);
         }
         
         .nav-link.active {
@@ -369,7 +396,7 @@
         }
         
         .home-title {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             color: white;
             margin-bottom: 1rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
@@ -711,8 +738,12 @@
         
         /* Mobile Responsive */
         @media (max-width: 768px) {
-            .nav-logo {
+            .nav-logo-title {
                 font-size: 1rem;
+            }
+            
+            .nav-logo-tagline {
+                font-size: 0.65rem;
             }
             
             .nav-menu {
@@ -731,6 +762,16 @@
             
             .nav-menu.active {
                 left: 0;
+            }
+            
+            .nav-link {
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .nav-icon {
+                margin-bottom: 0;
             }
             
             .dropdown-menu {
@@ -752,7 +793,7 @@
             }
             
             .home-title {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
             }
             
             .home-tagline {
@@ -779,14 +820,20 @@
         <div class="nav-container">
             <a href="#landing" class="nav-logo">
                 <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T04-07-02-217Z-cd7a780d-chat-image-1764821222198-0.jpg" alt="AK Brands Logo">
-                <span>AK Brands Marketing</span>
+                <div class="nav-logo-text">
+                    <span class="nav-logo-title">AK Brands Marketing</span>
+                    <span class="nav-logo-tagline">Trusted Firm</span>
+                </div>
             </a>
             
             <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
             
             <ul class="nav-menu" id="navMenu">
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">Home</a>
+                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">
+                        <span class="nav-icon">🏠</span>
+                        <span>Home</span>
+                    </a>
                     <div class="dropdown-menu">
                         <a href="#company-info" class="dropdown-item">Company Information</a>
                         <a href="#our-offices" class="dropdown-item">Our Offices</a>
@@ -795,7 +842,10 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">About</a>
+                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">
+                        <span class="nav-icon">ℹ️</span>
+                        <span>About</span>
+                    </a>
                     <div class="dropdown-menu">
                         <a href="#stock-categories" class="dropdown-item">Stock Categories</a>
                         <a href="#what-we-buy" class="dropdown-item">What We Buy</a>
@@ -803,7 +853,10 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">Products</a>
+                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">
+                        <span class="nav-icon">📦</span>
+                        <span>Products</span>
+                    </a>
                     <div class="dropdown-menu">
                         <a href="#marketplace" class="dropdown-item">Our Marketplace</a>
                         <a href="#product-categories" class="dropdown-item">Product Categories</a>
@@ -811,7 +864,10 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">Career</a>
+                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">
+                        <span class="nav-icon">👥</span>
+                        <span>Career</span>
+                    </a>
                     <div class="dropdown-menu">
                         <a href="#meet-team" class="dropdown-item">Meet Our Team</a>
                         <a href="#team-abdul" class="dropdown-item">Abdul Zaffar</a>
@@ -820,7 +876,10 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">Contact</a>
+                    <a href="#" class="nav-link" onclick="toggleDropdown(event, this)">
+                        <span class="nav-icon">📞</span>
+                        <span>Contact</span>
+                    </a>
                     <div class="dropdown-menu">
                         <a href="#contact-form" class="dropdown-item">Contact Form</a>
                         <a href="https://wa.me/918660502217" class="dropdown-item" target="_blank">WhatsApp Us</a>
