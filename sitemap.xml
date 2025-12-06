@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage -->
+  <url>
+    <loc>https://zaffarsecure-lab.github.io/ak-brands-website/</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T04-07-02-217Z-cd7a780d-chat-image-1764821222198-0.jpg</image:loc>
+      <image:title>AK Brands Marketing - B2B Liquidation Platform India</image:title>
+      <image:caption>Leading B2B liquidation platform for excess inventory, stock lots, and warehouse clearance</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Team Member Pages (if you add individual pages later) -->
+  <!-- You can add more URLs here as you expand your website -->
+  
+</urlset>
