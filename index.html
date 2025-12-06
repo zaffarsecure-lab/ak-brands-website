@@ -8,14 +8,12 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      // Enhanced configuration with debugging
       gtag('config', 'G-SH29FGTV34', {
         'send_page_view': true,
         'debug_mode': true,
         'cookie_flags': 'SameSite=None;Secure'
       });
 
-      // Track page load
       gtag('event', 'page_view', {
         'page_title': 'AK Brands Marketing - Home',
         'page_location': window.location.href,
@@ -155,90 +153,234 @@
             box-sizing: border-box;
         }
         
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
+            overflow-x: hidden;
         }
         
-        .header {
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem 0;
-            position: relative;
             overflow: hidden;
         }
         
-        .header-content {
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-100px) translateX(100px) rotate(90deg);
+            }
+            50% {
+                transform: translateY(-200px) translateX(-100px) rotate(180deg);
+            }
+            75% {
+                transform: translateY(-100px) translateX(-200px) rotate(270deg);
+            }
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        
+        .nav-logo img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+        }
+        
+        .nav-item {
             position: relative;
-            z-index: 2;
         }
         
-        .header-text {
-            flex: 1;
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.8rem 1.2rem;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.3s;
         }
         
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+        .nav-link:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
         }
         
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+        .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
         
-        .logo-container {
+        .nav-icon {
+            font-size: 1.5rem;
+        }
+        
+        .nav-text {
+            font-size: 0.85rem;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #667eea;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        section {
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .section-content {
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        /* Home Section */
+        #home {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+        
+        .home-content {
+            text-align: center;
+        }
+        
+        .home-logo {
             width: 200px;
             height: 200px;
-            flex-shrink: 0;
-            margin-left: 2rem;
+            margin: 0 auto 2rem;
+            animation: pulse 2s infinite;
         }
         
-        .logo-container img {
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .home-logo img {
             width: 100%;
             height: 100%;
             object-fit: contain;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
         }
         
+        .home-title {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .home-tagline {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .home-description {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+        
         .product-showcase {
-            margin-top: 2rem;
-            padding: 2rem 0;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            margin-top: 3rem;
+            padding: 2rem;
+            background: white;
             border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
         .product-showcase h3 {
             text-align: center;
             font-size: 1.5rem;
             margin-bottom: 1.5rem;
-            color: white;
+            color: #667eea;
         }
         
         .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 1.5rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
         }
         
         .product-item {
-            background: white;
+            background: #f8f9fa;
             border-radius: 10px;
             padding: 1rem;
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
         .product-item:hover {
@@ -257,198 +399,60 @@
             font-size: 0.9rem;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .hero {
-            background: #f8f9fa;
-            padding: 3rem 2rem;
-            text-align: center;
-            border-radius: 10px;
-            margin-bottom: 3rem;
-        }
-        
-        .hero h2 {
-            color: #667eea;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .hero .tagline {
-            font-size: 1.3rem;
-            color: #e74c3c;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-        
-        .gstin {
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 1rem;
-        }
-        
-        .seo-keywords {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 3rem;
-            text-align: center;
-        }
-        
-        .seo-keywords h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
-        
-        .seo-keywords p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 0.5rem;
-        }
-        
-        .whatsapp-group-section {
-            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-            color: white;
-            padding: 3rem 2rem;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 3rem;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-        
-        .whatsapp-group-section h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .whatsapp-group-section p {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-        }
-        
-        .join-group-btn {
-            display: inline-block;
+        /* About Section */
+        #about {
             background: white;
-            color: #25D366;
-            padding: 1rem 3rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.2rem;
-            transition: transform 0.3s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         
-        .join-group-btn:hover {
-            transform: scale(1.05);
-        }
-        
-        .about-section {
-            background: white;
-            padding: 3rem 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 3rem;
-        }
-        
-        .about-section h2 {
+        .about-content h2 {
             color: #667eea;
-            text-align: center;
+            font-size: 2.5rem;
             margin-bottom: 2rem;
-            font-size: 2rem;
-        }
-        
-        .about-section p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-            text-align: justify;
-        }
-        
-        .about-section .highlight {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-left: 4px solid #667eea;
-            margin: 2rem 0;
-            border-radius: 5px;
-        }
-        
-        .addresses-section {
-            background: white;
-            padding: 3rem 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 3rem;
-        }
-        
-        .addresses-section h2 {
-            color: #667eea;
             text-align: center;
-            margin-bottom: 2.5rem;
-            font-size: 2rem;
         }
         
-        .addresses-grid {
+        .about-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
+            margin-top: 2rem;
         }
         
-        .address-card {
+        .about-card {
             background: #f8f9fa;
             padding: 2rem;
             border-radius: 10px;
             border-left: 5px solid #667eea;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.3s;
         }
         
-        .address-card:hover {
+        .about-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
         
-        .address-card h3 {
+        .about-card h3 {
             color: #667eea;
             margin-bottom: 1rem;
-            font-size: 1.3rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
         
-        .address-card .icon {
+        .about-card .icon {
             font-size: 1.5rem;
         }
         
-        .address-card p {
-            color: #555;
-            line-height: 1.8;
-            font-size: 1rem;
+        /* Products Section */
+        #products {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
         }
         
-        .address-card .location {
-            font-weight: 600;
-            color: #333;
-            margin-top: 0.5rem;
-        }
-        
-        .categories-section {
-            background: #f8f9fa;
-            padding: 3rem 2rem;
-            border-radius: 10px;
-            margin-bottom: 3rem;
-        }
-        
-        .categories-section h2 {
+        .products-content h2 {
             color: #667eea;
-            text-align: center;
+            font-size: 2.5rem;
             margin-bottom: 2rem;
-            font-size: 2rem;
+            text-align: center;
         }
         
         .categories-grid {
@@ -486,25 +490,16 @@
             flex-shrink: 0;
         }
         
-        .category-name {
-            font-size: 1.1rem;
-            color: #333;
-            font-weight: 500;
-        }
-        
-        .team-section {
+        /* Career Section */
+        #career {
             background: white;
-            padding: 3rem 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 3rem;
         }
         
-        .team-section h2 {
+        .career-content h2 {
             color: #667eea;
-            text-align: center;
+            font-size: 2.5rem;
             margin-bottom: 2rem;
-            font-size: 2rem;
+            text-align: center;
         }
         
         .team-grid {
@@ -535,7 +530,6 @@
             border-radius: 50%;
             overflow: hidden;
             border: 4px solid #667eea;
-            position: relative;
         }
         
         .team-photo-wrapper img {
@@ -548,7 +542,6 @@
         .team-member h3 {
             color: #667eea;
             margin-bottom: 0.5rem;
-            font-size: 1.3rem;
         }
         
         .team-member .phone {
@@ -558,7 +551,7 @@
             margin-bottom: 1rem;
         }
         
-        .team-member .contact-btn {
+        .contact-btn {
             display: inline-block;
             padding: 0.5rem 1.5rem;
             background: #25D366;
@@ -570,52 +563,24 @@
             transition: transform 0.3s;
         }
         
-        .team-member .contact-btn:hover {
+        .contact-btn:hover {
             transform: scale(1.05);
         }
         
-        .team-member .call-btn {
+        .call-btn {
             background: #667eea;
         }
         
-        .services {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+        /* Contact Section */
+        #contact {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
         }
         
-        .service-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        
-        .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-        
-        .service-card h3 {
+        .contact-content h2 {
             color: #667eea;
-            margin-bottom: 1rem;
-        }
-        
-        .contact-section {
-            background: white;
-            padding: 3rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 2.5rem;
             margin-bottom: 2rem;
-        }
-        
-        .contact-section h2 {
-            color: #667eea;
             text-align: center;
-            margin-bottom: 2rem;
         }
         
         .contact-methods {
@@ -708,37 +673,31 @@
             transform: scale(1.05);
         }
         
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .success-message,
+        .error-message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+            text-align: center;
         }
         
         .success-message {
             background: #d4edda;
             color: #155724;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            display: none;
-            text-align: center;
         }
         
         .error-message {
             background: #f8d7da;
             color: #721c24;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            display: none;
-            text-align: center;
         }
         
+        /* Footer */
         .footer {
             background: #333;
             color: white;
             text-align: center;
             padding: 2rem;
-            margin-top: 3rem;
         }
         
         .footer-addresses {
@@ -746,10 +705,7 @@
             line-height: 2;
         }
         
-        .footer-addresses p {
-            margin: 0.5rem 0;
-        }
-        
+        /* WhatsApp Float Button */
         .whatsapp-float {
             position: fixed;
             width: 60px;
@@ -774,362 +730,357 @@
             transform: scale(1.1);
         }
         
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .header-content {
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
                 flex-direction: column;
-                text-align: center;
+                background: white;
+                width: 100%;
+                padding: 2rem;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                transition: left 0.3s;
             }
             
-            .logo-container {
-                margin-left: 0;
-                margin-top: 1.5rem;
-                width: 150px;
-                height: 150px;
+            .nav-menu.active {
+                left: 0;
             }
             
-            .header h1 {
-                font-size: 1.8rem;
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .home-title {
+                font-size: 2rem;
+            }
+            
+            .home-tagline {
+                font-size: 1.2rem;
             }
             
             .product-grid {
                 grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                gap: 1rem;
-            }
-            
-            .product-item .icon {
-                font-size: 2rem;
-            }
-            
-            .hero h2 {
-                font-size: 1.5rem;
-            }
-            
-            .contact-methods {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .contact-btn-main {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .team-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .categories-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .addresses-grid {
-                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <div class="header-text">
-                <h1>AK Brands Marketing</h1>
-                <p>Trusted Firm</p>
-            </div>
-            <div class="logo-container">
-                <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T04-07-02-217Z-cd7a780d-chat-image-1764821222198-0.jpg" alt="AK Brands Marketing - B2B Liquidation Platform India">
-            </div>
-        </div>
-        
-        <div class="product-showcase">
-            <h3>🎯 Our Liquidation Stock Categories</h3>
-            <div class="product-grid">
-                <div class="product-item">
-                    <div class="icon">📦</div>
-                    <div class="name">Return Inventory</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">👟</div>
-                    <div class="name">Footwear</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">👕</div>
-                    <div class="name">Apparels</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">🧸</div>
-                    <div class="name">Toys</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">📱</div>
-                    <div class="name">Mobile Accessories</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">💻</div>
-                    <div class="name">Electronics</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">🛋️</div>
-                    <div class="name">Furniture</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">🧳</div>
-                    <div class="name">Trolley Bags</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">🏠</div>
-                    <div class="name">Home Appliances</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">🍳</div>
-                    <div class="name">Kitchen Appliances</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">🛒</div>
-                    <div class="name">FMCG</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">🥫</div>
-                    <div class="name">Grocery</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">🔧</div>
-                    <div class="name">Hardware Items</div>
-                </div>
-                <div class="product-item">
-                    <div class="icon">📦</div>
-                    <div class="name">Bulk Boxes</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Animated Background -->
+    <div class="animated-bg" id="animatedBg"></div>
     
-    <div class="container">
-        <div class="seo-keywords">
-            <h2>🔍 India's Most Trusted B2B Liquidation Marketplace</h2>
-            <p><strong>Excess Inventory Buyers | Stock Lots India | Cancelled Orders | Unsold Products | Slow-Moving Items | Dead Stock Clearance | Warehouse Clearance | Surplus Inventory | Orphan Stock Lots | Fresh Category Stocks | Used Products | Scrap Items | Shipment Cancel Lots | Custom Clearance Lots | F&D Stocks</strong></p>
-            <p>Operating across Karnataka: Bangalore | Davanagere | Chitradurga | Serving All India</p>
-        </div>
-        
-        <div class="hero">
-            <h2>Your Trusted Partner in Liquidation Stock Solutions</h2>
-            <p class="tagline">Catch it, Before it's Sold</p>
-            <p>We specialize in providing quality liquidation stock lots for businesses looking for great deals on bulk inventory. With years of experience and a commitment to excellence, AK Brands Marketing is your reliable source for liquidation services.</p>
-            <p class="gstin">GSTIN: 29BHXPA2325K1ZO</p>
-        </div>
-        
-        <div class="whatsapp-group-section">
-            <h2>📱 Join Our Daily B2B Liquidation Updates</h2>
-            <p>Get daily updates on liquidation stock lots directly on WhatsApp!</p>
-            <p>Stay ahead with real-time notifications about new inventory, exclusive deals, and market opportunities.</p>
-            <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" class="join-group-btn" target="_blank" onclick="gtag('event', 'click', {'event_category': 'WhatsApp', 'event_label': 'Join Group Button'});">
-                💬 Join WhatsApp Group Now
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="nav-logo">
+                <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T04-07-02-217Z-cd7a780d-chat-image-1764821222198-0.jpg" alt="AK Brands Logo">
+                <span>AK Brands</span>
             </a>
-        </div>
-        
-        <div class="about-section">
-            <h2>About Our B2B Liquidation Platform</h2>
-            <p>
-                We are a <strong>one-stop B2B liquidation platform</strong> for buying and selling excess inventory, stock lots, cancelled orders, unsold products, slow-moving items, dead stock, warehouse clearance, surplus inventory, orphan stock lots, fresh category stocks, used products, scrap items, shipment cancel lots, custom clearance lots, F&D stocks, and more.
-            </p>
-            <div class="highlight">
-                <p><strong>Our Purpose:</strong> We assist businesses in overcoming stock lot challenges by connecting them with potential buyers and facilitating sales, helping sellers and companies recover costs and increase their business efficiency.</p>
-            </div>
-            <p>
-                <strong>Operating across India</strong>, we help sellers and companies effectively liquidate their excess inventories through our comprehensive marketplace that connects buyers and sellers seamlessly.
-            </p>
-        </div>
-        
-        <div class="addresses-section">
-            <h2>Our Locations Across Karnataka</h2>
-            <div class="addresses-grid">
-                <div class="address-card">
-                    <h3><span class="icon">🏢</span> Registered Office</h3>
-                    <p class="location">Ahmed Nagar Main Road</p>
-                    <p>Near Nasir Medical</p>
-                    <p>Davanagere - 577001</p>
-                    <p>Karnataka, India</p>
-                </div>
-                
-                <div class="address-card">
-                    <h3><span class="icon">💼</span> Working Office</h3>
-                    <p class="location">HBR Layout</p>
-                    <p>Near Narendra Tents</p>
-                    <p>Bengaluru - 560043</p>
-                    <p>Karnataka, India</p>
-                </div>
-                
-                <div class="address-card">
-                    <h3><span class="icon">📦</span> Warehouse</h3>
-                    <p class="location">Nehru Nagar</p>
-                    <p>Chitradurga - 577501</p>
-                    <p>Karnataka, India</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="categories-section">
-            <h2>Our Marketplace Specializes In</h2>
-            <div class="categories-grid">
-                <div class="category-item">
-                    <div class="category-number">1</div>
-                    <div class="category-name">Textile and Garments</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-number">2</div>
-                    <div class="category-name">FMCG</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-number">3</div>
-                    <div class="category-name">Electronics</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-number">4</div>
-                    <div class="category-name">Home Appliances</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-number">5</div>
-                    <div class="category-name">Kitchen Appliances</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-number">6</div>
-                    <div class="category-name">Furniture</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-number">7</div>
-                    <div class="category-name">Mobile Phones and Accessories</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-number">8</div>
-                    <div class="category-name">Hardware Items</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-number">9</div>
-                    <div class="category-name">Luggages</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-number">10</div>
-                    <div class="category-name">Footwear and Others</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="team-section">
-            <h2>Meet Our Team</h2>
-            <div class="team-grid">
-                <div class="team-member">
-                    <div class="team-photo-wrapper">
-                        <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T05-51-30-217Z-67d4f70b-chat-image-1764827490198-0.jpg" alt="Abdul Zaffar - AK Brands Marketing">
-                    </div>
-                    <h3>Abdul Zaffar</h3>
-                    <p class="phone">📞 8660502217</p>
-                    <a href="https://wa.me/918660502217" class="contact-btn" target="_blank" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'WhatsApp - Abdul Zaffar'});">💬 WhatsApp</a>
-                    <a href="tel:+918660502217" class="contact-btn call-btn" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Call - Abdul Zaffar'});">📞 Call</a>
-                </div>
-                
-                <div class="team-member">
-                    <div class="team-photo-wrapper">
-                        <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T05-51-30-363Z-bf039a62-chat-image-1764827490344-1.jpg" alt="Abu Talib - AK Brands Marketing">
-                    </div>
-                    <h3>Abu Talib</h3>
-                    <p class="phone">📞 9606621935</p>
-                    <a href="https://wa.me/919606621935" class="contact-btn" target="_blank" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'WhatsApp - Abu Talib'});">💬 WhatsApp</a>
-                    <a href="tel:+919606621935" class="contact-btn call-btn" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Call - Abu Talib'});">📞 Call</a>
-                </div>
-                
-                <div class="team-member">
-                    <div class="team-photo-wrapper">
-                        <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T05-51-30-469Z-57e9b7c2-chat-image-1764827490449-2.jpg" alt="Abdul Rahim - AK Brands Marketing">
-                    </div>
-                    <h3>Abdul Rahim</h3>
-                    <p class="phone">📞 9535146236</p>
-                    <a href="https://wa.me/919535146236" class="contact-btn" target="_blank" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'WhatsApp - Abdul Rahim'});">💬 WhatsApp</a>
-                    <a href="tel:+919535146236" class="contact-btn call-btn" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Call - Abdul Rahim'});">📞 Call</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="services">
-            <div class="service-card">
-                <h3>📦 Quality Stock Lots</h3>
-                <p>Carefully curated liquidation stock from trusted sources, ensuring quality and value for your business.</p>
-            </div>
-            <div class="service-card">
-                <h3>🤝 Trusted Service</h3>
-                <p>Built on trust and reliability, we've helped countless businesses find the perfect inventory solutions.</p>
-            </div>
-            <div class="service-card">
-                <h3>💼 Business Solutions</h3>
-                <p>Tailored liquidation services to meet your specific business needs and budget requirements.</p>
-            </div>
-            <div class="service-card">
-                <h3>🚚 Fast Delivery</h3>
-                <p>Efficient logistics and delivery systems to get your stock where it needs to be, when you need it.</p>
-            </div>
-        </div>
-        
-        <div class="contact-section">
-            <h2>Get In Touch With Us</h2>
             
-            <div class="contact-methods">
-                <a href="https://wa.me/918660502217?text=Hi%20AK%20Brands%20Marketing,%20I'm%20interested%20in%20your%20liquidation%20stock%20services" class="contact-btn-main whatsapp-btn" target="_blank" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Main WhatsApp Button'});">
-                    💬 WhatsApp Us
-                </a>
-                <a href="tel:+918660502217" class="contact-btn-main call-btn-main" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Main Call Button'});">
-                    📞 Call Now
-                </a>
-                <a href="mailto:abdul@akbrandsmarketing.com" class="contact-btn-main email-btn" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Email Button'});">
-                    ✉️ Email Us
-                </a>
-            </div>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
             
-            <div class="success-message" id="successMessage">
-                ✅ Thank you! Your inquiry has been submitted successfully. We'll contact you soon!
-            </div>
-            <div class="error-message" id="errorMessage">
-                ❌ Sorry, there was an error submitting your form. Please try again or contact us directly.
-            </div>
-            
-            <form id="contactForm">
-                <div class="form-group">
-                    <label for="name">Full Name *</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="phone">Phone Number *</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inquiry">Inquiry Type *</label>
-                    <select id="inquiry" name="inquiry" required>
-                        <option value="">Select an option</option>
-                        <option value="Stock Lot Inquiry">Stock Lot Inquiry</option>
-                        <option value="Pricing Information">Pricing Information</option>
-                        <option value="Partnership Opportunity">Partnership Opportunity</option>
-                        <option value="General Question">General Question</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="message">Your Message *</label>
-                    <textarea id="message" name="message" required></textarea>
-                </div>
-                
-                <button type="submit" class="submit-btn" id="submitBtn">Send Inquiry</button>
-            </form>
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item">
+                    <a href="#home" class="nav-link active" onclick="setActive(this)">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-text">Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#about" class="nav-link" onclick="setActive(this)">
+                        <span class="nav-icon">ℹ️</span>
+                        <span class="nav-text">About Us</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#products" class="nav-link" onclick="setActive(this)">
+                        <span class="nav-icon">📦</span>
+                        <span class="nav-text">Products</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#career" class="nav-link" onclick="setActive(this)">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Career</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contact" class="nav-link" onclick="setActive(this)">
+                        <span class="nav-icon">📞</span>
+                        <span class="nav-text">Contact</span>
+                    </a>
+                </li>
+            </ul>
         </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Home Section -->
+        <section id="home">
+            <div class="section-content home-content">
+                <div class="home-logo">
+                    <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T04-07-02-217Z-cd7a780d-chat-image-1764821222198-0.jpg" alt="AK Brands Marketing">
+                </div>
+                <h1 class="home-title">AK Brands Marketing</h1>
+                <p class="home-tagline">Catch it, Before it's Sold</p>
+                <p class="home-description">Leading B2B Liquidation Platform in India</p>
+                <p style="color: #666; margin-bottom: 2rem;">GSTIN: 29BHXPA2325K1ZO</p>
+                
+                <div class="product-showcase">
+                    <h3>🎯 Our Liquidation Stock Categories</h3>
+                    <div class="product-grid">
+                        <div class="product-item">
+                            <div class="icon">📦</div>
+                            <div class="name">Return Inventory</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">👟</div>
+                            <div class="name">Footwear</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">👕</div>
+                            <div class="name">Apparels</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">🧸</div>
+                            <div class="name">Toys</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">📱</div>
+                            <div class="name">Mobile Accessories</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">💻</div>
+                            <div class="name">Electronics</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">🛋️</div>
+                            <div class="name">Furniture</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">🧳</div>
+                            <div class="name">Trolley Bags</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">🏠</div>
+                            <div class="name">Home Appliances</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">🍳</div>
+                            <div class="name">Kitchen Appliances</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">🛒</div>
+                            <div class="name">FMCG</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">🥫</div>
+                            <div class="name">Grocery</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">🔧</div>
+                            <div class="name">Hardware Items</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="icon">📦</div>
+                            <div class="name">Bulk Boxes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section id="about">
+            <div class="section-content about-content">
+                <h2>About Our B2B Liquidation Platform</h2>
+                <p style="text-align: center; font-size: 1.1rem; margin-bottom: 2rem;">
+                    We are a <strong>one-stop B2B liquidation platform</strong> for buying and selling excess inventory, stock lots, cancelled orders, unsold products, slow-moving items, dead stock, warehouse clearance, surplus inventory, and more.
+                </p>
+                
+                <div class="about-grid">
+                    <div class="about-card">
+                        <h3><span class="icon">🏢</span> Registered Office</h3>
+                        <p>Ahmed Nagar Main Road<br>Near Nasir Medical<br>Davanagere - 577001<br>Karnataka, India</p>
+                    </div>
+                    
+                    <div class="about-card">
+                        <h3><span class="icon">💼</span> Working Office</h3>
+                        <p>HBR Layout<br>Near Narendra Tents<br>Bengaluru - 560043<br>Karnataka, India</p>
+                    </div>
+                    
+                    <div class="about-card">
+                        <h3><span class="icon">📦</span> Warehouse</h3>
+                        <p>Nehru Nagar<br>Chitradurga - 577501<br>Karnataka, India</p>
+                    </div>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 2rem; border-left: 4px solid #667eea; margin-top: 2rem; border-radius: 5px;">
+                    <p style="font-size: 1.1rem;"><strong>Our Purpose:</strong> We assist businesses in overcoming stock lot challenges by connecting them with potential buyers and facilitating sales, helping sellers and companies recover costs and increase their business efficiency.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Products Section -->
+        <section id="products">
+            <div class="section-content products-content">
+                <h2>Our Marketplace Specializes In</h2>
+                <div class="categories-grid">
+                    <div class="category-item">
+                        <div class="category-number">1</div>
+                        <div class="category-name">Textile and Garments</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-number">2</div>
+                        <div class="category-name">FMCG</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-number">3</div>
+                        <div class="category-name">Electronics</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-number">4</div>
+                        <div class="category-name">Home Appliances</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-number">5</div>
+                        <div class="category-name">Kitchen Appliances</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-number">6</div>
+                        <div class="category-name">Furniture</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-number">7</div>
+                        <div class="category-name">Mobile Phones and Accessories</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-number">8</div>
+                        <div class="category-name">Hardware Items</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-number">9</div>
+                        <div class="category-name">Luggages</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-number">10</div>
+                        <div class="category-name">Footwear and Others</div>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: white; padding: 3rem 2rem; border-radius: 10px; text-align: center; margin-top: 3rem; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                    <h2 style="font-size: 2rem; margin-bottom: 1rem;">📱 Join Our Daily B2B Liquidation Updates</h2>
+                    <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Get daily updates on liquidation stock lots directly on WhatsApp!</p>
+                    <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" style="display: inline-block; background: white; color: #25D366; padding: 1rem 3rem; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 1.2rem; transition: transform 0.3s;" target="_blank" onclick="gtag('event', 'click', {'event_category': 'WhatsApp', 'event_label': 'Join Group Button'});">
+                        💬 Join WhatsApp Group Now
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Career Section -->
+        <section id="career">
+            <div class="section-content career-content">
+                <h2>Meet Our Team</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="team-photo-wrapper">
+                            <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T05-51-30-217Z-67d4f70b-chat-image-1764827490198-0.jpg" alt="Abdul Zaffar">
+                        </div>
+                        <h3>Abdul Zaffar</h3>
+                        <p class="phone">📞 8660502217</p>
+                        <a href="https://wa.me/918660502217" class="contact-btn" target="_blank" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'WhatsApp - Abdul Zaffar'});">💬 WhatsApp</a>
+                        <a href="tel:+918660502217" class="contact-btn call-btn" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Call - Abdul Zaffar'});">📞 Call</a>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="team-photo-wrapper">
+                            <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T05-51-30-363Z-bf039a62-chat-image-1764827490344-1.jpg" alt="Abu Talib">
+                        </div>
+                        <h3>Abu Talib</h3>
+                        <p class="phone">📞 9606621935</p>
+                        <a href="https://wa.me/919606621935" class="contact-btn" target="_blank" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'WhatsApp - Abu Talib'});">💬 WhatsApp</a>
+                        <a href="tel:+919606621935" class="contact-btn call-btn" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Call - Abu Talib'});">📞 Call</a>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="team-photo-wrapper">
+                            <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T05-51-30-469Z-57e9b7c2-chat-image-1764827490449-2.jpg" alt="Abdul Rahim">
+                        </div>
+                        <h3>Abdul Rahim</h3>
+                        <p class="phone">📞 9535146236</p>
+                        <a href="https://wa.me/919535146236" class="contact-btn" target="_blank" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'WhatsApp - Abdul Rahim'});">💬 WhatsApp</a>
+                        <a href="tel:+919535146236" class="contact-btn call-btn" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Call - Abdul Rahim'});">📞 Call</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact">
+            <div class="section-content contact-content">
+                <h2>Get In Touch With Us</h2>
+                
+                <div class="contact-methods">
+                    <a href="https://wa.me/918660502217?text=Hi%20AK%20Brands%20Marketing,%20I'm%20interested%20in%20your%20liquidation%20stock%20services" class="contact-btn-main whatsapp-btn" target="_blank" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Main WhatsApp Button'});">
+                        💬 WhatsApp Us
+                    </a>
+                    <a href="tel:+918660502217" class="contact-btn-main call-btn-main" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Main Call Button'});">
+                        📞 Call Now
+                    </a>
+                    <a href="mailto:abdul@akbrandsmarketing.com" class="contact-btn-main email-btn" onclick="gtag('event', 'click', {'event_category': 'Contact', 'event_label': 'Email Button'});">
+                        ✉️ Email Us
+                    </a>
+                </div>
+                
+                <div class="success-message" id="successMessage">
+                    ✅ Thank you! Your inquiry has been submitted successfully. We'll contact you soon!
+                </div>
+                <div class="error-message" id="errorMessage">
+                    ❌ Sorry, there was an error submitting your form. Please try again or contact us directly.
+                </div>
+                
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="inquiry">Inquiry Type *</label>
+                        <select id="inquiry" name="inquiry" required>
+                            <option value="">Select an option</option>
+                            <option value="Stock Lot Inquiry">Stock Lot Inquiry</option>
+                            <option value="Pricing Information">Pricing Information</option>
+                            <option value="Partnership Opportunity">Partnership Opportunity</option>
+                            <option value="General Question">General Question</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Message *</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitBtn">Send Inquiry</button>
+                </form>
+            </div>
+        </section>
     </div>
     
-    <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" class="whatsapp-float" target="_blank" onclick="gtag('event', 'click', {'event_category': 'WhatsApp', 'event_label': 'Floating Button'});">
-        💬
-    </a>
-    
+    <!-- Footer -->
     <div class="footer">
         <p><strong>AK Brands Marketing - Trusted Firm</strong></p>
         <p>GSTIN: 29BHXPA2325K1ZO</p>
@@ -1144,7 +1095,78 @@
         <p>&copy; 2025 AK Brands Marketing. All rights reserved.</p>
     </div>
     
+    <!-- WhatsApp Float Button -->
+    <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" class="whatsapp-float" target="_blank" onclick="gtag('event', 'click', {'event_category': 'WhatsApp', 'event_label': 'Floating Button'});">
+        💬
+    </a>
+    
     <script>
+        // Create animated background particles
+        function createParticles() {
+            const bg = document.getElementById('animatedBg');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 100 + 50;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                
+                bg.appendChild(particle);
+            }
+        }
+        
+        createParticles();
+        
+        // Navigation active state
+        function setActive(element) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // Close mobile menu
+            if (window.innerWidth <= 768) {
+                document.getElementById('navMenu').classList.remove('active');
+            }
+        }
+        
+        // Mobile menu toggle
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+        }
+        
+        // Intersection Observer for active nav on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        const observerOptions = {
+            threshold: 0.3
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+        
+        sections.forEach(section => observer.observe(section));
+        
+        // Form submission
         document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -1167,7 +1189,6 @@
                 timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
             };
             
-            // Track form submission
             gtag('event', 'form_submit', {
                 'event_category': 'Contact Form',
                 'event_label': formData.inquiry
@@ -1185,7 +1206,6 @@
                 
                 successMessage.style.display = 'block';
                 
-                // Track successful submission
                 gtag('event', 'conversion', {
                     'event_category': 'Contact Form',
                     'event_label': 'Form Submitted Successfully'
@@ -1211,7 +1231,6 @@
                 errorMessage.style.display = 'block';
                 errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 
-                // Track error
                 gtag('event', 'exception', {
                     'description': 'Form submission error',
                     'fatal': false
