@@ -1,0 +1,30 @@
+# robots.txt for AK Brands Marketing
+# https://zaffarsecure-lab.github.io/ak-brands-website/
+
+# Allow all search engines to crawl everything
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://zaffarsecure-lab.github.io/ak-brands-website/sitemap.xml
+
+# Crawl-delay (optional - helps prevent server overload)
+Crawl-delay: 1
+
+# Specific instructions for major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Block access to any future admin or private directories (if you add them)
+# User-agent: *
+# Disallow: /admin/
+# Disallow: /private/
