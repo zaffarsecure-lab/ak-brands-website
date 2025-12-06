@@ -342,11 +342,12 @@
         /* Landing Page */
         #landing {
             position: relative;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%);
             overflow: hidden;
         }
         
-        .product-background {
+        /* Animated Warehouse Background */
+        .warehouse-background {
             position: absolute;
             top: 0;
             left: 0;
@@ -355,18 +356,54 @@
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             grid-template-rows: repeat(4, 1fr);
-            gap: 10px;
+            gap: 15px;
             padding: 20px;
-            opacity: 0.15;
+            opacity: 0.2;
             z-index: 0;
         }
         
-        .product-bg-item {
+        .warehouse-bg-item {
             background-size: cover;
             background-position: center;
             border-radius: 10px;
-            transition: transform 0.3s;
+            animation: fadeInOut 20s infinite;
+            transition: transform 0.5s;
         }
+        
+        .warehouse-bg-item:hover {
+            transform: scale(1.05);
+            opacity: 0.4;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.35; }
+        }
+        
+        .warehouse-bg-item:nth-child(1) { animation-delay: 0s; }
+        .warehouse-bg-item:nth-child(2) { animation-delay: 0.8s; }
+        .warehouse-bg-item:nth-child(3) { animation-delay: 1.6s; }
+        .warehouse-bg-item:nth-child(4) { animation-delay: 2.4s; }
+        .warehouse-bg-item:nth-child(5) { animation-delay: 3.2s; }
+        .warehouse-bg-item:nth-child(6) { animation-delay: 4s; }
+        .warehouse-bg-item:nth-child(7) { animation-delay: 4.8s; }
+        .warehouse-bg-item:nth-child(8) { animation-delay: 5.6s; }
+        .warehouse-bg-item:nth-child(9) { animation-delay: 6.4s; }
+        .warehouse-bg-item:nth-child(10) { animation-delay: 7.2s; }
+        .warehouse-bg-item:nth-child(11) { animation-delay: 8s; }
+        .warehouse-bg-item:nth-child(12) { animation-delay: 8.8s; }
+        .warehouse-bg-item:nth-child(13) { animation-delay: 9.6s; }
+        .warehouse-bg-item:nth-child(14) { animation-delay: 10.4s; }
+        .warehouse-bg-item:nth-child(15) { animation-delay: 11.2s; }
+        .warehouse-bg-item:nth-child(16) { animation-delay: 12s; }
+        .warehouse-bg-item:nth-child(17) { animation-delay: 12.8s; }
+        .warehouse-bg-item:nth-child(18) { animation-delay: 13.6s; }
+        .warehouse-bg-item:nth-child(19) { animation-delay: 14.4s; }
+        .warehouse-bg-item:nth-child(20) { animation-delay: 15.2s; }
+        .warehouse-bg-item:nth-child(21) { animation-delay: 16s; }
+        .warehouse-bg-item:nth-child(22) { animation-delay: 16.8s; }
+        .warehouse-bg-item:nth-child(23) { animation-delay: 17.6s; }
+        .warehouse-bg-item:nth-child(24) { animation-delay: 18.4s; }
         
         .landing-content {
             text-align: center;
@@ -804,7 +841,7 @@
                 grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             }
             
-            .product-background {
+            .warehouse-background {
                 grid-template-columns: repeat(3, 1fr);
                 grid-template-rows: repeat(6, 1fr);
             }
@@ -895,7 +932,7 @@
     <div class="main-content">
         <!-- Landing Page -->
         <section id="landing">
-            <div class="product-background" id="productBg"></div>
+            <div class="warehouse-background" id="warehouseBg"></div>
             
             <div class="section-content landing-content">
                 <div class="home-logo">
@@ -1194,50 +1231,50 @@
     </a>
     
     <script>
-        // Create product background collage
-        function createProductBackground() {
-            const bg = document.getElementById('productBg');
+        // Create warehouse inventory background with 24 images
+        function createWarehouseBackground() {
+            const bg = document.getElementById('warehouseBg');
             if (!bg) return;
             
-            const productImages = [
-                'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1556906781-9a412961c28c?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1560343090-f0409e92791a?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1503602642458-232111445657?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1598662957477-64e78f4fd663?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=300&fit=crop',
+            const warehouseImages = [
+                'https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-06T12-04-18-850Z-5a9adc76-chat-image-1765022658831-0.jpg',
+                'https://images.unsplash.com/photo-1553413077-190dd305871c?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1556906781-9a412961c28c?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1560343090-f0409e92791a?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1503602642458-232111445657?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1598662957477-64e78f4fd663?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=500&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=400&fit=crop'
             ];
             
-            productImages.forEach((imageUrl) => {
+            warehouseImages.forEach((imageUrl) => {
                 const item = document.createElement('div');
-                item.className = 'product-bg-item';
+                item.className = 'warehouse-bg-item';
                 item.style.backgroundImage = `url('${imageUrl}')`;
                 bg.appendChild(item);
             });
         }
         
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', createProductBackground);
+            document.addEventListener('DOMContentLoaded', createWarehouseBackground);
         } else {
-            createProductBackground();
+            createWarehouseBackground();
         }
         
         // Dropdown toggle for mobile
