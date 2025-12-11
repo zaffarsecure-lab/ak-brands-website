@@ -27,8 +27,6 @@
             top: 0;
             z-index: 1000;
             border-bottom: 1px solid rgba(26, 188, 156, 0.1);
-            overflow: hidden;
-            position: relative;
         }
 
         .header-container {
@@ -121,6 +119,7 @@
             border-radius: 8px;
             margin-top: 0.5rem;
             overflow: hidden;
+            z-index: 1001;
         }
 
         .dropdown-content.show {
@@ -147,10 +146,7 @@
             width: 100%;
             height: 140px;
             margin-top: 1rem;
-            background: 
-                linear-gradient(to bottom, transparent 0%, transparent 75%, #2c3e50 75%, #34495e 80%, #2c3e50 80%, #2c3e50 100%),
-                repeating-linear-gradient(90deg, transparent 0px, transparent 40px, rgba(255,255,255,0.05) 40px, rgba(255,255,255,0.05) 45px);
-            opacity: 0.4;
+            background: linear-gradient(to bottom, transparent 0%, transparent 75%, #34495e 75%, #2c3e50 80%, #34495e 80%, #34495e 100%);
         }
 
         /* Business Locations */
@@ -161,7 +157,7 @@
             display: flex;
             justify-content: space-between;
             padding: 0 5%;
-            z-index: 1;
+            z-index: 10;
         }
 
         .location {
@@ -200,33 +196,13 @@
             50% { opacity: 1; transform: scale(1.1); }
         }
 
-        .tower-signal {
-            position: absolute;
-            top: -40px;
-            width: 30px;
-            height: 30px;
-            border: 2px solid;
-            border-radius: 50%;
-            opacity: 0;
-            animation: signalPulse 2s ease-out infinite;
-        }
-
-        @keyframes signalPulse {
-            0% { transform: scale(0.5); opacity: 0.8; }
-            100% { transform: scale(2); opacity: 0; }
-        }
-
-        .location:nth-child(1) .tower-signal { border-color: #3498db; animation-delay: 0s; }
-        .location:nth-child(2) .tower-signal { border-color: #1abc9c; animation-delay: 0.3s; }
-        .location:nth-child(3) .tower-signal { border-color: #e74c3c; animation-delay: 0.6s; }
-
         /* Customer Animation */
         .customer-person {
             position: absolute;
             bottom: 30%;
             right: 20%;
             font-size: 2rem;
-            z-index: 3;
+            z-index: 15;
             animation: customerJourney 30s ease-in-out infinite;
         }
 
@@ -265,7 +241,7 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 1.5rem;
-            z-index: 4;
+            z-index: 15;
             opacity: 0;
             animation: showOrderPayment 30s ease-in-out infinite;
         }
@@ -284,7 +260,7 @@
             bottom: 35%;
             left: 15%;
             font-size: 1.5rem;
-            z-index: 3;
+            z-index: 15;
             opacity: 0;
             animation: packingGoods 30s ease-in-out infinite;
         }
@@ -304,7 +280,7 @@
             bottom: 28%;
             width: 100%;
             height: 80px;
-            z-index: 5;
+            z-index: 20;
         }
 
         .truck {
@@ -350,7 +326,7 @@
             bottom: 35%;
             right: 15%;
             font-size: 2rem;
-            z-index: 4;
+            z-index: 15;
             opacity: 0;
             animation: deliveryComplete 30s ease-in-out infinite;
         }
@@ -372,9 +348,10 @@
                 90deg,
                 transparent 0px,
                 transparent 20px,
-                rgba(255,255,255,0.15) 20px,
-                rgba(255,255,255,0.15) 40px
+                rgba(255,255,255,0.3) 20px,
+                rgba(255,255,255,0.3) 40px
             );
+            z-index: 5;
         }
 
         /* Hero Section */
@@ -605,19 +582,16 @@
             <div class="business-locations">
                 <div class="location">
                     <div class="network-tower">📡</div>
-                    <div class="tower-signal"></div>
                     <div class="location-icon">🏭</div>
                     <div class="location-label supplier">Supplier</div>
                 </div>
                 <div class="location">
                     <div class="network-tower">📡</div>
-                    <div class="tower-signal"></div>
                     <div class="location-icon">🏢</div>
                     <div class="location-label office">AK</div>
                 </div>
                 <div class="location">
                     <div class="network-tower">📡</div>
-                    <div class="tower-signal"></div>
                     <div class="location-icon">🏪</div>
                     <div class="location-label customer">Customer</div>
                 </div>
