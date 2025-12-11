@@ -149,6 +149,37 @@
             background: linear-gradient(to bottom, transparent 0%, transparent 75%, #34495e 75%, #2c3e50 80%, #34495e 80%, #34495e 100%);
         }
 
+        /* Connection Line from AK to Supplier */
+        .connection-line {
+            position: absolute;
+            bottom: 42%;
+            left: 15%;
+            width: 35%;
+            height: 3px;
+            background: linear-gradient(90deg, #1abc9c, #3498db);
+            z-index: 8;
+            opacity: 0;
+            animation: showConnection 30s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.5);
+        }
+
+        @keyframes showConnection {
+            0%, 30% { opacity: 0; width: 0; }
+            35% { opacity: 1; width: 35%; }
+            40% { opacity: 1; width: 35%; }
+            45% { opacity: 0; width: 35%; }
+            100% { opacity: 0; width: 35%; }
+        }
+
+        .connection-line::before {
+            content: '→';
+            position: absolute;
+            right: -15px;
+            top: -12px;
+            font-size: 1.5rem;
+            color: #3498db;
+        }
+
         /* Business Locations */
         .business-locations {
             position: absolute;
@@ -182,19 +213,6 @@
         .supplier { color: #3498db; }
         .office { color: #1abc9c; }
         .customer { color: #e74c3c; }
-
-        /* Network Towers */
-        .network-tower {
-            position: absolute;
-            top: -30px;
-            font-size: 1.5rem;
-            animation: towerSignal 2s ease-in-out infinite;
-        }
-
-        @keyframes towerSignal {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
 
         /* Customer Animation */
         .customer-person {
@@ -578,20 +596,20 @@
         <div class="animation-section">
             <div class="road-lines"></div>
             
-            <!-- Business Locations with Network Towers -->
+            <!-- Connection Line from AK to Supplier -->
+            <div class="connection-line"></div>
+            
+            <!-- Business Locations -->
             <div class="business-locations">
                 <div class="location">
-                    <div class="network-tower">📡</div>
                     <div class="location-icon">🏭</div>
                     <div class="location-label supplier">Supplier</div>
                 </div>
                 <div class="location">
-                    <div class="network-tower">📡</div>
                     <div class="location-icon">🏢</div>
                     <div class="location-label office">AK</div>
                 </div>
                 <div class="location">
-                    <div class="network-tower">📡</div>
                     <div class="location-icon">🏪</div>
                     <div class="location-label customer">Customer</div>
                 </div>
