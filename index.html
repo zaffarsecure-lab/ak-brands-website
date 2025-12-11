@@ -20,13 +20,148 @@
 
         /* Header Styles */
         header {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
             padding: 1.2rem 0;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             position: sticky;
             top: 0;
             z-index: 1000;
             border-bottom: 1px solid rgba(26, 188, 156, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(to bottom, transparent 0%, transparent 60%, #2c3e50 60%, #34495e 65%, #2c3e50 65%, #2c3e50 100%),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 40px, rgba(255,255,255,0.1) 40px, rgba(255,255,255,0.1) 45px);
+            z-index: -2;
+            opacity: 0.3;
+        }
+
+        .truck-animation {
+            position: absolute;
+            bottom: 20%;
+            left: -150px;
+            width: 120px;
+            height: 60px;
+            z-index: -1;
+            animation: moveTruck 15s linear infinite;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+        }
+
+        @keyframes moveTruck {
+            0% {
+                left: -150px;
+            }
+            100% {
+                left: calc(100% + 150px);
+            }
+        }
+
+        .truck-body {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .truck-cabin {
+            position: absolute;
+            left: 0;
+            bottom: 10px;
+            width: 35px;
+            height: 30px;
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .truck-cabin::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 25px;
+            height: 15px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+        }
+
+        .truck-container {
+            position: absolute;
+            left: 32px;
+            bottom: 10px;
+            width: 70px;
+            height: 35px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-radius: 2px;
+        }
+
+        .truck-container::before {
+            content: '📦';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+        }
+
+        .truck-wheel {
+            position: absolute;
+            bottom: 0;
+            width: 12px;
+            height: 12px;
+            background: #2c3e50;
+            border-radius: 50%;
+            border: 2px solid #34495e;
+            animation: rotateWheel 0.5s linear infinite;
+        }
+
+        .truck-wheel:nth-child(3) {
+            left: 8px;
+        }
+
+        .truck-wheel:nth-child(4) {
+            left: 90px;
+        }
+
+        @keyframes rotateWheel {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .road-lines {
+            position: absolute;
+            bottom: 15%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 20px,
+                rgba(255,255,255,0.2) 20px,
+                rgba(255,255,255,0.2) 40px
+            );
+            animation: moveRoad 1s linear infinite;
+        }
+
+        @keyframes moveRoad {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 40px 0;
+            }
         }
 
         .header-container {
@@ -36,6 +171,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
+            z-index: 10;
         }
 
         .logo-section {
@@ -303,11 +440,25 @@
             .section-title {
                 font-size: 2rem;
             }
+
+            .truck-animation {
+                width: 80px;
+                height: 40px;
+            }
         }
     </style>
 </head>
 <body>
     <header>
+        <div class="road-lines"></div>
+        <div class="truck-animation">
+            <div class="truck-body">
+                <div class="truck-cabin"></div>
+                <div class="truck-container"></div>
+                <div class="truck-wheel"></div>
+                <div class="truck-wheel"></div>
+            </div>
+        </div>
         <div class="header-container">
             <div class="logo-section">
                 <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg" alt="AK Brands Marketing Logo" class="logo-img">
