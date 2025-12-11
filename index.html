@@ -69,7 +69,7 @@
         }
 
         .location-label {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: #ecf0f1;
             text-shadow: 0 1px 3px rgba(0,0,0,0.5);
@@ -80,7 +80,7 @@
         .office { color: #1abc9c; }
         .customer { color: #e74c3c; }
 
-        /* Customer Animation */
+        /* Customer Animation - Coming from front (right to center) */
         .customer-person {
             position: absolute;
             bottom: 30%;
@@ -93,27 +93,27 @@
         @keyframes customerJourney {
             0%, 5% {
                 right: 20%;
-                transform: scaleX(-1);
+                transform: scaleX(1);
                 opacity: 1;
             }
             15% {
                 right: 50%;
-                transform: scaleX(-1) translateX(50%);
+                transform: scaleX(1) translateX(50%);
                 opacity: 1;
             }
             20%, 25% {
                 right: 50%;
-                transform: scaleX(-1) translateX(50%);
+                transform: scaleX(1) translateX(50%);
                 opacity: 1;
             }
             30% {
                 right: 50%;
-                transform: scaleX(-1) translateX(50%);
+                transform: scaleX(1) translateX(50%);
                 opacity: 0;
             }
             100% {
                 right: 50%;
-                transform: scaleX(-1) translateX(50%);
+                transform: scaleX(1) translateX(50%);
                 opacity: 0;
             }
         }
@@ -185,7 +185,7 @@
             100% { opacity: 0; transform: scale(0); }
         }
 
-        /* Truck Animation */
+        /* Truck Animation - Moving forward (left to right) */
         .truck-container {
             position: absolute;
             bottom: 28%;
@@ -200,6 +200,7 @@
             bottom: 0;
             font-size: 3rem;
             opacity: 0;
+            transform: scaleX(1);
             animation: truckDelivery 30s ease-in-out infinite;
         }
 
@@ -576,11 +577,11 @@
         <div class="business-locations">
             <div class="location">
                 <div class="location-icon">🏭</div>
-                <div class="location-label supplier">SUPPLIER WAREHOUSE</div>
+                <div class="location-label supplier">SUPPLIER</div>
             </div>
             <div class="location">
                 <div class="location-icon">🏢</div>
-                <div class="location-label office">AK BRANDS MARKETING</div>
+                <div class="location-label office">AK</div>
             </div>
             <div class="location">
                 <div class="location-icon">🏪</div>
@@ -588,7 +589,7 @@
             </div>
         </div>
 
-        <!-- Customer Journey -->
+        <!-- Customer Journey (facing forward - right to center) -->
         <div class="customer-person">🚶</div>
         
         <!-- Order & Payment -->
@@ -600,7 +601,7 @@
         <!-- Packing -->
         <div class="packing-boxes">📦📦📦</div>
         
-        <!-- Truck Delivery -->
+        <!-- Truck Delivery (facing forward - left to right) -->
         <div class="truck-container">
             <div class="truck">🚚</div>
         </div>
