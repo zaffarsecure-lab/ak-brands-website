@@ -21,7 +21,7 @@
         /* Header Styles */
         header {
             background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
-            padding: 1.2rem 0;
+            padding: 1.2rem 0 0 0;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             position: sticky;
             top: 0;
@@ -29,20 +29,127 @@
             border-bottom: 1px solid rgba(26, 188, 156, 0.1);
             overflow: hidden;
             position: relative;
-            min-height: 140px;
         }
 
-        header::before {
-            content: '';
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .logo-img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            filter: drop-shadow(0 3px 10px rgba(26, 188, 156, 0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .brand-name {
+            font-size: 1.75rem;
+            font-weight: 500;
+            font-family: 'Playfair Display', Georgia, serif;
+            color: #1abc9c;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            position: relative;
+        }
+
+        .brand-name .ak {
+            font-weight: 600;
+            color: #16a085;
+        }
+
+        .brand-tagline {
+            font-size: 0.75rem;
+            color: #95a5a6;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            font-family: 'Playfair Display', Georgia, serif;
+            opacity: 0.85;
+            font-style: italic;
+        }
+
+        /* Dropdown Menu */
+        .menu-dropdown {
+            position: relative;
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            color: #ecf0f1;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .menu-button:hover {
+            color: #1abc9c;
+        }
+
+        .dropdown-content {
+            display: none;
             position: absolute;
-            top: 0;
-            left: 0;
             right: 0;
-            bottom: 0;
+            top: 100%;
+            background: #2c3e50;
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: #ecf0f1;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+
+        .dropdown-content a:hover {
+            background: #1abc9c;
+            color: white;
+        }
+
+        /* Animation Section */
+        .animation-section {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            margin-top: 1rem;
             background: 
                 linear-gradient(to bottom, transparent 0%, transparent 75%, #2c3e50 75%, #34495e 80%, #2c3e50 80%, #2c3e50 100%),
                 repeating-linear-gradient(90deg, transparent 0px, transparent 40px, rgba(255,255,255,0.05) 40px, rgba(255,255,255,0.05) 45px);
-            z-index: -2;
             opacity: 0.4;
         }
 
@@ -270,116 +377,6 @@
             );
         }
 
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-        }
-
-        .logo-img {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-            filter: drop-shadow(0 3px 10px rgba(26, 188, 156, 0.3));
-            transition: transform 0.3s ease;
-        }
-
-        .logo-img:hover {
-            transform: scale(1.05);
-        }
-
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .brand-name {
-            font-size: 1.75rem;
-            font-weight: 500;
-            font-family: 'Playfair Display', Georgia, serif;
-            color: #1abc9c;
-            letter-spacing: 0.5px;
-            line-height: 1.2;
-            position: relative;
-        }
-
-        .brand-name .ak {
-            font-weight: 600;
-            color: #16a085;
-        }
-
-        .brand-tagline {
-            font-size: 0.75rem;
-            color: #95a5a6;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            font-family: 'Playfair Display', Georgia, serif;
-            opacity: 0.85;
-            font-style: italic;
-        }
-
-        /* Dropdown Menu */
-        .menu-dropdown {
-            position: relative;
-        }
-
-        .menu-button {
-            background: none;
-            border: none;
-            color: #ecf0f1;
-            font-size: 1.8rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            transition: color 0.3s;
-        }
-
-        .menu-button:hover {
-            color: #1abc9c;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: #2c3e50;
-            min-width: 180px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            border-radius: 8px;
-            margin-top: 0.5rem;
-            overflow: hidden;
-        }
-
-        .dropdown-content.show {
-            display: block;
-        }
-
-        .dropdown-content a {
-            color: #ecf0f1;
-            padding: 1rem 1.5rem;
-            text-decoration: none;
-            display: block;
-            transition: background 0.3s;
-            font-weight: 500;
-        }
-
-        .dropdown-content a:hover {
-            background: #1abc9c;
-            color: white;
-        }
-
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -527,8 +524,8 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            header {
-                min-height: 100px;
+            .animation-section {
+                height: 100px;
             }
 
             .header-container {
@@ -581,47 +578,6 @@
 </head>
 <body>
     <header>
-        <div class="road-lines"></div>
-        
-        <!-- Business Locations with Network Towers -->
-        <div class="business-locations">
-            <div class="location">
-                <div class="network-tower">📡</div>
-                <div class="tower-signal"></div>
-                <div class="location-icon">🏭</div>
-                <div class="location-label supplier">Supplier</div>
-            </div>
-            <div class="location">
-                <div class="network-tower">📡</div>
-                <div class="tower-signal"></div>
-                <div class="location-icon">🏢</div>
-                <div class="location-label office">AK</div>
-            </div>
-            <div class="location">
-                <div class="network-tower">📡</div>
-                <div class="tower-signal"></div>
-                <div class="location-icon">🏪</div>
-                <div class="location-label customer">Customer</div>
-            </div>
-        </div>
-
-        <!-- Customer Journey -->
-        <div class="customer-person">🚶</div>
-        
-        <!-- Order & Payment -->
-        <div class="order-payment">💳📝</div>
-        
-        <!-- Packing -->
-        <div class="packing-boxes">📦📦📦</div>
-        
-        <!-- Truck Delivery (FLIPPED to face RIGHT) -->
-        <div class="truck-container">
-            <div class="truck">🚚</div>
-        </div>
-        
-        <!-- Delivery Confirmation -->
-        <div class="delivery-check">✅</div>
-        
         <div class="header-container">
             <div class="logo-section">
                 <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg" alt="AK Brands Marketing Logo" class="logo-img">
@@ -639,6 +595,50 @@
                     <a href="#contact">Contact</a>
                 </div>
             </div>
+        </div>
+
+        <!-- Animation Section Below Logo -->
+        <div class="animation-section">
+            <div class="road-lines"></div>
+            
+            <!-- Business Locations with Network Towers -->
+            <div class="business-locations">
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="tower-signal"></div>
+                    <div class="location-icon">🏭</div>
+                    <div class="location-label supplier">Supplier</div>
+                </div>
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="tower-signal"></div>
+                    <div class="location-icon">🏢</div>
+                    <div class="location-label office">AK</div>
+                </div>
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="tower-signal"></div>
+                    <div class="location-icon">🏪</div>
+                    <div class="location-label customer">Customer</div>
+                </div>
+            </div>
+
+            <!-- Customer Journey -->
+            <div class="customer-person">🚶</div>
+            
+            <!-- Order & Payment -->
+            <div class="order-payment">💳📝</div>
+            
+            <!-- Packing -->
+            <div class="packing-boxes">📦📦📦</div>
+            
+            <!-- Truck Delivery -->
+            <div class="truck-container">
+                <div class="truck">🚚</div>
+            </div>
+            
+            <!-- Delivery Confirmation -->
+            <div class="delivery-check">✅</div>
         </div>
     </header>
 
