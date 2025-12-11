@@ -138,7 +138,7 @@
             100% { opacity: 0; transform: translateX(-50%) scale(0); }
         }
 
-        /* Order to Supplier Animation */
+        /* Online Order to Supplier Animation */
         .order-arrow {
             position: absolute;
             bottom: 32%;
@@ -152,17 +152,19 @@
         }
 
         @keyframes sendOrderToSupplier {
-            0%, 30% { width: 0; left: 50%; }
-            35% { width: 35%; left: 50%; transform: translateX(-100%); }
-            40%, 100% { width: 35%; left: 50%; transform: translateX(-100%); opacity: 0; }
+            0%, 30% { width: 0; left: 50%; opacity: 1; }
+            35% { width: 35%; left: 50%; transform: translateX(-100%); opacity: 1; }
+            40% { width: 35%; left: 50%; transform: translateX(-100%); opacity: 1; }
+            45% { width: 35%; left: 50%; transform: translateX(-100%); opacity: 0; }
+            100% { width: 35%; left: 50%; transform: translateX(-100%); opacity: 0; }
         }
 
         .order-arrow::after {
-            content: '📋';
+            content: '💻📧';
             position: absolute;
-            right: -15px;
-            top: -10px;
-            font-size: 1.2rem;
+            right: -25px;
+            top: -12px;
+            font-size: 1rem;
         }
 
         /* Packing Animation */
@@ -177,11 +179,11 @@
         }
 
         @keyframes packingGoods {
-            0%, 35% { opacity: 0; transform: scale(0); }
-            40% { opacity: 1; transform: scale(1.2); }
-            45% { opacity: 1; transform: scale(1); }
+            0%, 40% { opacity: 0; transform: scale(0); }
+            45% { opacity: 1; transform: scale(1.2); }
             50% { opacity: 1; transform: scale(1); }
-            55% { opacity: 0; transform: scale(0); }
+            55% { opacity: 1; transform: scale(1); }
+            60% { opacity: 0; transform: scale(0); }
             100% { opacity: 0; transform: scale(0); }
         }
 
@@ -200,40 +202,33 @@
             bottom: 0;
             font-size: 3rem;
             opacity: 0;
-            transform: scaleX(1);
             animation: truckDelivery 30s ease-in-out infinite;
         }
 
         @keyframes truckDelivery {
-            0%, 50% {
+            0%, 55% {
                 left: 15%;
                 opacity: 0;
-                transform: scaleX(1);
             }
-            55% {
+            60% {
                 left: 15%;
                 opacity: 1;
-                transform: scaleX(1);
-            }
-            80% {
-                left: 80%;
-                opacity: 1;
-                transform: scaleX(1);
             }
             85% {
                 left: 80%;
                 opacity: 1;
-                transform: scaleX(1);
             }
             90% {
                 left: 80%;
+                opacity: 1;
+            }
+            95% {
+                left: 80%;
                 opacity: 0;
-                transform: scaleX(1);
             }
             100% {
                 left: 80%;
                 opacity: 0;
-                transform: scaleX(1);
             }
         }
 
@@ -249,10 +244,10 @@
         }
 
         @keyframes deliveryComplete {
-            0%, 80% { opacity: 0; transform: scale(0) rotate(0deg); }
-            85% { opacity: 1; transform: scale(1.3) rotate(360deg); }
-            90% { opacity: 1; transform: scale(1) rotate(360deg); }
-            95%, 100% { opacity: 0; transform: scale(0) rotate(360deg); }
+            0%, 85% { opacity: 0; transform: scale(0) rotate(0deg); }
+            90% { opacity: 1; transform: scale(1.3) rotate(360deg); }
+            95% { opacity: 1; transform: scale(1) rotate(360deg); }
+            100% { opacity: 0; transform: scale(0) rotate(360deg); }
         }
 
         .road-lines {
@@ -577,7 +572,7 @@
         <div class="business-locations">
             <div class="location">
                 <div class="location-icon">🏭</div>
-                <div class="location-label supplier">SUPPLIER</div>
+                <div class="location-label supplier">Supplier</div>
             </div>
             <div class="location">
                 <div class="location-icon">🏢</div>
@@ -585,7 +580,7 @@
             </div>
             <div class="location">
                 <div class="location-icon">🏪</div>
-                <div class="location-label customer">CUSTOMER</div>
+                <div class="location-label customer">Customer</div>
             </div>
         </div>
 
@@ -595,7 +590,7 @@
         <!-- Order & Payment -->
         <div class="order-payment">💳📝</div>
         
-        <!-- Order to Supplier -->
+        <!-- Online Order to Supplier -->
         <div class="order-arrow"></div>
         
         <!-- Packing -->
