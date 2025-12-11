@@ -29,6 +29,7 @@
             border-bottom: 1px solid rgba(26, 188, 156, 0.1);
             overflow: hidden;
             position: relative;
+            min-height: 120px;
         }
 
         header::before {
@@ -39,109 +40,132 @@
             right: 0;
             bottom: 0;
             background: 
-                linear-gradient(to bottom, transparent 0%, transparent 60%, #2c3e50 60%, #34495e 65%, #2c3e50 65%, #2c3e50 100%),
+                linear-gradient(to bottom, transparent 0%, transparent 70%, #2c3e50 70%, #34495e 75%, #2c3e50 75%, #2c3e50 100%),
                 repeating-linear-gradient(90deg, transparent 0px, transparent 40px, rgba(255,255,255,0.1) 40px, rgba(255,255,255,0.1) 45px);
             z-index: -2;
             opacity: 0.3;
         }
 
-        .truck-animation {
+        /* Destination Marker */
+        .destination-marker {
             position: absolute;
-            bottom: 20%;
-            left: -150px;
-            width: 120px;
-            height: 60px;
-            z-index: -1;
-            animation: moveTruck 15s linear infinite;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+            bottom: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            text-align: center;
         }
 
-        @keyframes moveTruck {
-            0% {
-                left: -150px;
-            }
-            100% {
-                left: calc(100% + 150px);
-            }
+        .marker-pin {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 2px 8px rgba(231, 76, 60, 0.6));
+            animation: bounce 2s ease-in-out infinite;
         }
 
-        .truck-body {
-            position: relative;
-            width: 100%;
-            height: 100%;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
-        .truck-cabin {
-            position: absolute;
-            left: 0;
-            bottom: 10px;
-            width: 35px;
-            height: 30px;
-            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
-            border-radius: 3px 3px 0 0;
+        .marker-label {
+            color: #e74c3c;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: -5px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
-        .truck-cabin::before {
-            content: '';
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            width: 25px;
-            height: 15px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 2px;
-        }
-
+        /* Truck Animation */
         .truck-container {
             position: absolute;
-            left: 32px;
-            bottom: 10px;
-            width: 70px;
-            height: 35px;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            border-radius: 2px;
+            bottom: 25%;
+            width: 100%;
+            height: 80px;
+            z-index: 2;
         }
 
-        .truck-container::before {
-            content: '📦';
+        .truck {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 20px;
-        }
-
-        .truck-wheel {
-            position: absolute;
+            right: -200px;
             bottom: 0;
-            width: 12px;
-            height: 12px;
-            background: #2c3e50;
-            border-radius: 50%;
-            border: 2px solid #34495e;
-            animation: rotateWheel 0.5s linear infinite;
+            width: 180px;
+            height: 80px;
+            transform: scaleX(-1);
+            animation: truckJourney 20s ease-in-out infinite;
         }
 
-        .truck-wheel:nth-child(3) {
-            left: 8px;
-        }
-
-        .truck-wheel:nth-child(4) {
-            left: 90px;
-        }
-
-        @keyframes rotateWheel {
+        @keyframes truckJourney {
             0% {
-                transform: rotate(0deg);
+                right: -200px;
+                transform: scaleX(-1);
+            }
+            20% {
+                right: calc(50% - 90px);
+                transform: scaleX(-1);
+            }
+            30% {
+                right: calc(50% - 90px);
+                transform: scaleX(-1);
+            }
+            35% {
+                right: calc(50% - 90px);
+                transform: scaleX(-1);
+            }
+            55% {
+                right: calc(50% - 90px);
+                transform: scaleX(-1);
+            }
+            60% {
+                right: calc(50% - 90px);
+                transform: scaleX(1);
+            }
+            80% {
+                right: -200px;
+                transform: scaleX(1);
             }
             100% {
-                transform: rotate(360deg);
+                right: -200px;
+                transform: scaleX(1);
+            }
+        }
+
+        /* Goods Offloading Animation */
+        .goods {
+            position: absolute;
+            left: 50%;
+            bottom: 10px;
+            transform: translateX(-50%) scale(0);
+            font-size: 2rem;
+            opacity: 0;
+            animation: offloadGoods 20s ease-in-out infinite;
+        }
+
+        @keyframes offloadGoods {
+            0%, 30% {
+                transform: translateX(-50%) scale(0);
+                opacity: 0;
+            }
+            35% {
+                transform: translateX(-50%) scale(1);
+                opacity: 1;
+            }
+            55% {
+                transform: translateX(-50%) scale(1);
+                opacity: 1;
+            }
+            60% {
+                transform: translateX(-50%) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(-50%) scale(0);
+                opacity: 0;
             }
         }
 
         .road-lines {
             position: absolute;
-            bottom: 15%;
+            bottom: 20%;
             left: 0;
             width: 100%;
             height: 2px;
@@ -441,9 +465,17 @@
                 font-size: 2rem;
             }
 
-            .truck-animation {
-                width: 80px;
-                height: 40px;
+            .truck {
+                width: 120px;
+                height: 60px;
+            }
+
+            .marker-pin {
+                font-size: 1.8rem;
+            }
+
+            .goods {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -451,14 +483,20 @@
 <body>
     <header>
         <div class="road-lines"></div>
-        <div class="truck-animation">
-            <div class="truck-body">
-                <div class="truck-cabin"></div>
-                <div class="truck-container"></div>
-                <div class="truck-wheel"></div>
-                <div class="truck-wheel"></div>
-            </div>
+        
+        <!-- Destination Marker -->
+        <div class="destination-marker">
+            <div class="marker-pin">📍</div>
+            <div class="marker-label">DESTINATION</div>
         </div>
+        
+        <!-- Truck Animation -->
+        <div class="truck-container">
+            <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg" alt="Delivery Truck" class="truck" style="display: none;">
+            <div class="truck">🚚</div>
+            <div class="goods">📦📦📦</div>
+        </div>
+        
         <div class="header-container">
             <div class="logo-section">
                 <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg" alt="AK Brands Marketing Logo" class="logo-img">
