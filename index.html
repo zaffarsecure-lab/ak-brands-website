@@ -113,17 +113,55 @@
             position: absolute;
             right: 0;
             top: 100%;
-            background: #2c3e50;
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.98) 0%, rgba(52, 73, 94, 0.98) 100%);
             min-width: 180px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.3);
             border-radius: 8px;
             margin-top: 0.5rem;
             overflow: hidden;
             z-index: 1001;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(26, 188, 156, 0.2);
+        }
+
+        .dropdown-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                transparent 0%, 
+                rgba(26, 188, 156, 0.1) 25%, 
+                transparent 50%, 
+                rgba(52, 152, 219, 0.1) 75%, 
+                transparent 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .dropdown-content.show {
             display: block;
+            animation: dropdownSlide 0.3s ease-out;
+        }
+
+        @keyframes dropdownSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .dropdown-content a {
@@ -131,13 +169,16 @@
             padding: 1rem 1.5rem;
             text-decoration: none;
             display: block;
-            transition: background 0.3s;
+            transition: all 0.3s;
             font-weight: 500;
+            position: relative;
+            z-index: 1;
         }
 
         .dropdown-content a:hover {
-            background: #1abc9c;
-            color: white;
+            background: rgba(26, 188, 156, 0.2);
+            color: #1abc9c;
+            padding-left: 2rem;
         }
 
         /* Animation Section */
@@ -147,6 +188,11 @@
             height: 140px;
             margin-top: 1rem;
             background: linear-gradient(to bottom, transparent 0%, transparent 75%, #34495e 75%, #2c3e50 80%, #34495e 80%, #34495e 100%);
+        }
+
+        /* Pause animations when dropdown is open */
+        .animation-section.paused * {
+            animation-play-state: paused !important;
         }
 
         /* Connection Line from AK to Supplier */
@@ -593,7 +639,7 @@
         </div>
 
         <!-- Animation Section Below Logo -->
-        <div class="animation-section">
+        <div class="animation-section" id="animationSection">
             <div class="road-lines"></div>
             
             <!-- Connection Line from AK to Supplier -->
@@ -700,17 +746,30 @@
 
     <script>
         function toggleMenu() {
-            document.getElementById('menuDropdown').classList.toggle('show');
+            const dropdown = document.getElementById('menuDropdown');
+            const animationSection = document.getElementById('animationSection');
+            
+            dropdown.classList.toggle('show');
+            
+            // Pause/resume animation based on dropdown state
+            if (dropdown.classList.contains('show')) {
+                animationSection.classList.add('paused');
+            } else {
+                animationSection.classList.remove('paused');
+            }
         }
 
         // Close dropdown when clicking outside
         window.onclick = function(event) {
             if (!event.target.matches('.menu-button')) {
-                var dropdowns = document.getElementsByClassName('dropdown-content');
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
+                const dropdowns = document.getElementsByClassName('dropdown-content');
+                const animationSection = document.getElementById('animationSection');
+                
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
                     if (openDropdown.classList.contains('show')) {
                         openDropdown.classList.remove('show');
+                        animationSection.classList.remove('paused');
                     }
                 }
             }
