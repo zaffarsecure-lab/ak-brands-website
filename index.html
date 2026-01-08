@@ -443,7 +443,7 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.4);
         }
 
-        /* Action Boxes - Eye-Catching */
+        /* Action Boxes - Eye-Catching with Updated Colors */
         .action-boxes {
             display: flex;
             justify-content: center;
@@ -485,32 +485,28 @@
             text-shadow: 0 4px 15px rgba(0,0,0,0.7);
             letter-spacing: 1px;
             text-transform: uppercase;
-            background: linear-gradient(45deg, #fff, #f0f0f0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
             position: relative;
         }
 
+        /* Buy - Bold Green */
         .action-box.buy .action-box-title {
-            background: linear-gradient(45deg, #3498db, #5dade2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #27ae60;
+            font-weight: 900;
+            text-shadow: 0 4px 15px rgba(39, 174, 96, 0.8);
         }
 
+        /* Sell - Bold Red */
         .action-box.sell .action-box-title {
-            background: linear-gradient(45deg, #1abc9c, #48c9b0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #e74c3c;
+            font-weight: 900;
+            text-shadow: 0 4px 15px rgba(231, 76, 60, 0.8);
         }
 
+        /* Live Auction - Bold Brown */
         .action-box.auction .action-box-title {
-            background: linear-gradient(45deg, #e74c3c, #ec7063);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #8B4513;
+            font-weight: 900;
+            text-shadow: 0 4px 15px rgba(139, 69, 19, 0.8);
         }
 
         .action-box:hover .action-box-icon {
@@ -621,11 +617,6 @@
             border-color: white;
             background: white;
             box-shadow: 0 0 15px rgba(255,255,255,0.3);
-        }
-
-        .form-group input[type="text"]#otherCategory {
-            margin-top: 0.5rem;
-            display: none;
         }
 
         .submit-btn {
@@ -848,6 +839,11 @@
             padding: 2rem;
         }
 
+        /* Hidden iframe for auto-sending WhatsApp */
+        #whatsappFrame {
+            display: none;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .animation-section {
@@ -1043,29 +1039,8 @@
                     <textarea name="address" required rows="3" placeholder="Enter your complete address"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Preferred Category *</label>
-                    <select name="category" required onchange="toggleOtherInput(this, 'buyOther')">
-                        <option value="">Select Category</option>
-                        <option value="Garments & Apparels">Garments & Apparels</option>
-                        <option value="Footwear">Footwear</option>
-                        <option value="Home Appliances">Home Appliances</option>
-                        <option value="Kitchen Appliances">Kitchen Appliances</option>
-                        <option value="Toyz">Toyz</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Mobile Accessories">Mobile Accessories</option>
-                        <option value="Hardware Items">Hardware Items</option>
-                        <option value="Sports Items">Sports Items</option>
-                        <option value="FMCG">FMCG</option>
-                        <option value="Groceries">Groceries</option>
-                        <option value="Crockeries">Crockeries</option>
-                        <option value="Cosmetics">Cosmetics</option>
-                        <option value="Beauty Items">Beauty Items</option>
-                        <option value="Home Decore">Home Decore</option>
-                        <option value="Furniture">Furniture</option>
-                        <option value="Fancy Items">Fancy Items</option>
-                        <option value="other">Other (Please Specify)</option>
-                    </select>
-                    <input type="text" id="buyOther" name="otherCategory" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
+                    <label>Category *</label>
+                    <input type="text" name="category" required placeholder="Enter product category (e.g., Electronics, Garments, etc.)">
                 </div>
                 <button type="submit" class="submit-btn">Submit Request</button>
             </form>
@@ -1093,29 +1068,8 @@
                     <textarea name="address" required rows="3" placeholder="Enter your complete address"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Stock Category *</label>
-                    <select name="category" required onchange="toggleOtherInput(this, 'sellOther')">
-                        <option value="">Select Category</option>
-                        <option value="Garments & Apparels">Garments & Apparels</option>
-                        <option value="Footwear">Footwear</option>
-                        <option value="Home Appliances">Home Appliances</option>
-                        <option value="Kitchen Appliances">Kitchen Appliances</option>
-                        <option value="Toyz">Toyz</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Mobile Accessories">Mobile Accessories</option>
-                        <option value="Hardware Items">Hardware Items</option>
-                        <option value="Sports Items">Sports Items</option>
-                        <option value="FMCG">FMCG</option>
-                        <option value="Groceries">Groceries</option>
-                        <option value="Crockeries">Crockeries</option>
-                        <option value="Cosmetics">Cosmetics</option>
-                        <option value="Beauty Items">Beauty Items</option>
-                        <option value="Home Decore">Home Decore</option>
-                        <option value="Furniture">Furniture</option>
-                        <option value="Fancy Items">Fancy Items</option>
-                        <option value="other">Other (Please Specify)</option>
-                    </select>
-                    <input type="text" id="sellOther" name="otherCategory" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
+                    <label>Category *</label>
+                    <input type="text" name="category" required placeholder="Enter product category (e.g., Electronics, Garments, etc.)">
                 </div>
                 <button type="submit" class="submit-btn">Submit Request</button>
             </form>
@@ -1143,29 +1097,8 @@
                     <textarea name="address" required rows="3" placeholder="Enter your complete address"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Interested Category *</label>
-                    <select name="category" required onchange="toggleOtherInput(this, 'auctionOther')">
-                        <option value="">Select Category</option>
-                        <option value="Garments & Apparels">Garments & Apparels</option>
-                        <option value="Footwear">Footwear</option>
-                        <option value="Home Appliances">Home Appliances</option>
-                        <option value="Kitchen Appliances">Kitchen Appliances</option>
-                        <option value="Toyz">Toyz</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Mobile Accessories">Mobile Accessories</option>
-                        <option value="Hardware Items">Hardware Items</option>
-                        <option value="Sports Items">Sports Items</option>
-                        <option value="FMCG">FMCG</option>
-                        <option value="Groceries">Groceries</option>
-                        <option value="Crockeries">Crockeries</option>
-                        <option value="Cosmetics">Cosmetics</option>
-                        <option value="Beauty Items">Beauty Items</option>
-                        <option value="Home Decore">Home Decore</option>
-                        <option value="Furniture">Furniture</option>
-                        <option value="Fancy Items">Fancy Items</option>
-                        <option value="other">Other (Please Specify)</option>
-                    </select>
-                    <input type="text" id="auctionOther" name="otherCategory" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
+                    <label>Category *</label>
+                    <input type="text" name="category" required placeholder="Enter product category (e.g., Electronics, Garments, etc.)">
                 </div>
                 <button type="submit" class="submit-btn">Join Auction</button>
             </form>
@@ -1186,11 +1119,14 @@
                 <p style="margin: 0; opacity: 0.9;">Get 2% OFF on your first order!</p>
             </div>
             <p class="success-message">
-                We've sent you a WhatsApp message with our community link for daily stock lot updates, exclusive deals, and instant support!
+                A welcome message with our WhatsApp community link has been sent to your number automatically. Check your WhatsApp for daily stock lot updates!
             </p>
             <button class="close-success-btn" onclick="closeSuccessModal()">Continue</button>
         </div>
     </div>
+
+    <!-- Hidden iframe for auto-sending WhatsApp messages -->
+    <iframe id="whatsappFrame" name="whatsappFrame"></iframe>
 
     <section id="features" class="features">
         <div class="container">
@@ -1294,18 +1230,6 @@
             document.body.style.overflow = 'auto';
         }
 
-        function toggleOtherInput(selectElement, inputId) {
-            const otherInput = document.getElementById(inputId);
-            if (selectElement.value === 'other') {
-                otherInput.style.display = 'block';
-                otherInput.required = true;
-            } else {
-                otherInput.style.display = 'none';
-                otherInput.required = false;
-                otherInput.value = '';
-            }
-        }
-
         // Function to normalize phone number
         function normalizePhoneNumber(phone) {
             // Remove all non-digit characters
@@ -1329,6 +1253,21 @@
             return cleaned;
         }
 
+        // Function to send WhatsApp message using API
+        function sendWhatsAppMessage(phone, message) {
+            // Use WhatsApp API link - this will work on both mobile and desktop
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+            
+            // Open in hidden iframe to trigger WhatsApp without showing popup
+            const iframe = document.getElementById('whatsappFrame');
+            iframe.src = whatsappUrl;
+            
+            // Also try to open in new window as backup (will work better on mobile)
+            setTimeout(() => {
+                window.open(whatsappUrl, '_blank');
+            }, 100);
+        }
+
         function handleSubmit(event, type) {
             event.preventDefault();
             
@@ -1338,11 +1277,7 @@
             const name = formData.get('name');
             const phone = formData.get('phone');
             const address = formData.get('address');
-            let category = formData.get('category');
-            
-            if (category === 'other') {
-                category = formData.get('otherCategory');
-            }
+            const category = formData.get('category');
             
             // Generate unique discount code
             const discountCode = 'AK' + codeCounter;
@@ -1384,25 +1319,16 @@
                 `*Discount Code:* ${discountCode}\n\n` +
                 `_Registered via AK Brands Marketing Website_`;
             
-            // WhatsApp URLs
-            const userWhatsAppUrl = `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(userMessage)}`;
-            const adminWhatsAppUrl = `https://wa.me/918660502217?text=${encodeURIComponent(adminMessage)}`;
+            // Send message to customer automatically
+            sendWhatsAppMessage(normalizedPhone, userMessage);
             
-            // Open user WhatsApp first (to send community link to customer)
-            window.open(userWhatsAppUrl, '_blank');
-            
-            // Open admin WhatsApp after 2 seconds (to notify admin)
+            // Send message to admin after 2 seconds
             setTimeout(() => {
-                window.open(adminWhatsAppUrl, '_blank');
+                sendWhatsAppMessage('918660502217', adminMessage);
             }, 2000);
             
             // Reset form
             form.reset();
-            const otherInputs = document.querySelectorAll('input[id$="Other"]');
-            otherInputs.forEach(input => {
-                input.style.display = 'none';
-                input.required = false;
-            });
         }
 
         function closeSuccessModal() {
