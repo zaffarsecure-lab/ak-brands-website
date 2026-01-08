@@ -529,6 +529,7 @@
             height: 100%;
             background-color: rgba(0,0,0,0.7);
             backdrop-filter: blur(5px);
+            overflow-y: auto;
         }
 
         .modal.show {
@@ -536,6 +537,7 @@
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.3s ease;
+            padding: 2rem 0;
         }
 
         @keyframes fadeIn {
@@ -552,6 +554,7 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             animation: slideUp 0.3s ease;
             position: relative;
+            margin: auto;
         }
 
         @keyframes slideUp {
@@ -618,6 +621,11 @@
             border-color: white;
             background: white;
             box-shadow: 0 0 15px rgba(255,255,255,0.3);
+        }
+
+        .form-group input[type="text"]#otherCategory {
+            margin-top: 0.5rem;
+            display: none;
         }
 
         .submit-btn {
@@ -932,16 +940,28 @@
                 </div>
                 <div class="form-group">
                     <label>Preferred Category *</label>
-                    <select required>
+                    <select required onchange="toggleOtherInput(this, 'buyOther')">
                         <option value="">Select Category</option>
+                        <option value="garments">Garments & Apparels</option>
+                        <option value="footwear">Footwear</option>
+                        <option value="home-appliances">Home Appliances</option>
+                        <option value="kitchen-appliances">Kitchen Appliances</option>
+                        <option value="toyz">Toyz</option>
                         <option value="electronics">Electronics</option>
-                        <option value="clothing">Clothing & Apparel</option>
-                        <option value="home">Home & Kitchen</option>
-                        <option value="toys">Toys & Games</option>
-                        <option value="sports">Sports & Fitness</option>
-                        <option value="beauty">Beauty & Personal Care</option>
-                        <option value="other">Other</option>
+                        <option value="mobile-accessories">Mobile Accessories</option>
+                        <option value="hardware">Hardware Items</option>
+                        <option value="sports">Sports Items</option>
+                        <option value="fmcg">FMCG</option>
+                        <option value="groceries">Groceries</option>
+                        <option value="crockeries">Crockeries</option>
+                        <option value="cosmetics">Cosmetics</option>
+                        <option value="beauty">Beauty Items</option>
+                        <option value="home-decore">Home Decore</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="fancy">Fancy Items</option>
+                        <option value="other">Other (Please Specify)</option>
                     </select>
+                    <input type="text" id="buyOther" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
                 </div>
                 <button type="submit" class="submit-btn">Submit Request</button>
             </form>
@@ -970,16 +990,28 @@
                 </div>
                 <div class="form-group">
                     <label>Stock Category *</label>
-                    <select required>
+                    <select required onchange="toggleOtherInput(this, 'sellOther')">
                         <option value="">Select Category</option>
+                        <option value="garments">Garments & Apparels</option>
+                        <option value="footwear">Footwear</option>
+                        <option value="home-appliances">Home Appliances</option>
+                        <option value="kitchen-appliances">Kitchen Appliances</option>
+                        <option value="toyz">Toyz</option>
                         <option value="electronics">Electronics</option>
-                        <option value="clothing">Clothing & Apparel</option>
-                        <option value="home">Home & Kitchen</option>
-                        <option value="toys">Toys & Games</option>
-                        <option value="sports">Sports & Fitness</option>
-                        <option value="beauty">Beauty & Personal Care</option>
-                        <option value="other">Other</option>
+                        <option value="mobile-accessories">Mobile Accessories</option>
+                        <option value="hardware">Hardware Items</option>
+                        <option value="sports">Sports Items</option>
+                        <option value="fmcg">FMCG</option>
+                        <option value="groceries">Groceries</option>
+                        <option value="crockeries">Crockeries</option>
+                        <option value="cosmetics">Cosmetics</option>
+                        <option value="beauty">Beauty Items</option>
+                        <option value="home-decore">Home Decore</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="fancy">Fancy Items</option>
+                        <option value="other">Other (Please Specify)</option>
                     </select>
+                    <input type="text" id="sellOther" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
                 </div>
                 <button type="submit" class="submit-btn">Submit Request</button>
             </form>
@@ -1008,16 +1040,28 @@
                 </div>
                 <div class="form-group">
                     <label>Interested Category *</label>
-                    <select required>
+                    <select required onchange="toggleOtherInput(this, 'auctionOther')">
                         <option value="">Select Category</option>
+                        <option value="garments">Garments & Apparels</option>
+                        <option value="footwear">Footwear</option>
+                        <option value="home-appliances">Home Appliances</option>
+                        <option value="kitchen-appliances">Kitchen Appliances</option>
+                        <option value="toyz">Toyz</option>
                         <option value="electronics">Electronics</option>
-                        <option value="clothing">Clothing & Apparel</option>
-                        <option value="home">Home & Kitchen</option>
-                        <option value="toys">Toys & Games</option>
-                        <option value="sports">Sports & Fitness</option>
-                        <option value="beauty">Beauty & Personal Care</option>
-                        <option value="other">Other</option>
+                        <option value="mobile-accessories">Mobile Accessories</option>
+                        <option value="hardware">Hardware Items</option>
+                        <option value="sports">Sports Items</option>
+                        <option value="fmcg">FMCG</option>
+                        <option value="groceries">Groceries</option>
+                        <option value="crockeries">Crockeries</option>
+                        <option value="cosmetics">Cosmetics</option>
+                        <option value="beauty">Beauty Items</option>
+                        <option value="home-decore">Home Decore</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="fancy">Fancy Items</option>
+                        <option value="other">Other (Please Specify)</option>
                     </select>
+                    <input type="text" id="auctionOther" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
                 </div>
                 <button type="submit" class="submit-btn">Join Auction</button>
             </form>
@@ -1126,11 +1170,29 @@
             document.body.style.overflow = 'auto';
         }
 
+        function toggleOtherInput(selectElement, inputId) {
+            const otherInput = document.getElementById(inputId);
+            if (selectElement.value === 'other') {
+                otherInput.style.display = 'block';
+                otherInput.required = true;
+            } else {
+                otherInput.style.display = 'none';
+                otherInput.required = false;
+                otherInput.value = '';
+            }
+        }
+
         function handleSubmit(event, type) {
             event.preventDefault();
             alert('Thank you! Your ' + type + ' request has been submitted. We will contact you soon via WhatsApp.');
             closeModal(type);
             event.target.reset();
+            // Hide any visible "other" input fields
+            const otherInputs = document.querySelectorAll('input[id$="Other"]');
+            otherInputs.forEach(input => {
+                input.style.display = 'none';
+                input.required = false;
+            });
         }
 
         // Close modal when clicking outside
