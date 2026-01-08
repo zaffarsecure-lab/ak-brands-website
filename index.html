@@ -394,12 +394,38 @@
             z-index: 5;
         }
 
-        /* Hero Section */
+        /* Hero Section with Warehouse Background */
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
             color: white;
             padding: 6rem 2rem;
             text-align: center;
+            background-image: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .hero h1 {
@@ -407,12 +433,14 @@
             margin-bottom: 1rem;
             font-weight: 700;
             font-family: 'Inter', sans-serif;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .hero p {
             font-size: 1.3rem;
             margin-bottom: 2rem;
             opacity: 0.95;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.2);
         }
 
         .cta-button {
@@ -579,6 +607,10 @@
                 font-size: 1.5rem;
             }
 
+            .hero {
+                background-attachment: scroll;
+            }
+
             .hero h1 {
                 font-size: 2rem;
             }
@@ -657,9 +689,11 @@
     </header>
 
     <section id="home" class="hero">
-        <h1>India's Leading B2B Liquidation Platform</h1>
-        <p>Trusted partner for buying and selling liquidation stock lots</p>
-        <a href="#contact" class="cta-button">Get Started Today</a>
+        <div class="hero-content">
+            <h1>India's Leading B2B Liquidation Platform</h1>
+            <p>Trusted partner for buying and selling liquidation stock lots</p>
+            <a href="#contact" class="cta-button">Get Started Today</a>
+        </div>
     </section>
 
     <section id="features" class="features">
