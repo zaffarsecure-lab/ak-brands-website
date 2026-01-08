@@ -1036,7 +1036,7 @@
                 </div>
                 <div class="form-group">
                     <label>WhatsApp Number *</label>
-                    <input type="tel" name="phone" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
+                    <input type="tel" name="phone" required placeholder="Enter 10 digit mobile number" pattern="[0-9]{10}">
                 </div>
                 <div class="form-group">
                     <label>Address *</label>
@@ -1086,7 +1086,7 @@
                 </div>
                 <div class="form-group">
                     <label>WhatsApp Number *</label>
-                    <input type="tel" name="phone" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
+                    <input type="tel" name="phone" required placeholder="Enter 10 digit mobile number" pattern="[0-9]{10}">
                 </div>
                 <div class="form-group">
                     <label>Address *</label>
@@ -1136,7 +1136,7 @@
                 </div>
                 <div class="form-group">
                     <label>WhatsApp Number *</label>
-                    <input type="tel" name="phone" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
+                    <input type="tel" name="phone" required placeholder="Enter 10 digit mobile number" pattern="[0-9]{10}">
                 </div>
                 <div class="form-group">
                     <label>Address *</label>
@@ -1306,6 +1306,29 @@
             }
         }
 
+        // Function to normalize phone number
+        function normalizePhoneNumber(phone) {
+            // Remove all non-digit characters
+            let cleaned = phone.replace(/\D/g, '');
+            
+            // If starts with 91, remove it (we'll add it back)
+            if (cleaned.startsWith('91') && cleaned.length > 10) {
+                cleaned = cleaned.substring(2);
+            }
+            
+            // If starts with 0, remove it
+            if (cleaned.startsWith('0')) {
+                cleaned = cleaned.substring(1);
+            }
+            
+            // Should be 10 digits now
+            if (cleaned.length === 10) {
+                return '91' + cleaned; // Add India country code
+            }
+            
+            return cleaned;
+        }
+
         function handleSubmit(event, type) {
             event.preventDefault();
             
@@ -1333,8 +1356,8 @@
             // Close form modal
             closeModal(type);
             
-            // Clean phone number (remove spaces, dashes, etc.)
-            const cleanPhone = phone.replace(/[\s-]/g, '');
+            // Normalize phone number with country code
+            const normalizedPhone = normalizePhoneNumber(phone);
             
             // Message to send to USER with community link
             const userMessage = `🎉 *Welcome to AK Brands Marketing©*\n\n` +
@@ -1354,7 +1377,7 @@
             // Message to send to ADMIN
             const adminMessage = `🎉 *New Customer Registration*\n\n` +
                 `*Name:* ${name}\n` +
-                `*Phone:* ${phone}\n` +
+                `*Phone:* +${normalizedPhone}\n` +
                 `*Address:* ${address}\n` +
                 `*Category:* ${category}\n` +
                 `*Type:* ${type.toUpperCase()}\n` +
@@ -1362,18 +1385,16 @@
                 `_Registered via AK Brands Marketing Website_`;
             
             // WhatsApp URLs
-            const userWhatsAppUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(userMessage)}`;
+            const userWhatsAppUrl = `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(userMessage)}`;
             const adminWhatsAppUrl = `https://wa.me/918660502217?text=${encodeURIComponent(adminMessage)}`;
             
-            // Open user WhatsApp (to send community link)
-            setTimeout(() => {
-                window.open(userWhatsAppUrl, '_blank');
-            }, 500);
+            // Open user WhatsApp first (to send community link to customer)
+            window.open(userWhatsAppUrl, '_blank');
             
-            // Open admin WhatsApp (to notify about new registration)
+            // Open admin WhatsApp after 2 seconds (to notify admin)
             setTimeout(() => {
                 window.open(adminWhatsAppUrl, '_blank');
-            }, 1500);
+            }, 2000);
             
             // Reset form
             form.reset();
