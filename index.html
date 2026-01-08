@@ -649,6 +649,116 @@
             box-shadow: 0 5px 20px rgba(255,255,255,0.4);
         }
 
+        /* Success Message Modal */
+        .success-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+        }
+
+        .success-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success-content {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            animation: slideUp 0.5s ease;
+            text-align: center;
+            color: white;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: bounceIn 0.6s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .success-message {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            opacity: 0.95;
+        }
+
+        .discount-box {
+            background: rgba(255,255,255,0.2);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border: 2px dashed white;
+        }
+
+        .discount-code {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin: 0.5rem 0;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .whatsapp-btn {
+            display: inline-block;
+            background: #25D366;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .close-success-btn {
+            background: white;
+            color: #1abc9c;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+
+        .close-success-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 15px rgba(255,255,255,0.3);
+        }
+
         /* Features Section */
         .features {
             padding: 4rem 2rem;
@@ -827,6 +937,18 @@
             .modal-content {
                 padding: 1.5rem;
             }
+
+            .success-content {
+                padding: 2rem;
+            }
+
+            .success-title {
+                font-size: 2rem;
+            }
+
+            .discount-code {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -928,40 +1050,40 @@
             <form onsubmit="handleSubmit(event, 'buy')">
                 <div class="form-group">
                     <label>Name *</label>
-                    <input type="text" required placeholder="Enter your full name">
+                    <input type="text" name="name" required placeholder="Enter your full name">
                 </div>
                 <div class="form-group">
                     <label>WhatsApp Number *</label>
-                    <input type="tel" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
+                    <input type="tel" name="phone" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
                 </div>
                 <div class="form-group">
                     <label>Address *</label>
-                    <textarea required rows="3" placeholder="Enter your complete address"></textarea>
+                    <textarea name="address" required rows="3" placeholder="Enter your complete address"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Preferred Category *</label>
-                    <select required onchange="toggleOtherInput(this, 'buyOther')">
+                    <select name="category" required onchange="toggleOtherInput(this, 'buyOther')">
                         <option value="">Select Category</option>
-                        <option value="garments">Garments & Apparels</option>
-                        <option value="footwear">Footwear</option>
-                        <option value="home-appliances">Home Appliances</option>
-                        <option value="kitchen-appliances">Kitchen Appliances</option>
-                        <option value="toyz">Toyz</option>
-                        <option value="electronics">Electronics</option>
-                        <option value="mobile-accessories">Mobile Accessories</option>
-                        <option value="hardware">Hardware Items</option>
-                        <option value="sports">Sports Items</option>
-                        <option value="fmcg">FMCG</option>
-                        <option value="groceries">Groceries</option>
-                        <option value="crockeries">Crockeries</option>
-                        <option value="cosmetics">Cosmetics</option>
-                        <option value="beauty">Beauty Items</option>
-                        <option value="home-decore">Home Decore</option>
-                        <option value="furniture">Furniture</option>
-                        <option value="fancy">Fancy Items</option>
+                        <option value="Garments & Apparels">Garments & Apparels</option>
+                        <option value="Footwear">Footwear</option>
+                        <option value="Home Appliances">Home Appliances</option>
+                        <option value="Kitchen Appliances">Kitchen Appliances</option>
+                        <option value="Toyz">Toyz</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Mobile Accessories">Mobile Accessories</option>
+                        <option value="Hardware Items">Hardware Items</option>
+                        <option value="Sports Items">Sports Items</option>
+                        <option value="FMCG">FMCG</option>
+                        <option value="Groceries">Groceries</option>
+                        <option value="Crockeries">Crockeries</option>
+                        <option value="Cosmetics">Cosmetics</option>
+                        <option value="Beauty Items">Beauty Items</option>
+                        <option value="Home Decore">Home Decore</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Fancy Items">Fancy Items</option>
                         <option value="other">Other (Please Specify)</option>
                     </select>
-                    <input type="text" id="buyOther" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
+                    <input type="text" id="buyOther" name="otherCategory" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
                 </div>
                 <button type="submit" class="submit-btn">Submit Request</button>
             </form>
@@ -978,40 +1100,40 @@
             <form onsubmit="handleSubmit(event, 'sell')">
                 <div class="form-group">
                     <label>Name *</label>
-                    <input type="text" required placeholder="Enter your full name">
+                    <input type="text" name="name" required placeholder="Enter your full name">
                 </div>
                 <div class="form-group">
                     <label>WhatsApp Number *</label>
-                    <input type="tel" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
+                    <input type="tel" name="phone" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
                 </div>
                 <div class="form-group">
                     <label>Address *</label>
-                    <textarea required rows="3" placeholder="Enter your complete address"></textarea>
+                    <textarea name="address" required rows="3" placeholder="Enter your complete address"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Stock Category *</label>
-                    <select required onchange="toggleOtherInput(this, 'sellOther')">
+                    <select name="category" required onchange="toggleOtherInput(this, 'sellOther')">
                         <option value="">Select Category</option>
-                        <option value="garments">Garments & Apparels</option>
-                        <option value="footwear">Footwear</option>
-                        <option value="home-appliances">Home Appliances</option>
-                        <option value="kitchen-appliances">Kitchen Appliances</option>
-                        <option value="toyz">Toyz</option>
-                        <option value="electronics">Electronics</option>
-                        <option value="mobile-accessories">Mobile Accessories</option>
-                        <option value="hardware">Hardware Items</option>
-                        <option value="sports">Sports Items</option>
-                        <option value="fmcg">FMCG</option>
-                        <option value="groceries">Groceries</option>
-                        <option value="crockeries">Crockeries</option>
-                        <option value="cosmetics">Cosmetics</option>
-                        <option value="beauty">Beauty Items</option>
-                        <option value="home-decore">Home Decore</option>
-                        <option value="furniture">Furniture</option>
-                        <option value="fancy">Fancy Items</option>
+                        <option value="Garments & Apparels">Garments & Apparels</option>
+                        <option value="Footwear">Footwear</option>
+                        <option value="Home Appliances">Home Appliances</option>
+                        <option value="Kitchen Appliances">Kitchen Appliances</option>
+                        <option value="Toyz">Toyz</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Mobile Accessories">Mobile Accessories</option>
+                        <option value="Hardware Items">Hardware Items</option>
+                        <option value="Sports Items">Sports Items</option>
+                        <option value="FMCG">FMCG</option>
+                        <option value="Groceries">Groceries</option>
+                        <option value="Crockeries">Crockeries</option>
+                        <option value="Cosmetics">Cosmetics</option>
+                        <option value="Beauty Items">Beauty Items</option>
+                        <option value="Home Decore">Home Decore</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Fancy Items">Fancy Items</option>
                         <option value="other">Other (Please Specify)</option>
                     </select>
-                    <input type="text" id="sellOther" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
+                    <input type="text" id="sellOther" name="otherCategory" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
                 </div>
                 <button type="submit" class="submit-btn">Submit Request</button>
             </form>
@@ -1028,43 +1150,67 @@
             <form onsubmit="handleSubmit(event, 'auction')">
                 <div class="form-group">
                     <label>Name *</label>
-                    <input type="text" required placeholder="Enter your full name">
+                    <input type="text" name="name" required placeholder="Enter your full name">
                 </div>
                 <div class="form-group">
                     <label>WhatsApp Number *</label>
-                    <input type="tel" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
+                    <input type="tel" name="phone" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
                 </div>
                 <div class="form-group">
                     <label>Address *</label>
-                    <textarea required rows="3" placeholder="Enter your complete address"></textarea>
+                    <textarea name="address" required rows="3" placeholder="Enter your complete address"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Interested Category *</label>
-                    <select required onchange="toggleOtherInput(this, 'auctionOther')">
+                    <select name="category" required onchange="toggleOtherInput(this, 'auctionOther')">
                         <option value="">Select Category</option>
-                        <option value="garments">Garments & Apparels</option>
-                        <option value="footwear">Footwear</option>
-                        <option value="home-appliances">Home Appliances</option>
-                        <option value="kitchen-appliances">Kitchen Appliances</option>
-                        <option value="toyz">Toyz</option>
-                        <option value="electronics">Electronics</option>
-                        <option value="mobile-accessories">Mobile Accessories</option>
-                        <option value="hardware">Hardware Items</option>
-                        <option value="sports">Sports Items</option>
-                        <option value="fmcg">FMCG</option>
-                        <option value="groceries">Groceries</option>
-                        <option value="crockeries">Crockeries</option>
-                        <option value="cosmetics">Cosmetics</option>
-                        <option value="beauty">Beauty Items</option>
-                        <option value="home-decore">Home Decore</option>
-                        <option value="furniture">Furniture</option>
-                        <option value="fancy">Fancy Items</option>
+                        <option value="Garments & Apparels">Garments & Apparels</option>
+                        <option value="Footwear">Footwear</option>
+                        <option value="Home Appliances">Home Appliances</option>
+                        <option value="Kitchen Appliances">Kitchen Appliances</option>
+                        <option value="Toyz">Toyz</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Mobile Accessories">Mobile Accessories</option>
+                        <option value="Hardware Items">Hardware Items</option>
+                        <option value="Sports Items">Sports Items</option>
+                        <option value="FMCG">FMCG</option>
+                        <option value="Groceries">Groceries</option>
+                        <option value="Crockeries">Crockeries</option>
+                        <option value="Cosmetics">Cosmetics</option>
+                        <option value="Beauty Items">Beauty Items</option>
+                        <option value="Home Decore">Home Decore</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Fancy Items">Fancy Items</option>
                         <option value="other">Other (Please Specify)</option>
                     </select>
-                    <input type="text" id="auctionOther" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
+                    <input type="text" id="auctionOther" name="otherCategory" placeholder="Please specify category" style="display:none; margin-top:0.5rem;">
                 </div>
                 <button type="submit" class="submit-btn">Join Auction</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="success-modal">
+        <div class="success-content">
+            <div class="success-icon">🎉</div>
+            <h2 class="success-title">Welcome to AK Brands Marketing©</h2>
+            <p class="success-message">
+                Thank you for choosing us as your trusted B2B liquidation partner! We're excited to have you on board and look forward to serving your business needs with excellence.
+            </p>
+            <div class="discount-box">
+                <p style="margin: 0; font-size: 1.1rem; font-weight: 600;">🎁 EXCLUSIVE FIRST ORDER OFFER</p>
+                <div class="discount-code" id="discountCode">AK1</div>
+                <p style="margin: 0; opacity: 0.9;">Get 2% OFF on your first order!</p>
+            </div>
+            <p class="success-message">
+                Join our WhatsApp community for daily stock lot updates, exclusive deals, and instant support from our team.
+            </p>
+            <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" class="whatsapp-btn">
+                📱 Join WhatsApp Community
+            </a>
+            <br>
+            <button class="close-success-btn" onclick="closeSuccessModal()">Continue</button>
         </div>
     </div>
 
@@ -1127,13 +1273,15 @@
     </footer>
 
     <script>
+        // Counter for unique discount codes
+        let codeCounter = parseInt(localStorage.getItem('akCodeCounter') || '1');
+
         function toggleMenu() {
             const dropdown = document.getElementById('menuDropdown');
             const animationSection = document.getElementById('animationSection');
             
             dropdown.classList.toggle('show');
             
-            // Pause/resume animation based on dropdown state
             if (dropdown.classList.contains('show')) {
                 animationSection.classList.add('paused');
             } else {
@@ -1141,7 +1289,6 @@
             }
         }
 
-        // Close dropdown when clicking outside
         window.onclick = function(event) {
             if (!event.target.matches('.menu-button')) {
                 const dropdowns = document.getElementsByClassName('dropdown-content');
@@ -1157,7 +1304,6 @@
             }
         }
 
-        // Modal Functions
         function openModal(type) {
             const modal = document.getElementById(type + 'Modal');
             modal.classList.add('show');
@@ -1184,10 +1330,50 @@
 
         function handleSubmit(event, type) {
             event.preventDefault();
-            alert('Thank you! Your ' + type + ' request has been submitted. We will contact you soon via WhatsApp.');
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const name = formData.get('name');
+            const phone = formData.get('phone');
+            const address = formData.get('address');
+            let category = formData.get('category');
+            
+            if (category === 'other') {
+                category = formData.get('otherCategory');
+            }
+            
+            // Generate unique discount code
+            const discountCode = 'AK' + codeCounter;
+            codeCounter++;
+            localStorage.setItem('akCodeCounter', codeCounter.toString());
+            
+            // Display success modal with discount code
+            document.getElementById('discountCode').textContent = discountCode;
+            document.getElementById('successModal').classList.add('show');
+            
+            // Close form modal
             closeModal(type);
-            event.target.reset();
-            // Hide any visible "other" input fields
+            
+            // Send WhatsApp message to admin
+            const adminMessage = `🎉 *New Customer Registration*\n\n` +
+                `*Name:* ${name}\n` +
+                `*Phone:* ${phone}\n` +
+                `*Address:* ${address}\n` +
+                `*Category:* ${category}\n` +
+                `*Type:* ${type.toUpperCase()}\n` +
+                `*Discount Code:* ${discountCode}\n\n` +
+                `_Registered via AK Brands Marketing Website_`;
+            
+            const adminWhatsAppUrl = `https://wa.me/918660502217?text=${encodeURIComponent(adminMessage)}`;
+            
+            // Open admin WhatsApp in new tab (silent - user won't see this)
+            setTimeout(() => {
+                window.open(adminWhatsAppUrl, '_blank');
+            }, 1000);
+            
+            // Reset form
+            form.reset();
             const otherInputs = document.querySelectorAll('input[id$="Other"]');
             otherInputs.forEach(input => {
                 input.style.display = 'none';
@@ -1195,9 +1381,17 @@
             });
         }
 
-        // Close modal when clicking outside
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
         window.addEventListener('click', function(event) {
             if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+            if (event.target.classList.contains('success-modal')) {
                 event.target.classList.remove('show');
                 document.body.style.overflow = 'auto';
             }
