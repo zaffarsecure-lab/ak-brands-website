@@ -443,7 +443,7 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.4);
         }
 
-        /* Action Boxes - Side by Side */
+        /* Action Boxes - Eye-Catching */
         .action-boxes {
             display: flex;
             justify-content: center;
@@ -454,34 +454,191 @@
 
         .action-box {
             text-decoration: none;
-            transition: all 0.3s ease;
             cursor: pointer;
             text-align: center;
+            position: relative;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .action-box:hover {
-            transform: translateY(-5px);
+            animation: none;
+            transform: translateY(-10px) scale(1.1);
         }
 
         .action-box-icon {
-            font-size: 4rem;
+            font-size: 5rem;
             margin-bottom: 0.5rem;
             display: block;
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+            transition: all 0.3s;
         }
 
         .action-box-title {
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 2rem;
+            font-weight: 900;
             font-family: 'Inter', sans-serif;
-            color: white;
-            text-shadow: 0 3px 10px rgba(0,0,0,0.5);
-            letter-spacing: 0.5px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.7);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .action-box.buy .action-box-title {
+            background: linear-gradient(45deg, #3498db, #5dade2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .action-box.sell .action-box-title {
+            background: linear-gradient(45deg, #1abc9c, #48c9b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .action-box.auction .action-box-title {
+            background: linear-gradient(45deg, #e74c3c, #ec7063);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .action-box:hover .action-box-icon {
-            transform: scale(1.1);
-            filter: drop-shadow(0 6px 15px rgba(0,0,0,0.4));
+            transform: rotate(10deg) scale(1.2);
+            filter: drop-shadow(0 8px 25px rgba(255,255,255,0.3));
+        }
+
+        /* Modal/Popup Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: white;
+            background: white;
+            box-shadow: 0 0 15px rgba(255,255,255,0.3);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255,255,255,0.4);
         }
 
         /* Features Section */
@@ -648,15 +805,19 @@
             }
 
             .action-box-icon {
-                font-size: 3rem;
+                font-size: 3.5rem;
             }
 
             .action-box-title {
-                font-size: 1.4rem;
+                font-size: 1.5rem;
             }
 
             .section-title {
                 font-size: 2rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
             }
         }
     </style>
@@ -729,25 +890,139 @@
             <h1>India's Leading B2B Liquidation Platform</h1>
             <p>Trusted partner for buying and selling liquidation stock lots</p>
             
-            <!-- Action Boxes - Side by Side -->
+            <!-- Action Boxes - Eye-Catching -->
             <div class="action-boxes">
-                <a href="#contact" class="action-box">
+                <div class="action-box buy" onclick="openModal('buy')">
                     <span class="action-box-icon">🛒</span>
                     <div class="action-box-title">Buy</div>
-                </a>
+                </div>
                 
-                <a href="#contact" class="action-box">
+                <div class="action-box sell" onclick="openModal('sell')">
                     <span class="action-box-icon">💼</span>
                     <div class="action-box-title">Sell</div>
-                </a>
+                </div>
                 
-                <a href="#contact" class="action-box">
+                <div class="action-box auction" onclick="openModal('auction')">
                     <span class="action-box-icon">🔨</span>
                     <div class="action-box-title">Live Auction</div>
-                </a>
+                </div>
             </div>
         </div>
     </section>
+
+    <!-- Buy Modal -->
+    <div id="buyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🛒 Buy Stock Lots</h2>
+                <button class="close-btn" onclick="closeModal('buy')">&times;</button>
+            </div>
+            <form onsubmit="handleSubmit(event, 'buy')">
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp Number *</label>
+                    <input type="tel" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
+                </div>
+                <div class="form-group">
+                    <label>Address *</label>
+                    <textarea required rows="3" placeholder="Enter your complete address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Preferred Category *</label>
+                    <select required>
+                        <option value="">Select Category</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing & Apparel</option>
+                        <option value="home">Home & Kitchen</option>
+                        <option value="toys">Toys & Games</option>
+                        <option value="sports">Sports & Fitness</option>
+                        <option value="beauty">Beauty & Personal Care</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sell Modal -->
+    <div id="sellModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">💼 Sell Your Stock</h2>
+                <button class="close-btn" onclick="closeModal('sell')">&times;</button>
+            </div>
+            <form onsubmit="handleSubmit(event, 'sell')">
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp Number *</label>
+                    <input type="tel" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
+                </div>
+                <div class="form-group">
+                    <label>Address *</label>
+                    <textarea required rows="3" placeholder="Enter your complete address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Stock Category *</label>
+                    <select required>
+                        <option value="">Select Category</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing & Apparel</option>
+                        <option value="home">Home & Kitchen</option>
+                        <option value="toys">Toys & Games</option>
+                        <option value="sports">Sports & Fitness</option>
+                        <option value="beauty">Beauty & Personal Care</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Auction Modal -->
+    <div id="auctionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🔨 Live Auction</h2>
+                <button class="close-btn" onclick="closeModal('auction')">&times;</button>
+            </div>
+            <form onsubmit="handleSubmit(event, 'auction')">
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp Number *</label>
+                    <input type="tel" required placeholder="+91 XXXXX XXXXX" pattern="[0-9+\s-]+">
+                </div>
+                <div class="form-group">
+                    <label>Address *</label>
+                    <textarea required rows="3" placeholder="Enter your complete address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Interested Category *</label>
+                    <select required>
+                        <option value="">Select Category</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing & Apparel</option>
+                        <option value="home">Home & Kitchen</option>
+                        <option value="toys">Toys & Games</option>
+                        <option value="sports">Sports & Fitness</option>
+                        <option value="beauty">Beauty & Personal Care</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Join Auction</button>
+            </form>
+        </div>
+    </div>
 
     <section id="features" class="features">
         <div class="container">
@@ -837,6 +1112,34 @@
                 }
             }
         }
+
+        // Modal Functions
+        function openModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleSubmit(event, type) {
+            event.preventDefault();
+            alert('Thank you! Your ' + type + ' request has been submitted. We will contact you soon via WhatsApp.');
+            closeModal(type);
+            event.target.reset();
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
     </script>
 </body>
 </html>
