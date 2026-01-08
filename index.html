@@ -443,58 +443,46 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.4);
         }
 
-        /* Action Boxes */
+        /* Action Boxes - Side by Side */
         .action-boxes {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            max-width: 900px;
-            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4rem;
+            flex-wrap: wrap;
         }
 
         .action-box {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 2rem 1.5rem;
-            border-radius: 15px;
             text-decoration: none;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             cursor: pointer;
-            border: 2px solid transparent;
+            text-align: center;
         }
 
         .action-box:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            border-color: #1abc9c;
+            transform: translateY(-5px);
         }
 
         .action-box-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
             display: block;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
         }
 
         .action-box-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
             font-family: 'Inter', sans-serif;
+            color: white;
+            text-shadow: 0 3px 10px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
         }
 
-        .action-box-description {
-            font-size: 0.95rem;
-            color: #555;
-            line-height: 1.5;
+        .action-box:hover .action-box-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 6px 15px rgba(0,0,0,0.4));
         }
-
-        .action-box.buy .action-box-title { color: #3498db; }
-        .action-box.sell .action-box-title { color: #1abc9c; }
-        .action-box.auction .action-box-title { color: #e74c3c; }
-
-        .action-box.buy:hover { border-color: #3498db; }
-        .action-box.sell:hover { border-color: #1abc9c; }
-        .action-box.auction:hover { border-color: #e74c3c; }
 
         /* Features Section */
         .features {
@@ -656,8 +644,15 @@
             }
 
             .action-boxes {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+                gap: 2rem;
+            }
+
+            .action-box-icon {
+                font-size: 3rem;
+            }
+
+            .action-box-title {
+                font-size: 1.4rem;
             }
 
             .section-title {
@@ -734,24 +729,21 @@
             <h1>India's Leading B2B Liquidation Platform</h1>
             <p>Trusted partner for buying and selling liquidation stock lots</p>
             
-            <!-- Action Boxes -->
+            <!-- Action Boxes - Side by Side -->
             <div class="action-boxes">
-                <a href="#contact" class="action-box buy">
+                <a href="#contact" class="action-box">
                     <span class="action-box-icon">🛒</span>
                     <div class="action-box-title">Buy</div>
-                    <div class="action-box-description">Browse premium liquidation stock lots at competitive prices</div>
                 </a>
                 
-                <a href="#contact" class="action-box sell">
+                <a href="#contact" class="action-box">
                     <span class="action-box-icon">💼</span>
                     <div class="action-box-title">Sell</div>
-                    <div class="action-box-description">List your excess inventory and reach verified buyers</div>
                 </a>
                 
-                <a href="#contact" class="action-box auction">
+                <a href="#contact" class="action-box">
                     <span class="action-box-icon">🔨</span>
                     <div class="action-box-title">Live Auction</div>
-                    <div class="action-box-description">Participate in real-time bidding for exclusive deals</div>
                 </a>
             </div>
         </div>
