@@ -276,7 +276,7 @@
         }
 
         .orders-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -353,12 +353,19 @@
         }
 
         .form-section-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: #667eea;
-            margin-bottom: 1.5rem;
+            margin: 2rem 0 1.5rem 0;
             font-weight: 700;
             border-bottom: 2px solid #667eea;
             padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-section-title:first-of-type {
+            margin-top: 0;
         }
 
         .form-row {
@@ -373,6 +380,10 @@
             flex-direction: column;
         }
 
+        .form-field.full-width {
+            grid-column: 1 / -1;
+        }
+
         .form-field label {
             font-weight: 600;
             color: #2c3e50;
@@ -381,6 +392,7 @@
         }
 
         .form-field input,
+        .form-field select,
         .form-field textarea {
             padding: 0.8rem;
             border: 2px solid #e0e0e0;
@@ -391,16 +403,22 @@
         }
 
         .form-field input:focus,
+        .form-field select:focus,
         .form-field textarea:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
         }
 
+        .form-field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
         .form-buttons {
             display: flex;
             gap: 1rem;
-            margin-top: 1rem;
+            margin-top: 2rem;
         }
 
         .save-order-btn {
@@ -510,6 +528,21 @@
             color: #555;
         }
 
+        .order-status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .status-confirmed { background: #e3f2fd; color: #1976d2; }
+        .status-packed { background: #fff3e0; color: #f57c00; }
+        .status-dispatched { background: #f3e5f5; color: #7b1fa2; }
+        .status-delivered { background: #e8f5e9; color: #388e3c; }
+        .status-closed { background: #fce4ec; color: #c2185b; }
+
         .order-card-actions {
             display: flex;
             gap: 0.5rem;
@@ -558,12 +591,10 @@
             background: linear-gradient(to bottom, transparent 0%, transparent 75%, #34495e 75%, #2c3e50 80%, #34495e 80%, #34495e 100%);
         }
 
-        /* Pause animations when dropdown is open */
         .animation-section.paused * {
             animation-play-state: paused !important;
         }
 
-        /* Connection Line from AK to Supplier */
         .connection-line {
             position: absolute;
             bottom: 42%;
@@ -594,7 +625,6 @@
             color: #3498db;
         }
 
-        /* Business Locations */
         .business-locations {
             position: absolute;
             bottom: 30%;
@@ -628,7 +658,6 @@
         .office { color: #1abc9c; }
         .customer { color: #f39c12; }
 
-        /* Customer Animation */
         .customer-person {
             position: absolute;
             bottom: 30%;
@@ -639,34 +668,13 @@
         }
 
         @keyframes customerJourney {
-            0%, 5% {
-                right: 20%;
-                transform: scaleX(1);
-                opacity: 1;
-            }
-            15% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 1;
-            }
-            20%, 25% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 1;
-            }
-            30% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 0;
-            }
-            100% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 0;
-            }
+            0%, 5% { right: 20%; transform: scaleX(1); opacity: 1; }
+            15% { right: 50%; transform: scaleX(1) translateX(50%); opacity: 1; }
+            20%, 25% { right: 50%; transform: scaleX(1) translateX(50%); opacity: 1; }
+            30% { right: 50%; transform: scaleX(1) translateX(50%); opacity: 0; }
+            100% { right: 50%; transform: scaleX(1) translateX(50%); opacity: 0; }
         }
 
-        /* Order & Payment Animation */
         .order-payment {
             position: absolute;
             bottom: 35%;
@@ -686,7 +694,6 @@
             100% { opacity: 0; transform: translateX(-50%) scale(0); }
         }
 
-        /* Packing Animation */
         .packing-boxes {
             position: absolute;
             bottom: 35%;
@@ -706,7 +713,6 @@
             100% { opacity: 0; transform: scale(0); }
         }
 
-        /* Truck Animation - FLIPPED to face RIGHT */
         .truck-container {
             position: absolute;
             bottom: 28%;
@@ -726,33 +732,14 @@
         }
 
         @keyframes truckDelivery {
-            0%, 55% {
-                left: 15%;
-                opacity: 0;
-            }
-            60% {
-                left: 15%;
-                opacity: 1;
-            }
-            85% {
-                left: 80%;
-                opacity: 1;
-            }
-            90% {
-                left: 80%;
-                opacity: 1;
-            }
-            95% {
-                left: 80%;
-                opacity: 0;
-            }
-            100% {
-                left: 80%;
-                opacity: 0;
-            }
+            0%, 55% { left: 15%; opacity: 0; }
+            60% { left: 15%; opacity: 1; }
+            85% { left: 80%; opacity: 1; }
+            90% { left: 80%; opacity: 1; }
+            95% { left: 80%; opacity: 0; }
+            100% { left: 80%; opacity: 0; }
         }
 
-        /* Delivery Confirmation */
         .delivery-check {
             position: absolute;
             bottom: 35%;
@@ -776,17 +763,10 @@
             left: 0;
             width: 100%;
             height: 2px;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent 0px,
-                transparent 20px,
-                rgba(255,255,255,0.3) 20px,
-                rgba(255,255,255,0.3) 40px
-            );
+            background: repeating-linear-gradient(90deg, transparent 0px, transparent 20px, rgba(255,255,255,0.3) 20px, rgba(255,255,255,0.3) 40px);
             z-index: 5;
         }
 
-        /* Hero Section with Warehouse Background */
         .hero {
             position: relative;
             color: white;
@@ -835,7 +815,6 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.4);
         }
 
-        /* Action Boxes - With Golden Border Boxes */
         .action-boxes {
             display: flex;
             justify-content: center;
@@ -883,24 +862,20 @@
             text-transform: uppercase;
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5),
-                        inset 0 0 20px rgba(255, 215, 0, 0.1);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), inset 0 0 20px rgba(255, 215, 0, 0.1);
             transition: all 0.3s;
         }
 
-        /* Buy - Green */
         .action-box.buy .action-box-label {
             color: #27ae60;
             text-shadow: 0 0 10px rgba(39, 174, 96, 0.8);
         }
 
-        /* Sell - Red */
         .action-box.sell .action-box-label {
             color: #e74c3c;
             text-shadow: 0 0 10px rgba(231, 76, 60, 0.8);
         }
 
-        /* Live Auction - Brown */
         .action-box.auction .action-box-label {
             color: #8B4513;
             text-shadow: 0 0 10px rgba(139, 69, 19, 0.8);
@@ -912,12 +887,10 @@
         }
 
         .action-box:hover .action-box-label {
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
-                        inset 0 0 30px rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), inset 0 0 30px rgba(255, 215, 0, 0.2);
             transform: scale(1.05);
         }
 
-        /* Modal/Popup Styles */
         .modal {
             display: none;
             position: fixed;
@@ -1065,7 +1038,6 @@
             box-shadow: 0 5px 20px rgba(255,255,255,0.4);
         }
 
-        /* Success Message Modal - Responsive */
         .success-modal {
             display: none;
             position: fixed;
@@ -1201,7 +1173,6 @@
             box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
         }
 
-        /* Features Section */
         .features {
             padding: 4rem 2rem;
             background: #f8f9fa;
@@ -1246,7 +1217,6 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* About Section */
         .about {
             padding: 4rem 2rem;
             background: white;
@@ -1265,7 +1235,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Contact Section */
         .contact {
             padding: 4rem 2rem;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1300,7 +1269,6 @@
             opacity: 0.8;
         }
 
-        /* Footer */
         footer {
             background: #2c3e50;
             color: white;
@@ -1308,164 +1276,45 @@
             padding: 2rem;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            .animation-section {
-                height: 100px;
-            }
-
-            .header-container {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-
-            .logo-img {
-                width: 55px;
-                height: 55px;
-            }
-
-            .brand-name {
-                font-size: 1.4rem;
-            }
-
-            .brand-tagline {
-                font-size: 0.6rem;
-            }
-
-            .location-icon {
-                font-size: 1.5rem;
-            }
-
-            .location-label {
-                font-size: 0.5rem;
-            }
-
-            .truck {
-                font-size: 2rem;
-            }
-
-            .customer-person {
-                font-size: 1.5rem;
-            }
-
-            .hero {
-                background-attachment: scroll;
-                padding: 4rem 1rem;
-            }
-
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .action-boxes {
-                gap: 2rem;
-            }
-
-            .action-box-icon {
-                font-size: 3.5rem;
-            }
-
-            .action-box-label {
-                font-size: 1.2rem;
-                padding: 0.6rem 1.5rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .modal-content {
-                padding: 1.5rem;
-            }
-
-            .modal-title {
-                font-size: 1.5rem;
-            }
-
-            .success-content {
-                padding: 1.5rem;
-            }
-
-            .success-icon {
-                font-size: 3rem;
-            }
-
-            .success-title {
-                font-size: 1.5rem;
-            }
-
-            .success-message {
-                font-size: 0.9rem;
-            }
-
-            .discount-code {
-                font-size: 1.5rem;
-                letter-spacing: 2px;
-            }
-
-            .discount-box {
-                padding: 1rem;
-            }
-
-            .privacy-notice {
-                font-size: 0.85rem;
-                padding: 0.8rem;
-            }
-
-            .whatsapp-btn {
-                font-size: 0.9rem;
-                padding: 0.8rem 1.5rem;
-            }
-
-            .close-success-btn {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.5rem;
-            }
-
-            .orders-title {
-                font-size: 2rem;
-            }
-
-            .orders-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .orders-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-buttons {
-                flex-direction: column;
-            }
+            .animation-section { height: 100px; }
+            .logo-img { width: 55px; height: 55px; }
+            .brand-name { font-size: 1.4rem; }
+            .brand-tagline { font-size: 0.6rem; }
+            .location-icon { font-size: 1.5rem; }
+            .location-label { font-size: 0.5rem; }
+            .truck { font-size: 2rem; }
+            .customer-person { font-size: 1.5rem; }
+            .hero { background-attachment: scroll; padding: 4rem 1rem; }
+            .hero h1 { font-size: 1.8rem; }
+            .hero p { font-size: 1rem; }
+            .action-boxes { gap: 2rem; }
+            .action-box-icon { font-size: 3.5rem; }
+            .action-box-label { font-size: 1.2rem; padding: 0.6rem 1.5rem; }
+            .section-title { font-size: 2rem; }
+            .modal-content { padding: 1.5rem; }
+            .modal-title { font-size: 1.5rem; }
+            .success-content { padding: 1.5rem; }
+            .success-icon { font-size: 3rem; }
+            .success-title { font-size: 1.5rem; }
+            .success-message { font-size: 0.9rem; }
+            .discount-code { font-size: 1.5rem; letter-spacing: 2px; }
+            .discount-box { padding: 1rem; }
+            .privacy-notice { font-size: 0.85rem; padding: 0.8rem; }
+            .whatsapp-btn { font-size: 0.9rem; padding: 0.8rem 1.5rem; }
+            .close-success-btn { font-size: 0.9rem; padding: 0.7rem 1.5rem; }
+            .orders-title { font-size: 2rem; }
+            .orders-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+            .form-row { grid-template-columns: 1fr; }
+            .orders-grid { grid-template-columns: 1fr; }
+            .form-buttons { flex-direction: column; }
         }
 
         @media (max-width: 480px) {
-            .success-title {
-                font-size: 1.3rem;
-            }
-
-            .discount-code {
-                font-size: 1.3rem;
-            }
-
-            .action-box-label {
-                font-size: 1rem;
-                padding: 0.5rem 1.2rem;
-            }
-
-            .order-form-card {
-                padding: 1.5rem;
-            }
+            .success-title { font-size: 1.3rem; }
+            .discount-code { font-size: 1.3rem; }
+            .action-box-label { font-size: 1rem; padding: 0.5rem 1.2rem; }
+            .order-form-card { padding: 1.5rem; }
         }
     </style>
 </head>
@@ -1491,14 +1340,9 @@
             </div>
         </div>
 
-        <!-- Animation Section Below Logo -->
         <div class="animation-section" id="animationSection">
             <div class="road-lines"></div>
-            
-            <!-- Connection Line from AK to Supplier -->
             <div class="connection-line"></div>
-            
-            <!-- Business Locations -->
             <div class="business-locations">
                 <div class="location">
                     <div class="location-icon">🏭</div>
@@ -1513,27 +1357,16 @@
                     <div class="location-label customer">Customer</div>
                 </div>
             </div>
-
-            <!-- Customer Journey -->
             <div class="customer-person">🚶</div>
-            
-            <!-- Order & Payment -->
             <div class="order-payment">💳📝</div>
-            
-            <!-- Packing -->
             <div class="packing-boxes">📦📦📦</div>
-            
-            <!-- Truck Delivery -->
             <div class="truck-container">
                 <div class="truck">🚚</div>
             </div>
-            
-            <!-- Delivery Confirmation -->
             <div class="delivery-check">✅</div>
         </div>
     </header>
 
-    <!-- Password Modal -->
     <div id="passwordModal" class="password-modal">
         <div class="password-content">
             <h2 class="password-title">🔒 Enter Password</h2>
@@ -1547,7 +1380,6 @@
         </div>
     </div>
 
-    <!-- Orders Section -->
     <section id="ordersSection" class="orders-section">
         <div class="orders-container">
             <div class="orders-header">
@@ -1562,8 +1394,8 @@
                 <div class="order-serial" id="orderSerial">Order #1</div>
                 
                 <form id="customerOrderForm">
-                    <div class="form-section-title">👤 Customer Details</div>
-                    
+                    <!-- 1. Customer Details -->
+                    <div class="form-section-title">👤 1. Customer Details</div>
                     <div class="form-row">
                         <div class="form-field">
                             <label>Name *</label>
@@ -1573,20 +1405,16 @@
                             <label>Business Name *</label>
                             <input type="text" name="businessName" required placeholder="Enter business name">
                         </div>
-                    </div>
-
-                    <div class="form-row">
                         <div class="form-field">
                             <label>Mobile Number *</label>
                             <input type="tel" name="mobileNumber" required placeholder="Enter 10 digit mobile number" pattern="[0-9]{10}">
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-field">
                             <label>Address *</label>
                             <input type="text" name="address" required placeholder="Enter complete address">
                         </div>
-                    </div>
-
-                    <div class="form-row">
                         <div class="form-field">
                             <label>City *</label>
                             <input type="text" name="city" required placeholder="Enter city">
@@ -1601,6 +1429,171 @@
                         </div>
                     </div>
 
+                    <!-- 2. Order Identification -->
+                    <div class="form-section-title">🔖 2. Order Identification</div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Lot Number *</label>
+                            <input type="text" name="lotNumber" required placeholder="Enter lot number">
+                        </div>
+                        <div class="form-field">
+                            <label>Lot Date *</label>
+                            <input type="date" name="lotDate" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Lot Book Person *</label>
+                            <input type="text" name="lotBookPerson" required placeholder="Enter person name">
+                        </div>
+                    </div>
+
+                    <!-- 3. Product Details -->
+                    <div class="form-section-title">📦 3. Product Details</div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Category *</label>
+                            <input type="text" name="category" required placeholder="e.g., Electronics, Garments">
+                        </div>
+                        <div class="form-field full-width">
+                            <label>Description *</label>
+                            <textarea name="description" required placeholder="Enter product description"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Quantity *</label>
+                            <input type="number" name="quantity" required placeholder="Enter quantity" min="1">
+                        </div>
+                        <div class="form-field">
+                            <label>Rate Per Piece (₹) *</label>
+                            <input type="number" name="ratePerPiece" required placeholder="Enter rate" min="0" step="0.01">
+                        </div>
+                        <div class="form-field">
+                            <label>Total Amount (₹) *</label>
+                            <input type="number" name="totalAmount" required placeholder="Enter total amount" min="0" step="0.01">
+                        </div>
+                        <div class="form-field">
+                            <label>Condition of Stock *</label>
+                            <select name="stockCondition" required>
+                                <option value="">Select condition</option>
+                                <option value="New">New</option>
+                                <option value="Like New">Like New</option>
+                                <option value="Good">Good</option>
+                                <option value="Fair">Fair</option>
+                                <option value="Refurbished">Refurbished</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 4. Payment Details -->
+                    <div class="form-section-title">💳 4. Payment Details</div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Payment Method *</label>
+                            <select name="paymentMethod" required>
+                                <option value="">Select method</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Bank">Bank Transfer</option>
+                                <option value="UPI">UPI</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label>Token Amount (₹)</label>
+                            <input type="number" name="tokenAmount" placeholder="Enter token amount" min="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Part Payment 1 (₹)</label>
+                            <input type="number" name="partPayment1" placeholder="Enter amount" min="0" step="0.01">
+                        </div>
+                        <div class="form-field">
+                            <label>Part Payment 2 (₹)</label>
+                            <input type="number" name="partPayment2" placeholder="Enter amount" min="0" step="0.01">
+                        </div>
+                        <div class="form-field">
+                            <label>Part Payment 3 (₹)</label>
+                            <input type="number" name="partPayment3" placeholder="Enter amount" min="0" step="0.01">
+                        </div>
+                        <div class="form-field">
+                            <label>Final Payment (₹)</label>
+                            <input type="number" name="finalPayment" placeholder="Enter final amount" min="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Payment Reference</label>
+                            <input type="text" name="paymentReference" placeholder="Enter reference number">
+                        </div>
+                        <div class="form-field">
+                            <label>Payment Date</label>
+                            <input type="date" name="paymentDate">
+                        </div>
+                    </div>
+
+                    <!-- 5. Logistics Details -->
+                    <div class="form-section-title">🚚 5. Logistics Details</div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Dispatch From</label>
+                            <input type="text" name="dispatchFrom" placeholder="Enter dispatch location">
+                        </div>
+                        <div class="form-field">
+                            <label>Dispatch To</label>
+                            <input type="text" name="dispatchTo" placeholder="Enter delivery location">
+                        </div>
+                        <div class="form-field">
+                            <label>Dispatch Date</label>
+                            <input type="date" name="dispatchDate">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Courier/Transportation Name</label>
+                            <input type="text" name="courierName" placeholder="Enter courier name">
+                        </div>
+                        <div class="form-field">
+                            <label>LR Number</label>
+                            <input type="text" name="lrNumber" placeholder="Enter LR number">
+                        </div>
+                        <div class="form-field">
+                            <label>Parcel Count</label>
+                            <input type="number" name="parcelCount" placeholder="Enter parcel count" min="1">
+                        </div>
+                        <div class="form-field">
+                            <label>Estimated Delivery Date</label>
+                            <input type="date" name="estimatedDeliveryDate">
+                        </div>
+                    </div>
+
+                    <!-- 6. Order Status -->
+                    <div class="form-section-title">📊 6. Order Status</div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Current Status *</label>
+                            <select name="orderStatus" required>
+                                <option value="">Select status</option>
+                                <option value="Order Confirmed">Order Confirmed</option>
+                                <option value="Packed">Packed</option>
+                                <option value="Dispatched">Dispatched</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 7. Confirmation Proofs -->
+                    <div class="form-section-title">📸 7. Confirmation Proofs</div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>WhatsApp Screenshot URL</label>
+                            <input type="url" name="whatsappScreenshot" placeholder="Enter image URL">
+                        </div>
+                        <div class="form-field">
+                            <label>Payment Screenshot URL</label>
+                            <input type="url" name="paymentScreenshot" placeholder="Enter image URL">
+                        </div>
+                    </div>
+
                     <div class="form-buttons">
                         <button type="submit" class="save-order-btn">💾 Save Order</button>
                         <button type="button" class="cancel-edit-btn" onclick="cancelEdit()" style="display: none;">❌ Cancel</button>
@@ -1608,7 +1601,6 @@
                 </form>
             </div>
 
-            <!-- Saved Orders List -->
             <div class="saved-orders-section">
                 <h2 class="saved-orders-title">📦 Saved Orders</h2>
                 <div class="orders-grid" id="ordersGrid">
@@ -1622,19 +1614,15 @@
         <div class="hero-content">
             <h1>India's Leading B2B Liquidation Platform</h1>
             <p>Trusted partner for buying and selling liquidation stock lots</p>
-            
-            <!-- Action Boxes with Golden Border Boxes -->
             <div class="action-boxes">
                 <div class="action-box buy" onclick="openModal('buy')">
                     <span class="action-box-icon">🛒</span>
                     <div class="action-box-label">Buy</div>
                 </div>
-                
                 <div class="action-box sell" onclick="openModal('sell')">
                     <span class="action-box-icon">💼</span>
                     <div class="action-box-label">Sell</div>
                 </div>
-                
                 <div class="action-box auction" onclick="openModal('auction')">
                     <span class="action-box-icon">🔨</span>
                     <div class="action-box-label">Live Auction</div>
@@ -1643,7 +1631,6 @@
         </div>
     </section>
 
-    <!-- Buy Modal -->
     <div id="buyModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1673,7 +1660,6 @@
         </div>
     </div>
 
-    <!-- Sell Modal -->
     <div id="sellModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1703,7 +1689,6 @@
         </div>
     </div>
 
-    <!-- Auction Modal -->
     <div id="auctionModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1733,7 +1718,6 @@
         </div>
     </div>
 
-    <!-- Success Modal -->
     <div id="successModal" class="success-modal">
         <div class="success-content">
             <div class="success-icon">🎉</div>
@@ -1816,35 +1800,21 @@
         <p>&copy; 2024 AK Brands Marketing. All rights reserved.</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
-        // Password for Orders section (Change this to your desired password)
         const ORDERS_PASSWORD = "AK2024@Secure";
-        
-        // Track if user is logged into Orders
         let isOrdersLoggedIn = false;
-        
-        // Counter for unique discount codes
         let codeCounter = parseInt(localStorage.getItem('akCodeCounter') || '1');
-        
-        // Store registered phone numbers with their discount codes
         let registeredPhones = JSON.parse(localStorage.getItem('akRegisteredPhones') || '{}');
-        
-        // Store customer data temporarily
         let customerData = null;
-        
-        // Store orders with serial numbers
         let orders = JSON.parse(localStorage.getItem('akOrders') || '[]');
         let orderCounter = parseInt(localStorage.getItem('akOrderCounter') || '1');
-        
-        // Track if editing an order
         let editingOrderIndex = null;
 
         function toggleMenu() {
             const dropdown = document.getElementById('menuDropdown');
             const animationSection = document.getElementById('animationSection');
-            
             dropdown.classList.toggle('show');
-            
             if (dropdown.classList.contains('show')) {
                 animationSection.classList.add('paused');
             } else {
@@ -1856,7 +1826,6 @@
             if (!event.target.matches('.menu-button')) {
                 const dropdowns = document.getElementsByClassName('dropdown-content');
                 const animationSection = document.getElementById('animationSection');
-                
                 for (let i = 0; i < dropdowns.length; i++) {
                     const openDropdown = dropdowns[i];
                     if (openDropdown.classList.contains('show')) {
@@ -1868,19 +1837,12 @@
         }
 
         function showSection(section) {
-            // Hide orders section
             document.getElementById('ordersSection').classList.remove('show');
-            
-            // Show main sections
             document.getElementById('home').style.display = 'flex';
             document.getElementById('features').style.display = 'block';
             document.getElementById('about').style.display = 'block';
             document.getElementById('contact').style.display = 'block';
-            
-            // Scroll to section
             document.getElementById(section).scrollIntoView({ behavior: 'smooth' });
-            
-            // Close menu
             document.getElementById('menuDropdown').classList.remove('show');
         }
 
@@ -1893,8 +1855,6 @@
                 document.getElementById('passwordError').classList.remove('show');
                 document.getElementById('passwordInput').focus();
             }
-            
-            // Close menu
             document.getElementById('menuDropdown').classList.remove('show');
         }
 
@@ -1906,7 +1866,6 @@
 
         function verifyPassword() {
             const password = document.getElementById('passwordInput').value;
-            
             if (password === ORDERS_PASSWORD) {
                 isOrdersLoggedIn = true;
                 closePasswordModal();
@@ -1923,22 +1882,13 @@
         }
 
         function showOrdersSection() {
-            // Hide main sections
             document.getElementById('home').style.display = 'none';
             document.getElementById('features').style.display = 'none';
             document.getElementById('about').style.display = 'none';
             document.getElementById('contact').style.display = 'none';
-            
-            // Show orders section
             document.getElementById('ordersSection').classList.add('show');
-            
-            // Update order serial number
             updateOrderSerial();
-            
-            // Display saved orders
             displaySavedOrders();
-            
-            // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1961,31 +1911,24 @@
             updateOrderSerial();
             document.querySelector('.cancel-edit-btn').style.display = 'none';
             document.querySelector('.save-order-btn').textContent = '💾 Save Order';
-            
-            // Scroll to form
             document.getElementById('orderFormCard').scrollIntoView({ behavior: 'smooth' });
         }
 
         function editOrder(index) {
             editingOrderIndex = index;
             const order = orders[index];
-            
-            // Fill form with order data
             const form = document.getElementById('customerOrderForm');
-            form.customerName.value = order.customerName;
-            form.businessName.value = order.businessName;
-            form.mobileNumber.value = order.mobileNumber;
-            form.address.value = order.address;
-            form.city.value = order.city;
-            form.state.value = order.state;
-            form.pincode.value = order.pincode;
             
-            // Update UI
+            // Fill all form fields
+            Object.keys(order).forEach(key => {
+                if (form[key] && key !== 'orderNumber' && key !== 'timestamp') {
+                    form[key].value = order[key] || '';
+                }
+            });
+            
             updateOrderSerial();
             document.querySelector('.cancel-edit-btn').style.display = 'block';
             document.querySelector('.save-order-btn').textContent = '✏️ Update Order';
-            
-            // Scroll to form
             document.getElementById('orderFormCard').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -2018,6 +1961,10 @@
                     year: 'numeric' 
                 });
                 
+                const statusClass = order.orderStatus ? 
+                    'status-' + order.orderStatus.toLowerCase().replace(/\s+/g, '-') : 
+                    'status-confirmed';
+                
                 return `
                     <div class="order-card">
                         <div class="order-card-header">
@@ -2026,7 +1973,7 @@
                         </div>
                         <div class="order-info">
                             <div class="order-info-row">
-                                <span class="order-info-label">Name:</span>
+                                <span class="order-info-label">Customer:</span>
                                 <span class="order-info-value">${order.customerName}</span>
                             </div>
                             <div class="order-info-row">
@@ -2034,17 +1981,18 @@
                                 <span class="order-info-value">${order.businessName}</span>
                             </div>
                             <div class="order-info-row">
-                                <span class="order-info-label">Mobile:</span>
-                                <span class="order-info-value">${order.mobileNumber}</span>
+                                <span class="order-info-label">Lot Number:</span>
+                                <span class="order-info-value">${order.lotNumber || 'N/A'}</span>
                             </div>
                             <div class="order-info-row">
-                                <span class="order-info-label">City:</span>
-                                <span class="order-info-value">${order.city}, ${order.state}</span>
+                                <span class="order-info-label">Category:</span>
+                                <span class="order-info-value">${order.category || 'N/A'}</span>
                             </div>
                             <div class="order-info-row">
-                                <span class="order-info-label">Pincode:</span>
-                                <span class="order-info-value">${order.pincode}</span>
+                                <span class="order-info-label">Total Amount:</span>
+                                <span class="order-info-value">₹${order.totalAmount || '0'}</span>
                             </div>
+                            ${order.orderStatus ? `<div class="order-status-badge ${statusClass}">${order.orderStatus}</div>` : ''}
                         </div>
                         <div class="order-card-actions">
                             <button class="order-action-btn edit-btn" onclick="editOrder(${index})">✏️ Edit</button>
@@ -2055,39 +2003,31 @@
             }).join('');
         }
 
-        // Handle customer order form submission
         document.getElementById('customerOrderForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const formData = new FormData(e.target);
             const orderData = {
                 orderNumber: editingOrderIndex !== null ? orders[editingOrderIndex].orderNumber : orderCounter,
-                customerName: formData.get('customerName'),
-                businessName: formData.get('businessName'),
-                mobileNumber: formData.get('mobileNumber'),
-                address: formData.get('address'),
-                city: formData.get('city'),
-                state: formData.get('state'),
-                pincode: formData.get('pincode'),
                 timestamp: editingOrderIndex !== null ? orders[editingOrderIndex].timestamp : new Date().toISOString()
             };
             
+            // Collect all form data
+            for (let [key, value] of formData.entries()) {
+                orderData[key] = value;
+            }
+            
             if (editingOrderIndex !== null) {
-                // Update existing order
                 orders[editingOrderIndex] = orderData;
                 alert(`✅ Order #${orderData.orderNumber} updated successfully!`);
             } else {
-                // Save new order
                 orders.push(orderData);
                 orderCounter++;
                 localStorage.setItem('akOrderCounter', orderCounter.toString());
                 alert(`✅ Order #${orderData.orderNumber} saved successfully!`);
             }
             
-            // Save orders
             localStorage.setItem('akOrders', JSON.stringify(orders));
-            
-            // Reset form and display orders
             createNewOrder();
             displaySavedOrders();
         });
@@ -2096,8 +2036,6 @@
             const modal = document.getElementById(type + 'Modal');
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
-            
-            // Clear any previous error messages
             const errorDiv = document.getElementById(type + 'Error');
             errorDiv.classList.remove('show');
             errorDiv.textContent = '';
@@ -2113,66 +2051,46 @@
             const errorDiv = document.getElementById(type + 'Error');
             errorDiv.textContent = message;
             errorDiv.classList.add('show');
-            
-            // Auto-hide after 5 seconds
             setTimeout(() => {
                 errorDiv.classList.remove('show');
             }, 5000);
         }
 
-        // Function to normalize phone number
         function normalizePhoneNumber(phone) {
-            // Remove all non-digit characters
             let cleaned = phone.replace(/\D/g, '');
-            
-            // If starts with 91, remove it (we'll add it back)
             if (cleaned.startsWith('91') && cleaned.length > 10) {
                 cleaned = cleaned.substring(2);
             }
-            
-            // If starts with 0, remove it
             if (cleaned.startsWith('0')) {
                 cleaned = cleaned.substring(1);
             }
-            
-            // Should be 10 digits now
             if (cleaned.length === 10) {
-                return '91' + cleaned; // Add India country code
+                return '91' + cleaned;
             }
-            
             return cleaned;
         }
 
         function handleSubmit(event, type) {
             event.preventDefault();
-            
             const form = event.target;
             const formData = new FormData(form);
-            
             const name = formData.get('name');
             const phone = formData.get('phone');
             const address = formData.get('address');
             const category = formData.get('category');
-            
-            // Normalize phone number with country code
             const normalizedPhone = normalizePhoneNumber(phone);
             
-            // Check if phone number is already registered
             if (registeredPhones[normalizedPhone]) {
                 showError(type, `⚠️ This number is already registered with discount code ${registeredPhones[normalizedPhone]}. Please register with another number.`);
                 return;
             }
             
-            // Generate unique discount code
             const discountCode = 'AK' + codeCounter;
             codeCounter++;
             localStorage.setItem('akCodeCounter', codeCounter.toString());
-            
-            // Register this phone number with the discount code
             registeredPhones[normalizedPhone] = discountCode;
             localStorage.setItem('akRegisteredPhones', JSON.stringify(registeredPhones));
             
-            // Store customer data for later use
             customerData = {
                 name: name,
                 phone: normalizedPhone,
@@ -2182,24 +2100,17 @@
                 discountCode: discountCode
             };
             
-            // Display success modal with discount code
             document.getElementById('discountCode').textContent = discountCode;
             document.getElementById('successModal').classList.add('show');
-            
-            // Close form modal
             closeModal(type);
-            
-            // Reset form
             form.reset();
         }
 
         function sendToWhatsApp() {
-            // Close success modal
             document.getElementById('successModal').classList.remove('show');
             document.body.style.overflow = 'auto';
             
             if (customerData) {
-                // Message to send from customer's WhatsApp to admin
                 const messageToAdmin = `🎉 *New Customer Registration*\n\n` +
                     `*Name:* ${customerData.name}\n` +
                     `*Phone:* +${customerData.phone}\n` +
@@ -2209,13 +2120,8 @@
                     `*Discount Code:* ${customerData.discountCode}\n\n` +
                     `_Registered via AK Brands Marketing Website_`;
                 
-                // Open customer's WhatsApp with pre-filled message to send to admin
                 const customerWhatsAppUrl = `https://wa.me/918660502217?text=${encodeURIComponent(messageToAdmin)}`;
-                
-                // Open customer's WhatsApp - they just need to press send
                 window.open(customerWhatsAppUrl, '_blank');
-                
-                // Clear customer data
                 customerData = null;
             }
         }
