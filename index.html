@@ -715,6 +715,16 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
+        .privacy-notice {
+            background: rgba(255,255,255,0.15);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            border-left: 4px solid white;
+        }
+
         .close-success-btn {
             background: white;
             color: #1abc9c;
@@ -837,11 +847,6 @@
             color: white;
             text-align: center;
             padding: 2rem;
-        }
-
-        /* Hidden iframe for auto-sending WhatsApp */
-        #whatsappFrame {
-            display: none;
         }
 
         /* Responsive */
@@ -1109,7 +1114,7 @@
     <div id="successModal" class="success-modal">
         <div class="success-content">
             <div class="success-icon">🎉</div>
-            <h2 class="success-title">Welcome to AK Brands Marketing©</h2>
+            <h2 class="success-title">Welcome to AK Brands Marketing© Family</h2>
             <p class="success-message">
                 Thank you for choosing us as your trusted B2B liquidation partner! We're excited to have you on board and look forward to serving your business needs with excellence.
             </p>
@@ -1118,15 +1123,13 @@
                 <div class="discount-code" id="discountCode">AK1</div>
                 <p style="margin: 0; opacity: 0.9;">Get 2% OFF on your first order!</p>
             </div>
-            <p class="success-message">
-                A welcome message with our WhatsApp community link has been sent to your number automatically. Check your WhatsApp for daily stock lot updates!
-            </p>
+            <div class="privacy-notice">
+                <strong>🔒 Your Data is Safe With Us</strong><br>
+                We will not use or share your data with any 3rd party until we get your confirmation. Your privacy and trust are our top priorities.
+            </div>
             <button class="close-success-btn" onclick="closeSuccessModal()">Continue</button>
         </div>
     </div>
-
-    <!-- Hidden iframe for auto-sending WhatsApp messages -->
-    <iframe id="whatsappFrame" name="whatsappFrame"></iframe>
 
     <section id="features" class="features">
         <div class="container">
@@ -1253,21 +1256,6 @@
             return cleaned;
         }
 
-        // Function to send WhatsApp message using API
-        function sendWhatsAppMessage(phone, message) {
-            // Use WhatsApp API link - this will work on both mobile and desktop
-            const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
-            
-            // Open in hidden iframe to trigger WhatsApp without showing popup
-            const iframe = document.getElementById('whatsappFrame');
-            iframe.src = whatsappUrl;
-            
-            // Also try to open in new window as backup (will work better on mobile)
-            setTimeout(() => {
-                window.open(whatsappUrl, '_blank');
-            }, 100);
-        }
-
         function handleSubmit(event, type) {
             event.preventDefault();
             
@@ -1295,9 +1283,9 @@
             const normalizedPhone = normalizePhoneNumber(phone);
             
             // Message to send to USER with community link
-            const userMessage = `🎉 *Welcome to AK Brands Marketing©*\n\n` +
+            const userMessage = `🎉 *Welcome to AK Brands Marketing© Family*\n\n` +
                 `Dear ${name},\n\n` +
-                `Thank you for registering with us! We're thrilled to have you as part of our B2B liquidation family.\n\n` +
+                `Thank you for registering with us! We're excited to have you as part of our B2B liquidation family.\n\n` +
                 `🎁 *Your Exclusive Discount Code:* ${discountCode}\n` +
                 `Get *2% OFF* on your first order!\n\n` +
                 `📱 *Join our WhatsApp Community* for:\n` +
@@ -1305,7 +1293,8 @@
                 `✅ Exclusive deals & offers\n` +
                 `✅ Instant support from our team\n\n` +
                 `👉 Click here to join: https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq\n\n` +
-                `We look forward to serving your business needs!\n\n` +
+                `🔒 *Your Data is Safe With Us*\n` +
+                `We will not use or share your data with any 3rd party until we get your confirmation.\n\n` +
                 `Best regards,\n` +
                 `*AK Brands Marketing Team*`;
             
@@ -1319,12 +1308,18 @@
                 `*Discount Code:* ${discountCode}\n\n` +
                 `_Registered via AK Brands Marketing Website_`;
             
-            // Send message to customer automatically
-            sendWhatsAppMessage(normalizedPhone, userMessage);
+            // Send messages automatically using fetch API to a backend service
+            // Note: For true automation without user interaction, you need a backend service
+            // This opens WhatsApp with pre-filled messages
+            const userWhatsAppUrl = `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(userMessage)}`;
+            const adminWhatsAppUrl = `https://wa.me/918660502217?text=${encodeURIComponent(adminMessage)}`;
             
-            // Send message to admin after 2 seconds
+            // Open customer WhatsApp
+            window.open(userWhatsAppUrl, '_blank');
+            
+            // Open admin WhatsApp after 2 seconds
             setTimeout(() => {
-                sendWhatsAppMessage('918660502217', adminMessage);
+                window.open(adminWhatsAppUrl, '_blank');
             }, 2000);
             
             // Reset form
