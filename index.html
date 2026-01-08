@@ -1225,7 +1225,7 @@
                 📱 Join WhatsApp Community
             </a>
             <br>
-            <button class="close-success-btn" onclick="closeSuccessModal()">Continue</button>
+            <button class="close-success-btn" onclick="sendToWhatsApp()">Continue</button>
         </div>
     </div>
 
@@ -1290,6 +1290,9 @@
     <script>
         // Counter for unique discount codes
         let codeCounter = parseInt(localStorage.getItem('akCodeCounter') || '1');
+        
+        // Store customer data temporarily
+        let customerData = null;
 
         function toggleMenu() {
             const dropdown = document.getElementById('menuDropdown');
@@ -1370,6 +1373,19 @@
             codeCounter++;
             localStorage.setItem('akCodeCounter', codeCounter.toString());
             
+            // Normalize phone number with country code
+            const normalizedPhone = normalizePhoneNumber(phone);
+            
+            // Store customer data for later use
+            customerData = {
+                name: name,
+                phone: normalizedPhone,
+                address: address,
+                category: category,
+                type: type,
+                discountCode: discountCode
+            };
+            
             // Display success modal with discount code
             document.getElementById('discountCode').textContent = discountCode;
             document.getElementById('successModal').classList.add('show');
@@ -1377,27 +1393,35 @@
             // Close form modal
             closeModal(type);
             
-            // Normalize phone number with country code
-            const normalizedPhone = normalizePhoneNumber(phone);
-            
-            // Message to send from customer's WhatsApp to admin
-            const messageToAdmin = `🎉 *New Customer Registration*\n\n` +
-                `*Name:* ${name}\n` +
-                `*Phone:* +${normalizedPhone}\n` +
-                `*Address:* ${address}\n` +
-                `*Category:* ${category}\n` +
-                `*Type:* ${type.toUpperCase()}\n` +
-                `*Discount Code:* ${discountCode}\n\n` +
-                `_Registered via AK Brands Marketing Website_`;
-            
-            // Open customer's WhatsApp with pre-filled message to send to admin
-            const customerWhatsAppUrl = `https://wa.me/918660502217?text=${encodeURIComponent(messageToAdmin)}`;
-            
-            // Open customer's WhatsApp - they just need to press send
-            window.open(customerWhatsAppUrl, '_blank');
-            
             // Reset form
             form.reset();
+        }
+
+        function sendToWhatsApp() {
+            // Close success modal
+            document.getElementById('successModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+            
+            if (customerData) {
+                // Message to send from customer's WhatsApp to admin
+                const messageToAdmin = `🎉 *New Customer Registration*\n\n` +
+                    `*Name:* ${customerData.name}\n` +
+                    `*Phone:* +${customerData.phone}\n` +
+                    `*Address:* ${customerData.address}\n` +
+                    `*Category:* ${customerData.category}\n` +
+                    `*Type:* ${customerData.type.toUpperCase()}\n` +
+                    `*Discount Code:* ${customerData.discountCode}\n\n` +
+                    `_Registered via AK Brands Marketing Website_`;
+                
+                // Open customer's WhatsApp with pre-filled message to send to admin
+                const customerWhatsAppUrl = `https://wa.me/918660502217?text=${encodeURIComponent(messageToAdmin)}`;
+                
+                // Open customer's WhatsApp - they just need to press send
+                window.open(customerWhatsAppUrl, '_blank');
+                
+                // Clear customer data
+                customerData = null;
+            }
         }
 
         function closeSuccessModal() {
