@@ -630,6 +630,28 @@
             box-shadow: 0 0 15px rgba(255,255,255,0.3);
         }
 
+        .error-message {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.2);
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            border-left: 4px solid #ff6b6b;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
         .submit-btn {
             width: 100%;
             padding: 1rem;
@@ -1124,6 +1146,7 @@
                 <h2 class="modal-title">🛒 Buy Stock Lots</h2>
                 <button class="close-btn" onclick="closeModal('buy')">&times;</button>
             </div>
+            <div class="error-message" id="buyError"></div>
             <form onsubmit="handleSubmit(event, 'buy')">
                 <div class="form-group">
                     <label>Name *</label>
@@ -1153,6 +1176,7 @@
                 <h2 class="modal-title">💼 Sell Your Stock</h2>
                 <button class="close-btn" onclick="closeModal('sell')">&times;</button>
             </div>
+            <div class="error-message" id="sellError"></div>
             <form onsubmit="handleSubmit(event, 'sell')">
                 <div class="form-group">
                     <label>Name *</label>
@@ -1182,6 +1206,7 @@
                 <h2 class="modal-title">🔨 Live Auction</h2>
                 <button class="close-btn" onclick="closeModal('auction')">&times;</button>
             </div>
+            <div class="error-message" id="auctionError"></div>
             <form onsubmit="handleSubmit(event, 'auction')">
                 <div class="form-group">
                     <label>Name *</label>
@@ -1291,6 +1316,9 @@
         // Counter for unique discount codes
         let codeCounter = parseInt(localStorage.getItem('akCodeCounter') || '1');
         
+        // Store registered phone numbers with their discount codes
+        let registeredPhones = JSON.parse(localStorage.getItem('akRegisteredPhones') || '{}');
+        
         // Store customer data temporarily
         let customerData = null;
 
@@ -1326,12 +1354,28 @@
             const modal = document.getElementById(type + 'Modal');
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
+            
+            // Clear any previous error messages
+            const errorDiv = document.getElementById(type + 'Error');
+            errorDiv.classList.remove('show');
+            errorDiv.textContent = '';
         }
 
         function closeModal(type) {
             const modal = document.getElementById(type + 'Modal');
             modal.classList.remove('show');
             document.body.style.overflow = 'auto';
+        }
+
+        function showError(type, message) {
+            const errorDiv = document.getElementById(type + 'Error');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 5000);
         }
 
         // Function to normalize phone number
@@ -1368,13 +1412,23 @@
             const address = formData.get('address');
             const category = formData.get('category');
             
+            // Normalize phone number with country code
+            const normalizedPhone = normalizePhoneNumber(phone);
+            
+            // Check if phone number is already registered
+            if (registeredPhones[normalizedPhone]) {
+                showError(type, `⚠️ This number is already registered with discount code ${registeredPhones[normalizedPhone]}. Please register with another number.`);
+                return;
+            }
+            
             // Generate unique discount code
             const discountCode = 'AK' + codeCounter;
             codeCounter++;
             localStorage.setItem('akCodeCounter', codeCounter.toString());
             
-            // Normalize phone number with country code
-            const normalizedPhone = normalizePhoneNumber(phone);
+            // Register this phone number with the discount code
+            registeredPhones[normalizedPhone] = discountCode;
+            localStorage.setItem('akRegisteredPhones', JSON.stringify(registeredPhones));
             
             // Store customer data for later use
             customerData = {
