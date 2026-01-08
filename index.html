@@ -443,7 +443,7 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.4);
         }
 
-        /* Action Boxes - Eye-Catching with Updated Colors */
+        /* Action Boxes - Golden Shining Effect */
         .action-boxes {
             display: flex;
             justify-content: center;
@@ -482,31 +482,30 @@
             font-size: 2rem;
             font-weight: 900;
             font-family: 'Inter', sans-serif;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.7);
             letter-spacing: 1px;
             text-transform: uppercase;
             position: relative;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8)) 
+                    drop-shadow(0 0 20px rgba(255, 215, 0, 0.6))
+                    drop-shadow(0 0 30px rgba(255, 215, 0, 0.4));
+            animation: shimmer 3s ease-in-out infinite;
         }
 
-        /* Buy - Bold Green */
-        .action-box.buy .action-box-title {
-            color: #27ae60;
-            font-weight: 900;
-            text-shadow: 0 4px 15px rgba(39, 174, 96, 0.8);
-        }
-
-        /* Sell - Bold Red */
-        .action-box.sell .action-box-title {
-            color: #e74c3c;
-            font-weight: 900;
-            text-shadow: 0 4px 15px rgba(231, 76, 60, 0.8);
-        }
-
-        /* Live Auction - Bold Brown */
-        .action-box.auction .action-box-title {
-            color: #8B4513;
-            font-weight: 900;
-            text-shadow: 0 4px 15px rgba(139, 69, 19, 0.8);
+        @keyframes shimmer {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8)) 
+                        drop-shadow(0 0 20px rgba(255, 215, 0, 0.6))
+                        drop-shadow(0 0 30px rgba(255, 215, 0, 0.4));
+            }
+            50% {
+                filter: drop-shadow(0 0 15px rgba(255, 215, 0, 1)) 
+                        drop-shadow(0 0 30px rgba(255, 215, 0, 0.8))
+                        drop-shadow(0 0 45px rgba(255, 215, 0, 0.6));
+            }
         }
 
         .action-box:hover .action-box-icon {
@@ -661,7 +660,7 @@
         }
 
         .success-content {
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             padding: 3rem;
             border-radius: 20px;
             width: 90%;
@@ -670,6 +669,7 @@
             animation: slideUp 0.5s ease;
             text-align: center;
             color: white;
+            border: 2px solid rgba(255, 215, 0, 0.3);
         }
 
         .success-icon {
@@ -689,6 +689,10 @@
             font-weight: 700;
             margin-bottom: 1rem;
             font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .success-message {
@@ -699,35 +703,58 @@
         }
 
         .discount-box {
-            background: rgba(255,255,255,0.2);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             padding: 1.5rem;
             border-radius: 15px;
             margin: 1.5rem 0;
-            border: 2px dashed white;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
 
         .discount-code {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 900;
-            letter-spacing: 3px;
+            letter-spacing: 5px;
             margin: 0.5rem 0;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
         }
 
         .privacy-notice {
-            background: rgba(255,255,255,0.15);
+            background: rgba(52, 152, 219, 0.2);
             padding: 1rem;
             border-radius: 10px;
             margin: 1.5rem 0;
             font-size: 0.95rem;
             line-height: 1.6;
-            border-left: 4px solid white;
+            border-left: 4px solid #3498db;
+        }
+
+        .whatsapp-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(37, 211, 102, 0.6);
         }
 
         .close-success-btn {
-            background: white;
-            color: #1abc9c;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #2c3e50;
             border: none;
             padding: 0.8rem 2rem;
             border-radius: 50px;
@@ -739,7 +766,7 @@
 
         .close-success-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 3px 15px rgba(255,255,255,0.3);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
         }
 
         /* Features Section */
@@ -930,7 +957,7 @@
             }
 
             .discount-code {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
         }
     </style>
@@ -1116,17 +1143,21 @@
             <div class="success-icon">🎉</div>
             <h2 class="success-title">Welcome to AK Brands Marketing© Family</h2>
             <p class="success-message">
-                Thank you for choosing us as your trusted B2B liquidation partner! We're excited to have you on board and look forward to serving your business needs with excellence.
+                Thank you for choosing us as your trusted B2B liquidation partner! We're excited to have you on board.
             </p>
             <div class="discount-box">
-                <p style="margin: 0; font-size: 1.1rem; font-weight: 600;">🎁 EXCLUSIVE FIRST ORDER OFFER</p>
+                <p style="margin: 0; font-size: 1.1rem; font-weight: 600; color: white;">🎁 EXCLUSIVE FIRST ORDER OFFER</p>
                 <div class="discount-code" id="discountCode">AK1</div>
-                <p style="margin: 0; opacity: 0.9;">Get 2% OFF on your first order!</p>
+                <p style="margin: 0; opacity: 0.9; color: white;">Get 2% OFF on your first order!</p>
             </div>
             <div class="privacy-notice">
                 <strong>🔒 Your Data is Safe With Us</strong><br>
                 We will not use or share your data with any 3rd party until we get your confirmation. Your privacy and trust are our top priorities.
             </div>
+            <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" class="whatsapp-btn">
+                📱 Join WhatsApp Community
+            </a>
+            <br>
             <button class="close-success-btn" onclick="closeSuccessModal()">Continue</button>
         </div>
     </div>
@@ -1282,23 +1313,7 @@
             // Normalize phone number with country code
             const normalizedPhone = normalizePhoneNumber(phone);
             
-            // Message to send to USER with community link
-            const userMessage = `🎉 *Welcome to AK Brands Marketing© Family*\n\n` +
-                `Dear ${name},\n\n` +
-                `Thank you for registering with us! We're excited to have you as part of our B2B liquidation family.\n\n` +
-                `🎁 *Your Exclusive Discount Code:* ${discountCode}\n` +
-                `Get *2% OFF* on your first order!\n\n` +
-                `📱 *Join our WhatsApp Community* for:\n` +
-                `✅ Daily stock lot updates\n` +
-                `✅ Exclusive deals & offers\n` +
-                `✅ Instant support from our team\n\n` +
-                `👉 Click here to join: https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq\n\n` +
-                `🔒 *Your Data is Safe With Us*\n` +
-                `We will not use or share your data with any 3rd party until we get your confirmation.\n\n` +
-                `Best regards,\n` +
-                `*AK Brands Marketing Team*`;
-            
-            // Message to send to ADMIN
+            // Send customer data to admin WhatsApp
             const adminMessage = `🎉 *New Customer Registration*\n\n` +
                 `*Name:* ${name}\n` +
                 `*Phone:* +${normalizedPhone}\n` +
@@ -1308,19 +1323,10 @@
                 `*Discount Code:* ${discountCode}\n\n` +
                 `_Registered via AK Brands Marketing Website_`;
             
-            // Send messages automatically using fetch API to a backend service
-            // Note: For true automation without user interaction, you need a backend service
-            // This opens WhatsApp with pre-filled messages
-            const userWhatsAppUrl = `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(userMessage)}`;
             const adminWhatsAppUrl = `https://wa.me/918660502217?text=${encodeURIComponent(adminMessage)}`;
             
-            // Open customer WhatsApp
-            window.open(userWhatsAppUrl, '_blank');
-            
-            // Open admin WhatsApp after 2 seconds
-            setTimeout(() => {
-                window.open(adminWhatsAppUrl, '_blank');
-            }, 2000);
+            // Send to admin WhatsApp
+            window.open(adminWhatsAppUrl, '_blank');
             
             // Reset form
             form.reset();
