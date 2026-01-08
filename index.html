@@ -724,24 +724,6 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
-        .whatsapp-btn {
-            display: inline-block;
-            background: #25D366;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-top: 1rem;
-            transition: all 0.3s;
-        }
-
-        .whatsapp-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
-        }
-
         .close-success-btn {
             background: white;
             color: #1abc9c;
@@ -1204,12 +1186,8 @@
                 <p style="margin: 0; opacity: 0.9;">Get 2% OFF on your first order!</p>
             </div>
             <p class="success-message">
-                Join our WhatsApp community for daily stock lot updates, exclusive deals, and instant support from our team.
+                We've sent you a WhatsApp message with our community link for daily stock lot updates, exclusive deals, and instant support!
             </p>
-            <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" class="whatsapp-btn">
-                📱 Join WhatsApp Community
-            </a>
-            <br>
             <button class="close-success-btn" onclick="closeSuccessModal()">Continue</button>
         </div>
     </div>
@@ -1355,7 +1333,25 @@
             // Close form modal
             closeModal(type);
             
-            // Send WhatsApp message to admin
+            // Clean phone number (remove spaces, dashes, etc.)
+            const cleanPhone = phone.replace(/[\s-]/g, '');
+            
+            // Message to send to USER with community link
+            const userMessage = `🎉 *Welcome to AK Brands Marketing©*\n\n` +
+                `Dear ${name},\n\n` +
+                `Thank you for registering with us! We're thrilled to have you as part of our B2B liquidation family.\n\n` +
+                `🎁 *Your Exclusive Discount Code:* ${discountCode}\n` +
+                `Get *2% OFF* on your first order!\n\n` +
+                `📱 *Join our WhatsApp Community* for:\n` +
+                `✅ Daily stock lot updates\n` +
+                `✅ Exclusive deals & offers\n` +
+                `✅ Instant support from our team\n\n` +
+                `👉 Click here to join: https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq\n\n` +
+                `We look forward to serving your business needs!\n\n` +
+                `Best regards,\n` +
+                `*AK Brands Marketing Team*`;
+            
+            // Message to send to ADMIN
             const adminMessage = `🎉 *New Customer Registration*\n\n` +
                 `*Name:* ${name}\n` +
                 `*Phone:* ${phone}\n` +
@@ -1365,12 +1361,19 @@
                 `*Discount Code:* ${discountCode}\n\n` +
                 `_Registered via AK Brands Marketing Website_`;
             
+            // WhatsApp URLs
+            const userWhatsAppUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(userMessage)}`;
             const adminWhatsAppUrl = `https://wa.me/918660502217?text=${encodeURIComponent(adminMessage)}`;
             
-            // Open admin WhatsApp in new tab (silent - user won't see this)
+            // Open user WhatsApp (to send community link)
+            setTimeout(() => {
+                window.open(userWhatsAppUrl, '_blank');
+            }, 500);
+            
+            // Open admin WhatsApp (to notify about new registration)
             setTimeout(() => {
                 window.open(adminWhatsAppUrl, '_blank');
-            }, 1000);
+            }, 1500);
             
             // Reset form
             form.reset();
