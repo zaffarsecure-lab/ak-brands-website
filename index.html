@@ -285,6 +285,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .orders-title {
@@ -292,6 +294,27 @@
             color: #2c3e50;
             font-family: 'Inter', sans-serif;
             font-weight: 700;
+        }
+
+        .orders-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .new-order-btn {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .new-order-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 188, 156, 0.4);
         }
 
         .logout-btn {
@@ -374,6 +397,12 @@
             box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
         }
 
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
         .save-order-btn {
             background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
             color: white;
@@ -384,12 +413,140 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 1rem;
+            flex: 1;
         }
 
         .save-order-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(26, 188, 156, 0.4);
+        }
+
+        .cancel-edit-btn {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cancel-edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(149, 165, 166, 0.4);
+        }
+
+        /* Saved Orders List */
+        .saved-orders-section {
+            margin-top: 3rem;
+        }
+
+        .saved-orders-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .order-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border-left: 4px solid #667eea;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        }
+
+        .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .order-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .order-date {
+            font-size: 0.85rem;
+            color: #95a5a6;
+        }
+
+        .order-info {
+            margin-bottom: 1rem;
+        }
+
+        .order-info-row {
+            display: flex;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .order-info-label {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 120px;
+        }
+
+        .order-info-value {
+            color: #555;
+        }
+
+        .order-card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .order-action-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .order-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 3rem;
+            color: #95a5a6;
+            font-size: 1.2rem;
         }
 
         /* Animation Section */
@@ -1282,6 +1439,14 @@
             .form-row {
                 grid-template-columns: 1fr;
             }
+
+            .orders-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1387,10 +1552,13 @@
         <div class="orders-container">
             <div class="orders-header">
                 <h1 class="orders-title">📋 Customer Orders</h1>
-                <button class="logout-btn" onclick="logoutOrders()">🚪 Logout</button>
+                <div class="orders-actions">
+                    <button class="new-order-btn" onclick="createNewOrder()">➕ New Order</button>
+                    <button class="logout-btn" onclick="logoutOrders()">🚪 Logout</button>
+                </div>
             </div>
 
-            <div class="order-form-card">
+            <div class="order-form-card" id="orderFormCard">
                 <div class="order-serial" id="orderSerial">Order #1</div>
                 
                 <form id="customerOrderForm">
@@ -1433,8 +1601,19 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="save-order-btn">💾 Save Order</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="save-order-btn">💾 Save Order</button>
+                        <button type="button" class="cancel-edit-btn" onclick="cancelEdit()" style="display: none;">❌ Cancel</button>
+                    </div>
                 </form>
+            </div>
+
+            <!-- Saved Orders List -->
+            <div class="saved-orders-section">
+                <h2 class="saved-orders-title">📦 Saved Orders</h2>
+                <div class="orders-grid" id="ordersGrid">
+                    <div class="no-orders">No orders saved yet. Create your first order above!</div>
+                </div>
             </div>
         </div>
     </section>
@@ -1656,6 +1835,9 @@
         // Store orders with serial numbers
         let orders = JSON.parse(localStorage.getItem('akOrders') || '[]');
         let orderCounter = parseInt(localStorage.getItem('akOrderCounter') || '1');
+        
+        // Track if editing an order
+        let editingOrderIndex = null;
 
         function toggleMenu() {
             const dropdown = document.getElementById('menuDropdown');
@@ -1753,6 +1935,9 @@
             // Update order serial number
             updateOrderSerial();
             
+            // Display saved orders
+            displaySavedOrders();
+            
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1763,7 +1948,111 @@
         }
 
         function updateOrderSerial() {
-            document.getElementById('orderSerial').textContent = `Order #${orderCounter}`;
+            if (editingOrderIndex !== null) {
+                document.getElementById('orderSerial').textContent = `Order #${orders[editingOrderIndex].orderNumber}`;
+            } else {
+                document.getElementById('orderSerial').textContent = `Order #${orderCounter}`;
+            }
+        }
+
+        function createNewOrder() {
+            editingOrderIndex = null;
+            document.getElementById('customerOrderForm').reset();
+            updateOrderSerial();
+            document.querySelector('.cancel-edit-btn').style.display = 'none';
+            document.querySelector('.save-order-btn').textContent = '💾 Save Order';
+            
+            // Scroll to form
+            document.getElementById('orderFormCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function editOrder(index) {
+            editingOrderIndex = index;
+            const order = orders[index];
+            
+            // Fill form with order data
+            const form = document.getElementById('customerOrderForm');
+            form.customerName.value = order.customerName;
+            form.businessName.value = order.businessName;
+            form.mobileNumber.value = order.mobileNumber;
+            form.address.value = order.address;
+            form.city.value = order.city;
+            form.state.value = order.state;
+            form.pincode.value = order.pincode;
+            
+            // Update UI
+            updateOrderSerial();
+            document.querySelector('.cancel-edit-btn').style.display = 'block';
+            document.querySelector('.save-order-btn').textContent = '✏️ Update Order';
+            
+            // Scroll to form
+            document.getElementById('orderFormCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            createNewOrder();
+        }
+
+        function deleteOrder(index) {
+            if (confirm(`Are you sure you want to delete Order #${orders[index].orderNumber}?`)) {
+                orders.splice(index, 1);
+                localStorage.setItem('akOrders', JSON.stringify(orders));
+                displaySavedOrders();
+                alert('✅ Order deleted successfully!');
+            }
+        }
+
+        function displaySavedOrders() {
+            const ordersGrid = document.getElementById('ordersGrid');
+            
+            if (orders.length === 0) {
+                ordersGrid.innerHTML = '<div class="no-orders">No orders saved yet. Create your first order above!</div>';
+                return;
+            }
+            
+            ordersGrid.innerHTML = orders.map((order, index) => {
+                const date = new Date(order.timestamp);
+                const formattedDate = date.toLocaleDateString('en-IN', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric' 
+                });
+                
+                return `
+                    <div class="order-card">
+                        <div class="order-card-header">
+                            <div class="order-number">Order #${order.orderNumber}</div>
+                            <div class="order-date">${formattedDate}</div>
+                        </div>
+                        <div class="order-info">
+                            <div class="order-info-row">
+                                <span class="order-info-label">Name:</span>
+                                <span class="order-info-value">${order.customerName}</span>
+                            </div>
+                            <div class="order-info-row">
+                                <span class="order-info-label">Business:</span>
+                                <span class="order-info-value">${order.businessName}</span>
+                            </div>
+                            <div class="order-info-row">
+                                <span class="order-info-label">Mobile:</span>
+                                <span class="order-info-value">${order.mobileNumber}</span>
+                            </div>
+                            <div class="order-info-row">
+                                <span class="order-info-label">City:</span>
+                                <span class="order-info-value">${order.city}, ${order.state}</span>
+                            </div>
+                            <div class="order-info-row">
+                                <span class="order-info-label">Pincode:</span>
+                                <span class="order-info-value">${order.pincode}</span>
+                            </div>
+                        </div>
+                        <div class="order-card-actions">
+                            <button class="order-action-btn edit-btn" onclick="editOrder(${index})">✏️ Edit</button>
+                            <button class="order-action-btn delete-btn" onclick="deleteOrder(${index})">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         // Handle customer order form submission
@@ -1772,7 +2061,7 @@
             
             const formData = new FormData(e.target);
             const orderData = {
-                orderNumber: orderCounter,
+                orderNumber: editingOrderIndex !== null ? orders[editingOrderIndex].orderNumber : orderCounter,
                 customerName: formData.get('customerName'),
                 businessName: formData.get('businessName'),
                 mobileNumber: formData.get('mobileNumber'),
@@ -1780,25 +2069,27 @@
                 city: formData.get('city'),
                 state: formData.get('state'),
                 pincode: formData.get('pincode'),
-                timestamp: new Date().toISOString()
+                timestamp: editingOrderIndex !== null ? orders[editingOrderIndex].timestamp : new Date().toISOString()
             };
             
-            // Save order
-            orders.push(orderData);
+            if (editingOrderIndex !== null) {
+                // Update existing order
+                orders[editingOrderIndex] = orderData;
+                alert(`✅ Order #${orderData.orderNumber} updated successfully!`);
+            } else {
+                // Save new order
+                orders.push(orderData);
+                orderCounter++;
+                localStorage.setItem('akOrderCounter', orderCounter.toString());
+                alert(`✅ Order #${orderData.orderNumber} saved successfully!`);
+            }
+            
+            // Save orders
             localStorage.setItem('akOrders', JSON.stringify(orders));
             
-            // Increment order counter
-            orderCounter++;
-            localStorage.setItem('akOrderCounter', orderCounter.toString());
-            
-            // Show success message
-            alert(`✅ Order #${orderData.orderNumber} saved successfully!`);
-            
-            // Reset form
-            e.target.reset();
-            
-            // Update serial number for next order
-            updateOrderSerial();
+            // Reset form and display orders
+            createNewOrder();
+            displaySavedOrders();
         });
 
         function openModal(type) {
