@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AK Brands Marketing - India's Leading B2B Liquidation Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -299,9 +302,10 @@
         .orders-actions {
             display: flex;
             gap: 1rem;
+            flex-wrap: wrap;
         }
 
-        .new-order-btn {
+        .new-order-btn, .export-btn {
             background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
             color: white;
             padding: 0.8rem 1.5rem;
@@ -312,7 +316,11 @@
             transition: all 0.3s;
         }
 
-        .new-order-btn:hover {
+        .export-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .new-order-btn:hover, .export-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(26, 188, 156, 0.4);
         }
@@ -402,6 +410,10 @@
             transition: all 0.3s;
         }
 
+        .form-field input[type="file"] {
+            padding: 0.5rem;
+        }
+
         .form-field input:focus,
         .form-field select:focus,
         .form-field textarea:focus {
@@ -413,6 +425,20 @@
         .form-field textarea {
             resize: vertical;
             min-height: 80px;
+        }
+
+        .status-group {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-group-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
         }
 
         .form-buttons {
@@ -528,21 +554,6 @@
             color: #555;
         }
 
-        .order-status-badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-top: 0.5rem;
-        }
-
-        .status-confirmed { background: #e3f2fd; color: #1976d2; }
-        .status-packed { background: #fff3e0; color: #f57c00; }
-        .status-dispatched { background: #f3e5f5; color: #7b1fa2; }
-        .status-delivered { background: #e8f5e9; color: #388e3c; }
-        .status-closed { background: #fce4ec; color: #c2185b; }
-
         .order-card-actions {
             display: flex;
             gap: 0.5rem;
@@ -570,6 +581,11 @@
             color: white;
         }
 
+        .download-btn {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+
         .order-action-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 3px 10px rgba(0,0,0,0.2);
@@ -580,6 +596,44 @@
             padding: 3rem;
             color: #95a5a6;
             font-size: 1.2rem;
+        }
+
+        /* Export Dropdown */
+        .export-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .export-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: white;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .export-dropdown-content.show {
+            display: block;
+        }
+
+        .export-dropdown-content button {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: none;
+            background: white;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .export-dropdown-content button:hover {
+            background: #f8f9fa;
         }
 
         /* Animation Section */
@@ -1386,6 +1440,14 @@
                 <h1 class="orders-title">📋 Customer Orders</h1>
                 <div class="orders-actions">
                     <button class="new-order-btn" onclick="createNewOrder()">➕ New Order</button>
+                    <div class="export-dropdown">
+                        <button class="export-btn" onclick="toggleExportMenu()">📥 Export All</button>
+                        <div class="export-dropdown-content" id="exportDropdown">
+                            <button onclick="exportAllToPDF()">📄 Export to PDF</button>
+                            <button onclick="exportAllToExcel()">📊 Export to Excel</button>
+                            <button onclick="exportAllToWord()">📝 Export to Word</button>
+                        </div>
+                    </div>
                     <button class="logout-btn" onclick="logoutOrders()">🚪 Logout</button>
                 </div>
             </div>
@@ -1473,14 +1535,7 @@
                         </div>
                         <div class="form-field">
                             <label>Condition of Stock *</label>
-                            <select name="stockCondition" required>
-                                <option value="">Select condition</option>
-                                <option value="New">New</option>
-                                <option value="Like New">Like New</option>
-                                <option value="Good">Good</option>
-                                <option value="Fair">Fair</option>
-                                <option value="Refurbished">Refurbished</option>
-                            </select>
+                            <input type="text" name="stockCondition" required placeholder="e.g., New, Like New, Good">
                         </div>
                     </div>
 
@@ -1496,37 +1551,75 @@
                                 <option value="UPI">UPI</option>
                             </select>
                         </div>
-                        <div class="form-field">
-                            <label>Token Amount (₹)</label>
-                            <input type="number" name="tokenAmount" placeholder="Enter token amount" min="0" step="0.01">
+                    </div>
+                    
+                    <div class="status-group">
+                        <div class="status-group-title">Token Payment</div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Token Amount (₹)</label>
+                                <input type="number" name="tokenAmount" placeholder="Enter token amount" min="0" step="0.01">
+                            </div>
+                            <div class="form-field">
+                                <label>Payment Reference</label>
+                                <input type="text" name="tokenReference" placeholder="Enter reference number">
+                            </div>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-field">
-                            <label>Part Payment 1 (₹)</label>
-                            <input type="number" name="partPayment1" placeholder="Enter amount" min="0" step="0.01">
-                        </div>
-                        <div class="form-field">
-                            <label>Part Payment 2 (₹)</label>
-                            <input type="number" name="partPayment2" placeholder="Enter amount" min="0" step="0.01">
-                        </div>
-                        <div class="form-field">
-                            <label>Part Payment 3 (₹)</label>
-                            <input type="number" name="partPayment3" placeholder="Enter amount" min="0" step="0.01">
-                        </div>
-                        <div class="form-field">
-                            <label>Final Payment (₹)</label>
-                            <input type="number" name="finalPayment" placeholder="Enter final amount" min="0" step="0.01">
+
+                    <div class="status-group">
+                        <div class="status-group-title">Part Payment 1</div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Amount (₹)</label>
+                                <input type="number" name="partPayment1" placeholder="Enter amount" min="0" step="0.01">
+                            </div>
+                            <div class="form-field">
+                                <label>Payment Reference</label>
+                                <input type="text" name="partPayment1Reference" placeholder="Enter reference number">
+                            </div>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-field">
-                            <label>Payment Reference</label>
-                            <input type="text" name="paymentReference" placeholder="Enter reference number">
+
+                    <div class="status-group">
+                        <div class="status-group-title">Part Payment 2</div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Amount (₹)</label>
+                                <input type="number" name="partPayment2" placeholder="Enter amount" min="0" step="0.01">
+                            </div>
+                            <div class="form-field">
+                                <label>Payment Reference</label>
+                                <input type="text" name="partPayment2Reference" placeholder="Enter reference number">
+                            </div>
                         </div>
-                        <div class="form-field">
-                            <label>Payment Date</label>
-                            <input type="date" name="paymentDate">
+                    </div>
+
+                    <div class="status-group">
+                        <div class="status-group-title">Part Payment 3</div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Amount (₹)</label>
+                                <input type="number" name="partPayment3" placeholder="Enter amount" min="0" step="0.01">
+                            </div>
+                            <div class="form-field">
+                                <label>Payment Reference</label>
+                                <input type="text" name="partPayment3Reference" placeholder="Enter reference number">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="status-group">
+                        <div class="status-group-title">Final Payment</div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Amount (₹)</label>
+                                <input type="number" name="finalPayment" placeholder="Enter final amount" min="0" step="0.01">
+                            </div>
+                            <div class="form-field">
+                                <label>Payment Reference</label>
+                                <input type="text" name="finalPaymentReference" placeholder="Enter reference number">
+                            </div>
                         </div>
                     </div>
 
@@ -1567,17 +1660,54 @@
 
                     <!-- 6. Order Status -->
                     <div class="form-section-title">📊 6. Order Status</div>
-                    <div class="form-row">
-                        <div class="form-field">
-                            <label>Current Status *</label>
-                            <select name="orderStatus" required>
-                                <option value="">Select status</option>
-                                <option value="Order Confirmed">Order Confirmed</option>
-                                <option value="Packed">Packed</option>
-                                <option value="Dispatched">Dispatched</option>
-                                <option value="Delivered">Delivered</option>
-                                <option value="Closed">Closed</option>
-                            </select>
+                    
+                    <div class="status-group">
+                        <div class="status-group-title">Order Confirmed</div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Date</label>
+                                <input type="date" name="orderConfirmedDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="status-group">
+                        <div class="status-group-title">Packed</div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Date</label>
+                                <input type="date" name="packedDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="status-group">
+                        <div class="status-group-title">Dispatched</div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Date</label>
+                                <input type="date" name="dispatchedDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="status-group">
+                        <div class="status-group-title">Delivered</div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Date</label>
+                                <input type="date" name="deliveredDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="status-group">
+                        <div class="status-group-title">Closed</div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Date</label>
+                                <input type="date" name="closedDate">
+                            </div>
                         </div>
                     </div>
 
@@ -1585,12 +1715,21 @@
                     <div class="form-section-title">📸 7. Confirmation Proofs</div>
                     <div class="form-row">
                         <div class="form-field">
-                            <label>WhatsApp Screenshot URL</label>
-                            <input type="url" name="whatsappScreenshot" placeholder="Enter image URL">
+                            <label>WhatsApp Screenshot</label>
+                            <input type="file" name="whatsappScreenshot" accept="image/*">
                         </div>
                         <div class="form-field">
-                            <label>Payment Screenshot URL</label>
-                            <input type="url" name="paymentScreenshot" placeholder="Enter image URL">
+                            <label>Payment Screenshot</label>
+                            <input type="file" name="paymentScreenshot" accept="image/*">
+                        </div>
+                    </div>
+
+                    <!-- 8. Remarks -->
+                    <div class="form-section-title">📝 8. Remarks</div>
+                    <div class="form-row">
+                        <div class="form-field full-width">
+                            <label>Additional Notes/Remarks</label>
+                            <textarea name="remarks" placeholder="Enter any additional notes or remarks" rows="4"></textarea>
                         </div>
                     </div>
 
@@ -1800,7 +1939,6 @@
         <p>&copy; 2024 AK Brands Marketing. All rights reserved.</p>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
         const ORDERS_PASSWORD = "AK2024@Secure";
         let isOrdersLoggedIn = false;
@@ -1822,16 +1960,26 @@
             }
         }
 
+        function toggleExportMenu() {
+            document.getElementById('exportDropdown').classList.toggle('show');
+        }
+
         window.onclick = function(event) {
-            if (!event.target.matches('.menu-button')) {
+            if (!event.target.matches('.menu-button') && !event.target.matches('.export-btn')) {
                 const dropdowns = document.getElementsByClassName('dropdown-content');
                 const animationSection = document.getElementById('animationSection');
+                const exportDropdown = document.getElementById('exportDropdown');
+                
                 for (let i = 0; i < dropdowns.length; i++) {
                     const openDropdown = dropdowns[i];
                     if (openDropdown.classList.contains('show')) {
                         openDropdown.classList.remove('show');
                         animationSection.classList.remove('paused');
                     }
+                }
+                
+                if (exportDropdown && exportDropdown.classList.contains('show')) {
+                    exportDropdown.classList.remove('show');
                 }
             }
         }
@@ -1919,9 +2067,8 @@
             const order = orders[index];
             const form = document.getElementById('customerOrderForm');
             
-            // Fill all form fields
             Object.keys(order).forEach(key => {
-                if (form[key] && key !== 'orderNumber' && key !== 'timestamp') {
+                if (form[key] && key !== 'orderNumber' && key !== 'timestamp' && key !== 'whatsappScreenshotData' && key !== 'paymentScreenshotData') {
                     form[key].value = order[key] || '';
                 }
             });
@@ -1961,10 +2108,6 @@
                     year: 'numeric' 
                 });
                 
-                const statusClass = order.orderStatus ? 
-                    'status-' + order.orderStatus.toLowerCase().replace(/\s+/g, '-') : 
-                    'status-confirmed';
-                
                 return `
                     <div class="order-card">
                         <div class="order-card-header">
@@ -1992,10 +2135,10 @@
                                 <span class="order-info-label">Total Amount:</span>
                                 <span class="order-info-value">₹${order.totalAmount || '0'}</span>
                             </div>
-                            ${order.orderStatus ? `<div class="order-status-badge ${statusClass}">${order.orderStatus}</div>` : ''}
                         </div>
                         <div class="order-card-actions">
                             <button class="order-action-btn edit-btn" onclick="editOrder(${index})">✏️ Edit</button>
+                            <button class="order-action-btn download-btn" onclick="downloadOrder(${index})">📥 Download</button>
                             <button class="order-action-btn delete-btn" onclick="deleteOrder(${index})">🗑️ Delete</button>
                         </div>
                     </div>
@@ -2003,7 +2146,15 @@
             }).join('');
         }
 
-        document.getElementById('customerOrderForm').addEventListener('submit', function(e) {
+        async function handleFileUpload(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        document.getElementById('customerOrderForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = new FormData(e.target);
@@ -2012,9 +2163,16 @@
                 timestamp: editingOrderIndex !== null ? orders[editingOrderIndex].timestamp : new Date().toISOString()
             };
             
-            // Collect all form data
             for (let [key, value] of formData.entries()) {
-                orderData[key] = value;
+                if (key === 'whatsappScreenshot' || key === 'paymentScreenshot') {
+                    if (value && value.size > 0) {
+                        orderData[key + 'Data'] = await handleFileUpload(value);
+                    } else if (editingOrderIndex !== null) {
+                        orderData[key + 'Data'] = orders[editingOrderIndex][key + 'Data'] || '';
+                    }
+                } else {
+                    orderData[key] = value;
+                }
             }
             
             if (editingOrderIndex !== null) {
@@ -2031,6 +2189,277 @@
             createNewOrder();
             displaySavedOrders();
         });
+
+        function downloadOrder(index) {
+            const order = orders[index];
+            const dropdown = document.createElement('div');
+            dropdown.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:2rem;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,0.3);z-index:4000;';
+            dropdown.innerHTML = `
+                <h3 style="margin-bottom:1rem;color:#2c3e50;">Download Order #${order.orderNumber}</h3>
+                <button onclick="exportOrderToPDF(${index}); document.body.removeChild(this.parentElement)" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#e74c3c;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:600;">📄 PDF</button>
+                <button onclick="exportOrderToExcel(${index}); document.body.removeChild(this.parentElement)" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#27ae60;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:600;">📊 Excel</button>
+                <button onclick="exportOrderToWord(${index}); document.body.removeChild(this.parentElement)" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#3498db;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:600;">📝 Word</button>
+                <button onclick="document.body.removeChild(this.parentElement)" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#95a5a6;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:600;">❌ Cancel</button>
+            `;
+            document.body.appendChild(dropdown);
+        }
+
+        function exportOrderToPDF(index) {
+            const order = orders[index];
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.text(`Order #${order.orderNumber}`, 105, 15, { align: 'center' });
+            
+            let y = 30;
+            const lineHeight = 7;
+            
+            const sections = [
+                { title: 'Customer Details', fields: ['customerName', 'businessName', 'mobileNumber', 'address', 'city', 'state', 'pincode'] },
+                { title: 'Order Identification', fields: ['lotNumber', 'lotDate', 'lotBookPerson'] },
+                { title: 'Product Details', fields: ['category', 'description', 'quantity', 'ratePerPiece', 'totalAmount', 'stockCondition'] },
+                { title: 'Payment Details', fields: ['paymentMethod', 'tokenAmount', 'tokenReference', 'partPayment1', 'partPayment1Reference', 'partPayment2', 'partPayment2Reference', 'partPayment3', 'partPayment3Reference', 'finalPayment', 'finalPaymentReference'] },
+                { title: 'Logistics Details', fields: ['dispatchFrom', 'dispatchTo', 'dispatchDate', 'courierName', 'lrNumber', 'parcelCount', 'estimatedDeliveryDate'] },
+                { title: 'Order Status', fields: ['orderConfirmedDate', 'packedDate', 'dispatchedDate', 'deliveredDate', 'closedDate'] },
+                { title: 'Remarks', fields: ['remarks'] }
+            ];
+            
+            sections.forEach(section => {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'bold');
+                doc.text(section.title, 15, y);
+                y += lineHeight;
+                
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                section.fields.forEach(field => {
+                    if (order[field]) {
+                        const label = field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        doc.text(`${label}: ${order[field]}`, 15, y);
+                        y += lineHeight;
+                        if (y > 280) {
+                            doc.addPage();
+                            y = 20;
+                        }
+                    }
+                });
+                y += 5;
+            });
+            
+            doc.save(`Order_${order.orderNumber}.pdf`);
+        }
+
+        function exportOrderToExcel(index) {
+            const order = orders[index];
+            const ws_data = [
+                ['Order Number', order.orderNumber],
+                ['Date', new Date(order.timestamp).toLocaleDateString()],
+                [],
+                ['CUSTOMER DETAILS'],
+                ['Name', order.customerName || ''],
+                ['Business Name', order.businessName || ''],
+                ['Mobile Number', order.mobileNumber || ''],
+                ['Address', order.address || ''],
+                ['City', order.city || ''],
+                ['State', order.state || ''],
+                ['Pincode', order.pincode || ''],
+                [],
+                ['ORDER IDENTIFICATION'],
+                ['Lot Number', order.lotNumber || ''],
+                ['Lot Date', order.lotDate || ''],
+                ['Lot Book Person', order.lotBookPerson || ''],
+                [],
+                ['PRODUCT DETAILS'],
+                ['Category', order.category || ''],
+                ['Description', order.description || ''],
+                ['Quantity', order.quantity || ''],
+                ['Rate Per Piece', order.ratePerPiece || ''],
+                ['Total Amount', order.totalAmount || ''],
+                ['Stock Condition', order.stockCondition || ''],
+                [],
+                ['PAYMENT DETAILS'],
+                ['Payment Method', order.paymentMethod || ''],
+                ['Token Amount', order.tokenAmount || ''],
+                ['Token Reference', order.tokenReference || ''],
+                ['Part Payment 1', order.partPayment1 || ''],
+                ['Part Payment 1 Reference', order.partPayment1Reference || ''],
+                ['Part Payment 2', order.partPayment2 || ''],
+                ['Part Payment 2 Reference', order.partPayment2Reference || ''],
+                ['Part Payment 3', order.partPayment3 || ''],
+                ['Part Payment 3 Reference', order.partPayment3Reference || ''],
+                ['Final Payment', order.finalPayment || ''],
+                ['Final Payment Reference', order.finalPaymentReference || ''],
+                [],
+                ['LOGISTICS DETAILS'],
+                ['Dispatch From', order.dispatchFrom || ''],
+                ['Dispatch To', order.dispatchTo || ''],
+                ['Dispatch Date', order.dispatchDate || ''],
+                ['Courier Name', order.courierName || ''],
+                ['LR Number', order.lrNumber || ''],
+                ['Parcel Count', order.parcelCount || ''],
+                ['Estimated Delivery Date', order.estimatedDeliveryDate || ''],
+                [],
+                ['ORDER STATUS'],
+                ['Order Confirmed Date', order.orderConfirmedDate || ''],
+                ['Packed Date', order.packedDate || ''],
+                ['Dispatched Date', order.dispatchedDate || ''],
+                ['Delivered Date', order.deliveredDate || ''],
+                ['Closed Date', order.closedDate || ''],
+                [],
+                ['REMARKS'],
+                ['Notes', order.remarks || '']
+            ];
+            
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, `Order ${order.orderNumber}`);
+            XLSX.writeFile(wb, `Order_${order.orderNumber}.xlsx`);
+        }
+
+        function exportOrderToWord(index) {
+            const order = orders[index];
+            let content = `ORDER #${order.orderNumber}\n`;
+            content += `Date: ${new Date(order.timestamp).toLocaleDateString()}\n\n`;
+            
+            content += `CUSTOMER DETAILS\n`;
+            content += `Name: ${order.customerName || ''}\n`;
+            content += `Business Name: ${order.businessName || ''}\n`;
+            content += `Mobile Number: ${order.mobileNumber || ''}\n`;
+            content += `Address: ${order.address || ''}\n`;
+            content += `City: ${order.city || ''}\n`;
+            content += `State: ${order.state || ''}\n`;
+            content += `Pincode: ${order.pincode || ''}\n\n`;
+            
+            content += `ORDER IDENTIFICATION\n`;
+            content += `Lot Number: ${order.lotNumber || ''}\n`;
+            content += `Lot Date: ${order.lotDate || ''}\n`;
+            content += `Lot Book Person: ${order.lotBookPerson || ''}\n\n`;
+            
+            content += `PRODUCT DETAILS\n`;
+            content += `Category: ${order.category || ''}\n`;
+            content += `Description: ${order.description || ''}\n`;
+            content += `Quantity: ${order.quantity || ''}\n`;
+            content += `Rate Per Piece: ${order.ratePerPiece || ''}\n`;
+            content += `Total Amount: ${order.totalAmount || ''}\n`;
+            content += `Stock Condition: ${order.stockCondition || ''}\n\n`;
+            
+            content += `PAYMENT DETAILS\n`;
+            content += `Payment Method: ${order.paymentMethod || ''}\n`;
+            content += `Token Amount: ${order.tokenAmount || ''}\n`;
+            content += `Token Reference: ${order.tokenReference || ''}\n`;
+            content += `Part Payment 1: ${order.partPayment1 || ''}\n`;
+            content += `Part Payment 1 Reference: ${order.partPayment1Reference || ''}\n`;
+            content += `Part Payment 2: ${order.partPayment2 || ''}\n`;
+            content += `Part Payment 2 Reference: ${order.partPayment2Reference || ''}\n`;
+            content += `Part Payment 3: ${order.partPayment3 || ''}\n`;
+            content += `Part Payment 3 Reference: ${order.partPayment3Reference || ''}\n`;
+            content += `Final Payment: ${order.finalPayment || ''}\n`;
+            content += `Final Payment Reference: ${order.finalPaymentReference || ''}\n\n`;
+            
+            content += `LOGISTICS DETAILS\n`;
+            content += `Dispatch From: ${order.dispatchFrom || ''}\n`;
+            content += `Dispatch To: ${order.dispatchTo || ''}\n`;
+            content += `Dispatch Date: ${order.dispatchDate || ''}\n`;
+            content += `Courier Name: ${order.courierName || ''}\n`;
+            content += `LR Number: ${order.lrNumber || ''}\n`;
+            content += `Parcel Count: ${order.parcelCount || ''}\n`;
+            content += `Estimated Delivery Date: ${order.estimatedDeliveryDate || ''}\n\n`;
+            
+            content += `ORDER STATUS\n`;
+            content += `Order Confirmed Date: ${order.orderConfirmedDate || ''}\n`;
+            content += `Packed Date: ${order.packedDate || ''}\n`;
+            content += `Dispatched Date: ${order.dispatchedDate || ''}\n`;
+            content += `Delivered Date: ${order.deliveredDate || ''}\n`;
+            content += `Closed Date: ${order.closedDate || ''}\n\n`;
+            
+            content += `REMARKS\n`;
+            content += `${order.remarks || ''}\n`;
+            
+            const blob = new Blob([content], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Order_${order.orderNumber}.doc`;
+            a.click();
+        }
+
+        function exportAllToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('AK Brands Marketing - All Orders', 105, 15, { align: 'center' });
+            
+            orders.forEach((order, index) => {
+                if (index > 0) doc.addPage();
+                
+                doc.setFontSize(16);
+                doc.text(`Order #${order.orderNumber}`, 15, 30);
+                
+                let y = 40;
+                const lineHeight = 7;
+                
+                doc.setFontSize(10);
+                doc.text(`Customer: ${order.customerName || 'N/A'}`, 15, y); y += lineHeight;
+                doc.text(`Business: ${order.businessName || 'N/A'}`, 15, y); y += lineHeight;
+                doc.text(`Lot Number: ${order.lotNumber || 'N/A'}`, 15, y); y += lineHeight;
+                doc.text(`Category: ${order.category || 'N/A'}`, 15, y); y += lineHeight;
+                doc.text(`Total Amount: ₹${order.totalAmount || '0'}`, 15, y); y += lineHeight;
+            });
+            
+            doc.save('All_Orders.pdf');
+            document.getElementById('exportDropdown').classList.remove('show');
+        }
+
+        function exportAllToExcel() {
+            const ws_data = [['Order #', 'Customer', 'Business', 'Lot Number', 'Category', 'Total Amount', 'Date']];
+            
+            orders.forEach(order => {
+                ws_data.push([
+                    order.orderNumber,
+                    order.customerName || '',
+                    order.businessName || '',
+                    order.lotNumber || '',
+                    order.category || '',
+                    order.totalAmount || '',
+                    new Date(order.timestamp).toLocaleDateString()
+                ]);
+            });
+            
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'All Orders');
+            XLSX.writeFile(wb, 'All_Orders.xlsx');
+            document.getElementById('exportDropdown').classList.remove('show');
+        }
+
+        function exportAllToWord() {
+            let content = 'AK BRANDS MARKETING - ALL ORDERS\n\n';
+            
+            orders.forEach(order => {
+                content += `ORDER #${order.orderNumber}\n`;
+                content += `Customer: ${order.customerName || 'N/A'}\n`;
+                content += `Business: ${order.businessName || 'N/A'}\n`;
+                content += `Lot Number: ${order.lotNumber || 'N/A'}\n`;
+                content += `Category: ${order.category || 'N/A'}\n`;
+                content += `Total Amount: ₹${order.totalAmount || '0'}\n`;
+                content += `Date: ${new Date(order.timestamp).toLocaleDateString()}\n\n`;
+                content += '---\n\n';
+            });
+            
+            const blob = new Blob([content], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'All_Orders.doc';
+            a.click();
+            document.getElementById('exportDropdown').classList.remove('show');
+        }
 
         function openModal(type) {
             const modal = document.getElementById(type + 'Modal');
