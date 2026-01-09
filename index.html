@@ -651,10 +651,12 @@
             display: flex;
             gap: 0.5rem;
             margin-top: 1rem;
+            flex-wrap: wrap;
         }
 
         .order-action-btn {
             flex: 1;
+            min-width: 100px;
             padding: 0.6rem;
             border: none;
             border-radius: 8px;
@@ -676,6 +678,11 @@
 
         .download-btn {
             background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+
+        .whatsapp-btn {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
             color: white;
         }
 
@@ -702,7 +709,7 @@
             position: absolute;
             right: 0;
             background: white;
-            min-width: 160px;
+            min-width: 180px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.2);
             border-radius: 8px;
             z-index: 1;
@@ -1283,7 +1290,7 @@
             border-left: 4px solid #3498db;
         }
 
-        .whatsapp-btn {
+        .whatsapp-btn-success {
             display: inline-block;
             background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
             color: white;
@@ -1297,7 +1304,7 @@
             box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
         }
 
-        .whatsapp-btn:hover {
+        .whatsapp-btn-success:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 30px rgba(37, 211, 102, 0.6);
         }
@@ -1448,7 +1455,7 @@
             .discount-code { font-size: 1.5rem; letter-spacing: 2px; }
             .discount-box { padding: 1rem; }
             .privacy-notice { font-size: 0.85rem; padding: 0.8rem; }
-            .whatsapp-btn { font-size: 0.9rem; padding: 0.8rem 1.5rem; }
+            .whatsapp-btn-success { font-size: 0.9rem; padding: 0.8rem 1.5rem; }
             .close-success-btn { font-size: 0.9rem; padding: 0.7rem 1.5rem; }
             .orders-title { font-size: 2rem; }
             .orders-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
@@ -1457,6 +1464,8 @@
             .form-buttons { flex-direction: column; }
             .otp-digit { width: 40px; height: 50px; font-size: 1.2rem; }
             .otp-input-container { gap: 0.3rem; }
+            .order-card-actions { flex-direction: column; }
+            .order-action-btn { min-width: auto; }
         }
 
         @media (max-width: 480px) {
@@ -1575,6 +1584,7 @@
                             <button onclick="exportAllToPDF()">📄 Export to PDF</button>
                             <button onclick="exportAllToExcel()">📊 Export to Excel</button>
                             <button onclick="exportAllToWord()">📝 Export to Word</button>
+                            <button onclick="shareAllViaWhatsApp()">📱 Send via WhatsApp</button>
                         </div>
                     </div>
                     <button class="logout-btn" onclick="logoutOrders()">🚪 Logout</button>
@@ -1831,7 +1841,7 @@
                 <strong>🔒 Your Data is Safe With Us</strong><br>
                 We will not use or share your data with any 3rd party until we get your confirmation. Your privacy and trust are our top priorities.
             </div>
-            <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" class="whatsapp-btn">
+            <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" class="whatsapp-btn-success">
                 📱 Join WhatsApp Community
             </a>
             <br>
@@ -2271,6 +2281,7 @@
                         <div class="order-card-actions">
                             <button class="order-action-btn edit-btn" onclick="editOrder(${index})">✏️ Edit</button>
                             <button class="order-action-btn download-btn" onclick="downloadOrder(${index})">📥 Download</button>
+                            <button class="order-action-btn whatsapp-btn" onclick="shareOrderViaWhatsApp(${index})">📱 WhatsApp</button>
                             <button class="order-action-btn delete-btn" onclick="deleteOrder(${index})">🗑️ Delete</button>
                         </div>
                     </div>
@@ -2306,6 +2317,98 @@
             displaySavedOrders();
         });
 
+        function formatOrderForWhatsApp(order) {
+            let message = `📋 *AK BRANDS MARKETING*\n`;
+            message += `_${COMPANY_INFO.tagline}_\n\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+            message += `📦 *ORDER #${order.orderNumber}*\n`;
+            message += `📅 Date: ${new Date(order.timestamp).toLocaleDateString('en-IN')}\n\n`;
+            
+            message += `👤 *CUSTOMER DETAILS*\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━\n`;
+            if (order.customerName) message += `Name: ${order.customerName}\n`;
+            if (order.businessName) message += `Business: ${order.businessName}\n`;
+            if (order.mobileNumber) message += `Mobile: ${order.mobileNumber}\n`;
+            if (order.city) message += `City: ${order.city}\n`;
+            message += `\n`;
+            
+            message += `📦 *ORDER DETAILS*\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━\n`;
+            if (order.lotNumber) message += `Lot Number: ${order.lotNumber}\n`;
+            if (order.category) message += `Category: ${order.category}\n`;
+            if (order.quantity) message += `Quantity: ${order.quantity}\n`;
+            if (order.totalAmount) message += `Total Amount: ₹${order.totalAmount}\n`;
+            message += `\n`;
+            
+            message += `💳 *PAYMENT TRACKING*\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━\n`;
+            if (order.paymentMethod) message += `Method: ${order.paymentMethod}\n`;
+            if (order.paidAmount) message += `Paid: ₹${order.paidAmount}\n`;
+            if (order.balanceAmount) message += `Balance: ₹${order.balanceAmount}\n`;
+            if (order.paymentStatus) message += `Status: ${order.paymentStatus}\n`;
+            message += `\n`;
+            
+            message += `📊 *ORDER STATUS*\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━\n`;
+            if (order.orderStatus) message += `Status: ${order.orderStatus}\n`;
+            if (order.dispatchDate) message += `Dispatch: ${order.dispatchDate}\n`;
+            if (order.deliveryDate) message += `Delivery: ${order.deliveryDate}\n`;
+            
+            if (order.notes) {
+                message += `\n📝 *NOTES*\n`;
+                message += `━━━━━━━━━━━━━━━━━━━━\n`;
+                message += `${order.notes}\n`;
+            }
+            
+            message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+            message += `📧 ${COMPANY_INFO.email}\n`;
+            message += `📱 ${COMPANY_INFO.phone}\n`;
+            message += `📍 ${COMPANY_INFO.location}`;
+            
+            return message;
+        }
+
+        function shareOrderViaWhatsApp(index) {
+            const order = orders[index];
+            const message = formatOrderForWhatsApp(order);
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function shareAllViaWhatsApp() {
+            if (orders.length === 0) {
+                alert('No orders to share!');
+                return;
+            }
+            
+            let message = `📋 *AK BRANDS MARKETING*\n`;
+            message += `_${COMPANY_INFO.tagline}_\n\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+            message += `📦 *ALL ORDERS SUMMARY*\n`;
+            message += `Total Orders: ${orders.length}\n\n`;
+            
+            orders.forEach((order, index) => {
+                message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+                message += `*Order #${order.orderNumber}*\n`;
+                message += `Date: ${new Date(order.timestamp).toLocaleDateString('en-IN')}\n`;
+                if (order.customerName) message += `Customer: ${order.customerName}\n`;
+                if (order.lotNumber) message += `Lot: ${order.lotNumber}\n`;
+                if (order.category) message += `Category: ${order.category}\n`;
+                if (order.totalAmount) message += `Amount: ₹${order.totalAmount}\n`;
+                if (order.orderStatus) message += `Status: ${order.orderStatus}\n`;
+                message += `\n`;
+            });
+            
+            message += `━━━━━━━━━━━━━━━━━━━━\n`;
+            message += `📧 ${COMPANY_INFO.email}\n`;
+            message += `📱 ${COMPANY_INFO.phone}\n`;
+            message += `📍 ${COMPANY_INFO.location}`;
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            document.getElementById('exportDropdown').classList.remove('show');
+        }
+
         function downloadOrder(index) {
             const order = orders[index];
             const dropdown = document.createElement('div');
@@ -2315,6 +2418,7 @@
                 <button onclick="exportOrderToPDF(${index}); document.body.removeChild(this.parentElement)" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#e74c3c;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:600;">📄 PDF</button>
                 <button onclick="exportOrderToExcel(${index}); document.body.removeChild(this.parentElement)" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#27ae60;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:600;">📊 Excel</button>
                 <button onclick="exportOrderToWord(${index}); document.body.removeChild(this.parentElement)" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#3498db;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:600;">📝 Word</button>
+                <button onclick="shareOrderViaWhatsApp(${index}); document.body.removeChild(this.parentElement)" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#25D366;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:600;">📱 WhatsApp</button>
                 <button onclick="document.body.removeChild(this.parentElement)" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#95a5a6;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:600;">❌ Cancel</button>
             `;
             document.body.appendChild(dropdown);
