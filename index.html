@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.0/docx.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -204,6 +205,64 @@
             display: block;
         }
 
+        /* Universal Card Actions */
+        .universal-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .view-btn {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .download-pdf-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .download-excel-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+
+        .download-word-btn {
+            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+        }
+
+        .whatsapp-btn {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+        }
+
         /* Database Card Styles */
         .database-card {
             background: white;
@@ -321,45 +380,6 @@
             color: #2c3e50;
         }
 
-        .delivery-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .delivery-action-btn {
-            flex: 1;
-            min-width: 150px;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-
-        .copy-btn {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-        }
-
-        .whatsapp-delivery-btn {
-            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-            color: white;
-        }
-
-        .clear-delivery-btn {
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-            color: white;
-        }
-
-        .delivery-action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
         /* Saved Delivery Addresses */
         .saved-delivery-section {
             margin-top: 3rem;
@@ -418,10 +438,106 @@
             overflow-y: auto;
         }
 
-        .delivery-card-actions {
+        /* View Modal */
+        .view-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
+        }
+
+        .view-modal.show {
             display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+            padding: 2rem;
+        }
+
+        .view-modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 800px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            animation: slideUp 0.5s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .view-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .view-modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .view-close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #95a5a6;
+            transition: all 0.3s;
+        }
+
+        .view-close-btn:hover {
+            color: #e74c3c;
+            transform: rotate(90deg);
+        }
+
+        .view-section {
+            margin-bottom: 2rem;
+        }
+
+        .view-section-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 0.5rem;
+        }
+
+        .view-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .view-info-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .view-info-label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .view-info-value {
+            font-size: 1rem;
+            color: #2c3e50;
+            font-weight: 500;
         }
 
         /* OTP Modal */
@@ -952,50 +1068,6 @@
 
         .order-info-value {
             color: #555;
-        }
-
-        .order-card-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .order-action-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 0.6rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .edit-btn {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-        }
-
-        .delete-btn {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color: white;
-        }
-
-        .download-btn {
-            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-            color: white;
-        }
-
-        .whatsapp-btn {
-            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-            color: white;
-        }
-
-        .order-action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
         }
 
         .no-orders {
@@ -1771,8 +1843,8 @@
             .form-buttons { flex-direction: column; }
             .otp-digit { width: 40px; height: 50px; font-size: 1.2rem; }
             .otp-input-container { gap: 0.3rem; }
-            .order-card-actions, .delivery-card-actions { flex-direction: column; }
-            .order-action-btn, .delivery-action-btn { min-width: auto; }
+            .universal-actions { flex-direction: column; }
+            .action-btn { min-width: auto; }
             .tab-btn { font-size: 0.9rem; padding: 0.8rem 1rem; min-width: 120px; }
             .tabs-container { overflow-x: auto; }
         }
@@ -1836,6 +1908,17 @@
             <div class="delivery-check">✅</div>
         </div>
     </header>
+
+    <!-- View Modal -->
+    <div id="viewModal" class="view-modal">
+        <div class="view-modal-content">
+            <div class="view-modal-header">
+                <h2 class="view-modal-title" id="viewModalTitle">View Details</h2>
+                <button class="view-close-btn" onclick="closeViewModal()">&times;</button>
+            </div>
+            <div id="viewModalBody"></div>
+        </div>
+    </div>
 
     <div id="otpModal" class="otp-modal">
         <div class="otp-content">
@@ -2350,10 +2433,15 @@
 
                     <div class="delivery-address-preview" id="deliveryPreview" style="display: none;"></div>
                     
-                    <div class="delivery-actions" id="deliveryActions" style="display: none;">
-                        <button class="delivery-action-btn copy-btn" onclick="copyDeliveryAddress()">📋 Copy</button>
-                        <button class="delivery-action-btn whatsapp-delivery-btn" onclick="shareDeliveryViaWhatsApp()">📱 WhatsApp</button>
-                        <button class="delivery-action-btn clear-delivery-btn" onclick="clearDeliveryForm()">🗑️ Clear</button>
+                    <div class="universal-actions" id="deliveryActions" style="display: none;">
+                        <button class="action-btn view-btn" onclick="viewCurrentDelivery()">👁️ View</button>
+                        <button class="action-btn edit-btn" onclick="editCurrentDelivery()">✏️ Edit</button>
+                        <button class="action-btn download-pdf-btn" onclick="downloadDeliveryPDF()">📄 PDF</button>
+                        <button class="action-btn download-excel-btn" onclick="downloadDeliveryExcel()">📊 Excel</button>
+                        <button class="action-btn download-word-btn" onclick="downloadDeliveryWord()">📝 Word</button>
+                        <button class="action-btn whatsapp-btn" onclick="shareDeliveryViaWhatsApp()">📱 WhatsApp</button>
+                        <button class="action-btn save-btn" onclick="saveCurrentDelivery()">💾 Save</button>
+                        <button class="action-btn delete-btn" onclick="clearDeliveryForm()">🗑️ Clear</button>
                     </div>
                 </div>
 
@@ -2590,6 +2678,7 @@
         let deliveryAddresses = JSON.parse(localStorage.getItem('akDeliveryAddresses') || '[]');
         let deliveryCounter = parseInt(localStorage.getItem('akDeliveryCounter') || '1');
         let currentDeliveryAddress = '';
+        let currentDeliveryData = null;
         
         // Customer Database System
         let customers = JSON.parse(localStorage.getItem('akCustomers') || '[]');
@@ -2610,6 +2699,399 @@
         let otpExpiryTime = null;
         let enteredPhone = '';
 
+        // Universal View Modal Functions
+        function openViewModal(title, data, type) {
+            const modal = document.getElementById('viewModal');
+            const modalTitle = document.getElementById('viewModalTitle');
+            const modalBody = document.getElementById('viewModalBody');
+            
+            modalTitle.textContent = title;
+            
+            let html = '';
+            
+            if (type === 'customer') {
+                html = `
+                    <div class="view-section">
+                        <h3 class="view-section-title">👤 Customer Information</h3>
+                        <div class="view-info-grid">
+                            <div class="view-info-item">
+                                <div class="view-info-label">Customer ID</div>
+                                <div class="view-info-value">#${data.id}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Name</div>
+                                <div class="view-info-value">${data.customerName}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Contact</div>
+                                <div class="view-info-value">${data.contactDetails}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">City</div>
+                                <div class="view-info-value">${data.city}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">State</div>
+                                <div class="view-info-value">${data.state}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Pincode</div>
+                                <div class="view-info-value">${data.pincode}</div>
+                            </div>
+                        </div>
+                        <div class="view-info-item" style="margin-top: 1rem;">
+                            <div class="view-info-label">Full Address</div>
+                            <div class="view-info-value">${data.address}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'supplier') {
+                html = `
+                    <div class="view-section">
+                        <h3 class="view-section-title">🏭 Supplier Information</h3>
+                        <div class="view-info-grid">
+                            <div class="view-info-item">
+                                <div class="view-info-label">Supplier ID</div>
+                                <div class="view-info-value">#${data.id}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Name</div>
+                                <div class="view-info-value">${data.supplierName}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Contact</div>
+                                <div class="view-info-value">${data.contactDetails}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">City</div>
+                                <div class="view-info-value">${data.city}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">State</div>
+                                <div class="view-info-value">${data.state}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Pincode</div>
+                                <div class="view-info-value">${data.pincode}</div>
+                            </div>
+                        </div>
+                        <div class="view-info-item" style="margin-top: 1rem;">
+                            <div class="view-info-label">Full Address</div>
+                            <div class="view-info-value">${data.address}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'order') {
+                html = `
+                    <div class="view-section">
+                        <h3 class="view-section-title">👤 Customer Details</h3>
+                        <div class="view-info-grid">
+                            <div class="view-info-item">
+                                <div class="view-info-label">Customer Name</div>
+                                <div class="view-info-value">${data.customerName || 'N/A'}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Business Name</div>
+                                <div class="view-info-value">${data.businessName || 'N/A'}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Mobile</div>
+                                <div class="view-info-value">${data.mobileNumber || 'N/A'}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">City</div>
+                                <div class="view-info-value">${data.city || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="view-section">
+                        <h3 class="view-section-title">📦 Order Details</h3>
+                        <div class="view-info-grid">
+                            <div class="view-info-item">
+                                <div class="view-info-label">Lot Number</div>
+                                <div class="view-info-value">${data.lotNumber || 'N/A'}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Category</div>
+                                <div class="view-info-value">${data.category || 'N/A'}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Quantity</div>
+                                <div class="view-info-value">${data.quantity || 'N/A'}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Total Amount</div>
+                                <div class="view-info-value">₹${data.totalAmount || '0'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="view-section">
+                        <h3 class="view-section-title">💳 Payment Details</h3>
+                        <div class="view-info-grid">
+                            <div class="view-info-item">
+                                <div class="view-info-label">Payment Method</div>
+                                <div class="view-info-value">${data.paymentMethod || 'N/A'}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Paid Amount</div>
+                                <div class="view-info-value">₹${data.paidAmount || '0'}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Balance</div>
+                                <div class="view-info-value">₹${data.balanceAmount || '0'}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Status</div>
+                                <div class="view-info-value">${data.paymentStatus || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="view-section">
+                        <h3 class="view-section-title">📊 Order Status</h3>
+                        <div class="view-info-grid">
+                            <div class="view-info-item">
+                                <div class="view-info-label">Current Status</div>
+                                <div class="view-info-value">${data.orderStatus || 'N/A'}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Dispatch Date</div>
+                                <div class="view-info-value">${data.dispatchDate || 'N/A'}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Delivery Date</div>
+                                <div class="view-info-value">${data.deliveryDate || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${data.notes ? `
+                    <div class="view-section">
+                        <h3 class="view-section-title">📝 Notes</h3>
+                        <div class="view-info-item">
+                            <div class="view-info-value">${data.notes}</div>
+                        </div>
+                    </div>
+                    ` : ''}
+                `;
+            } else if (type === 'po') {
+                html = `
+                    <div class="view-section">
+                        <h3 class="view-section-title">🏭 Supplier Details</h3>
+                        <div class="view-info-grid">
+                            <div class="view-info-item">
+                                <div class="view-info-label">Supplier Name</div>
+                                <div class="view-info-value">${data.supplierName}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Contact</div>
+                                <div class="view-info-value">${data.supplierContact}</div>
+                            </div>
+                        </div>
+                        <div class="view-info-item" style="margin-top: 1rem;">
+                            <div class="view-info-label">Address</div>
+                            <div class="view-info-value">${data.supplierAddress}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="view-section">
+                        <h3 class="view-section-title">👤 Customer Details</h3>
+                        <div class="view-info-grid">
+                            <div class="view-info-item">
+                                <div class="view-info-label">Customer Name</div>
+                                <div class="view-info-value">${data.customerName}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Contact</div>
+                                <div class="view-info-value">${data.customerContact}</div>
+                            </div>
+                        </div>
+                        <div class="view-info-item" style="margin-top: 1rem;">
+                            <div class="view-info-label">Delivery Address</div>
+                            <div class="view-info-value">${data.deliveryAddress}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="view-section">
+                        <h3 class="view-section-title">📦 Product Details</h3>
+                        <div class="view-info-grid">
+                            <div class="view-info-item">
+                                <div class="view-info-label">Description</div>
+                                <div class="view-info-value">${data.productDescription}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Quantity</div>
+                                <div class="view-info-value">${data.quantity}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Unit Price</div>
+                                <div class="view-info-value">₹${data.unitPrice}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Total Amount</div>
+                                <div class="view-info-value">₹${data.totalAmount}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="view-section">
+                        <h3 class="view-section-title">🚚 Delivery & Payment</h3>
+                        <div class="view-info-grid">
+                            <div class="view-info-item">
+                                <div class="view-info-label">Delivery Date</div>
+                                <div class="view-info-value">${data.deliveryDate}</div>
+                            </div>
+                            <div class="view-info-item">
+                                <div class="view-info-label">Payment Terms</div>
+                                <div class="view-info-value">${data.paymentTerms}</div>
+                            </div>
+                        </div>
+                        ${data.specialInstructions ? `
+                        <div class="view-info-item" style="margin-top: 1rem;">
+                            <div class="view-info-label">Special Instructions</div>
+                            <div class="view-info-value">${data.specialInstructions}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            } else if (type === 'delivery') {
+                html = `
+                    <div class="view-section">
+                        <h3 class="view-section-title">📦 Delivery Address</h3>
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; font-family: 'Courier New', monospace; white-space: pre-wrap; line-height: 1.8;">
+${formatDeliveryAddress(data)}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            modalBody.innerHTML = html;
+            modal.classList.add('show');
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').classList.remove('show');
+        }
+
+        // Universal Action Functions
+        function renderUniversalActions(index, type) {
+            const actions = `
+                <div class="universal-actions">
+                    <button class="action-btn view-btn" onclick="viewItem(${index}, '${type}')">👁️ View</button>
+                    <button class="action-btn edit-btn" onclick="editItem(${index}, '${type}')">✏️ Edit</button>
+                    <button class="action-btn download-pdf-btn" onclick="downloadItemPDF(${index}, '${type}')">📄 PDF</button>
+                    <button class="action-btn download-excel-btn" onclick="downloadItemExcel(${index}, '${type}')">📊 Excel</button>
+                    <button class="action-btn download-word-btn" onclick="downloadItemWord(${index}, '${type}')">📝 Word</button>
+                    <button class="action-btn whatsapp-btn" onclick="shareItemViaWhatsApp(${index}, '${type}')">📱 WhatsApp</button>
+                    <button class="action-btn delete-btn" onclick="deleteItem(${index}, '${type}')">🗑️ Delete</button>
+                </div>
+            `;
+            return actions;
+        }
+
+        function viewItem(index, type) {
+            let data, title;
+            
+            switch(type) {
+                case 'customer':
+                    data = customers[index];
+                    title = `Customer: ${data.customerName}`;
+                    break;
+                case 'supplier':
+                    data = suppliers[index];
+                    title = `Supplier: ${data.supplierName}`;
+                    break;
+                case 'order':
+                    data = orders[index];
+                    title = `Order #${data.orderNumber}`;
+                    break;
+                case 'po':
+                    data = purchaseOrders[index];
+                    title = `PO #${data.poNumber}`;
+                    break;
+                case 'delivery':
+                    data = deliveryAddresses[index];
+                    title = `Delivery #${data.id}`;
+                    break;
+            }
+            
+            openViewModal(title, data, type);
+        }
+
+        function editItem(index, type) {
+            switch(type) {
+                case 'customer':
+                    editCustomer(index);
+                    break;
+                case 'supplier':
+                    editSupplier(index);
+                    break;
+                case 'order':
+                    editOrder(index);
+                    break;
+                case 'po':
+                    editPO(index);
+                    break;
+                case 'delivery':
+                    editDelivery(index);
+                    break;
+            }
+        }
+
+        function deleteItem(index, type) {
+            switch(type) {
+                case 'customer':
+                    deleteCustomer(index);
+                    break;
+                case 'supplier':
+                    deleteSupplier(index);
+                    break;
+                case 'order':
+                    deleteOrder(index);
+                    break;
+                case 'po':
+                    deletePO(index);
+                    break;
+                case 'delivery':
+                    deleteDelivery(index);
+                    break;
+            }
+        }
+
+        function downloadItemPDF(index, type) {
+            alert(`PDF download for ${type} #${index + 1} - Feature coming soon!`);
+        }
+
+        function downloadItemExcel(index, type) {
+            alert(`Excel download for ${type} #${index + 1} - Feature coming soon!`);
+        }
+
+        function downloadItemWord(index, type) {
+            alert(`Word download for ${type} #${index + 1} - Feature coming soon!`);
+        }
+
+        function shareItemViaWhatsApp(index, type) {
+            switch(type) {
+                case 'customer':
+                    shareCustomerViaWhatsApp(index);
+                    break;
+                case 'supplier':
+                    shareSupplierViaWhatsApp(index);
+                    break;
+                case 'order':
+                    shareOrderViaWhatsApp(index);
+                    break;
+                case 'po':
+                    sharePOViaWhatsApp(index);
+                    break;
+                case 'delivery':
+                    shareDeliveryFromCard(index);
+                    break;
+            }
+        }
+
         // Tab Switching
         function switchTab(tab) {
             currentTab = tab;
@@ -2628,6 +3110,7 @@
                 displaySuppliers();
             } else if (tab === 'orders') {
                 document.getElementById('ordersTab').classList.add('active');
+                displaySavedOrders();
             } else if (tab === 'po') {
                 document.getElementById('poTab').classList.add('active');
                 displaySavedPOs();
@@ -2700,27 +3183,15 @@
                                 <span class="database-info-value">${customer.contactDetails}</span>
                             </div>
                             <div class="database-info-row">
-                                <span class="database-info-label">Address:</span>
-                                <span class="database-info-value">${customer.address}</span>
-                            </div>
-                            <div class="database-info-row">
                                 <span class="database-info-label">City:</span>
-                                <span class="database-info-value">${customer.city}</span>
-                            </div>
-                            <div class="database-info-row">
-                                <span class="database-info-label">State:</span>
-                                <span class="database-info-value">${customer.state}</span>
+                                <span class="database-info-value">${customer.city}, ${customer.state}</span>
                             </div>
                             <div class="database-info-row">
                                 <span class="database-info-label">Pincode:</span>
                                 <span class="database-info-value">${customer.pincode}</span>
                             </div>
                         </div>
-                        <div class="order-card-actions">
-                            <button class="order-action-btn edit-btn" onclick="editCustomer(${index})">✏️ Edit</button>
-                            <button class="order-action-btn whatsapp-btn" onclick="shareCustomerViaWhatsApp(${index})">📱 WhatsApp</button>
-                            <button class="order-action-btn delete-btn" onclick="deleteCustomer(${index})">🗑️ Delete</button>
-                        </div>
+                        ${renderUniversalActions(index, 'customer')}
                     </div>
                 `;
             }).join('');
@@ -2880,27 +3351,15 @@
                                 <span class="database-info-value">${supplier.contactDetails}</span>
                             </div>
                             <div class="database-info-row">
-                                <span class="database-info-label">Address:</span>
-                                <span class="database-info-value">${supplier.address}</span>
-                            </div>
-                            <div class="database-info-row">
                                 <span class="database-info-label">City:</span>
-                                <span class="database-info-value">${supplier.city}</span>
-                            </div>
-                            <div class="database-info-row">
-                                <span class="database-info-label">State:</span>
-                                <span class="database-info-value">${supplier.state}</span>
+                                <span class="database-info-value">${supplier.city}, ${supplier.state}</span>
                             </div>
                             <div class="database-info-row">
                                 <span class="database-info-label">Pincode:</span>
                                 <span class="database-info-value">${supplier.pincode}</span>
                             </div>
                         </div>
-                        <div class="order-card-actions">
-                            <button class="order-action-btn edit-btn" onclick="editSupplier(${index})">✏️ Edit</button>
-                            <button class="order-action-btn whatsapp-btn" onclick="shareSupplierViaWhatsApp(${index})">📱 WhatsApp</button>
-                            <button class="order-action-btn delete-btn" onclick="deleteSupplier(${index})">🗑️ Delete</button>
-                        </div>
+                        ${renderUniversalActions(index, 'supplier')}
                     </div>
                 `;
             }).join('');
@@ -3003,6 +3462,7 @@
             document.getElementById('deliveryPreview').style.display = 'none';
             document.getElementById('deliveryActions').style.display = 'none';
             currentDeliveryAddress = '';
+            currentDeliveryData = null;
             document.getElementById('deliveryFormCard').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -3025,7 +3485,7 @@
             e.preventDefault();
             
             const formData = new FormData(e.target);
-            const deliveryData = {
+            currentDeliveryData = {
                 id: deliveryCounter,
                 timestamp: new Date().toISOString(),
                 quantity: formData.get('deliveryQuantity'),
@@ -3035,41 +3495,35 @@
                 address: formData.get('deliveryAddress')
             };
             
-            currentDeliveryAddress = formatDeliveryAddress(deliveryData);
-            
-            // Save to repository
-            deliveryAddresses.push(deliveryData);
-            deliveryCounter++;
-            localStorage.setItem('akDeliveryAddresses', JSON.stringify(deliveryAddresses));
-            localStorage.setItem('akDeliveryCounter', deliveryCounter.toString());
+            currentDeliveryAddress = formatDeliveryAddress(currentDeliveryData);
             
             // Show preview
             document.getElementById('deliveryPreview').textContent = currentDeliveryAddress;
             document.getElementById('deliveryPreview').style.display = 'block';
             document.getElementById('deliveryActions').style.display = 'flex';
-            
-            displaySavedDeliveries();
-            alert('✅ Delivery address generated and saved!');
         });
 
-        function copyDeliveryAddress() {
-            if (!currentDeliveryAddress) {
-                alert('❌ No delivery address to copy!');
-                return;
+        function viewCurrentDelivery() {
+            if (currentDeliveryData) {
+                openViewModal(`Delivery #${currentDeliveryData.id}`, currentDeliveryData, 'delivery');
             }
-            
-            navigator.clipboard.writeText(currentDeliveryAddress).then(() => {
-                alert('✅ Delivery address copied to clipboard!');
-            }).catch(() => {
-                // Fallback for older browsers
-                const textarea = document.createElement('textarea');
-                textarea.value = currentDeliveryAddress;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                alert('✅ Delivery address copied to clipboard!');
-            });
+        }
+
+        function editCurrentDelivery() {
+            // Form is already filled, just scroll to it
+            document.getElementById('deliveryFormCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function downloadDeliveryPDF() {
+            alert('Download delivery address as PDF - Feature coming soon!');
+        }
+
+        function downloadDeliveryExcel() {
+            alert('Download delivery address as Excel - Feature coming soon!');
+        }
+
+        function downloadDeliveryWord() {
+            alert('Download delivery address as Word - Feature coming soon!');
         }
 
         function shareDeliveryViaWhatsApp() {
@@ -3080,6 +3534,22 @@
             
             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(currentDeliveryAddress)}`;
             window.open(whatsappUrl, '_blank');
+        }
+
+        function saveCurrentDelivery() {
+            if (!currentDeliveryData) {
+                alert('❌ No delivery address to save!');
+                return;
+            }
+            
+            // Save to repository
+            deliveryAddresses.push(currentDeliveryData);
+            deliveryCounter++;
+            localStorage.setItem('akDeliveryAddresses', JSON.stringify(deliveryAddresses));
+            localStorage.setItem('akDeliveryCounter', deliveryCounter.toString());
+            
+            displaySavedDeliveries();
+            alert('✅ Delivery address saved successfully!');
         }
 
         function clearDeliveryForm() {
@@ -3113,31 +3583,30 @@
                             <div class="delivery-date">${formattedDate}</div>
                         </div>
                         <div class="delivery-preview">${formattedAddress}</div>
-                        <div class="delivery-card-actions">
-                            <button class="order-action-btn copy-btn" onclick="copyDeliveryFromCard(${index})">📋 Copy</button>
-                            <button class="order-action-btn whatsapp-btn" onclick="shareDeliveryFromCard(${index})">📱 WhatsApp</button>
-                            <button class="order-action-btn delete-btn" onclick="deleteDelivery(${index})">🗑️ Delete</button>
-                        </div>
+                        ${renderUniversalActions(index, 'delivery')}
                     </div>
                 `;
             }).join('');
         }
 
-        function copyDeliveryFromCard(index) {
+        function editDelivery(index) {
             const delivery = deliveryAddresses[index];
-            const address = formatDeliveryAddress(delivery);
+            const form = document.getElementById('deliveryForm');
             
-            navigator.clipboard.writeText(address).then(() => {
-                alert('✅ Delivery address copied to clipboard!');
-            }).catch(() => {
-                const textarea = document.createElement('textarea');
-                textarea.value = address;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                alert('✅ Delivery address copied to clipboard!');
-            });
+            form.deliveryQuantity.value = delivery.quantity;
+            form.deliveryProduct.value = delivery.product;
+            form.deliveryCustomerName.value = delivery.customerName;
+            form.deliveryContact.value = delivery.contact || '';
+            form.deliveryAddress.value = delivery.address;
+            
+            currentDeliveryData = delivery;
+            currentDeliveryAddress = formatDeliveryAddress(delivery);
+            
+            document.getElementById('deliveryPreview').textContent = currentDeliveryAddress;
+            document.getElementById('deliveryPreview').style.display = 'block';
+            document.getElementById('deliveryActions').style.display = 'flex';
+            
+            document.getElementById('deliveryFormCard').scrollIntoView({ behavior: 'smooth' });
         }
 
         function shareDeliveryFromCard(index) {
@@ -3272,17 +3741,8 @@
                                 <span class="order-info-label">Total Amount:</span>
                                 <span class="order-info-value">₹${po.totalAmount || '0'}</span>
                             </div>
-                            <div class="order-info-row">
-                                <span class="order-info-label">Delivery:</span>
-                                <span class="order-info-value">${po.deliveryDate || 'N/A'}</span>
-                            </div>
                         </div>
-                        <div class="order-card-actions">
-                            <button class="order-action-btn edit-btn" onclick="editPO(${index})">✏️ Edit</button>
-                            <button class="order-action-btn download-btn" onclick="downloadPO(${index})">📥 Download</button>
-                            <button class="order-action-btn whatsapp-btn" onclick="sharePOViaWhatsApp(${index})">📱 Share</button>
-                            <button class="order-action-btn delete-btn" onclick="deletePO(${index})">🗑️ Delete</button>
-                        </div>
+                        ${renderUniversalActions(index, 'po')}
                     </div>
                 `;
             }).join('');
@@ -3402,26 +3862,22 @@
             }
         }
 
-        function downloadPO(index) {
-            alert('PO download functionality - PDF/Excel/Word export will be implemented');
-        }
-
         function togglePOExportMenu() {
             document.getElementById('poExportDropdown').classList.toggle('show');
         }
 
         function exportAllPOsToPDF() {
-            alert('Export all POs to PDF');
+            alert('Export all POs to PDF - Feature coming soon!');
             document.getElementById('poExportDropdown').classList.remove('show');
         }
 
         function exportAllPOsToExcel() {
-            alert('Export all POs to Excel');
+            alert('Export all POs to Excel - Feature coming soon!');
             document.getElementById('poExportDropdown').classList.remove('show');
         }
 
         function exportAllPOsToWord() {
-            alert('Export all POs to Word');
+            alert('Export all POs to Word - Feature coming soon!');
             document.getElementById('poExportDropdown').classList.remove('show');
         }
 
@@ -3694,6 +4150,10 @@
             if (event.target.classList.contains('otp-modal')) {
                 closeOTPModal();
             }
+            
+            if (event.target.classList.contains('view-modal')) {
+                closeViewModal();
+            }
         }
 
         function showSection(section) {
@@ -3809,17 +4269,8 @@
                                 <span class="order-info-label">Total Amount:</span>
                                 <span class="order-info-value">₹${order.totalAmount || '0'}</span>
                             </div>
-                            <div class="order-info-row">
-                                <span class="order-info-label">Status:</span>
-                                <span class="order-info-value">${order.orderStatus || 'N/A'}</span>
-                            </div>
                         </div>
-                        <div class="order-card-actions">
-                            <button class="order-action-btn edit-btn" onclick="editOrder(${index})">✏️ Edit</button>
-                            <button class="order-action-btn download-btn" onclick="downloadOrder(${index})">📥 Download</button>
-                            <button class="order-action-btn whatsapp-btn" onclick="shareOrderViaWhatsApp(${index})">📱 WhatsApp</button>
-                            <button class="order-action-btn delete-btn" onclick="deleteOrder(${index})">🗑️ Delete</button>
-                        </div>
+                        ${renderUniversalActions(index, 'order')}
                     </div>
                 `;
             }).join('');
@@ -3945,22 +4396,18 @@
             document.getElementById('exportDropdown').classList.remove('show');
         }
 
-        function downloadOrder(index) {
-            alert('Order download functionality - PDF/Excel/Word export will be implemented');
-        }
-
         function exportAllToPDF() {
-            alert('Export all orders to PDF');
+            alert('Export all orders to PDF - Feature coming soon!');
             document.getElementById('exportDropdown').classList.remove('show');
         }
 
         function exportAllToExcel() {
-            alert('Export all orders to Excel');
+            alert('Export all orders to Excel - Feature coming soon!');
             document.getElementById('exportDropdown').classList.remove('show');
         }
 
         function exportAllToWord() {
-            alert('Export all orders to Word');
+            alert('Export all orders to Word - Feature coming soon!');
             document.getElementById('exportDropdown').classList.remove('show');
         }
 
