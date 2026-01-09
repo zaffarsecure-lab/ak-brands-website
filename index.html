@@ -277,10 +277,55 @@
             line-height: 1.5;
         }
 
-        .otp-phone {
-            font-weight: 700;
-            color: #1abc9c;
+        .phone-input-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .phone-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(26, 188, 156, 0.5);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
             font-size: 1.1rem;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .phone-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .phone-input:focus {
+            outline: none;
+            border-color: #1abc9c;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .send-otp-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .send-otp-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 188, 156, 0.4);
+        }
+
+        .send-otp-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .otp-input-container {
@@ -1560,9 +1605,15 @@
         <div class="otp-content">
             <h2 class="otp-title">🔐 Secure Login</h2>
             <p class="otp-subtitle">
-                A 6-digit OTP will be sent to<br>
-                <span class="otp-phone">+91 8660502217</span>
+                Enter your authorized phone number to receive OTP
             </p>
+            
+            <div id="phoneInputSection">
+                <div class="phone-input-container">
+                    <input type="tel" id="phoneInput" class="phone-input" placeholder="Enter 10-digit mobile number" maxlength="10" pattern="[0-9]{10}">
+                </div>
+                <button class="send-otp-btn" onclick="requestOTP()">Send OTP</button>
+            </div>
             
             <div class="otp-loading" id="otpLoading">
                 <div class="spinner"></div>
@@ -1588,6 +1639,8 @@
                     <button class="otp-btn otp-resend" id="resendBtn" onclick="resendOTP()" disabled>Resend OTP</button>
                 </div>
             </div>
+            
+            <div class="otp-error" id="phoneError" style="margin-top: 1rem;">❌ Unauthorized phone number</div>
             
             <button class="otp-btn otp-cancel" onclick="closeOTPModal()" style="width: 100%; margin-top: 1rem;">Cancel</button>
         </div>
@@ -2112,7 +2165,11 @@
         <p>&copy; 2024 AK Brands Marketing. All rights reserved.</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
+        const AUTHORIZED_PHONE = "8660502217";
         const COMPANY_INFO = {
             name: "AK Brands Marketing",
             tagline: "Trusted Firm",
@@ -2138,6 +2195,7 @@
         let otpTimer = null;
         let resendTimer = null;
         let otpExpiryTime = null;
+        let enteredPhone = '';
 
         function generateOTP() {
             return Math.floor(100000 + Math.random() * 900000).toString();
@@ -2148,21 +2206,43 @@
                 showOrdersSection();
             } else {
                 document.getElementById('otpModal').classList.add('show');
-                sendOTP();
+                document.getElementById('phoneInputSection').style.display = 'block';
+                document.getElementById('otpInputSection').style.display = 'none';
+                document.getElementById('phoneInput').value = '';
+                document.getElementById('phoneError').classList.remove('show');
+                document.getElementById('phoneInput').focus();
             }
             document.getElementById('menuDropdown').classList.remove('show');
+        }
+
+        function requestOTP() {
+            const phoneInput = document.getElementById('phoneInput').value.trim();
+            
+            if (phoneInput.length !== 10 || !/^\d+$/.test(phoneInput)) {
+                showPhoneError('Please enter a valid 10-digit mobile number');
+                return;
+            }
+            
+            if (phoneInput !== AUTHORIZED_PHONE) {
+                showPhoneError('Unauthorized phone number. Access denied.');
+                return;
+            }
+            
+            enteredPhone = phoneInput;
+            sendOTP();
         }
 
         function sendOTP() {
             generatedOTP = generateOTP();
             otpExpiryTime = Date.now() + (5 * 60 * 1000); // 5 minutes
             
+            document.getElementById('phoneInputSection').style.display = 'none';
             document.getElementById('otpLoading').classList.add('show');
             document.getElementById('otpInputSection').style.display = 'none';
             
             // Send OTP via WhatsApp
             const message = `🔐 *AK Brands Marketing - Secure Login*\n\nYour OTP for Orders Dashboard:\n\n*${generatedOTP}*\n\nValid for 5 minutes.\n\n⚠️ Do not share this code with anyone.`;
-            const whatsappUrl = `https://wa.me/918660502217?text=${encodeURIComponent(message)}`;
+            const whatsappUrl = `https://wa.me/91${enteredPhone}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
             
             // Simulate sending delay
@@ -2281,6 +2361,15 @@
             }, 3000);
         }
 
+        function showPhoneError(message) {
+            const errorDiv = document.getElementById('phoneError');
+            errorDiv.textContent = `❌ ${message}`;
+            errorDiv.classList.add('show');
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 3000);
+        }
+
         function clearOTPInputs() {
             for (let i = 1; i <= 6; i++) {
                 document.getElementById(`otp${i}`).value = '';
@@ -2292,6 +2381,8 @@
             clearInterval(otpTimer);
             clearInterval(resendTimer);
             clearOTPInputs();
+            document.getElementById('phoneInput').value = '';
+            document.getElementById('phoneError').classList.remove('show');
         }
 
         function saveCustomer(customerDetails) {
@@ -2962,41 +3053,110 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Company Header
-            doc.setFillColor(102, 126, 234);
-            doc.rect(0, 0, 210, 35, 'F');
-            
-            doc.setFontSize(22);
-            doc.setTextColor(255, 255, 255);
-            doc.setFont(undefined, 'bold');
-            doc.text(COMPANY_INFO.name, 105, 15, { align: 'center' });
-            
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'normal');
-            doc.text(COMPANY_INFO.tagline, 105, 21, { align: 'center' });
-            doc.text(`📧 ${COMPANY_INFO.email}  |  📱 ${COMPANY_INFO.phone}`, 105, 27, { align: 'center' });
-            doc.text(`📍 ${COMPANY_INFO.location}`, 105, 32, { align: 'center' });
-            
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(18);
-            doc.setFont(undefined, 'bold');
-            doc.text('All Orders', 105, 45, { align: 'center' });
-            
             orders.forEach((order, index) => {
                 if (index > 0) doc.addPage();
                 
-                doc.setFontSize(16);
-                doc.text(`Order #${order.orderNumber}`, 15, 60);
+                // Professional Header with Logo
+                doc.setFillColor(102, 126, 234);
+                doc.rect(0, 0, 210, 45, 'F');
                 
-                let y = 70;
+                // Logo placeholder
+                doc.setFillColor(255, 255, 255);
+                doc.circle(20, 22, 12, 'F');
+                doc.setFontSize(16);
+                doc.setTextColor(102, 126, 234);
+                doc.setFont(undefined, 'bold');
+                doc.text('AK', 14, 25);
+                
+                // Company Name
+                doc.setFontSize(24);
+                doc.setTextColor(255, 255, 255);
+                doc.setFont(undefined, 'bold');
+                doc.text(COMPANY_INFO.name, 40, 20);
+                
+                // Tagline
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'italic');
+                doc.text(COMPANY_INFO.tagline, 40, 26);
+                
+                // Contact Info
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'normal');
+                doc.text(`📧 ${COMPANY_INFO.email}`, 40, 32);
+                doc.text(`📱 ${COMPANY_INFO.phone}`, 40, 37);
+                doc.text(`📍 ${COMPANY_INFO.location}`, 40, 42);
+                
+                // Order Title
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(18);
+                doc.setFont(undefined, 'bold');
+                doc.text(`CUSTOMER ORDER`, 15, 58);
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Order #${order.orderNumber}  |  Date: ${new Date(order.timestamp).toLocaleDateString('en-IN')}`, 15, 65);
+                
+                let y = 75;
                 const lineHeight = 7;
                 
                 doc.setFontSize(10);
-                doc.text(`Customer: ${order.customerName || 'N/A'}`, 15, y); y += lineHeight;
+                doc.setFont(undefined, 'bold');
+                doc.text('Customer Details:', 15, y); y += lineHeight;
+                doc.setFont(undefined, 'normal');
+                doc.text(`Name: ${order.customerName || 'N/A'}`, 15, y); y += lineHeight;
                 doc.text(`Business: ${order.businessName || 'N/A'}`, 15, y); y += lineHeight;
+                doc.text(`Mobile: ${order.mobileNumber || 'N/A'}`, 15, y); y += lineHeight;
+                doc.text(`Address: ${order.address || 'N/A'}`, 15, y); y += lineHeight;
+                doc.text(`City: ${order.city || 'N/A'}, State: ${order.state || 'N/A'}, Pincode: ${order.pincode || 'N/A'}`, 15, y); y += lineHeight + 3;
+                
+                doc.setFont(undefined, 'bold');
+                doc.text('Order Details:', 15, y); y += lineHeight;
+                doc.setFont(undefined, 'normal');
                 doc.text(`Lot Number: ${order.lotNumber || 'N/A'}`, 15, y); y += lineHeight;
+                doc.text(`Lot Date: ${order.lotDate || 'N/A'}`, 15, y); y += lineHeight;
                 doc.text(`Category: ${order.category || 'N/A'}`, 15, y); y += lineHeight;
+                doc.text(`Quantity: ${order.quantity || 'N/A'}`, 15, y); y += lineHeight;
+                doc.text(`Rate Per Piece: ₹${order.ratePerPiece || '0'}`, 15, y); y += lineHeight;
                 doc.text(`Total Amount: ₹${order.totalAmount || '0'}`, 15, y); y += lineHeight;
+                doc.text(`Stock Condition: ${order.stockCondition || 'N/A'}`, 15, y); y += lineHeight + 3;
+                
+                doc.setFont(undefined, 'bold');
+                doc.text('Payment Details:', 15, y); y += lineHeight;
+                doc.setFont(undefined, 'normal');
+                doc.text(`Payment Method: ${order.paymentMethod || 'N/A'}`, 15, y); y += lineHeight;
+                if (order.tokenAmount) {
+                    doc.text(`Token Amount: ₹${order.tokenAmount}`, 15, y); y += lineHeight;
+                }
+                if (order.partPayment1) {
+                    doc.text(`Part Payment 1: ₹${order.partPayment1}`, 15, y); y += lineHeight;
+                }
+                if (order.partPayment2) {
+                    doc.text(`Part Payment 2: ₹${order.partPayment2}`, 15, y); y += lineHeight;
+                }
+                if (order.partPayment3) {
+                    doc.text(`Part Payment 3: ₹${order.partPayment3}`, 15, y); y += lineHeight;
+                }
+                if (order.finalPayment) {
+                    doc.text(`Final Payment: ₹${order.finalPayment}`, 15, y); y += lineHeight;
+                }
+                y += 3;
+                
+                if (order.dispatchFrom || order.courierName) {
+                    doc.setFont(undefined, 'bold');
+                    doc.text('Logistics Details:', 15, y); y += lineHeight;
+                    doc.setFont(undefined, 'normal');
+                    if (order.dispatchFrom) {
+                        doc.text(`Dispatch From: ${order.dispatchFrom}`, 15, y); y += lineHeight;
+                    }
+                    if (order.dispatchTo) {
+                        doc.text(`Dispatch To: ${order.dispatchTo}`, 15, y); y += lineHeight;
+                    }
+                    if (order.courierName) {
+                        doc.text(`Courier: ${order.courierName}`, 15, y); y += lineHeight;
+                    }
+                    if (order.lrNumber) {
+                        doc.text(`LR Number: ${order.lrNumber}`, 15, y); y += lineHeight;
+                    }
+                }
             });
             
             doc.save('AKBM_All_Orders.pdf');
