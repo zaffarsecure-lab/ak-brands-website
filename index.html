@@ -161,74 +161,6 @@
             padding-left: 2rem;
         }
 
-        /* Customer Selector */
-        .customer-selector {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-        }
-
-        .customer-selector-title {
-            color: white;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .customer-selector-row {
-            display: flex;
-            gap: 1rem;
-            align-items: flex-end;
-        }
-
-        .customer-selector-field {
-            flex: 1;
-        }
-
-        .customer-selector-field label {
-            display: block;
-            color: white;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        .customer-selector-field select,
-        .customer-selector-field input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 8px;
-            background: rgba(255,255,255,0.9);
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .customer-selector-field select:focus,
-        .customer-selector-field input:focus {
-            outline: none;
-            border-color: white;
-            background: white;
-        }
-
-        .new-customer-btn {
-            background: white;
-            color: #667eea;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .new-customer-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255,255,255,0.3);
-        }
-
         /* OTP Modal */
         .otp-modal {
             display: none;
@@ -600,20 +532,6 @@
         .form-field textarea {
             resize: vertical;
             min-height: 80px;
-        }
-
-        .status-group {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-        }
-
-        .status-group-title {
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
         }
 
         .form-buttons {
@@ -1537,7 +1455,6 @@
             .form-row { grid-template-columns: 1fr; }
             .orders-grid { grid-template-columns: 1fr; }
             .form-buttons { flex-direction: column; }
-            .customer-selector-row { flex-direction: column; }
             .otp-digit { width: 40px; height: 50px; font-size: 1.2rem; }
             .otp-input-container { gap: 0.3rem; }
         }
@@ -1649,7 +1566,7 @@
     <section id="ordersSection" class="orders-section">
         <div class="orders-container">
             <div class="orders-header">
-                <h1 class="orders-title">📋 Customer Orders</h1>
+                <h1 class="orders-title">📋 Order Management</h1>
                 <div class="orders-actions">
                     <button class="new-order-btn" onclick="createNewOrder()">➕ New Order</button>
                     <div class="export-dropdown">
@@ -1667,295 +1584,110 @@
             <div class="order-form-card" id="orderFormCard">
                 <div class="order-serial" id="orderSerial">Order #1</div>
                 
-                <!-- Customer Selector -->
-                <div class="customer-selector">
-                    <div class="customer-selector-title">👥 Select Existing Customer or Create New</div>
-                    <div class="customer-selector-row">
-                        <div class="customer-selector-field">
-                            <label>Existing Customers</label>
-                            <select id="customerSelector" onchange="loadCustomerData()">
-                                <option value="">-- Select a customer --</option>
-                            </select>
-                        </div>
-                        <button type="button" class="new-customer-btn" onclick="clearCustomerSelection()">➕ New Customer</button>
-                    </div>
-                </div>
-                
-                <form id="customerOrderForm">
-                    <!-- 1. Customer Details -->
-                    <div class="form-section-title">👤 1. Customer Details</div>
+                <form id="orderForm">
+                    <!-- Customer Details -->
+                    <div class="form-section-title">👤 Customer Details</div>
                     <div class="form-row">
                         <div class="form-field">
-                            <label>Name *</label>
-                            <input type="text" name="customerName" id="customerName" required placeholder="Enter customer name">
+                            <label>Customer Name *</label>
+                            <input type="text" name="customerName" required placeholder="Enter customer name">
                         </div>
                         <div class="form-field">
-                            <label>Business Name *</label>
-                            <input type="text" name="businessName" id="businessName" required placeholder="Enter business name">
+                            <label>Business Name</label>
+                            <input type="text" name="businessName" placeholder="Enter business name">
                         </div>
                         <div class="form-field">
                             <label>Mobile Number *</label>
-                            <input type="tel" name="mobileNumber" id="mobileNumber" required placeholder="Enter 10 digit mobile number" pattern="[0-9]{10}">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-field">
-                            <label>Address *</label>
-                            <input type="text" name="address" id="address" required placeholder="Enter complete address">
+                            <input type="tel" name="mobileNumber" required placeholder="10 digit mobile" pattern="[0-9]{10}">
                         </div>
                         <div class="form-field">
-                            <label>City *</label>
-                            <input type="text" name="city" id="city" required placeholder="Enter city">
-                        </div>
-                        <div class="form-field">
-                            <label>State *</label>
-                            <input type="text" name="state" id="state" required placeholder="Enter state">
-                        </div>
-                        <div class="form-field">
-                            <label>Pincode *</label>
-                            <input type="text" name="pincode" id="pincode" required placeholder="Enter 6 digit pincode" pattern="[0-9]{6}">
+                            <label>City</label>
+                            <input type="text" name="city" placeholder="Enter city">
                         </div>
                     </div>
 
-                    <!-- 2. Order Identification -->
-                    <div class="form-section-title">🔖 2. Order Identification</div>
+                    <!-- Order Details -->
+                    <div class="form-section-title">📦 Order Details</div>
                     <div class="form-row">
                         <div class="form-field">
                             <label>Lot Number *</label>
                             <input type="text" name="lotNumber" required placeholder="Enter lot number">
                         </div>
                         <div class="form-field">
-                            <label>Lot Date *</label>
-                            <input type="date" name="lotDate" required>
-                        </div>
-                        <div class="form-field">
-                            <label>Lot Book Person *</label>
-                            <input type="text" name="lotBookPerson" required placeholder="Enter person name">
-                        </div>
-                    </div>
-
-                    <!-- 3. Product Details -->
-                    <div class="form-section-title">📦 3. Product Details</div>
-                    <div class="form-row">
-                        <div class="form-field">
                             <label>Category *</label>
                             <input type="text" name="category" required placeholder="e.g., Electronics, Garments">
                         </div>
-                        <div class="form-field full-width">
-                            <label>Description *</label>
-                            <textarea name="description" required placeholder="Enter product description"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-row">
                         <div class="form-field">
                             <label>Quantity *</label>
                             <input type="number" name="quantity" required placeholder="Enter quantity" min="1">
                         </div>
                         <div class="form-field">
-                            <label>Rate Per Piece (₹) *</label>
-                            <input type="number" name="ratePerPiece" required placeholder="Enter rate" min="0" step="0.01">
-                        </div>
-                        <div class="form-field">
                             <label>Total Amount (₹) *</label>
-                            <input type="number" name="totalAmount" required placeholder="Enter total amount" min="0" step="0.01">
-                        </div>
-                        <div class="form-field">
-                            <label>Condition of Stock *</label>
-                            <input type="text" name="stockCondition" required placeholder="e.g., New, Like New, Good">
+                            <input type="number" name="totalAmount" required placeholder="Enter amount" min="0" step="0.01">
                         </div>
                     </div>
 
-                    <!-- 4. Payment Details -->
-                    <div class="form-section-title">💳 4. Payment Details</div>
+                    <!-- Payment Tracking -->
+                    <div class="form-section-title">💳 Payment Tracking</div>
                     <div class="form-row">
                         <div class="form-field">
-                            <label>Payment Method *</label>
-                            <select name="paymentMethod" required>
+                            <label>Payment Method</label>
+                            <select name="paymentMethod">
                                 <option value="">Select method</option>
                                 <option value="Cash">Cash</option>
                                 <option value="Bank">Bank Transfer</option>
                                 <option value="UPI">UPI</option>
                             </select>
                         </div>
-                    </div>
-                    
-                    <div class="status-group">
-                        <div class="status-group-title">Token Payment</div>
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label>Token Amount (₹)</label>
-                                <input type="number" name="tokenAmount" placeholder="Enter token amount" min="0" step="0.01">
-                            </div>
-                            <div class="form-field">
-                                <label>Payment Reference</label>
-                                <input type="text" name="tokenReference" placeholder="Enter reference number">
-                            </div>
+                        <div class="form-field">
+                            <label>Paid Amount (₹)</label>
+                            <input type="number" name="paidAmount" placeholder="Amount paid" min="0" step="0.01">
+                        </div>
+                        <div class="form-field">
+                            <label>Balance Amount (₹)</label>
+                            <input type="number" name="balanceAmount" placeholder="Balance remaining" min="0" step="0.01">
+                        </div>
+                        <div class="form-field">
+                            <label>Payment Status</label>
+                            <select name="paymentStatus">
+                                <option value="">Select status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Partial">Partial</option>
+                                <option value="Paid">Paid</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="status-group">
-                        <div class="status-group-title">Part Payment 1</div>
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label>Amount (₹)</label>
-                                <input type="number" name="partPayment1" placeholder="Enter amount" min="0" step="0.01">
-                            </div>
-                            <div class="form-field">
-                                <label>Payment Reference</label>
-                                <input type="text" name="partPayment1Reference" placeholder="Enter reference number">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="status-group">
-                        <div class="status-group-title">Part Payment 2</div>
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label>Amount (₹)</label>
-                                <input type="number" name="partPayment2" placeholder="Enter amount" min="0" step="0.01">
-                            </div>
-                            <div class="form-field">
-                                <label>Payment Reference</label>
-                                <input type="text" name="partPayment2Reference" placeholder="Enter reference number">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="status-group">
-                        <div class="status-group-title">Part Payment 3</div>
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label>Amount (₹)</label>
-                                <input type="number" name="partPayment3" placeholder="Enter amount" min="0" step="0.01">
-                            </div>
-                            <div class="form-field">
-                                <label>Payment Reference</label>
-                                <input type="text" name="partPayment3Reference" placeholder="Enter reference number">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="status-group">
-                        <div class="status-group-title">Final Payment</div>
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label>Amount (₹)</label>
-                                <input type="number" name="finalPayment" placeholder="Enter final amount" min="0" step="0.01">
-                            </div>
-                            <div class="form-field">
-                                <label>Payment Reference</label>
-                                <input type="text" name="finalPaymentReference" placeholder="Enter reference number">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 5. Logistics Details -->
-                    <div class="form-section-title">🚚 5. Logistics Details</div>
+                    <!-- Order Status -->
+                    <div class="form-section-title">📊 Order Status</div>
                     <div class="form-row">
                         <div class="form-field">
-                            <label>Dispatch From</label>
-                            <input type="text" name="dispatchFrom" placeholder="Enter dispatch location">
-                        </div>
-                        <div class="form-field">
-                            <label>Dispatch To</label>
-                            <input type="text" name="dispatchTo" placeholder="Enter delivery location">
+                            <label>Current Status</label>
+                            <select name="orderStatus">
+                                <option value="">Select status</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Packed">Packed</option>
+                                <option value="Dispatched">Dispatched</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Closed">Closed</option>
+                            </select>
                         </div>
                         <div class="form-field">
                             <label>Dispatch Date</label>
                             <input type="date" name="dispatchDate">
                         </div>
-                    </div>
-                    <div class="form-row">
                         <div class="form-field">
-                            <label>Courier/Transportation Name</label>
-                            <input type="text" name="courierName" placeholder="Enter courier name">
-                        </div>
-                        <div class="form-field">
-                            <label>LR Number</label>
-                            <input type="text" name="lrNumber" placeholder="Enter LR number">
-                        </div>
-                        <div class="form-field">
-                            <label>Parcel Count</label>
-                            <input type="number" name="parcelCount" placeholder="Enter parcel count" min="1">
-                        </div>
-                        <div class="form-field">
-                            <label>Estimated Delivery Date</label>
-                            <input type="date" name="estimatedDeliveryDate">
+                            <label>Delivery Date</label>
+                            <input type="date" name="deliveryDate">
                         </div>
                     </div>
 
-                    <!-- 6. Order Status -->
-                    <div class="form-section-title">📊 6. Order Status</div>
-                    
-                    <div class="status-group">
-                        <div class="status-group-title">Order Confirmed</div>
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label>Date</label>
-                                <input type="date" name="orderConfirmedDate">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="status-group">
-                        <div class="status-group-title">Packed</div>
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label>Date</label>
-                                <input type="date" name="packedDate">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="status-group">
-                        <div class="status-group-title">Dispatched</div>
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label>Date</label>
-                                <input type="date" name="dispatchedDate">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="status-group">
-                        <div class="status-group-title">Delivered</div>
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label>Date</label>
-                                <input type="date" name="deliveredDate">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="status-group">
-                        <div class="status-group-title">Closed</div>
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label>Date</label>
-                                <input type="date" name="closedDate">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 7. Confirmation Proofs -->
-                    <div class="form-section-title">📸 7. Confirmation Proofs</div>
-                    <div class="form-row">
-                        <div class="form-field">
-                            <label>WhatsApp Screenshot</label>
-                            <input type="file" name="whatsappScreenshot" accept="image/*">
-                        </div>
-                        <div class="form-field">
-                            <label>Payment Screenshot</label>
-                            <input type="file" name="paymentScreenshot" accept="image/*">
-                        </div>
-                    </div>
-
-                    <!-- 8. Remarks -->
-                    <div class="form-section-title">📝 8. Remarks</div>
+                    <!-- Notes -->
+                    <div class="form-section-title">📝 Notes</div>
                     <div class="form-row">
                         <div class="form-field full-width">
-                            <label>Additional Notes/Remarks</label>
-                            <textarea name="remarks" placeholder="Enter any additional notes or remarks" rows="4"></textarea>
+                            <label>Additional Notes</label>
+                            <textarea name="notes" placeholder="Enter any additional notes" rows="3"></textarea>
                         </div>
                     </div>
 
@@ -1967,9 +1699,9 @@
             </div>
 
             <div class="saved-orders-section">
-                <h2 class="saved-orders-title">📦 Saved Orders</h2>
+                <h2 class="saved-orders-title">📦 All Orders</h2>
                 <div class="orders-grid" id="ordersGrid">
-                    <div class="no-orders">No orders saved yet. Create your first order above!</div>
+                    <div class="no-orders">No orders yet. Create your first order above!</div>
                 </div>
             </div>
         </div>
@@ -2187,9 +1919,6 @@
         let orderCounter = parseInt(localStorage.getItem('akOrderCounter') || '1');
         let editingOrderIndex = null;
         
-        // Customer database
-        let customers = JSON.parse(localStorage.getItem('akCustomers') || '[]');
-        
         // OTP System
         let generatedOTP = '';
         let otpTimer = null;
@@ -2234,18 +1963,16 @@
 
         function sendOTP() {
             generatedOTP = generateOTP();
-            otpExpiryTime = Date.now() + (5 * 60 * 1000); // 5 minutes
+            otpExpiryTime = Date.now() + (5 * 60 * 1000);
             
             document.getElementById('phoneInputSection').style.display = 'none';
             document.getElementById('otpLoading').classList.add('show');
             document.getElementById('otpInputSection').style.display = 'none';
             
-            // Send OTP via WhatsApp
             const message = `🔐 *AK Brands Marketing - Secure Login*\n\nYour OTP for Orders Dashboard:\n\n*${generatedOTP}*\n\nValid for 5 minutes.\n\n⚠️ Do not share this code with anyone.`;
             const whatsappUrl = `https://wa.me/91${enteredPhone}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
             
-            // Simulate sending delay
             setTimeout(() => {
                 document.getElementById('otpLoading').classList.remove('show');
                 document.getElementById('otpInputSection').style.display = 'block';
@@ -2385,61 +2112,6 @@
             document.getElementById('phoneError').classList.remove('show');
         }
 
-        function saveCustomer(customerDetails) {
-            const existingIndex = customers.findIndex(c => c.mobileNumber === customerDetails.mobileNumber);
-            
-            if (existingIndex >= 0) {
-                customers[existingIndex] = customerDetails;
-            } else {
-                customers.push(customerDetails);
-            }
-            
-            localStorage.setItem('akCustomers', JSON.stringify(customers));
-            updateCustomerDropdown();
-        }
-
-        function updateCustomerDropdown() {
-            const selector = document.getElementById('customerSelector');
-            selector.innerHTML = '<option value="">-- Select a customer --</option>';
-            
-            customers.forEach((customer, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = `${customer.customerName} - ${customer.businessName} (${customer.mobileNumber})`;
-                selector.appendChild(option);
-            });
-        }
-
-        function loadCustomerData() {
-            const selector = document.getElementById('customerSelector');
-            const selectedIndex = selector.value;
-            
-            if (selectedIndex === '') {
-                return;
-            }
-            
-            const customer = customers[selectedIndex];
-            
-            document.getElementById('customerName').value = customer.customerName || '';
-            document.getElementById('businessName').value = customer.businessName || '';
-            document.getElementById('mobileNumber').value = customer.mobileNumber || '';
-            document.getElementById('address').value = customer.address || '';
-            document.getElementById('city').value = customer.city || '';
-            document.getElementById('state').value = customer.state || '';
-            document.getElementById('pincode').value = customer.pincode || '';
-        }
-
-        function clearCustomerSelection() {
-            document.getElementById('customerSelector').value = '';
-            document.getElementById('customerName').value = '';
-            document.getElementById('businessName').value = '';
-            document.getElementById('mobileNumber').value = '';
-            document.getElementById('address').value = '';
-            document.getElementById('city').value = '';
-            document.getElementById('state').value = '';
-            document.getElementById('pincode').value = '';
-        }
-
         function toggleMenu() {
             const dropdown = document.getElementById('menuDropdown');
             const animationSection = document.getElementById('animationSection');
@@ -2496,7 +2168,6 @@
             document.getElementById('contact').style.display = 'none';
             document.getElementById('ordersSection').classList.add('show');
             updateOrderSerial();
-            updateCustomerDropdown();
             displaySavedOrders();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -2516,8 +2187,7 @@
 
         function createNewOrder() {
             editingOrderIndex = null;
-            document.getElementById('customerOrderForm').reset();
-            document.getElementById('customerSelector').value = '';
+            document.getElementById('orderForm').reset();
             updateOrderSerial();
             document.querySelector('.cancel-edit-btn').style.display = 'none';
             document.querySelector('.save-order-btn').textContent = '💾 Save Order';
@@ -2527,18 +2197,13 @@
         function editOrder(index) {
             editingOrderIndex = index;
             const order = orders[index];
-            const form = document.getElementById('customerOrderForm');
+            const form = document.getElementById('orderForm');
             
             Object.keys(order).forEach(key => {
-                if (form[key] && key !== 'orderNumber' && key !== 'timestamp' && key !== 'whatsappScreenshotData' && key !== 'paymentScreenshotData') {
+                if (form[key] && key !== 'orderNumber' && key !== 'timestamp') {
                     form[key].value = order[key] || '';
                 }
             });
-            
-            const customerIndex = customers.findIndex(c => c.mobileNumber === order.mobileNumber);
-            if (customerIndex >= 0) {
-                document.getElementById('customerSelector').value = customerIndex;
-            }
             
             updateOrderSerial();
             document.querySelector('.cancel-edit-btn').style.display = 'block';
@@ -2563,7 +2228,7 @@
             const ordersGrid = document.getElementById('ordersGrid');
             
             if (orders.length === 0) {
-                ordersGrid.innerHTML = '<div class="no-orders">No orders saved yet. Create your first order above!</div>';
+                ordersGrid.innerHTML = '<div class="no-orders">No orders yet. Create your first order above!</div>';
                 return;
             }
             
@@ -2587,10 +2252,6 @@
                                 <span class="order-info-value">${order.customerName}</span>
                             </div>
                             <div class="order-info-row">
-                                <span class="order-info-label">Business:</span>
-                                <span class="order-info-value">${order.businessName}</span>
-                            </div>
-                            <div class="order-info-row">
                                 <span class="order-info-label">Lot Number:</span>
                                 <span class="order-info-value">${order.lotNumber || 'N/A'}</span>
                             </div>
@@ -2601,6 +2262,10 @@
                             <div class="order-info-row">
                                 <span class="order-info-label">Total Amount:</span>
                                 <span class="order-info-value">₹${order.totalAmount || '0'}</span>
+                            </div>
+                            <div class="order-info-row">
+                                <span class="order-info-label">Status:</span>
+                                <span class="order-info-value">${order.orderStatus || 'N/A'}</span>
                             </div>
                         </div>
                         <div class="order-card-actions">
@@ -2613,15 +2278,7 @@
             }).join('');
         }
 
-        async function handleFileUpload(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve(e.target.result);
-                reader.readAsDataURL(file);
-            });
-        }
-
-        document.getElementById('customerOrderForm').addEventListener('submit', async function(e) {
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const formData = new FormData(e.target);
@@ -2631,27 +2288,8 @@
             };
             
             for (let [key, value] of formData.entries()) {
-                if (key === 'whatsappScreenshot' || key === 'paymentScreenshot') {
-                    if (value && value.size > 0) {
-                        orderData[key + 'Data'] = await handleFileUpload(value);
-                    } else if (editingOrderIndex !== null) {
-                        orderData[key + 'Data'] = orders[editingOrderIndex][key + 'Data'] || '';
-                    }
-                } else {
-                    orderData[key] = value;
-                }
+                orderData[key] = value;
             }
-            
-            const customerDetails = {
-                customerName: orderData.customerName,
-                businessName: orderData.businessName,
-                mobileNumber: orderData.mobileNumber,
-                address: orderData.address,
-                city: orderData.city,
-                state: orderData.state,
-                pincode: orderData.pincode
-            };
-            saveCustomer(customerDetails);
             
             if (editingOrderIndex !== null) {
                 orders[editingOrderIndex] = orderData;
@@ -2691,213 +2329,129 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Professional Header matching website design
-            // Purple gradient background
+            // Header
             doc.setFillColor(102, 126, 234);
-            const gradient = doc.GState({ opacity: 1 });
             doc.rect(0, 0, 210, 50, 'F');
-            
-            // Logo circle (white)
             doc.setFillColor(255, 255, 255);
             doc.circle(25, 25, 15, 'F');
-            
-            // "AK" text in logo
             doc.setFontSize(20);
             doc.setTextColor(102, 126, 234);
             doc.setFont(undefined, 'bold');
             doc.text('AK', 17, 29);
-            
-            // Company Name
             doc.setFontSize(26);
             doc.setTextColor(255, 255, 255);
-            doc.setFont(undefined, 'bold');
             doc.text('AK Brands Marketing', 50, 22);
-            
-            // Tagline
             doc.setFontSize(11);
             doc.setFont(undefined, 'italic');
-            doc.setTextColor(255, 255, 255);
             doc.text('Trusted Firm', 50, 29);
-            
-            // Contact Info
             doc.setFontSize(9);
             doc.setFont(undefined, 'normal');
             doc.text(`📧 ${COMPANY_INFO.email}`, 50, 36);
             doc.text(`📱 ${COMPANY_INFO.phone}`, 50, 41);
             doc.text(`📍 ${COMPANY_INFO.location}`, 50, 46);
             
-            // Order Title Section
+            // Order Title
             doc.setFillColor(255, 255, 255);
             doc.rect(0, 50, 210, 20, 'F');
             doc.setTextColor(44, 62, 80);
             doc.setFontSize(20);
             doc.setFont(undefined, 'bold');
-            doc.text('CUSTOMER ORDER', 15, 60);
+            doc.text('ORDER MANAGEMENT', 15, 60);
             doc.setFontSize(11);
             doc.setFont(undefined, 'normal');
             doc.text(`Order #${order.orderNumber}  |  Date: ${new Date(order.timestamp).toLocaleDateString('en-IN')}`, 15, 66);
             
             let y = 78;
             const lineHeight = 6;
-            const leftMargin = 15;
-            const rightMargin = 195;
-            const sectionSpacing = 8;
             
-            // Helper function to add section with purple header
-            function addSection(title, fields) {
-                if (y > 270) {
-                    doc.addPage();
-                    y = 20;
-                }
-                
-                // Section Title with purple background
+            // Customer Details
+            doc.setFillColor(102, 126, 234);
+            doc.roundedRect(15, y - 6, 180, 10, 2, 2, 'F');
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(255, 255, 255);
+            doc.text('👤 CUSTOMER DETAILS', 18, y);
+            y += 12;
+            
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(44, 62, 80);
+            if (order.customerName) { doc.text(`Name: ${order.customerName}`, 18, y); y += lineHeight; }
+            if (order.businessName) { doc.text(`Business: ${order.businessName}`, 18, y); y += lineHeight; }
+            if (order.mobileNumber) { doc.text(`Mobile: ${order.mobileNumber}`, 18, y); y += lineHeight; }
+            if (order.city) { doc.text(`City: ${order.city}`, 18, y); y += lineHeight; }
+            y += 5;
+            
+            // Order Details
+            doc.setFillColor(102, 126, 234);
+            doc.roundedRect(15, y - 6, 180, 10, 2, 2, 'F');
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(255, 255, 255);
+            doc.text('📦 ORDER DETAILS', 18, y);
+            y += 12;
+            
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(44, 62, 80);
+            if (order.lotNumber) { doc.text(`Lot Number: ${order.lotNumber}`, 18, y); y += lineHeight; }
+            if (order.category) { doc.text(`Category: ${order.category}`, 18, y); y += lineHeight; }
+            if (order.quantity) { doc.text(`Quantity: ${order.quantity}`, 18, y); y += lineHeight; }
+            if (order.totalAmount) { doc.text(`Total Amount: ₹${order.totalAmount}`, 18, y); y += lineHeight; }
+            y += 5;
+            
+            // Payment Tracking
+            doc.setFillColor(102, 126, 234);
+            doc.roundedRect(15, y - 6, 180, 10, 2, 2, 'F');
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(255, 255, 255);
+            doc.text('💳 PAYMENT TRACKING', 18, y);
+            y += 12;
+            
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(44, 62, 80);
+            if (order.paymentMethod) { doc.text(`Payment Method: ${order.paymentMethod}`, 18, y); y += lineHeight; }
+            if (order.paidAmount) { doc.text(`Paid Amount: ₹${order.paidAmount}`, 18, y); y += lineHeight; }
+            if (order.balanceAmount) { doc.text(`Balance Amount: ₹${order.balanceAmount}`, 18, y); y += lineHeight; }
+            if (order.paymentStatus) { doc.text(`Payment Status: ${order.paymentStatus}`, 18, y); y += lineHeight; }
+            y += 5;
+            
+            // Order Status
+            doc.setFillColor(102, 126, 234);
+            doc.roundedRect(15, y - 6, 180, 10, 2, 2, 'F');
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(255, 255, 255);
+            doc.text('📊 ORDER STATUS', 18, y);
+            y += 12;
+            
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(44, 62, 80);
+            if (order.orderStatus) { doc.text(`Current Status: ${order.orderStatus}`, 18, y); y += lineHeight; }
+            if (order.dispatchDate) { doc.text(`Dispatch Date: ${order.dispatchDate}`, 18, y); y += lineHeight; }
+            if (order.deliveryDate) { doc.text(`Delivery Date: ${order.deliveryDate}`, 18, y); y += lineHeight; }
+            y += 5;
+            
+            // Notes
+            if (order.notes) {
                 doc.setFillColor(102, 126, 234);
-                doc.roundedRect(leftMargin, y - 6, rightMargin - leftMargin, 10, 2, 2, 'F');
-                doc.setFontSize(12);
+                doc.roundedRect(15, y - 6, 180, 10, 2, 2, 'F');
                 doc.setFont(undefined, 'bold');
                 doc.setTextColor(255, 255, 255);
-                doc.text(title, leftMargin + 3, y);
+                doc.text('📝 NOTES', 18, y);
                 y += 12;
                 
-                // Section Content
-                doc.setFontSize(10);
                 doc.setFont(undefined, 'normal');
                 doc.setTextColor(44, 62, 80);
-                
-                fields.forEach(field => {
-                    const value = order[field.key];
-                    if (value !== undefined && value !== null && value !== '') {
-                        const label = field.label;
-                        const valueStr = String(value);
-                        
-                        // Check if we need a new page
-                        if (y > 275) {
-                            doc.addPage();
-                            y = 20;
-                        }
-                        
-                        // Label in bold
-                        doc.setFont(undefined, 'bold');
-                        doc.text(`${label}:`, leftMargin + 3, y);
-                        
-                        // Value in normal
-                        doc.setFont(undefined, 'normal');
-                        const labelWidth = doc.getTextWidth(`${label}: `);
-                        
-                        // Handle long text wrapping
-                        const maxWidth = rightMargin - leftMargin - labelWidth - 6;
-                        const lines = doc.splitTextToSize(valueStr, maxWidth);
-                        
-                        lines.forEach((line, i) => {
-                            if (i === 0) {
-                                doc.text(line, leftMargin + 3 + labelWidth, y);
-                            } else {
-                                y += lineHeight;
-                                if (y > 275) {
-                                    doc.addPage();
-                                    y = 20;
-                                }
-                                doc.text(line, leftMargin + 3 + labelWidth, y);
-                            }
-                        });
-                        
-                        y += lineHeight;
-                    }
+                const notes = doc.splitTextToSize(order.notes, 170);
+                notes.forEach(line => {
+                    doc.text(line, 18, y);
+                    y += lineHeight;
                 });
-                
-                y += sectionSpacing;
             }
             
-            // 1. Customer Details
-            addSection('👤 1. CUSTOMER DETAILS', [
-                { key: 'customerName', label: 'Name' },
-                { key: 'businessName', label: 'Business Name' },
-                { key: 'mobileNumber', label: 'Mobile Number' },
-                { key: 'address', label: 'Address' },
-                { key: 'city', label: 'City' },
-                { key: 'state', label: 'State' },
-                { key: 'pincode', label: 'Pincode' }
-            ]);
+            // Footer
+            doc.setFontSize(8);
+            doc.setTextColor(128, 128, 128);
+            doc.text(`Generated on ${new Date().toLocaleDateString('en-IN')}`, 15, 290);
             
-            // 2. Order Identification
-            addSection('🔖 2. ORDER IDENTIFICATION', [
-                { key: 'lotNumber', label: 'Lot Number' },
-                { key: 'lotDate', label: 'Lot Date' },
-                { key: 'lotBookPerson', label: 'Lot Book Person' }
-            ]);
-            
-            // 3. Product Details
-            addSection('📦 3. PRODUCT DETAILS', [
-                { key: 'category', label: 'Category' },
-                { key: 'description', label: 'Description' },
-                { key: 'quantity', label: 'Quantity' },
-                { key: 'ratePerPiece', label: 'Rate Per Piece (₹)' },
-                { key: 'totalAmount', label: 'Total Amount (₹)' },
-                { key: 'stockCondition', label: 'Stock Condition' }
-            ]);
-            
-            // 4. Payment Details
-            addSection('💳 4. PAYMENT DETAILS', [
-                { key: 'paymentMethod', label: 'Payment Method' },
-                { key: 'tokenAmount', label: 'Token Amount (₹)' },
-                { key: 'tokenReference', label: 'Token Reference' },
-                { key: 'partPayment1', label: 'Part Payment 1 (₹)' },
-                { key: 'partPayment1Reference', label: 'Part Payment 1 Reference' },
-                { key: 'partPayment2', label: 'Part Payment 2 (₹)' },
-                { key: 'partPayment2Reference', label: 'Part Payment 2 Reference' },
-                { key: 'partPayment3', label: 'Part Payment 3 (₹)' },
-                { key: 'partPayment3Reference', label: 'Part Payment 3 Reference' },
-                { key: 'finalPayment', label: 'Final Payment (₹)' },
-                { key: 'finalPaymentReference', label: 'Final Payment Reference' }
-            ]);
-            
-            // 5. Logistics Details
-            addSection('🚚 5. LOGISTICS DETAILS', [
-                { key: 'dispatchFrom', label: 'Dispatch From' },
-                { key: 'dispatchTo', label: 'Dispatch To' },
-                { key: 'dispatchDate', label: 'Dispatch Date' },
-                { key: 'courierName', label: 'Courier/Transportation Name' },
-                { key: 'lrNumber', label: 'LR Number' },
-                { key: 'parcelCount', label: 'Parcel Count' },
-                { key: 'estimatedDeliveryDate', label: 'Estimated Delivery Date' }
-            ]);
-            
-            // 6. Order Status
-            addSection('📊 6. ORDER STATUS', [
-                { key: 'orderConfirmedDate', label: 'Order Confirmed Date' },
-                { key: 'packedDate', label: 'Packed Date' },
-                { key: 'dispatchedDate', label: 'Dispatched Date' },
-                { key: 'deliveredDate', label: 'Delivered Date' },
-                { key: 'closedDate', label: 'Closed Date' }
-            ]);
-            
-            // 7. Confirmation Proofs
-            const hasProofs = order.whatsappScreenshotData || order.paymentScreenshotData;
-            if (hasProofs) {
-                addSection('📸 7. CONFIRMATION PROOFS', [
-                    { key: 'whatsappScreenshotData', label: 'WhatsApp Screenshot' },
-                    { key: 'paymentScreenshotData', label: 'Payment Screenshot' }
-                ].filter(field => order[field.key]));
-            }
-            
-            // 8. Remarks
-            if (order.remarks) {
-                addSection('📝 8. REMARKS', [
-                    { key: 'remarks', label: 'Additional Notes' }
-                ]);
-            }
-            
-            // Footer on all pages
-            const pageCount = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= pageCount; i++) {
-                doc.setPage(i);
-                doc.setFontSize(8);
-                doc.setTextColor(128, 128, 128);
-                doc.text(`Page ${i} of ${pageCount}`, 105, 290, { align: 'center' });
-                doc.text(`Generated on ${new Date().toLocaleDateString('en-IN')}`, 15, 290);
-            }
-            
-            // Generate filename: AKBM_LotNo_CustomerName
             const lotNo = sanitizeFilename(order.lotNumber || 'NoLot');
             const customerName = sanitizeFilename(order.customerName || 'Customer');
             const filename = `AKBM_${lotNo}_${customerName}.pdf`;
@@ -2911,7 +2465,6 @@
                 [COMPANY_INFO.name],
                 [COMPANY_INFO.tagline],
                 [`Email: ${COMPANY_INFO.email}  |  Phone: ${COMPANY_INFO.phone}`],
-                [`Location: ${COMPANY_INFO.location}`],
                 [],
                 ['Order Number', order.orderNumber],
                 ['Date', new Date(order.timestamp).toLocaleDateString()],
@@ -2920,55 +2473,27 @@
                 ['Name', order.customerName || ''],
                 ['Business Name', order.businessName || ''],
                 ['Mobile Number', order.mobileNumber || ''],
-                ['Address', order.address || ''],
                 ['City', order.city || ''],
-                ['State', order.state || ''],
-                ['Pincode', order.pincode || ''],
                 [],
-                ['ORDER IDENTIFICATION'],
+                ['ORDER DETAILS'],
                 ['Lot Number', order.lotNumber || ''],
-                ['Lot Date', order.lotDate || ''],
-                ['Lot Book Person', order.lotBookPerson || ''],
-                [],
-                ['PRODUCT DETAILS'],
                 ['Category', order.category || ''],
-                ['Description', order.description || ''],
                 ['Quantity', order.quantity || ''],
-                ['Rate Per Piece', order.ratePerPiece || ''],
                 ['Total Amount', order.totalAmount || ''],
-                ['Stock Condition', order.stockCondition || ''],
                 [],
-                ['PAYMENT DETAILS'],
+                ['PAYMENT TRACKING'],
                 ['Payment Method', order.paymentMethod || ''],
-                ['Token Amount', order.tokenAmount || ''],
-                ['Token Reference', order.tokenReference || ''],
-                ['Part Payment 1', order.partPayment1 || ''],
-                ['Part Payment 1 Reference', order.partPayment1Reference || ''],
-                ['Part Payment 2', order.partPayment2 || ''],
-                ['Part Payment 2 Reference', order.partPayment2Reference || ''],
-                ['Part Payment 3', order.partPayment3 || ''],
-                ['Part Payment 3 Reference', order.partPayment3Reference || ''],
-                ['Final Payment', order.finalPayment || ''],
-                ['Final Payment Reference', order.finalPaymentReference || ''],
-                [],
-                ['LOGISTICS DETAILS'],
-                ['Dispatch From', order.dispatchFrom || ''],
-                ['Dispatch To', order.dispatchTo || ''],
-                ['Dispatch Date', order.dispatchDate || ''],
-                ['Courier Name', order.courierName || ''],
-                ['LR Number', order.lrNumber || ''],
-                ['Parcel Count', order.parcelCount || ''],
-                ['Estimated Delivery Date', order.estimatedDeliveryDate || ''],
+                ['Paid Amount', order.paidAmount || ''],
+                ['Balance Amount', order.balanceAmount || ''],
+                ['Payment Status', order.paymentStatus || ''],
                 [],
                 ['ORDER STATUS'],
-                ['Order Confirmed Date', order.orderConfirmedDate || ''],
-                ['Packed Date', order.packedDate || ''],
-                ['Dispatched Date', order.dispatchedDate || ''],
-                ['Delivered Date', order.deliveredDate || ''],
-                ['Closed Date', order.closedDate || ''],
+                ['Current Status', order.orderStatus || ''],
+                ['Dispatch Date', order.dispatchDate || ''],
+                ['Delivery Date', order.deliveryDate || ''],
                 [],
-                ['REMARKS'],
-                ['Notes', order.remarks || '']
+                ['NOTES'],
+                [order.notes || '']
             ];
             
             const ws = XLSX.utils.aoa_to_sheet(ws_data);
@@ -2984,76 +2509,29 @@
 
         function exportOrderToWord(index) {
             const order = orders[index];
-            let content = `${COMPANY_INFO.name}\n`;
-            content += `${COMPANY_INFO.tagline}\n`;
-            content += `Email: ${COMPANY_INFO.email}  |  Phone: ${COMPANY_INFO.phone}\n`;
-            content += `Location: ${COMPANY_INFO.location}\n`;
-            content += `\n${'='.repeat(80)}\n\n`;
-            
-            content += `CUSTOMER ORDER\n`;
-            content += `Order #${order.orderNumber}\n`;
-            content += `Date: ${new Date(order.timestamp).toLocaleDateString()}\n\n`;
-            
-            content += `1. CUSTOMER DETAILS\n`;
-            content += `${'─'.repeat(80)}\n`;
-            content += `Name: ${order.customerName || ''}\n`;
-            content += `Business Name: ${order.businessName || ''}\n`;
-            content += `Mobile Number: ${order.mobileNumber || ''}\n`;
-            content += `Address: ${order.address || ''}\n`;
-            content += `City: ${order.city || ''}\n`;
-            content += `State: ${order.state || ''}\n`;
-            content += `Pincode: ${order.pincode || ''}\n\n`;
-            
-            content += `2. ORDER IDENTIFICATION\n`;
-            content += `${'─'.repeat(80)}\n`;
-            content += `Lot Number: ${order.lotNumber || ''}\n`;
-            content += `Lot Date: ${order.lotDate || ''}\n`;
-            content += `Lot Book Person: ${order.lotBookPerson || ''}\n\n`;
-            
-            content += `3. PRODUCT DETAILS\n`;
-            content += `${'─'.repeat(80)}\n`;
-            content += `Category: ${order.category || ''}\n`;
-            content += `Description: ${order.description || ''}\n`;
-            content += `Quantity: ${order.quantity || ''}\n`;
-            content += `Rate Per Piece: ${order.ratePerPiece || ''}\n`;
-            content += `Total Amount: ${order.totalAmount || ''}\n`;
-            content += `Stock Condition: ${order.stockCondition || ''}\n\n`;
-            
-            content += `4. PAYMENT DETAILS\n`;
-            content += `${'─'.repeat(80)}\n`;
-            content += `Payment Method: ${order.paymentMethod || ''}\n`;
-            content += `Token Amount: ${order.tokenAmount || ''}\n`;
-            content += `Token Reference: ${order.tokenReference || ''}\n`;
-            content += `Part Payment 1: ${order.partPayment1 || ''}\n`;
-            content += `Part Payment 1 Reference: ${order.partPayment1Reference || ''}\n`;
-            content += `Part Payment 2: ${order.partPayment2 || ''}\n`;
-            content += `Part Payment 2 Reference: ${order.partPayment2Reference || ''}\n`;
-            content += `Part Payment 3: ${order.partPayment3 || ''}\n`;
-            content += `Part Payment 3 Reference: ${order.partPayment3Reference || ''}\n`;
-            content += `Final Payment: ${order.finalPayment || ''}\n`;
-            content += `Final Payment Reference: ${order.finalPaymentReference || ''}\n\n`;
-            
-            content += `5. LOGISTICS DETAILS\n`;
-            content += `${'─'.repeat(80)}\n`;
-            content += `Dispatch From: ${order.dispatchFrom || ''}\n`;
-            content += `Dispatch To: ${order.dispatchTo || ''}\n`;
-            content += `Dispatch Date: ${order.dispatchDate || ''}\n`;
-            content += `Courier Name: ${order.courierName || ''}\n`;
-            content += `LR Number: ${order.lrNumber || ''}\n`;
-            content += `Parcel Count: ${order.parcelCount || ''}\n`;
-            content += `Estimated Delivery Date: ${order.estimatedDeliveryDate || ''}\n\n`;
-            
-            content += `6. ORDER STATUS\n`;
-            content += `${'─'.repeat(80)}\n`;
-            content += `Order Confirmed Date: ${order.orderConfirmedDate || ''}\n`;
-            content += `Packed Date: ${order.packedDate || ''}\n`;
-            content += `Dispatched Date: ${order.dispatchedDate || ''}\n`;
-            content += `Delivered Date: ${order.deliveredDate || ''}\n`;
-            content += `Closed Date: ${order.closedDate || ''}\n\n`;
-            
-            content += `8. REMARKS\n`;
-            content += `${'─'.repeat(80)}\n`;
-            content += `${order.remarks || ''}\n`;
+            let content = `${COMPANY_INFO.name}\n${COMPANY_INFO.tagline}\n`;
+            content += `Email: ${COMPANY_INFO.email}  |  Phone: ${COMPANY_INFO.phone}\n\n`;
+            content += `ORDER MANAGEMENT\nOrder #${order.orderNumber}\nDate: ${new Date(order.timestamp).toLocaleDateString()}\n\n`;
+            content += `CUSTOMER DETAILS\n${'─'.repeat(50)}\n`;
+            if (order.customerName) content += `Name: ${order.customerName}\n`;
+            if (order.businessName) content += `Business: ${order.businessName}\n`;
+            if (order.mobileNumber) content += `Mobile: ${order.mobileNumber}\n`;
+            if (order.city) content += `City: ${order.city}\n`;
+            content += `\nORDER DETAILS\n${'─'.repeat(50)}\n`;
+            if (order.lotNumber) content += `Lot Number: ${order.lotNumber}\n`;
+            if (order.category) content += `Category: ${order.category}\n`;
+            if (order.quantity) content += `Quantity: ${order.quantity}\n`;
+            if (order.totalAmount) content += `Total Amount: ₹${order.totalAmount}\n`;
+            content += `\nPAYMENT TRACKING\n${'─'.repeat(50)}\n`;
+            if (order.paymentMethod) content += `Payment Method: ${order.paymentMethod}\n`;
+            if (order.paidAmount) content += `Paid Amount: ₹${order.paidAmount}\n`;
+            if (order.balanceAmount) content += `Balance Amount: ₹${order.balanceAmount}\n`;
+            if (order.paymentStatus) content += `Payment Status: ${order.paymentStatus}\n`;
+            content += `\nORDER STATUS\n${'─'.repeat(50)}\n`;
+            if (order.orderStatus) content += `Current Status: ${order.orderStatus}\n`;
+            if (order.dispatchDate) content += `Dispatch Date: ${order.dispatchDate}\n`;
+            if (order.deliveryDate) content += `Delivery Date: ${order.deliveryDate}\n`;
+            if (order.notes) content += `\nNOTES\n${'─'.repeat(50)}\n${order.notes}\n`;
             
             const blob = new Blob([content], { type: 'application/msword' });
             const url = URL.createObjectURL(blob);
@@ -3074,45 +2552,33 @@
             orders.forEach((order, index) => {
                 if (index > 0) doc.addPage();
                 
-                // Professional Header matching website design
+                // Same header and content as single order export
                 doc.setFillColor(102, 126, 234);
                 doc.rect(0, 0, 210, 50, 'F');
-                
-                // Logo circle
                 doc.setFillColor(255, 255, 255);
                 doc.circle(25, 25, 15, 'F');
-                
-                // "AK" text in logo
                 doc.setFontSize(20);
                 doc.setTextColor(102, 126, 234);
                 doc.setFont(undefined, 'bold');
                 doc.text('AK', 17, 29);
-                
-                // Company Name
                 doc.setFontSize(26);
                 doc.setTextColor(255, 255, 255);
-                doc.setFont(undefined, 'bold');
                 doc.text('AK Brands Marketing', 50, 22);
-                
-                // Tagline
                 doc.setFontSize(11);
                 doc.setFont(undefined, 'italic');
                 doc.text('Trusted Firm', 50, 29);
-                
-                // Contact Info
                 doc.setFontSize(9);
                 doc.setFont(undefined, 'normal');
                 doc.text(`📧 ${COMPANY_INFO.email}`, 50, 36);
                 doc.text(`📱 ${COMPANY_INFO.phone}`, 50, 41);
                 doc.text(`📍 ${COMPANY_INFO.location}`, 50, 46);
                 
-                // Order Title
                 doc.setFillColor(255, 255, 255);
                 doc.rect(0, 50, 210, 20, 'F');
                 doc.setTextColor(44, 62, 80);
                 doc.setFontSize(20);
                 doc.setFont(undefined, 'bold');
-                doc.text('CUSTOMER ORDER', 15, 60);
+                doc.text('ORDER MANAGEMENT', 15, 60);
                 doc.setFontSize(11);
                 doc.setFont(undefined, 'normal');
                 doc.text(`Order #${order.orderNumber}  |  Date: ${new Date(order.timestamp).toLocaleDateString('en-IN')}`, 15, 66);
@@ -3120,56 +2586,20 @@
                 let y = 78;
                 const lineHeight = 6;
                 
-                // Customer Details
                 doc.setFillColor(102, 126, 234);
                 doc.roundedRect(15, y - 6, 180, 10, 2, 2, 'F');
                 doc.setFontSize(12);
                 doc.setFont(undefined, 'bold');
                 doc.setTextColor(255, 255, 255);
-                doc.text('👤 CUSTOMER DETAILS', 18, y);
+                doc.text('👤 CUSTOMER', 18, y);
                 y += 12;
                 
                 doc.setFontSize(10);
                 doc.setFont(undefined, 'normal');
                 doc.setTextColor(44, 62, 80);
-                doc.text(`Name: ${order.customerName || 'N/A'}`, 18, y); y += lineHeight;
-                doc.text(`Business: ${order.businessName || 'N/A'}`, 18, y); y += lineHeight;
-                doc.text(`Mobile: ${order.mobileNumber || 'N/A'}`, 18, y); y += lineHeight;
-                doc.text(`Address: ${order.address || 'N/A'}`, 18, y); y += lineHeight;
-                doc.text(`City: ${order.city || 'N/A'}, State: ${order.state || 'N/A'}, Pincode: ${order.pincode || 'N/A'}`, 18, y); y += lineHeight + 5;
-                
-                // Order Details
-                doc.setFillColor(102, 126, 234);
-                doc.roundedRect(15, y - 6, 180, 10, 2, 2, 'F');
-                doc.setFont(undefined, 'bold');
-                doc.setTextColor(255, 255, 255);
-                doc.text('🔖 ORDER DETAILS', 18, y);
-                y += 12;
-                
-                doc.setFont(undefined, 'normal');
-                doc.setTextColor(44, 62, 80);
-                doc.text(`Lot Number: ${order.lotNumber || 'N/A'}`, 18, y); y += lineHeight;
-                doc.text(`Category: ${order.category || 'N/A'}`, 18, y); y += lineHeight;
-                doc.text(`Quantity: ${order.quantity || 'N/A'}`, 18, y); y += lineHeight;
-                doc.text(`Total Amount: ₹${order.totalAmount || '0'}`, 18, y); y += lineHeight + 5;
-                
-                // Payment Details
-                doc.setFillColor(102, 126, 234);
-                doc.roundedRect(15, y - 6, 180, 10, 2, 2, 'F');
-                doc.setFont(undefined, 'bold');
-                doc.setTextColor(255, 255, 255);
-                doc.text('💳 PAYMENT DETAILS', 18, y);
-                y += 12;
-                
-                doc.setFont(undefined, 'normal');
-                doc.setTextColor(44, 62, 80);
-                doc.text(`Payment Method: ${order.paymentMethod || 'N/A'}`, 18, y); y += lineHeight;
-                if (order.tokenAmount) {
-                    doc.text(`Token Amount: ₹${order.tokenAmount}`, 18, y); y += lineHeight;
-                }
-                if (order.finalPayment) {
-                    doc.text(`Final Payment: ₹${order.finalPayment}`, 18, y); y += lineHeight;
-                }
+                doc.text(`${order.customerName || 'N/A'} | ${order.mobileNumber || 'N/A'}`, 18, y); y += lineHeight;
+                doc.text(`Lot: ${order.lotNumber || 'N/A'} | Category: ${order.category || 'N/A'}`, 18, y); y += lineHeight;
+                doc.text(`Amount: ₹${order.totalAmount || '0'} | Status: ${order.orderStatus || 'N/A'}`, 18, y); y += lineHeight;
             });
             
             doc.save('AKBM_All_Orders.pdf');
@@ -3180,20 +2610,18 @@
             const ws_data = [
                 [COMPANY_INFO.name],
                 [COMPANY_INFO.tagline],
-                [`Email: ${COMPANY_INFO.email}  |  Phone: ${COMPANY_INFO.phone}`],
-                [`Location: ${COMPANY_INFO.location}`],
                 [],
-                ['Order #', 'Customer', 'Business', 'Lot Number', 'Category', 'Total Amount', 'Date']
+                ['Order #', 'Customer', 'Lot Number', 'Category', 'Total Amount', 'Status', 'Date']
             ];
             
             orders.forEach(order => {
                 ws_data.push([
                     order.orderNumber,
                     order.customerName || '',
-                    order.businessName || '',
                     order.lotNumber || '',
                     order.category || '',
                     order.totalAmount || '',
+                    order.orderStatus || '',
                     new Date(order.timestamp).toLocaleDateString()
                 ]);
             });
@@ -3206,22 +2634,14 @@
         }
 
         function exportAllToWord() {
-            let content = `${COMPANY_INFO.name}\n`;
-            content += `${COMPANY_INFO.tagline}\n`;
-            content += `Email: ${COMPANY_INFO.email}  |  Phone: ${COMPANY_INFO.phone}\n`;
-            content += `Location: ${COMPANY_INFO.location}\n`;
-            content += `\n${'='.repeat(80)}\n\n`;
-            content += 'ALL ORDERS\n\n';
+            let content = `${COMPANY_INFO.name}\n${COMPANY_INFO.tagline}\n\nALL ORDERS\n\n`;
             
             orders.forEach(order => {
                 content += `ORDER #${order.orderNumber}\n`;
                 content += `Customer: ${order.customerName || 'N/A'}\n`;
-                content += `Business: ${order.businessName || 'N/A'}\n`;
-                content += `Lot Number: ${order.lotNumber || 'N/A'}\n`;
-                content += `Category: ${order.category || 'N/A'}\n`;
-                content += `Total Amount: ₹${order.totalAmount || '0'}\n`;
-                content += `Date: ${new Date(order.timestamp).toLocaleDateString()}\n\n`;
-                content += '---\n\n';
+                content += `Lot: ${order.lotNumber || 'N/A'} | Category: ${order.category || 'N/A'}\n`;
+                content += `Amount: ₹${order.totalAmount || '0'} | Status: ${order.orderStatus || 'N/A'}\n`;
+                content += `Date: ${new Date(order.timestamp).toLocaleDateString()}\n\n---\n\n`;
             });
             
             const blob = new Blob([content], { type: 'application/msword' });
