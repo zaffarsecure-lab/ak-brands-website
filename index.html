@@ -229,8 +229,8 @@
             box-shadow: 0 5px 15px rgba(255,255,255,0.3);
         }
 
-        /* Password Modal */
-        .password-modal {
+        /* OTP Modal */
+        .otp-modal {
             display: none;
             position: fixed;
             z-index: 3000;
@@ -242,72 +242,93 @@
             backdrop-filter: blur(8px);
         }
 
-        .password-modal.show {
+        .otp-modal.show {
             display: flex;
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.3s ease;
         }
 
-        .password-content {
+        .otp-content {
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             padding: 2.5rem;
             border-radius: 20px;
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
             box-shadow: 0 15px 50px rgba(0,0,0,0.4);
             animation: slideUp 0.5s ease;
             text-align: center;
             color: white;
-            border: 2px solid rgba(255, 215, 0, 0.3);
+            border: 2px solid rgba(26, 188, 156, 0.3);
         }
 
-        .password-title {
+        .otp-title {
             font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             font-family: 'Inter', sans-serif;
-            color: #FFD700;
+            color: #1abc9c;
         }
 
-        .password-input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid rgba(255, 215, 0, 0.5);
+        .otp-subtitle {
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .otp-phone {
+            font-weight: 700;
+            color: #1abc9c;
+            font-size: 1.1rem;
+        }
+
+        .otp-input-container {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+
+        .otp-digit {
+            width: 50px;
+            height: 60px;
+            border: 2px solid rgba(26, 188, 156, 0.5);
             border-radius: 10px;
             background: rgba(255,255,255,0.1);
             color: white;
-            font-size: 1rem;
-            margin-bottom: 1rem;
+            font-size: 1.5rem;
             text-align: center;
-            letter-spacing: 2px;
+            font-weight: 700;
+            transition: all 0.3s;
         }
 
-        .password-input:focus {
+        .otp-digit:focus {
             outline: none;
-            border-color: #FFD700;
+            border-color: #1abc9c;
             background: rgba(255,255,255,0.15);
+            transform: scale(1.05);
         }
 
-        .password-error {
+        .otp-error {
             color: #ff6b6b;
             font-size: 0.9rem;
-            margin-bottom: 1rem;
+            margin: 1rem 0;
             display: none;
         }
 
-        .password-error.show {
+        .otp-error.show {
             display: block;
             animation: shake 0.5s;
         }
 
-        .password-buttons {
+        .otp-buttons {
             display: flex;
             gap: 1rem;
             margin-top: 1.5rem;
         }
 
-        .password-btn {
+        .otp-btn {
             flex: 1;
             padding: 0.8rem;
             border: none;
@@ -318,20 +339,61 @@
             font-size: 1rem;
         }
 
-        .password-submit {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            color: #2c3e50;
+        .otp-verify {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
         }
 
-        .password-cancel {
+        .otp-resend {
             background: rgba(255,255,255,0.1);
             color: white;
             border: 2px solid rgba(255,255,255,0.3);
         }
 
-        .password-btn:hover {
+        .otp-cancel {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .otp-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .otp-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .otp-timer {
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            opacity: 0.8;
+        }
+
+        .otp-loading {
+            display: none;
+            margin: 1rem 0;
+        }
+
+        .otp-loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #1abc9c;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Orders Section */
@@ -1431,6 +1493,8 @@
             .orders-grid { grid-template-columns: 1fr; }
             .form-buttons { flex-direction: column; }
             .customer-selector-row { flex-direction: column; }
+            .otp-digit { width: 40px; height: 50px; font-size: 1.2rem; }
+            .otp-input-container { gap: 0.3rem; }
         }
 
         @media (max-width: 480px) {
@@ -1438,6 +1502,8 @@
             .discount-code { font-size: 1.3rem; }
             .action-box-label { font-size: 1rem; padding: 0.5rem 1.2rem; }
             .order-form-card { padding: 1.5rem; }
+            .otp-content { padding: 1.5rem; }
+            .otp-title { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -1458,7 +1524,7 @@
                     <a href="#features" onclick="showSection('features')">Services</a>
                     <a href="#about" onclick="showSection('about')">About</a>
                     <a href="#contact" onclick="showSection('contact')">Contact</a>
-                    <a onclick="openOrdersWithPassword()">Orders</a>
+                    <a onclick="openOrdersWithOTP()">Orders</a>
                 </div>
             </div>
         </div>
@@ -1490,16 +1556,40 @@
         </div>
     </header>
 
-    <div id="passwordModal" class="password-modal">
-        <div class="password-content">
-            <h2 class="password-title">🔒 Enter Password</h2>
-            <p style="margin-bottom: 1.5rem; opacity: 0.9;">This section is password protected</p>
-            <input type="password" id="passwordInput" class="password-input" placeholder="Enter password" onkeypress="handlePasswordKeypress(event)">
-            <div class="password-error" id="passwordError">❌ Incorrect password. Please try again.</div>
-            <div class="password-buttons">
-                <button class="password-btn password-cancel" onclick="closePasswordModal()">Cancel</button>
-                <button class="password-btn password-submit" onclick="verifyPassword()">Submit</button>
+    <div id="otpModal" class="otp-modal">
+        <div class="otp-content">
+            <h2 class="otp-title">🔐 Secure Login</h2>
+            <p class="otp-subtitle">
+                A 6-digit OTP will be sent to<br>
+                <span class="otp-phone">+91 8660502217</span>
+            </p>
+            
+            <div class="otp-loading" id="otpLoading">
+                <div class="spinner"></div>
+                <p style="margin-top: 1rem;">Sending OTP via WhatsApp...</p>
             </div>
+            
+            <div id="otpInputSection" style="display: none;">
+                <div class="otp-input-container">
+                    <input type="text" maxlength="1" class="otp-digit" id="otp1" oninput="moveToNext(this, 'otp2')" onkeydown="moveToPrev(event, this, null)">
+                    <input type="text" maxlength="1" class="otp-digit" id="otp2" oninput="moveToNext(this, 'otp3')" onkeydown="moveToPrev(event, this, 'otp1')">
+                    <input type="text" maxlength="1" class="otp-digit" id="otp3" oninput="moveToNext(this, 'otp4')" onkeydown="moveToPrev(event, this, 'otp2')">
+                    <input type="text" maxlength="1" class="otp-digit" id="otp4" oninput="moveToNext(this, 'otp5')" onkeydown="moveToPrev(event, this, 'otp3')">
+                    <input type="text" maxlength="1" class="otp-digit" id="otp5" oninput="moveToNext(this, 'otp6')" onkeydown="moveToPrev(event, this, 'otp4')">
+                    <input type="text" maxlength="1" class="otp-digit" id="otp6" oninput="handleLastDigit()" onkeydown="moveToPrev(event, this, 'otp5')">
+                </div>
+                
+                <div class="otp-error" id="otpError">❌ Invalid OTP. Please try again.</div>
+                
+                <div class="otp-timer" id="otpTimer"></div>
+                
+                <div class="otp-buttons">
+                    <button class="otp-btn otp-verify" onclick="verifyOTP()">Verify</button>
+                    <button class="otp-btn otp-resend" id="resendBtn" onclick="resendOTP()" disabled>Resend OTP</button>
+                </div>
+            </div>
+            
+            <button class="otp-btn otp-cancel" onclick="closeOTPModal()" style="width: 100%; margin-top: 1rem;">Cancel</button>
         </div>
     </div>
 
@@ -2023,7 +2113,6 @@
     </footer>
 
     <script>
-        const ORDERS_PASSWORD = "AK2024@Secure";
         const COMPANY_INFO = {
             name: "AK Brands Marketing",
             tagline: "Trusted Firm",
@@ -2043,6 +2132,167 @@
         
         // Customer database
         let customers = JSON.parse(localStorage.getItem('akCustomers') || '[]');
+        
+        // OTP System
+        let generatedOTP = '';
+        let otpTimer = null;
+        let resendTimer = null;
+        let otpExpiryTime = null;
+
+        function generateOTP() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        function openOrdersWithOTP() {
+            if (isOrdersLoggedIn) {
+                showOrdersSection();
+            } else {
+                document.getElementById('otpModal').classList.add('show');
+                sendOTP();
+            }
+            document.getElementById('menuDropdown').classList.remove('show');
+        }
+
+        function sendOTP() {
+            generatedOTP = generateOTP();
+            otpExpiryTime = Date.now() + (5 * 60 * 1000); // 5 minutes
+            
+            document.getElementById('otpLoading').classList.add('show');
+            document.getElementById('otpInputSection').style.display = 'none';
+            
+            // Send OTP via WhatsApp
+            const message = `🔐 *AK Brands Marketing - Secure Login*\n\nYour OTP for Orders Dashboard:\n\n*${generatedOTP}*\n\nValid for 5 minutes.\n\n⚠️ Do not share this code with anyone.`;
+            const whatsappUrl = `https://wa.me/918660502217?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            // Simulate sending delay
+            setTimeout(() => {
+                document.getElementById('otpLoading').classList.remove('show');
+                document.getElementById('otpInputSection').style.display = 'block';
+                document.getElementById('otp1').focus();
+                startOTPTimer();
+                startResendTimer();
+            }, 2000);
+        }
+
+        function startOTPTimer() {
+            updateTimerDisplay();
+            otpTimer = setInterval(() => {
+                if (Date.now() >= otpExpiryTime) {
+                    clearInterval(otpTimer);
+                    document.getElementById('otpTimer').textContent = '⏰ OTP expired. Please request a new one.';
+                    document.getElementById('otpTimer').style.color = '#ff6b6b';
+                } else {
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const remaining = Math.max(0, Math.floor((otpExpiryTime - Date.now()) / 1000));
+            const minutes = Math.floor(remaining / 60);
+            const seconds = remaining % 60;
+            document.getElementById('otpTimer').textContent = `⏱️ OTP expires in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('otpTimer').style.color = 'rgba(255,255,255,0.8)';
+        }
+
+        function startResendTimer() {
+            const resendBtn = document.getElementById('resendBtn');
+            let countdown = 60;
+            resendBtn.disabled = true;
+            resendBtn.textContent = `Resend (${countdown}s)`;
+            
+            resendTimer = setInterval(() => {
+                countdown--;
+                if (countdown <= 0) {
+                    clearInterval(resendTimer);
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = 'Resend OTP';
+                } else {
+                    resendBtn.textContent = `Resend (${countdown}s)`;
+                }
+            }, 1000);
+        }
+
+        function resendOTP() {
+            clearInterval(otpTimer);
+            clearInterval(resendTimer);
+            clearOTPInputs();
+            sendOTP();
+        }
+
+        function moveToNext(current, nextId) {
+            if (current.value.length === 1 && nextId) {
+                document.getElementById(nextId).focus();
+            }
+        }
+
+        function moveToPrev(event, current, prevId) {
+            if (event.key === 'Backspace' && current.value === '' && prevId) {
+                document.getElementById(prevId).focus();
+            }
+        }
+
+        function handleLastDigit() {
+            const otp6 = document.getElementById('otp6');
+            if (otp6.value.length === 1) {
+                verifyOTP();
+            }
+        }
+
+        function verifyOTP() {
+            const enteredOTP = 
+                document.getElementById('otp1').value +
+                document.getElementById('otp2').value +
+                document.getElementById('otp3').value +
+                document.getElementById('otp4').value +
+                document.getElementById('otp5').value +
+                document.getElementById('otp6').value;
+            
+            if (enteredOTP.length !== 6) {
+                showOTPError('Please enter complete 6-digit OTP');
+                return;
+            }
+            
+            if (Date.now() >= otpExpiryTime) {
+                showOTPError('OTP has expired. Please request a new one.');
+                return;
+            }
+            
+            if (enteredOTP === generatedOTP) {
+                isOrdersLoggedIn = true;
+                clearInterval(otpTimer);
+                clearInterval(resendTimer);
+                closeOTPModal();
+                showOrdersSection();
+            } else {
+                showOTPError('Invalid OTP. Please try again.');
+                clearOTPInputs();
+                document.getElementById('otp1').focus();
+            }
+        }
+
+        function showOTPError(message) {
+            const errorDiv = document.getElementById('otpError');
+            errorDiv.textContent = `❌ ${message}`;
+            errorDiv.classList.add('show');
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 3000);
+        }
+
+        function clearOTPInputs() {
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`otp${i}`).value = '';
+            }
+        }
+
+        function closeOTPModal() {
+            document.getElementById('otpModal').classList.remove('show');
+            clearInterval(otpTimer);
+            clearInterval(resendTimer);
+            clearOTPInputs();
+        }
 
         function saveCustomer(customerDetails) {
             const existingIndex = customers.findIndex(c => c.mobileNumber === customerDetails.mobileNumber);
@@ -2132,6 +2382,10 @@
                     exportDropdown.classList.remove('show');
                 }
             }
+            
+            if (event.target.classList.contains('otp-modal')) {
+                closeOTPModal();
+            }
         }
 
         function showSection(section) {
@@ -2142,41 +2396,6 @@
             document.getElementById('contact').style.display = 'block';
             document.getElementById(section).scrollIntoView({ behavior: 'smooth' });
             document.getElementById('menuDropdown').classList.remove('show');
-        }
-
-        function openOrdersWithPassword() {
-            if (isOrdersLoggedIn) {
-                showOrdersSection();
-            } else {
-                document.getElementById('passwordModal').classList.add('show');
-                document.getElementById('passwordInput').value = '';
-                document.getElementById('passwordError').classList.remove('show');
-                document.getElementById('passwordInput').focus();
-            }
-            document.getElementById('menuDropdown').classList.remove('show');
-        }
-
-        function handlePasswordKeypress(event) {
-            if (event.key === 'Enter') {
-                verifyPassword();
-            }
-        }
-
-        function verifyPassword() {
-            const password = document.getElementById('passwordInput').value;
-            if (password === ORDERS_PASSWORD) {
-                isOrdersLoggedIn = true;
-                closePasswordModal();
-                showOrdersSection();
-            } else {
-                document.getElementById('passwordError').classList.add('show');
-                document.getElementById('passwordInput').value = '';
-                document.getElementById('passwordInput').focus();
-            }
-        }
-
-        function closePasswordModal() {
-            document.getElementById('passwordModal').classList.remove('show');
         }
 
         function showOrdersSection() {
@@ -2385,7 +2604,7 @@
             doc.setFillColor(102, 126, 234);
             doc.rect(0, 0, 210, 45, 'F');
             
-            // Logo placeholder (you can add actual logo later)
+            // Logo placeholder
             doc.setFillColor(255, 255, 255);
             doc.circle(20, 22, 12, 'F');
             doc.setFontSize(16);
@@ -2948,9 +3167,6 @@
             if (event.target.classList.contains('success-modal')) {
                 event.target.classList.remove('show');
                 document.body.style.overflow = 'auto';
-            }
-            if (event.target.classList.contains('password-modal')) {
-                closePasswordModal();
             }
         });
     </script>
