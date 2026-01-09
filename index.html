@@ -2024,6 +2024,15 @@
 
     <script>
         const ORDERS_PASSWORD = "AK2024@Secure";
+        const COMPANY_INFO = {
+            name: "AK Brands Marketing",
+            tagline: "Trusted Firm",
+            email: "abdul@akbrandsmarketing.com",
+            phone: "+91 8660502217",
+            location: "Bengaluru, Karnataka, India",
+            logoUrl: "https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg"
+        };
+        
         let isOrdersLoggedIn = false;
         let codeCounter = parseInt(localStorage.getItem('akCodeCounter') || '1');
         let registeredPhones = JSON.parse(localStorage.getItem('akRegisteredPhones') || '{}');
@@ -2036,14 +2045,11 @@
         let customers = JSON.parse(localStorage.getItem('akCustomers') || '[]');
 
         function saveCustomer(customerDetails) {
-            // Check if customer already exists (by mobile number)
             const existingIndex = customers.findIndex(c => c.mobileNumber === customerDetails.mobileNumber);
             
             if (existingIndex >= 0) {
-                // Update existing customer
                 customers[existingIndex] = customerDetails;
             } else {
-                // Add new customer
                 customers.push(customerDetails);
             }
             
@@ -2073,7 +2079,6 @@
             
             const customer = customers[selectedIndex];
             
-            // Fill customer details
             document.getElementById('customerName').value = customer.customerName || '';
             document.getElementById('businessName').value = customer.businessName || '';
             document.getElementById('mobileNumber').value = customer.mobileNumber || '';
@@ -2220,7 +2225,6 @@
                 }
             });
             
-            // Try to select matching customer in dropdown
             const customerIndex = customers.findIndex(c => c.mobileNumber === order.mobileNumber);
             if (customerIndex >= 0) {
                 document.getElementById('customerSelector').value = customerIndex;
@@ -2328,7 +2332,6 @@
                 }
             }
             
-            // Save customer details
             const customerDetails = {
                 customerName: orderData.customerName,
                 businessName: orderData.businessName,
@@ -2374,10 +2377,31 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            doc.setFontSize(18);
-            doc.text(`Order #${order.orderNumber}`, 105, 15, { align: 'center' });
+            // Company Header
+            doc.setFillColor(102, 126, 234);
+            doc.rect(0, 0, 210, 35, 'F');
             
-            let y = 30;
+            doc.setFontSize(22);
+            doc.setTextColor(255, 255, 255);
+            doc.setFont(undefined, 'bold');
+            doc.text(COMPANY_INFO.name, 105, 15, { align: 'center' });
+            
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.text(COMPANY_INFO.tagline, 105, 21, { align: 'center' });
+            doc.text(`📧 ${COMPANY_INFO.email}  |  📱 ${COMPANY_INFO.phone}`, 105, 27, { align: 'center' });
+            doc.text(`📍 ${COMPANY_INFO.location}`, 105, 32, { align: 'center' });
+            
+            // Order Title
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text(`Order #${order.orderNumber}`, 105, 45, { align: 'center' });
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Date: ${new Date(order.timestamp).toLocaleDateString('en-IN')}`, 105, 51, { align: 'center' });
+            
+            let y = 60;
             const lineHeight = 7;
             
             const sections = [
@@ -2397,11 +2421,13 @@
                 }
                 doc.setFontSize(14);
                 doc.setFont(undefined, 'bold');
+                doc.setTextColor(102, 126, 234);
                 doc.text(section.title, 15, y);
                 y += lineHeight;
                 
                 doc.setFontSize(10);
                 doc.setFont(undefined, 'normal');
+                doc.setTextColor(0, 0, 0);
                 section.fields.forEach(field => {
                     if (order[field]) {
                         const label = field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
@@ -2416,12 +2442,17 @@
                 y += 5;
             });
             
-            doc.save(`Order_${order.orderNumber}.pdf`);
+            doc.save(`AK_Brands_Order_${order.orderNumber}.pdf`);
         }
 
         function exportOrderToExcel(index) {
             const order = orders[index];
             const ws_data = [
+                [COMPANY_INFO.name],
+                [COMPANY_INFO.tagline],
+                [`Email: ${COMPANY_INFO.email}  |  Phone: ${COMPANY_INFO.phone}`],
+                [`Location: ${COMPANY_INFO.location}`],
+                [],
                 ['Order Number', order.orderNumber],
                 ['Date', new Date(order.timestamp).toLocaleDateString()],
                 [],
@@ -2483,12 +2514,18 @@
             const ws = XLSX.utils.aoa_to_sheet(ws_data);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, `Order ${order.orderNumber}`);
-            XLSX.writeFile(wb, `Order_${order.orderNumber}.xlsx`);
+            XLSX.writeFile(wb, `AK_Brands_Order_${order.orderNumber}.xlsx`);
         }
 
         function exportOrderToWord(index) {
             const order = orders[index];
-            let content = `ORDER #${order.orderNumber}\n`;
+            let content = `${COMPANY_INFO.name}\n`;
+            content += `${COMPANY_INFO.tagline}\n`;
+            content += `Email: ${COMPANY_INFO.email}  |  Phone: ${COMPANY_INFO.phone}\n`;
+            content += `Location: ${COMPANY_INFO.location}\n`;
+            content += `\n${'='.repeat(80)}\n\n`;
+            
+            content += `ORDER #${order.orderNumber}\n`;
             content += `Date: ${new Date(order.timestamp).toLocaleDateString()}\n\n`;
             
             content += `CUSTOMER DETAILS\n`;
@@ -2549,7 +2586,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Order_${order.orderNumber}.doc`;
+            a.download = `AK_Brands_Order_${order.orderNumber}.doc`;
             a.click();
         }
 
@@ -2557,16 +2594,33 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            doc.setFontSize(20);
-            doc.text('AK Brands Marketing - All Orders', 105, 15, { align: 'center' });
+            // Company Header
+            doc.setFillColor(102, 126, 234);
+            doc.rect(0, 0, 210, 35, 'F');
+            
+            doc.setFontSize(22);
+            doc.setTextColor(255, 255, 255);
+            doc.setFont(undefined, 'bold');
+            doc.text(COMPANY_INFO.name, 105, 15, { align: 'center' });
+            
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.text(COMPANY_INFO.tagline, 105, 21, { align: 'center' });
+            doc.text(`📧 ${COMPANY_INFO.email}  |  📱 ${COMPANY_INFO.phone}`, 105, 27, { align: 'center' });
+            doc.text(`📍 ${COMPANY_INFO.location}`, 105, 32, { align: 'center' });
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('All Orders', 105, 45, { align: 'center' });
             
             orders.forEach((order, index) => {
                 if (index > 0) doc.addPage();
                 
                 doc.setFontSize(16);
-                doc.text(`Order #${order.orderNumber}`, 15, 30);
+                doc.text(`Order #${order.orderNumber}`, 15, 60);
                 
-                let y = 40;
+                let y = 70;
                 const lineHeight = 7;
                 
                 doc.setFontSize(10);
@@ -2577,12 +2631,19 @@
                 doc.text(`Total Amount: ₹${order.totalAmount || '0'}`, 15, y); y += lineHeight;
             });
             
-            doc.save('All_Orders.pdf');
+            doc.save('AK_Brands_All_Orders.pdf');
             document.getElementById('exportDropdown').classList.remove('show');
         }
 
         function exportAllToExcel() {
-            const ws_data = [['Order #', 'Customer', 'Business', 'Lot Number', 'Category', 'Total Amount', 'Date']];
+            const ws_data = [
+                [COMPANY_INFO.name],
+                [COMPANY_INFO.tagline],
+                [`Email: ${COMPANY_INFO.email}  |  Phone: ${COMPANY_INFO.phone}`],
+                [`Location: ${COMPANY_INFO.location}`],
+                [],
+                ['Order #', 'Customer', 'Business', 'Lot Number', 'Category', 'Total Amount', 'Date']
+            ];
             
             orders.forEach(order => {
                 ws_data.push([
@@ -2599,12 +2660,17 @@
             const ws = XLSX.utils.aoa_to_sheet(ws_data);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'All Orders');
-            XLSX.writeFile(wb, 'All_Orders.xlsx');
+            XLSX.writeFile(wb, 'AK_Brands_All_Orders.xlsx');
             document.getElementById('exportDropdown').classList.remove('show');
         }
 
         function exportAllToWord() {
-            let content = 'AK BRANDS MARKETING - ALL ORDERS\n\n';
+            let content = `${COMPANY_INFO.name}\n`;
+            content += `${COMPANY_INFO.tagline}\n`;
+            content += `Email: ${COMPANY_INFO.email}  |  Phone: ${COMPANY_INFO.phone}\n`;
+            content += `Location: ${COMPANY_INFO.location}\n`;
+            content += `\n${'='.repeat(80)}\n\n`;
+            content += 'ALL ORDERS\n\n';
             
             orders.forEach(order => {
                 content += `ORDER #${order.orderNumber}\n`;
@@ -2621,7 +2687,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'All_Orders.doc';
+            a.download = 'AK_Brands_All_Orders.doc';
             a.click();
             document.getElementById('exportDropdown').classList.remove('show');
         }
