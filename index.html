@@ -2691,104 +2691,113 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Professional Header with Logo
+            // Professional Header matching website design
+            // Purple gradient background
             doc.setFillColor(102, 126, 234);
-            doc.rect(0, 0, 210, 45, 'F');
+            const gradient = doc.GState({ opacity: 1 });
+            doc.rect(0, 0, 210, 50, 'F');
             
-            // Logo placeholder
+            // Logo circle (white)
             doc.setFillColor(255, 255, 255);
-            doc.circle(20, 22, 12, 'F');
-            doc.setFontSize(16);
+            doc.circle(25, 25, 15, 'F');
+            
+            // "AK" text in logo
+            doc.setFontSize(20);
             doc.setTextColor(102, 126, 234);
             doc.setFont(undefined, 'bold');
-            doc.text('AK', 14, 25);
+            doc.text('AK', 17, 29);
             
             // Company Name
-            doc.setFontSize(24);
+            doc.setFontSize(26);
             doc.setTextColor(255, 255, 255);
             doc.setFont(undefined, 'bold');
-            doc.text(COMPANY_INFO.name, 40, 20);
+            doc.text('AK Brands Marketing', 50, 22);
             
             // Tagline
-            doc.setFontSize(10);
+            doc.setFontSize(11);
             doc.setFont(undefined, 'italic');
-            doc.text(COMPANY_INFO.tagline, 40, 26);
+            doc.setTextColor(255, 255, 255);
+            doc.text('Trusted Firm', 50, 29);
             
             // Contact Info
             doc.setFontSize(9);
             doc.setFont(undefined, 'normal');
-            doc.text(`📧 ${COMPANY_INFO.email}`, 40, 32);
-            doc.text(`📱 ${COMPANY_INFO.phone}`, 40, 37);
-            doc.text(`📍 ${COMPANY_INFO.location}`, 40, 42);
+            doc.text(`📧 ${COMPANY_INFO.email}`, 50, 36);
+            doc.text(`📱 ${COMPANY_INFO.phone}`, 50, 41);
+            doc.text(`📍 ${COMPANY_INFO.location}`, 50, 46);
             
-            // Order Title
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(18);
+            // Order Title Section
+            doc.setFillColor(255, 255, 255);
+            doc.rect(0, 50, 210, 20, 'F');
+            doc.setTextColor(44, 62, 80);
+            doc.setFontSize(20);
             doc.setFont(undefined, 'bold');
-            doc.text(`CUSTOMER ORDER`, 15, 58);
-            doc.setFontSize(12);
+            doc.text('CUSTOMER ORDER', 15, 60);
+            doc.setFontSize(11);
             doc.setFont(undefined, 'normal');
-            doc.text(`Order #${order.orderNumber}  |  Date: ${new Date(order.timestamp).toLocaleDateString('en-IN')}`, 15, 65);
+            doc.text(`Order #${order.orderNumber}  |  Date: ${new Date(order.timestamp).toLocaleDateString('en-IN')}`, 15, 66);
             
-            let y = 75;
+            let y = 78;
             const lineHeight = 6;
             const leftMargin = 15;
             const rightMargin = 195;
+            const sectionSpacing = 8;
             
-            // Helper function to add section
+            // Helper function to add section with purple header
             function addSection(title, fields) {
                 if (y > 270) {
                     doc.addPage();
                     y = 20;
                 }
                 
-                // Section Title
+                // Section Title with purple background
                 doc.setFillColor(102, 126, 234);
-                doc.rect(leftMargin, y - 5, rightMargin - leftMargin, 8, 'F');
-                doc.setFontSize(11);
+                doc.roundedRect(leftMargin, y - 6, rightMargin - leftMargin, 10, 2, 2, 'F');
+                doc.setFontSize(12);
                 doc.setFont(undefined, 'bold');
                 doc.setTextColor(255, 255, 255);
-                doc.text(title, leftMargin + 2, y);
-                y += 10;
+                doc.text(title, leftMargin + 3, y);
+                y += 12;
                 
                 // Section Content
-                doc.setFontSize(9);
+                doc.setFontSize(10);
                 doc.setFont(undefined, 'normal');
-                doc.setTextColor(0, 0, 0);
+                doc.setTextColor(44, 62, 80);
                 
                 fields.forEach(field => {
-                    if (order[field.key]) {
+                    const value = order[field.key];
+                    if (value !== undefined && value !== null && value !== '') {
                         const label = field.label;
-                        const value = String(order[field.key]);
+                        const valueStr = String(value);
                         
                         // Check if we need a new page
-                        if (y > 280) {
+                        if (y > 275) {
                             doc.addPage();
                             y = 20;
                         }
                         
                         // Label in bold
                         doc.setFont(undefined, 'bold');
-                        doc.text(`${label}:`, leftMargin + 2, y);
+                        doc.text(`${label}:`, leftMargin + 3, y);
                         
                         // Value in normal
                         doc.setFont(undefined, 'normal');
                         const labelWidth = doc.getTextWidth(`${label}: `);
                         
                         // Handle long text wrapping
-                        const maxWidth = rightMargin - leftMargin - labelWidth - 4;
-                        const lines = doc.splitTextToSize(value, maxWidth);
+                        const maxWidth = rightMargin - leftMargin - labelWidth - 6;
+                        const lines = doc.splitTextToSize(valueStr, maxWidth);
                         
                         lines.forEach((line, i) => {
                             if (i === 0) {
-                                doc.text(line, leftMargin + 2 + labelWidth, y);
+                                doc.text(line, leftMargin + 3 + labelWidth, y);
                             } else {
                                 y += lineHeight;
-                                if (y > 280) {
+                                if (y > 275) {
                                     doc.addPage();
                                     y = 20;
                                 }
-                                doc.text(line, leftMargin + 2 + labelWidth, y);
+                                doc.text(line, leftMargin + 3 + labelWidth, y);
                             }
                         });
                         
@@ -2796,11 +2805,11 @@
                     }
                 });
                 
-                y += 3;
+                y += sectionSpacing;
             }
             
             // 1. Customer Details
-            addSection('👤 CUSTOMER DETAILS', [
+            addSection('👤 1. CUSTOMER DETAILS', [
                 { key: 'customerName', label: 'Name' },
                 { key: 'businessName', label: 'Business Name' },
                 { key: 'mobileNumber', label: 'Mobile Number' },
@@ -2811,14 +2820,14 @@
             ]);
             
             // 2. Order Identification
-            addSection('🔖 ORDER IDENTIFICATION', [
+            addSection('🔖 2. ORDER IDENTIFICATION', [
                 { key: 'lotNumber', label: 'Lot Number' },
                 { key: 'lotDate', label: 'Lot Date' },
                 { key: 'lotBookPerson', label: 'Lot Book Person' }
             ]);
             
             // 3. Product Details
-            addSection('📦 PRODUCT DETAILS', [
+            addSection('📦 3. PRODUCT DETAILS', [
                 { key: 'category', label: 'Category' },
                 { key: 'description', label: 'Description' },
                 { key: 'quantity', label: 'Quantity' },
@@ -2828,48 +2837,57 @@
             ]);
             
             // 4. Payment Details
-            addSection('💳 PAYMENT DETAILS', [
+            addSection('💳 4. PAYMENT DETAILS', [
                 { key: 'paymentMethod', label: 'Payment Method' },
                 { key: 'tokenAmount', label: 'Token Amount (₹)' },
                 { key: 'tokenReference', label: 'Token Reference' },
                 { key: 'partPayment1', label: 'Part Payment 1 (₹)' },
-                { key: 'partPayment1Reference', label: 'Part Payment 1 Ref' },
+                { key: 'partPayment1Reference', label: 'Part Payment 1 Reference' },
                 { key: 'partPayment2', label: 'Part Payment 2 (₹)' },
-                { key: 'partPayment2Reference', label: 'Part Payment 2 Ref' },
+                { key: 'partPayment2Reference', label: 'Part Payment 2 Reference' },
                 { key: 'partPayment3', label: 'Part Payment 3 (₹)' },
-                { key: 'partPayment3Reference', label: 'Part Payment 3 Ref' },
+                { key: 'partPayment3Reference', label: 'Part Payment 3 Reference' },
                 { key: 'finalPayment', label: 'Final Payment (₹)' },
-                { key: 'finalPaymentReference', label: 'Final Payment Ref' }
+                { key: 'finalPaymentReference', label: 'Final Payment Reference' }
             ]);
             
             // 5. Logistics Details
-            addSection('🚚 LOGISTICS DETAILS', [
+            addSection('🚚 5. LOGISTICS DETAILS', [
                 { key: 'dispatchFrom', label: 'Dispatch From' },
                 { key: 'dispatchTo', label: 'Dispatch To' },
                 { key: 'dispatchDate', label: 'Dispatch Date' },
-                { key: 'courierName', label: 'Courier Name' },
+                { key: 'courierName', label: 'Courier/Transportation Name' },
                 { key: 'lrNumber', label: 'LR Number' },
                 { key: 'parcelCount', label: 'Parcel Count' },
-                { key: 'estimatedDeliveryDate', label: 'Est. Delivery Date' }
+                { key: 'estimatedDeliveryDate', label: 'Estimated Delivery Date' }
             ]);
             
             // 6. Order Status
-            addSection('📊 ORDER STATUS', [
-                { key: 'orderConfirmedDate', label: 'Order Confirmed' },
-                { key: 'packedDate', label: 'Packed' },
-                { key: 'dispatchedDate', label: 'Dispatched' },
-                { key: 'deliveredDate', label: 'Delivered' },
-                { key: 'closedDate', label: 'Closed' }
+            addSection('📊 6. ORDER STATUS', [
+                { key: 'orderConfirmedDate', label: 'Order Confirmed Date' },
+                { key: 'packedDate', label: 'Packed Date' },
+                { key: 'dispatchedDate', label: 'Dispatched Date' },
+                { key: 'deliveredDate', label: 'Delivered Date' },
+                { key: 'closedDate', label: 'Closed Date' }
             ]);
             
-            // 7. Remarks
+            // 7. Confirmation Proofs
+            const hasProofs = order.whatsappScreenshotData || order.paymentScreenshotData;
+            if (hasProofs) {
+                addSection('📸 7. CONFIRMATION PROOFS', [
+                    { key: 'whatsappScreenshotData', label: 'WhatsApp Screenshot' },
+                    { key: 'paymentScreenshotData', label: 'Payment Screenshot' }
+                ].filter(field => order[field.key]));
+            }
+            
+            // 8. Remarks
             if (order.remarks) {
-                addSection('📝 REMARKS', [
-                    { key: 'remarks', label: 'Notes' }
+                addSection('📝 8. REMARKS', [
+                    { key: 'remarks', label: 'Additional Notes' }
                 ]);
             }
             
-            // Footer on last page
+            // Footer on all pages
             const pageCount = doc.internal.getNumberOfPages();
             for (let i = 1; i <= pageCount; i++) {
                 doc.setPage(i);
@@ -2976,7 +2994,7 @@
             content += `Order #${order.orderNumber}\n`;
             content += `Date: ${new Date(order.timestamp).toLocaleDateString()}\n\n`;
             
-            content += `CUSTOMER DETAILS\n`;
+            content += `1. CUSTOMER DETAILS\n`;
             content += `${'─'.repeat(80)}\n`;
             content += `Name: ${order.customerName || ''}\n`;
             content += `Business Name: ${order.businessName || ''}\n`;
@@ -2986,13 +3004,13 @@
             content += `State: ${order.state || ''}\n`;
             content += `Pincode: ${order.pincode || ''}\n\n`;
             
-            content += `ORDER IDENTIFICATION\n`;
+            content += `2. ORDER IDENTIFICATION\n`;
             content += `${'─'.repeat(80)}\n`;
             content += `Lot Number: ${order.lotNumber || ''}\n`;
             content += `Lot Date: ${order.lotDate || ''}\n`;
             content += `Lot Book Person: ${order.lotBookPerson || ''}\n\n`;
             
-            content += `PRODUCT DETAILS\n`;
+            content += `3. PRODUCT DETAILS\n`;
             content += `${'─'.repeat(80)}\n`;
             content += `Category: ${order.category || ''}\n`;
             content += `Description: ${order.description || ''}\n`;
@@ -3001,7 +3019,7 @@
             content += `Total Amount: ${order.totalAmount || ''}\n`;
             content += `Stock Condition: ${order.stockCondition || ''}\n\n`;
             
-            content += `PAYMENT DETAILS\n`;
+            content += `4. PAYMENT DETAILS\n`;
             content += `${'─'.repeat(80)}\n`;
             content += `Payment Method: ${order.paymentMethod || ''}\n`;
             content += `Token Amount: ${order.tokenAmount || ''}\n`;
@@ -3015,7 +3033,7 @@
             content += `Final Payment: ${order.finalPayment || ''}\n`;
             content += `Final Payment Reference: ${order.finalPaymentReference || ''}\n\n`;
             
-            content += `LOGISTICS DETAILS\n`;
+            content += `5. LOGISTICS DETAILS\n`;
             content += `${'─'.repeat(80)}\n`;
             content += `Dispatch From: ${order.dispatchFrom || ''}\n`;
             content += `Dispatch To: ${order.dispatchTo || ''}\n`;
@@ -3025,7 +3043,7 @@
             content += `Parcel Count: ${order.parcelCount || ''}\n`;
             content += `Estimated Delivery Date: ${order.estimatedDeliveryDate || ''}\n\n`;
             
-            content += `ORDER STATUS\n`;
+            content += `6. ORDER STATUS\n`;
             content += `${'─'.repeat(80)}\n`;
             content += `Order Confirmed Date: ${order.orderConfirmedDate || ''}\n`;
             content += `Packed Date: ${order.packedDate || ''}\n`;
@@ -3033,7 +3051,7 @@
             content += `Delivered Date: ${order.deliveredDate || ''}\n`;
             content += `Closed Date: ${order.closedDate || ''}\n\n`;
             
-            content += `REMARKS\n`;
+            content += `8. REMARKS\n`;
             content += `${'─'.repeat(80)}\n`;
             content += `${order.remarks || ''}\n`;
             
@@ -3056,106 +3074,101 @@
             orders.forEach((order, index) => {
                 if (index > 0) doc.addPage();
                 
-                // Professional Header with Logo
+                // Professional Header matching website design
                 doc.setFillColor(102, 126, 234);
-                doc.rect(0, 0, 210, 45, 'F');
+                doc.rect(0, 0, 210, 50, 'F');
                 
-                // Logo placeholder
+                // Logo circle
                 doc.setFillColor(255, 255, 255);
-                doc.circle(20, 22, 12, 'F');
-                doc.setFontSize(16);
+                doc.circle(25, 25, 15, 'F');
+                
+                // "AK" text in logo
+                doc.setFontSize(20);
                 doc.setTextColor(102, 126, 234);
                 doc.setFont(undefined, 'bold');
-                doc.text('AK', 14, 25);
+                doc.text('AK', 17, 29);
                 
                 // Company Name
-                doc.setFontSize(24);
+                doc.setFontSize(26);
                 doc.setTextColor(255, 255, 255);
                 doc.setFont(undefined, 'bold');
-                doc.text(COMPANY_INFO.name, 40, 20);
+                doc.text('AK Brands Marketing', 50, 22);
                 
                 // Tagline
-                doc.setFontSize(10);
+                doc.setFontSize(11);
                 doc.setFont(undefined, 'italic');
-                doc.text(COMPANY_INFO.tagline, 40, 26);
+                doc.text('Trusted Firm', 50, 29);
                 
                 // Contact Info
                 doc.setFontSize(9);
                 doc.setFont(undefined, 'normal');
-                doc.text(`📧 ${COMPANY_INFO.email}`, 40, 32);
-                doc.text(`📱 ${COMPANY_INFO.phone}`, 40, 37);
-                doc.text(`📍 ${COMPANY_INFO.location}`, 40, 42);
+                doc.text(`📧 ${COMPANY_INFO.email}`, 50, 36);
+                doc.text(`📱 ${COMPANY_INFO.phone}`, 50, 41);
+                doc.text(`📍 ${COMPANY_INFO.location}`, 50, 46);
                 
                 // Order Title
-                doc.setTextColor(0, 0, 0);
-                doc.setFontSize(18);
+                doc.setFillColor(255, 255, 255);
+                doc.rect(0, 50, 210, 20, 'F');
+                doc.setTextColor(44, 62, 80);
+                doc.setFontSize(20);
                 doc.setFont(undefined, 'bold');
-                doc.text(`CUSTOMER ORDER`, 15, 58);
-                doc.setFontSize(12);
+                doc.text('CUSTOMER ORDER', 15, 60);
+                doc.setFontSize(11);
                 doc.setFont(undefined, 'normal');
-                doc.text(`Order #${order.orderNumber}  |  Date: ${new Date(order.timestamp).toLocaleDateString('en-IN')}`, 15, 65);
+                doc.text(`Order #${order.orderNumber}  |  Date: ${new Date(order.timestamp).toLocaleDateString('en-IN')}`, 15, 66);
                 
-                let y = 75;
-                const lineHeight = 7;
+                let y = 78;
+                const lineHeight = 6;
+                
+                // Customer Details
+                doc.setFillColor(102, 126, 234);
+                doc.roundedRect(15, y - 6, 180, 10, 2, 2, 'F');
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(255, 255, 255);
+                doc.text('👤 CUSTOMER DETAILS', 18, y);
+                y += 12;
                 
                 doc.setFontSize(10);
-                doc.setFont(undefined, 'bold');
-                doc.text('Customer Details:', 15, y); y += lineHeight;
                 doc.setFont(undefined, 'normal');
-                doc.text(`Name: ${order.customerName || 'N/A'}`, 15, y); y += lineHeight;
-                doc.text(`Business: ${order.businessName || 'N/A'}`, 15, y); y += lineHeight;
-                doc.text(`Mobile: ${order.mobileNumber || 'N/A'}`, 15, y); y += lineHeight;
-                doc.text(`Address: ${order.address || 'N/A'}`, 15, y); y += lineHeight;
-                doc.text(`City: ${order.city || 'N/A'}, State: ${order.state || 'N/A'}, Pincode: ${order.pincode || 'N/A'}`, 15, y); y += lineHeight + 3;
+                doc.setTextColor(44, 62, 80);
+                doc.text(`Name: ${order.customerName || 'N/A'}`, 18, y); y += lineHeight;
+                doc.text(`Business: ${order.businessName || 'N/A'}`, 18, y); y += lineHeight;
+                doc.text(`Mobile: ${order.mobileNumber || 'N/A'}`, 18, y); y += lineHeight;
+                doc.text(`Address: ${order.address || 'N/A'}`, 18, y); y += lineHeight;
+                doc.text(`City: ${order.city || 'N/A'}, State: ${order.state || 'N/A'}, Pincode: ${order.pincode || 'N/A'}`, 18, y); y += lineHeight + 5;
                 
+                // Order Details
+                doc.setFillColor(102, 126, 234);
+                doc.roundedRect(15, y - 6, 180, 10, 2, 2, 'F');
                 doc.setFont(undefined, 'bold');
-                doc.text('Order Details:', 15, y); y += lineHeight;
-                doc.setFont(undefined, 'normal');
-                doc.text(`Lot Number: ${order.lotNumber || 'N/A'}`, 15, y); y += lineHeight;
-                doc.text(`Lot Date: ${order.lotDate || 'N/A'}`, 15, y); y += lineHeight;
-                doc.text(`Category: ${order.category || 'N/A'}`, 15, y); y += lineHeight;
-                doc.text(`Quantity: ${order.quantity || 'N/A'}`, 15, y); y += lineHeight;
-                doc.text(`Rate Per Piece: ₹${order.ratePerPiece || '0'}`, 15, y); y += lineHeight;
-                doc.text(`Total Amount: ₹${order.totalAmount || '0'}`, 15, y); y += lineHeight;
-                doc.text(`Stock Condition: ${order.stockCondition || 'N/A'}`, 15, y); y += lineHeight + 3;
+                doc.setTextColor(255, 255, 255);
+                doc.text('🔖 ORDER DETAILS', 18, y);
+                y += 12;
                 
-                doc.setFont(undefined, 'bold');
-                doc.text('Payment Details:', 15, y); y += lineHeight;
                 doc.setFont(undefined, 'normal');
-                doc.text(`Payment Method: ${order.paymentMethod || 'N/A'}`, 15, y); y += lineHeight;
+                doc.setTextColor(44, 62, 80);
+                doc.text(`Lot Number: ${order.lotNumber || 'N/A'}`, 18, y); y += lineHeight;
+                doc.text(`Category: ${order.category || 'N/A'}`, 18, y); y += lineHeight;
+                doc.text(`Quantity: ${order.quantity || 'N/A'}`, 18, y); y += lineHeight;
+                doc.text(`Total Amount: ₹${order.totalAmount || '0'}`, 18, y); y += lineHeight + 5;
+                
+                // Payment Details
+                doc.setFillColor(102, 126, 234);
+                doc.roundedRect(15, y - 6, 180, 10, 2, 2, 'F');
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(255, 255, 255);
+                doc.text('💳 PAYMENT DETAILS', 18, y);
+                y += 12;
+                
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(44, 62, 80);
+                doc.text(`Payment Method: ${order.paymentMethod || 'N/A'}`, 18, y); y += lineHeight;
                 if (order.tokenAmount) {
-                    doc.text(`Token Amount: ₹${order.tokenAmount}`, 15, y); y += lineHeight;
-                }
-                if (order.partPayment1) {
-                    doc.text(`Part Payment 1: ₹${order.partPayment1}`, 15, y); y += lineHeight;
-                }
-                if (order.partPayment2) {
-                    doc.text(`Part Payment 2: ₹${order.partPayment2}`, 15, y); y += lineHeight;
-                }
-                if (order.partPayment3) {
-                    doc.text(`Part Payment 3: ₹${order.partPayment3}`, 15, y); y += lineHeight;
+                    doc.text(`Token Amount: ₹${order.tokenAmount}`, 18, y); y += lineHeight;
                 }
                 if (order.finalPayment) {
-                    doc.text(`Final Payment: ₹${order.finalPayment}`, 15, y); y += lineHeight;
-                }
-                y += 3;
-                
-                if (order.dispatchFrom || order.courierName) {
-                    doc.setFont(undefined, 'bold');
-                    doc.text('Logistics Details:', 15, y); y += lineHeight;
-                    doc.setFont(undefined, 'normal');
-                    if (order.dispatchFrom) {
-                        doc.text(`Dispatch From: ${order.dispatchFrom}`, 15, y); y += lineHeight;
-                    }
-                    if (order.dispatchTo) {
-                        doc.text(`Dispatch To: ${order.dispatchTo}`, 15, y); y += lineHeight;
-                    }
-                    if (order.courierName) {
-                        doc.text(`Courier: ${order.courierName}`, 15, y); y += lineHeight;
-                    }
-                    if (order.lrNumber) {
-                        doc.text(`LR Number: ${order.lrNumber}`, 15, y); y += lineHeight;
-                    }
+                    doc.text(`Final Payment: ₹${order.finalPayment}`, 18, y); y += lineHeight;
                 }
             });
             
