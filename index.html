@@ -205,62 +205,89 @@
             display: block;
         }
 
-        /* Universal Card Actions */
-        .universal-actions {
-            display: flex;
-            gap: 0.5rem;
+        /* Actions Dropdown */
+        .actions-dropdown {
+            position: relative;
+            display: inline-block;
             margin-top: 1rem;
-            flex-wrap: wrap;
         }
 
-        .action-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 0.6rem;
+        .actions-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 0.9rem;
-            color: white;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            justify-content: center;
         }
 
-        .action-btn:hover {
+        .actions-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .view-btn {
-            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        .actions-dropdown-content {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -8px 16px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            z-index: 100;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+            border: 2px solid #667eea;
         }
 
-        .edit-btn {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        .actions-dropdown-content.show {
+            display: block;
+            animation: slideUpFade 0.3s ease-out;
         }
 
-        .delete-btn {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .download-pdf-btn {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        .actions-dropdown-content button {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: none;
+            background: white;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
         }
 
-        .download-excel-btn {
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        .actions-dropdown-content button:hover {
+            background: #f8f9fa;
+            padding-left: 1.5rem;
         }
 
-        .download-word-btn {
-            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
-        }
-
-        .whatsapp-btn {
-            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-        }
-
-        .save-btn {
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+        .actions-dropdown-content button:not(:last-child) {
+            border-bottom: 1px solid #ecf0f1;
         }
 
         /* Database Card Styles */
@@ -1843,8 +1870,6 @@
             .form-buttons { flex-direction: column; }
             .otp-digit { width: 40px; height: 50px; font-size: 1.2rem; }
             .otp-input-container { gap: 0.3rem; }
-            .universal-actions { flex-direction: column; }
-            .action-btn { min-width: auto; }
             .tab-btn { font-size: 0.9rem; padding: 0.8rem 1rem; min-width: 120px; }
             .tabs-container { overflow-x: auto; }
         }
@@ -2433,15 +2458,20 @@
 
                     <div class="delivery-address-preview" id="deliveryPreview" style="display: none;"></div>
                     
-                    <div class="universal-actions" id="deliveryActions" style="display: none;">
-                        <button class="action-btn view-btn" onclick="viewCurrentDelivery()">👁️ View</button>
-                        <button class="action-btn edit-btn" onclick="editCurrentDelivery()">✏️ Edit</button>
-                        <button class="action-btn download-pdf-btn" onclick="downloadDeliveryPDF()">📄 PDF</button>
-                        <button class="action-btn download-excel-btn" onclick="downloadDeliveryExcel()">📊 Excel</button>
-                        <button class="action-btn download-word-btn" onclick="downloadDeliveryWord()">📝 Word</button>
-                        <button class="action-btn whatsapp-btn" onclick="shareDeliveryViaWhatsApp()">📱 WhatsApp</button>
-                        <button class="action-btn save-btn" onclick="saveCurrentDelivery()">💾 Save</button>
-                        <button class="action-btn delete-btn" onclick="clearDeliveryForm()">🗑️ Clear</button>
+                    <div class="actions-dropdown" id="deliveryActionsDropdown" style="display: none;">
+                        <button class="actions-btn" onclick="toggleDeliveryActions()">
+                            ⚙️ Actions ▼
+                        </button>
+                        <div class="actions-dropdown-content" id="deliveryActionsContent">
+                            <button onclick="viewCurrentDelivery()">👁️ View</button>
+                            <button onclick="editCurrentDelivery()">✏️ Edit</button>
+                            <button onclick="downloadDeliveryPDF()">📄 Download PDF</button>
+                            <button onclick="downloadDeliveryExcel()">📊 Download Excel</button>
+                            <button onclick="downloadDeliveryWord()">📝 Download Word</button>
+                            <button onclick="shareDeliveryViaWhatsApp()">📱 Share WhatsApp</button>
+                            <button onclick="saveCurrentDelivery()">💾 Save</button>
+                            <button onclick="clearDeliveryForm()">🗑️ Delete</button>
+                        </div>
                     </div>
                 </div>
 
@@ -2698,6 +2728,49 @@
         let resendTimer = null;
         let otpExpiryTime = null;
         let enteredPhone = '';
+
+        // Actions Dropdown Toggle
+        function toggleDeliveryActions() {
+            document.getElementById('deliveryActionsContent').classList.toggle('show');
+        }
+
+        function toggleItemActions(index, type) {
+            const dropdown = document.getElementById(`actions-${type}-${index}`);
+            // Close all other dropdowns
+            document.querySelectorAll('.actions-dropdown-content').forEach(d => {
+                if (d !== dropdown) d.classList.remove('show');
+            });
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.actions-dropdown')) {
+                document.querySelectorAll('.actions-dropdown-content').forEach(d => {
+                    d.classList.remove('show');
+                });
+            }
+        });
+
+        // Universal Actions Renderer
+        function renderUniversalActions(index, type) {
+            return `
+                <div class="actions-dropdown">
+                    <button class="actions-btn" onclick="toggleItemActions(${index}, '${type}')">
+                        ⚙️ Actions ▼
+                    </button>
+                    <div class="actions-dropdown-content" id="actions-${type}-${index}">
+                        <button onclick="viewItem(${index}, '${type}')">👁️ View</button>
+                        <button onclick="editItem(${index}, '${type}')">✏️ Edit</button>
+                        <button onclick="downloadItemPDF(${index}, '${type}')">📄 Download PDF</button>
+                        <button onclick="downloadItemExcel(${index}, '${type}')">📊 Download Excel</button>
+                        <button onclick="downloadItemWord(${index}, '${type}')">📝 Download Word</button>
+                        <button onclick="shareItemViaWhatsApp(${index}, '${type}')">📱 Share WhatsApp</button>
+                        <button onclick="deleteItem(${index}, '${type}')">🗑️ Delete</button>
+                    </div>
+                </div>
+            `;
+        }
 
         // Universal View Modal Functions
         function openViewModal(title, data, type) {
@@ -2976,21 +3049,6 @@ ${formatDeliveryAddress(data)}
         }
 
         // Universal Action Functions
-        function renderUniversalActions(index, type) {
-            const actions = `
-                <div class="universal-actions">
-                    <button class="action-btn view-btn" onclick="viewItem(${index}, '${type}')">👁️ View</button>
-                    <button class="action-btn edit-btn" onclick="editItem(${index}, '${type}')">✏️ Edit</button>
-                    <button class="action-btn download-pdf-btn" onclick="downloadItemPDF(${index}, '${type}')">📄 PDF</button>
-                    <button class="action-btn download-excel-btn" onclick="downloadItemExcel(${index}, '${type}')">📊 Excel</button>
-                    <button class="action-btn download-word-btn" onclick="downloadItemWord(${index}, '${type}')">📝 Word</button>
-                    <button class="action-btn whatsapp-btn" onclick="shareItemViaWhatsApp(${index}, '${type}')">📱 WhatsApp</button>
-                    <button class="action-btn delete-btn" onclick="deleteItem(${index}, '${type}')">🗑️ Delete</button>
-                </div>
-            `;
-            return actions;
-        }
-
         function viewItem(index, type) {
             let data, title;
             
@@ -3460,7 +3518,7 @@ ${formatDeliveryAddress(data)}
         function createNewDelivery() {
             document.getElementById('deliveryForm').reset();
             document.getElementById('deliveryPreview').style.display = 'none';
-            document.getElementById('deliveryActions').style.display = 'none';
+            document.getElementById('deliveryActionsDropdown').style.display = 'none';
             currentDeliveryAddress = '';
             currentDeliveryData = null;
             document.getElementById('deliveryFormCard').scrollIntoView({ behavior: 'smooth' });
@@ -3500,7 +3558,7 @@ ${formatDeliveryAddress(data)}
             // Show preview
             document.getElementById('deliveryPreview').textContent = currentDeliveryAddress;
             document.getElementById('deliveryPreview').style.display = 'block';
-            document.getElementById('deliveryActions').style.display = 'flex';
+            document.getElementById('deliveryActionsDropdown').style.display = 'block';
         });
 
         function viewCurrentDelivery() {
@@ -3604,7 +3662,7 @@ ${formatDeliveryAddress(data)}
             
             document.getElementById('deliveryPreview').textContent = currentDeliveryAddress;
             document.getElementById('deliveryPreview').style.display = 'block';
-            document.getElementById('deliveryActions').style.display = 'flex';
+            document.getElementById('deliveryActionsDropdown').style.display = 'block';
             
             document.getElementById('deliveryFormCard').scrollIntoView({ behavior: 'smooth' });
         }
@@ -4114,7 +4172,7 @@ ${formatDeliveryAddress(data)}
         }
 
         window.onclick = function(event) {
-            if (!event.target.matches('.menu-button') && !event.target.matches('.export-btn')) {
+            if (!event.target.matches('.menu-button') && !event.target.matches('.export-btn') && !event.target.matches('.actions-btn')) {
                 const dropdowns = document.getElementsByClassName('dropdown-content');
                 const animationSection = document.getElementById('animationSection');
                 const exportDropdown = document.getElementById('exportDropdown');
