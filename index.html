@@ -2312,7 +2312,8 @@
             }
         }
 
-        function formatPOForWhatsApp(po) {
+        // Format PO for WhatsApp with privacy protection
+        function formatPOForWhatsApp(po, recipient) {
             let message = `📄 *PURCHASE ORDER*\n`;
             message += `*${COMPANY_INFO.name}*\n`;
             message += `_${COMPANY_INFO.tagline}_\n\n`;
@@ -2320,17 +2321,31 @@
             message += `*PO Number:* ${po.poNumber}\n`;
             message += `*Date:* ${new Date(po.timestamp).toLocaleDateString('en-IN')}\n\n`;
             
-            message += `🏭 *SUPPLIER DETAILS*\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `Name: ${po.supplierName}\n`;
-            message += `Contact: ${po.supplierContact}\n`;
-            message += `Address: ${po.supplierAddress}\n\n`;
-            
-            message += `👤 *CUSTOMER DETAILS*\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `Name: ${po.customerName}\n`;
-            message += `Contact: ${po.customerContact}\n`;
-            message += `Delivery Address: ${po.deliveryAddress}\n\n`;
+            if (recipient === 'customer') {
+                // Show to customer - hide supplier contact
+                message += `🏭 *SUPPLIER DETAILS*\n`;
+                message += `━━━━━━━━━━━━━━━━━━━━\n`;
+                message += `Name: AKBM's Supplier\n`;
+                message += `Address: ${po.supplierAddress}\n\n`;
+                
+                message += `👤 *CUSTOMER DETAILS*\n`;
+                message += `━━━━━━━━━━━━━━━━━━━━\n`;
+                message += `Name: ${po.customerName}\n`;
+                message += `Contact: ${po.customerContact}\n`;
+                message += `Delivery Address: ${po.deliveryAddress}\n\n`;
+            } else if (recipient === 'supplier') {
+                // Show to supplier - hide customer contact
+                message += `🏭 *SUPPLIER DETAILS*\n`;
+                message += `━━━━━━━━━━━━━━━━━━━━\n`;
+                message += `Name: ${po.supplierName}\n`;
+                message += `Contact: ${po.supplierContact}\n`;
+                message += `Address: ${po.supplierAddress}\n\n`;
+                
+                message += `👤 *CUSTOMER DETAILS*\n`;
+                message += `━━━━━━━━━━━━━━━━━━━━\n`;
+                message += `Name: AKBM's Customer\n`;
+                message += `Delivery Address: ${po.deliveryAddress}\n\n`;
+            }
             
             message += `📦 *PRODUCT DETAILS*\n`;
             message += `━━━━━━━━━━━━━━━━━━━━\n`;
@@ -2358,19 +2373,27 @@
 
         function sharePOViaWhatsApp(index) {
             const po = purchaseOrders[index];
-            const message = formatPOForWhatsApp(po);
             
             const recipient = prompt('Send PO to:\n1. Customer\n2. Supplier\n3. Both\n\nEnter 1, 2, or 3:');
             
             if (recipient === '1') {
+                // Send to customer (hide supplier contact)
+                const message = formatPOForWhatsApp(po, 'customer');
                 const whatsappUrl = `https://wa.me/91${po.customerContact}?text=${encodeURIComponent(message)}`;
                 window.open(whatsappUrl, '_blank');
             } else if (recipient === '2') {
+                // Send to supplier (hide customer contact)
+                const message = formatPOForWhatsApp(po, 'supplier');
                 const whatsappUrl = `https://wa.me/91${po.supplierContact}?text=${encodeURIComponent(message)}`;
                 window.open(whatsappUrl, '_blank');
             } else if (recipient === '3') {
-                const customerUrl = `https://wa.me/91${po.customerContact}?text=${encodeURIComponent(message)}`;
-                const supplierUrl = `https://wa.me/91${po.supplierContact}?text=${encodeURIComponent(message)}`;
+                // Send to both with appropriate privacy
+                const customerMessage = formatPOForWhatsApp(po, 'customer');
+                const supplierMessage = formatPOForWhatsApp(po, 'supplier');
+                
+                const customerUrl = `https://wa.me/91${po.customerContact}?text=${encodeURIComponent(customerMessage)}`;
+                const supplierUrl = `https://wa.me/91${po.supplierContact}?text=${encodeURIComponent(supplierMessage)}`;
+                
                 window.open(customerUrl, '_blank');
                 setTimeout(() => window.open(supplierUrl, '_blank'), 1000);
             }
