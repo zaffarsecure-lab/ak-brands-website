@@ -167,19 +167,23 @@
             gap: 0;
             margin-bottom: 2rem;
             border-bottom: 2px solid #e0e0e0;
+            overflow-x: auto;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 1rem 2rem;
+            min-width: 150px;
+            padding: 1rem 1.5rem;
             background: transparent;
             border: none;
             border-bottom: 3px solid transparent;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             color: #7f8c8d;
+            white-space: nowrap;
         }
 
         .tab-btn.active {
@@ -198,6 +202,100 @@
 
         .tab-content.active {
             display: block;
+        }
+
+        /* Database Card Styles */
+        .database-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            border-left: 4px solid #3498db;
+        }
+
+        .database-card.supplier {
+            border-left-color: #e67e22;
+        }
+
+        .database-title {
+            font-size: 1.5rem;
+            color: #3498db;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .database-title.supplier {
+            color: #e67e22;
+        }
+
+        .database-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .database-item-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border-left: 4px solid #3498db;
+        }
+
+        .database-item-card.supplier {
+            border-left-color: #e67e22;
+        }
+
+        .database-item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        }
+
+        .database-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .database-item-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #3498db;
+        }
+
+        .database-item-name.supplier {
+            color: #e67e22;
+        }
+
+        .database-item-id {
+            font-size: 0.85rem;
+            color: #95a5a6;
+        }
+
+        .database-item-info {
+            margin-bottom: 1rem;
+        }
+
+        .database-info-row {
+            display: flex;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .database-info-label {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 100px;
+        }
+
+        .database-info-value {
+            color: #555;
+            word-break: break-word;
         }
 
         /* Delivery Address Card */
@@ -577,7 +675,7 @@
             flex-wrap: wrap;
         }
 
-        .new-order-btn, .export-btn, .new-po-btn, .new-delivery-btn {
+        .new-order-btn, .export-btn, .new-po-btn, .new-delivery-btn, .new-customer-btn, .new-supplier-btn {
             background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
             color: white;
             padding: 0.8rem 1.5rem;
@@ -596,11 +694,19 @@
             background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
         }
 
+        .new-customer-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .new-supplier-btn {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+        }
+
         .export-btn {
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
         }
 
-        .new-order-btn:hover, .export-btn:hover, .new-po-btn:hover, .new-delivery-btn:hover {
+        .new-order-btn:hover, .export-btn:hover, .new-po-btn:hover, .new-delivery-btn:hover, .new-customer-btn:hover, .new-supplier-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(26, 188, 156, 0.4);
         }
@@ -717,7 +823,7 @@
             margin-top: 2rem;
         }
 
-        .save-order-btn, .save-po-btn, .save-delivery-btn {
+        .save-order-btn, .save-po-btn, .save-delivery-btn, .save-customer-btn, .save-supplier-btn {
             background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
             color: white;
             padding: 1rem 2rem;
@@ -738,7 +844,15 @@
             background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
         }
 
-        .save-order-btn:hover, .save-po-btn:hover, .save-delivery-btn:hover {
+        .save-customer-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .save-supplier-btn {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+        }
+
+        .save-order-btn:hover, .save-po-btn:hover, .save-delivery-btn:hover, .save-customer-btn:hover, .save-supplier-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(26, 188, 156, 0.4);
         }
@@ -1653,22 +1767,21 @@
             .orders-title { font-size: 2rem; }
             .orders-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
             .form-row { grid-template-columns: 1fr; }
-            .orders-grid, .po-grid, .delivery-grid { grid-template-columns: 1fr; }
+            .orders-grid, .po-grid, .delivery-grid, .database-grid { grid-template-columns: 1fr; }
             .form-buttons { flex-direction: column; }
             .otp-digit { width: 40px; height: 50px; font-size: 1.2rem; }
             .otp-input-container { gap: 0.3rem; }
-            .order-card-actions { flex-direction: column; }
-            .order-action-btn { min-width: auto; }
-            .tab-btn { font-size: 0.95rem; padding: 0.8rem 1rem; }
-            .delivery-actions { flex-direction: column; }
-            .delivery-action-btn { min-width: auto; }
+            .order-card-actions, .delivery-card-actions { flex-direction: column; }
+            .order-action-btn, .delivery-action-btn { min-width: auto; }
+            .tab-btn { font-size: 0.9rem; padding: 0.8rem 1rem; min-width: 120px; }
+            .tabs-container { overflow-x: auto; }
         }
 
         @media (max-width: 480px) {
             .success-title { font-size: 1.3rem; }
             .discount-code { font-size: 1.3rem; }
             .action-box-label { font-size: 1rem; padding: 0.5rem 1.2rem; }
-            .order-form-card, .po-form-card { padding: 1.5rem; }
+            .order-form-card, .po-form-card, .database-card { padding: 1.5rem; }
             .otp-content { padding: 1.5rem; }
             .otp-title { font-size: 1.5rem; }
             .delivery-address-card { padding: 1.5rem; }
@@ -1781,13 +1894,155 @@
 
             <!-- Tabs -->
             <div class="tabs-container">
-                <button class="tab-btn active" onclick="switchTab('orders')">📦 Orders</button>
+                <button class="tab-btn active" onclick="switchTab('customers')">👥 Customers</button>
+                <button class="tab-btn" onclick="switchTab('suppliers')">🏭 Suppliers</button>
+                <button class="tab-btn" onclick="switchTab('orders')">📦 Orders</button>
                 <button class="tab-btn" onclick="switchTab('po')">📄 Purchase Orders</button>
                 <button class="tab-btn" onclick="switchTab('delivery')">🚚 Delivery Address</button>
             </div>
 
+            <!-- Customer Database Tab -->
+            <div id="customersTab" class="tab-content active">
+                <div class="orders-header" style="margin-top: 0;">
+                    <h2 style="font-size: 1.8rem; color: #3498db;">Customer Database</h2>
+                    <div class="orders-actions">
+                        <button class="new-customer-btn" onclick="createNewCustomer()">➕ New Customer</button>
+                        <div class="export-dropdown">
+                            <button class="export-btn" onclick="toggleCustomerExportMenu()">📥 Export All</button>
+                            <div class="export-dropdown-content" id="customerExportDropdown">
+                                <button onclick="exportCustomersToPDF()">📄 Export to PDF</button>
+                                <button onclick="exportCustomersToExcel()">📊 Export to Excel</button>
+                                <button onclick="exportCustomersToWord()">📝 Export to Word</button>
+                                <button onclick="shareCustomersViaWhatsApp()">📱 Send via WhatsApp</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="database-card" id="customerFormCard">
+                    <h3 class="database-title">📝 Add New Customer</h3>
+                    
+                    <form id="customerForm">
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Customer Name *</label>
+                                <input type="text" name="customerName" required placeholder="Enter customer name">
+                            </div>
+                            <div class="form-field">
+                                <label>Contact Details *</label>
+                                <input type="tel" name="contactDetails" required placeholder="10 digit mobile" pattern="[0-9]{10}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-field full-width">
+                                <label>Address *</label>
+                                <textarea name="address" required placeholder="Enter complete address" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>City *</label>
+                                <input type="text" name="city" required placeholder="Enter city">
+                            </div>
+                            <div class="form-field">
+                                <label>State *</label>
+                                <input type="text" name="state" required placeholder="Enter state">
+                            </div>
+                            <div class="form-field">
+                                <label>Pincode *</label>
+                                <input type="text" name="pincode" required placeholder="6 digit pincode" pattern="[0-9]{6}">
+                            </div>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit" class="save-customer-btn">💾 Save Customer</button>
+                            <button type="button" class="cancel-edit-btn" onclick="cancelCustomerEdit()" style="display: none;">❌ Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="saved-orders-section">
+                    <h2 class="saved-orders-title">👥 All Customers</h2>
+                    <div class="database-grid" id="customersGrid">
+                        <div class="no-orders">No customers yet. Add your first customer above!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supplier Database Tab -->
+            <div id="suppliersTab" class="tab-content">
+                <div class="orders-header" style="margin-top: 0;">
+                    <h2 style="font-size: 1.8rem; color: #e67e22;">Supplier Database</h2>
+                    <div class="orders-actions">
+                        <button class="new-supplier-btn" onclick="createNewSupplier()">➕ New Supplier</button>
+                        <div class="export-dropdown">
+                            <button class="export-btn" onclick="toggleSupplierExportMenu()">📥 Export All</button>
+                            <div class="export-dropdown-content" id="supplierExportDropdown">
+                                <button onclick="exportSuppliersToPDF()">📄 Export to PDF</button>
+                                <button onclick="exportSuppliersToExcel()">📊 Export to Excel</button>
+                                <button onclick="exportSuppliersToWord()">📝 Export to Word</button>
+                                <button onclick="shareSuppliersViaWhatsApp()">📱 Send via WhatsApp</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="database-card supplier" id="supplierFormCard">
+                    <h3 class="database-title supplier">📝 Add New Supplier</h3>
+                    
+                    <form id="supplierForm">
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Supplier Name *</label>
+                                <input type="text" name="supplierName" required placeholder="Enter supplier name">
+                            </div>
+                            <div class="form-field">
+                                <label>Contact Details *</label>
+                                <input type="tel" name="contactDetails" required placeholder="10 digit mobile" pattern="[0-9]{10}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-field full-width">
+                                <label>Address *</label>
+                                <textarea name="address" required placeholder="Enter complete address" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>City *</label>
+                                <input type="text" name="city" required placeholder="Enter city">
+                            </div>
+                            <div class="form-field">
+                                <label>State *</label>
+                                <input type="text" name="state" required placeholder="Enter state">
+                            </div>
+                            <div class="form-field">
+                                <label>Pincode *</label>
+                                <input type="text" name="pincode" required placeholder="6 digit pincode" pattern="[0-9]{6}">
+                            </div>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit" class="save-supplier-btn">💾 Save Supplier</button>
+                            <button type="button" class="cancel-edit-btn" onclick="cancelSupplierEdit()" style="display: none;">❌ Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="saved-orders-section">
+                    <h2 class="saved-orders-title">🏭 All Suppliers</h2>
+                    <div class="database-grid" id="suppliersGrid">
+                        <div class="no-orders">No suppliers yet. Add your first supplier above!</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Orders Tab Content -->
-            <div id="ordersTab" class="tab-content active">
+            <div id="ordersTab" class="tab-content">
                 <div class="orders-header" style="margin-top: 0;">
                     <h2 style="font-size: 1.8rem; color: #667eea;">Customer Orders</h2>
                     <div class="orders-actions">
@@ -2336,7 +2591,17 @@
         let deliveryCounter = parseInt(localStorage.getItem('akDeliveryCounter') || '1');
         let currentDeliveryAddress = '';
         
-        let currentTab = 'orders';
+        // Customer Database System
+        let customers = JSON.parse(localStorage.getItem('akCustomers') || '[]');
+        let customerCounter = parseInt(localStorage.getItem('akCustomerCounter') || '1');
+        let editingCustomerIndex = null;
+        
+        // Supplier Database System
+        let suppliers = JSON.parse(localStorage.getItem('akSuppliers') || '[]');
+        let supplierCounter = parseInt(localStorage.getItem('akSupplierCounter') || '1');
+        let editingSupplierIndex = null;
+        
+        let currentTab = 'customers';
         
         // OTP System
         let generatedOTP = '';
@@ -2355,7 +2620,13 @@
             
             // Update tab content
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            if (tab === 'orders') {
+            if (tab === 'customers') {
+                document.getElementById('customersTab').classList.add('active');
+                displayCustomers();
+            } else if (tab === 'suppliers') {
+                document.getElementById('suppliersTab').classList.add('active');
+                displaySuppliers();
+            } else if (tab === 'orders') {
                 document.getElementById('ordersTab').classList.add('active');
             } else if (tab === 'po') {
                 document.getElementById('poTab').classList.add('active');
@@ -2364,6 +2635,366 @@
                 document.getElementById('deliveryTab').classList.add('active');
                 displaySavedDeliveries();
             }
+        }
+
+        // Customer Database Functions
+        function createNewCustomer() {
+            editingCustomerIndex = null;
+            document.getElementById('customerForm').reset();
+            const cancelBtn = document.querySelector('#customerFormCard .cancel-edit-btn');
+            if (cancelBtn) cancelBtn.style.display = 'none';
+            document.querySelector('.save-customer-btn').textContent = '💾 Save Customer';
+            document.getElementById('customerFormCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function cancelCustomerEdit() {
+            createNewCustomer();
+        }
+
+        document.getElementById('customerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const customerData = {
+                id: editingCustomerIndex !== null ? customers[editingCustomerIndex].id : customerCounter,
+                timestamp: editingCustomerIndex !== null ? customers[editingCustomerIndex].timestamp : new Date().toISOString()
+            };
+            
+            for (let [key, value] of formData.entries()) {
+                customerData[key] = value;
+            }
+            
+            if (editingCustomerIndex !== null) {
+                customers[editingCustomerIndex] = customerData;
+                alert(`✅ Customer "${customerData.customerName}" updated successfully!`);
+            } else {
+                customers.push(customerData);
+                customerCounter++;
+                localStorage.setItem('akCustomerCounter', customerCounter.toString());
+                alert(`✅ Customer "${customerData.customerName}" added successfully!`);
+            }
+            
+            localStorage.setItem('akCustomers', JSON.stringify(customers));
+            createNewCustomer();
+            displayCustomers();
+        });
+
+        function displayCustomers() {
+            const customersGrid = document.getElementById('customersGrid');
+            
+            if (customers.length === 0) {
+                customersGrid.innerHTML = '<div class="no-orders">No customers yet. Add your first customer above!</div>';
+                return;
+            }
+            
+            customersGrid.innerHTML = customers.map((customer, index) => {
+                return `
+                    <div class="database-item-card">
+                        <div class="database-item-header">
+                            <div class="database-item-name">${customer.customerName}</div>
+                            <div class="database-item-id">ID: ${customer.id}</div>
+                        </div>
+                        <div class="database-item-info">
+                            <div class="database-info-row">
+                                <span class="database-info-label">Contact:</span>
+                                <span class="database-info-value">${customer.contactDetails}</span>
+                            </div>
+                            <div class="database-info-row">
+                                <span class="database-info-label">Address:</span>
+                                <span class="database-info-value">${customer.address}</span>
+                            </div>
+                            <div class="database-info-row">
+                                <span class="database-info-label">City:</span>
+                                <span class="database-info-value">${customer.city}</span>
+                            </div>
+                            <div class="database-info-row">
+                                <span class="database-info-label">State:</span>
+                                <span class="database-info-value">${customer.state}</span>
+                            </div>
+                            <div class="database-info-row">
+                                <span class="database-info-label">Pincode:</span>
+                                <span class="database-info-value">${customer.pincode}</span>
+                            </div>
+                        </div>
+                        <div class="order-card-actions">
+                            <button class="order-action-btn edit-btn" onclick="editCustomer(${index})">✏️ Edit</button>
+                            <button class="order-action-btn whatsapp-btn" onclick="shareCustomerViaWhatsApp(${index})">📱 WhatsApp</button>
+                            <button class="order-action-btn delete-btn" onclick="deleteCustomer(${index})">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function editCustomer(index) {
+            editingCustomerIndex = index;
+            const customer = customers[index];
+            const form = document.getElementById('customerForm');
+            
+            Object.keys(customer).forEach(key => {
+                if (form[key] && key !== 'id' && key !== 'timestamp') {
+                    form[key].value = customer[key] || '';
+                }
+            });
+            
+            const cancelBtn = document.querySelector('#customerFormCard .cancel-edit-btn');
+            if (cancelBtn) cancelBtn.style.display = 'block';
+            document.querySelector('.save-customer-btn').textContent = '✏️ Update Customer';
+            document.getElementById('customerFormCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteCustomer(index) {
+            if (confirm(`Are you sure you want to delete customer "${customers[index].customerName}"?`)) {
+                customers.splice(index, 1);
+                localStorage.setItem('akCustomers', JSON.stringify(customers));
+                displayCustomers();
+                alert('✅ Customer deleted successfully!');
+            }
+        }
+
+        function shareCustomerViaWhatsApp(index) {
+            const customer = customers[index];
+            let message = `👤 *CUSTOMER DETAILS*\n`;
+            message += `*${COMPANY_INFO.name}*\n\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+            message += `*Name:* ${customer.customerName}\n`;
+            message += `*Contact:* ${customer.contactDetails}\n`;
+            message += `*Address:* ${customer.address}\n`;
+            message += `*City:* ${customer.city}\n`;
+            message += `*State:* ${customer.state}\n`;
+            message += `*Pincode:* ${customer.pincode}\n\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━\n`;
+            message += `📧 ${COMPANY_INFO.email}\n`;
+            message += `📱 ${COMPANY_INFO.phone}`;
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function toggleCustomerExportMenu() {
+            document.getElementById('customerExportDropdown').classList.toggle('show');
+        }
+
+        function exportCustomersToPDF() {
+            alert('Export customers to PDF - Feature coming soon!');
+            document.getElementById('customerExportDropdown').classList.remove('show');
+        }
+
+        function exportCustomersToExcel() {
+            alert('Export customers to Excel - Feature coming soon!');
+            document.getElementById('customerExportDropdown').classList.remove('show');
+        }
+
+        function exportCustomersToWord() {
+            alert('Export customers to Word - Feature coming soon!');
+            document.getElementById('customerExportDropdown').classList.remove('show');
+        }
+
+        function shareCustomersViaWhatsApp() {
+            if (customers.length === 0) {
+                alert('No customers to share!');
+                return;
+            }
+            
+            let message = `👥 *CUSTOMER DATABASE*\n`;
+            message += `*${COMPANY_INFO.name}*\n\n`;
+            message += `Total Customers: ${customers.length}\n\n`;
+            
+            customers.forEach((customer, index) => {
+                message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+                message += `${index + 1}. *${customer.customerName}*\n`;
+                message += `Contact: ${customer.contactDetails}\n`;
+                message += `City: ${customer.city}, ${customer.state}\n`;
+                message += `Pincode: ${customer.pincode}\n\n`;
+            });
+            
+            message += `━━━━━━━━━━━━━━━━━━━━\n`;
+            message += `📧 ${COMPANY_INFO.email}\n`;
+            message += `📱 ${COMPANY_INFO.phone}`;
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            document.getElementById('customerExportDropdown').classList.remove('show');
+        }
+
+        // Supplier Database Functions
+        function createNewSupplier() {
+            editingSupplierIndex = null;
+            document.getElementById('supplierForm').reset();
+            const cancelBtn = document.querySelector('#supplierFormCard .cancel-edit-btn');
+            if (cancelBtn) cancelBtn.style.display = 'none';
+            document.querySelector('.save-supplier-btn').textContent = '💾 Save Supplier';
+            document.getElementById('supplierFormCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function cancelSupplierEdit() {
+            createNewSupplier();
+        }
+
+        document.getElementById('supplierForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const supplierData = {
+                id: editingSupplierIndex !== null ? suppliers[editingSupplierIndex].id : supplierCounter,
+                timestamp: editingSupplierIndex !== null ? suppliers[editingSupplierIndex].timestamp : new Date().toISOString()
+            };
+            
+            for (let [key, value] of formData.entries()) {
+                supplierData[key] = value;
+            }
+            
+            if (editingSupplierIndex !== null) {
+                suppliers[editingSupplierIndex] = supplierData;
+                alert(`✅ Supplier "${supplierData.supplierName}" updated successfully!`);
+            } else {
+                suppliers.push(supplierData);
+                supplierCounter++;
+                localStorage.setItem('akSupplierCounter', supplierCounter.toString());
+                alert(`✅ Supplier "${supplierData.supplierName}" added successfully!`);
+            }
+            
+            localStorage.setItem('akSuppliers', JSON.stringify(suppliers));
+            createNewSupplier();
+            displaySuppliers();
+        });
+
+        function displaySuppliers() {
+            const suppliersGrid = document.getElementById('suppliersGrid');
+            
+            if (suppliers.length === 0) {
+                suppliersGrid.innerHTML = '<div class="no-orders">No suppliers yet. Add your first supplier above!</div>';
+                return;
+            }
+            
+            suppliersGrid.innerHTML = suppliers.map((supplier, index) => {
+                return `
+                    <div class="database-item-card supplier">
+                        <div class="database-item-header">
+                            <div class="database-item-name supplier">${supplier.supplierName}</div>
+                            <div class="database-item-id">ID: ${supplier.id}</div>
+                        </div>
+                        <div class="database-item-info">
+                            <div class="database-info-row">
+                                <span class="database-info-label">Contact:</span>
+                                <span class="database-info-value">${supplier.contactDetails}</span>
+                            </div>
+                            <div class="database-info-row">
+                                <span class="database-info-label">Address:</span>
+                                <span class="database-info-value">${supplier.address}</span>
+                            </div>
+                            <div class="database-info-row">
+                                <span class="database-info-label">City:</span>
+                                <span class="database-info-value">${supplier.city}</span>
+                            </div>
+                            <div class="database-info-row">
+                                <span class="database-info-label">State:</span>
+                                <span class="database-info-value">${supplier.state}</span>
+                            </div>
+                            <div class="database-info-row">
+                                <span class="database-info-label">Pincode:</span>
+                                <span class="database-info-value">${supplier.pincode}</span>
+                            </div>
+                        </div>
+                        <div class="order-card-actions">
+                            <button class="order-action-btn edit-btn" onclick="editSupplier(${index})">✏️ Edit</button>
+                            <button class="order-action-btn whatsapp-btn" onclick="shareSupplierViaWhatsApp(${index})">📱 WhatsApp</button>
+                            <button class="order-action-btn delete-btn" onclick="deleteSupplier(${index})">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function editSupplier(index) {
+            editingSupplierIndex = index;
+            const supplier = suppliers[index];
+            const form = document.getElementById('supplierForm');
+            
+            Object.keys(supplier).forEach(key => {
+                if (form[key] && key !== 'id' && key !== 'timestamp') {
+                    form[key].value = supplier[key] || '';
+                }
+            });
+            
+            const cancelBtn = document.querySelector('#supplierFormCard .cancel-edit-btn');
+            if (cancelBtn) cancelBtn.style.display = 'block';
+            document.querySelector('.save-supplier-btn').textContent = '✏️ Update Supplier';
+            document.getElementById('supplierFormCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteSupplier(index) {
+            if (confirm(`Are you sure you want to delete supplier "${suppliers[index].supplierName}"?`)) {
+                suppliers.splice(index, 1);
+                localStorage.setItem('akSuppliers', JSON.stringify(suppliers));
+                displaySuppliers();
+                alert('✅ Supplier deleted successfully!');
+            }
+        }
+
+        function shareSupplierViaWhatsApp(index) {
+            const supplier = suppliers[index];
+            let message = `🏭 *SUPPLIER DETAILS*\n`;
+            message += `*${COMPANY_INFO.name}*\n\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+            message += `*Name:* ${supplier.supplierName}\n`;
+            message += `*Contact:* ${supplier.contactDetails}\n`;
+            message += `*Address:* ${supplier.address}\n`;
+            message += `*City:* ${supplier.city}\n`;
+            message += `*State:* ${supplier.state}\n`;
+            message += `*Pincode:* ${supplier.pincode}\n\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━\n`;
+            message += `📧 ${COMPANY_INFO.email}\n`;
+            message += `📱 ${COMPANY_INFO.phone}`;
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function toggleSupplierExportMenu() {
+            document.getElementById('supplierExportDropdown').classList.toggle('show');
+        }
+
+        function exportSuppliersToPDF() {
+            alert('Export suppliers to PDF - Feature coming soon!');
+            document.getElementById('supplierExportDropdown').classList.remove('show');
+        }
+
+        function exportSuppliersToExcel() {
+            alert('Export suppliers to Excel - Feature coming soon!');
+            document.getElementById('supplierExportDropdown').classList.remove('show');
+        }
+
+        function exportSuppliersToWord() {
+            alert('Export suppliers to Word - Feature coming soon!');
+            document.getElementById('supplierExportDropdown').classList.remove('show');
+        }
+
+        function shareSuppliersViaWhatsApp() {
+            if (suppliers.length === 0) {
+                alert('No suppliers to share!');
+                return;
+            }
+            
+            let message = `🏭 *SUPPLIER DATABASE*\n`;
+            message += `*${COMPANY_INFO.name}*\n\n`;
+            message += `Total Suppliers: ${suppliers.length}\n\n`;
+            
+            suppliers.forEach((supplier, index) => {
+                message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+                message += `${index + 1}. *${supplier.supplierName}*\n`;
+                message += `Contact: ${supplier.contactDetails}\n`;
+                message += `City: ${supplier.city}, ${supplier.state}\n`;
+                message += `Pincode: ${supplier.pincode}\n\n`;
+            });
+            
+            message += `━━━━━━━━━━━━━━━━━━━━\n`;
+            message += `📧 ${COMPANY_INFO.email}\n`;
+            message += `📱 ${COMPANY_INFO.phone}`;
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            document.getElementById('supplierExportDropdown').classList.remove('show');
         }
 
         // Delivery Address Functions
@@ -3032,6 +3663,8 @@
                 const animationSection = document.getElementById('animationSection');
                 const exportDropdown = document.getElementById('exportDropdown');
                 const poExportDropdown = document.getElementById('poExportDropdown');
+                const customerExportDropdown = document.getElementById('customerExportDropdown');
+                const supplierExportDropdown = document.getElementById('supplierExportDropdown');
                 
                 for (let i = 0; i < dropdowns.length; i++) {
                     const openDropdown = dropdowns[i];
@@ -3047,6 +3680,14 @@
                 
                 if (poExportDropdown && poExportDropdown.classList.contains('show')) {
                     poExportDropdown.classList.remove('show');
+                }
+                
+                if (customerExportDropdown && customerExportDropdown.classList.contains('show')) {
+                    customerExportDropdown.classList.remove('show');
+                }
+                
+                if (supplierExportDropdown && supplierExportDropdown.classList.contains('show')) {
+                    supplierExportDropdown.classList.remove('show');
                 }
             }
             
@@ -3071,8 +3712,7 @@
             document.getElementById('about').style.display = 'none';
             document.getElementById('contact').style.display = 'none';
             document.getElementById('ordersSection').classList.add('show');
-            updateOrderSerial();
-            displaySavedOrders();
+            displayCustomers();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
