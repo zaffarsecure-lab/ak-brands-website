@@ -370,12 +370,14 @@
             z-index: 5;
         }
 
-        /* Hero Section */
+        /* Hero Section with Warehouse Background */
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                        url('https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600') center/cover;
             color: white;
             padding: 6rem 2rem;
             text-align: center;
+            position: relative;
         }
 
         .hero h1 {
@@ -383,12 +385,61 @@
             margin-bottom: 1rem;
             font-weight: 700;
             font-family: 'Inter', sans-serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         .hero p {
             font-size: 1.3rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
             opacity: 0.95;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        /* Action Boxes - Buy, Sell, Live Auction */
+        .action-boxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .action-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            border: 3px solid #FFD700;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .action-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.4);
+            border-color: #FFA500;
+        }
+
+        .action-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .action-box h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        .action-box p {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
         .cta-button {
@@ -401,6 +452,7 @@
             font-weight: 600;
             transition: transform 0.3s, box-shadow 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-top: 2rem;
         }
 
         .cta-button:hover {
@@ -644,6 +696,115 @@
             padding: 2rem;
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            animation: slideUp 0.5s ease;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
         /* OTP Modal */
         .otp-modal {
             display: none;
@@ -695,7 +856,7 @@
             margin-bottom: 1.5rem;
         }
 
-        .phone-input, .secret-code-input {
+        .phone-input {
             width: 100%;
             padding: 1rem;
             border: 2px solid rgba(26, 188, 156, 0.5);
@@ -709,11 +870,11 @@
             margin-bottom: 1rem;
         }
 
-        .phone-input::placeholder, .secret-code-input::placeholder {
+        .phone-input::placeholder {
             color: rgba(255,255,255,0.5);
         }
 
-        .phone-input:focus, .secret-code-input:focus {
+        .phone-input:focus {
             outline: none;
             border-color: #1abc9c;
             background: rgba(255,255,255,0.15);
@@ -918,6 +1079,10 @@
                 font-size: 2rem;
             }
 
+            .action-boxes {
+                grid-template-columns: 1fr;
+            }
+
             .otp-digit {
                 width: 40px;
                 height: 50px;
@@ -995,6 +1160,26 @@
     <section id="home" class="hero">
         <h1>India's Leading B2B Liquidation Platform</h1>
         <p>Trusted partner for buying and selling liquidation stock lots</p>
+        
+        <!-- Action Boxes -->
+        <div class="action-boxes">
+            <div class="action-box" onclick="openBuyModal()">
+                <span class="action-icon">🛒</span>
+                <h3>Buy</h3>
+                <p>Purchase quality liquidation stock at competitive prices</p>
+            </div>
+            <div class="action-box" onclick="openSellModal()">
+                <span class="action-icon">💼</span>
+                <h3>Sell</h3>
+                <p>List your excess inventory and reach verified buyers</p>
+            </div>
+            <div class="action-box" onclick="openAuctionModal()">
+                <span class="action-icon">🔨</span>
+                <h3>Live Auction</h3>
+                <p>Participate in real-time bidding for exclusive deals</p>
+            </div>
+        </div>
+        
         <a href="#contact" class="cta-button">Get Started Today</a>
     </section>
 
@@ -1003,68 +1188,67 @@
             <h2 class="section-title">Our Services</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <h3>🏢 Bulk Liquidation</h3>
-                    <p>Access premium liquidation stock lots from top brands at competitive prices. Perfect for retailers and wholesalers.</p>
+                    <h3>🏭 Bulk Liquidation</h3>
+                    <p>Access to large-scale liquidation stock from top brands and retailers across India.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>🤝 Trusted Network</h3>
-                    <p>Connect with verified buyers and sellers across India. Build lasting business relationships.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>📦 Quality Assurance</h3>
-                    <p>All stock lots are verified and quality-checked to ensure you get the best value for your investment.</p>
+                    <h3>✅ Quality Assurance</h3>
+                    <p>All products are verified and graded to ensure you get exactly what you expect.</p>
                 </div>
                 <div class="feature-card">
                     <h3>🚚 Logistics Support</h3>
-                    <p>End-to-end logistics solutions to ensure smooth delivery of your liquidation stock across India.</p>
+                    <p>End-to-end logistics solutions for seamless delivery across the country.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>💼 Business Solutions</h3>
-                    <p>Customized B2B solutions tailored to your specific business needs and requirements.</p>
+                    <h3>💰 Competitive Pricing</h3>
+                    <p>Best market rates with transparent pricing and no hidden costs.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🤝 Trusted Network</h3>
+                    <p>Connect with verified buyers and sellers in our trusted B2B network.</p>
                 </div>
                 <div class="feature-card">
                     <h3>📊 Market Insights</h3>
-                    <p>Get access to market trends, pricing insights, and industry analysis to make informed decisions.</p>
+                    <p>Get real-time market data and trends to make informed business decisions.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Testimonials Section -->
     <section id="testimonials" class="testimonials">
         <div class="container">
             <h2 class="section-title">What Our Clients Say</h2>
             <div class="testimonials-grid">
                 <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p class="testimonial-text">"AK Brands has been instrumental in helping us liquidate our excess inventory. Their professional approach and extensive network have made the process seamless."</p>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"AK Brands has been our go-to partner for liquidation stock. Their quality and service are unmatched in the industry."</p>
                     <div class="testimonial-author">
-                        <img src="https://i.pravatar.cc/150?img=12" alt="Client" class="author-avatar">
+                        <img src="https://i.pravatar.cc/150?img=12" alt="Rajesh Kumar" class="author-avatar">
                         <div class="author-info">
                             <h4>Rajesh Kumar</h4>
-                            <p>CEO, TechMart India</p>
+                            <p>Retail Business Owner, Mumbai</p>
                         </div>
                     </div>
                 </div>
                 <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p class="testimonial-text">"The best B2B liquidation platform in India. We've saved thousands on bulk purchases and the quality has been consistently excellent."</p>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Professional service and great deals. We've saved thousands on inventory costs thanks to AK Brands Marketing."</p>
                     <div class="testimonial-author">
-                        <img src="https://i.pravatar.cc/150?img=45" alt="Client" class="author-avatar">
+                        <img src="https://i.pravatar.cc/150?img=45" alt="Priya Sharma" class="author-avatar">
                         <div class="author-info">
                             <h4>Priya Sharma</h4>
-                            <p>Procurement Head, RetailPro</p>
+                            <p>E-commerce Entrepreneur, Delhi</p>
                         </div>
                     </div>
                 </div>
                 <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p class="testimonial-text">"Their auction system is transparent and efficient. We've been able to acquire premium products at competitive prices consistently."</p>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Reliable, transparent, and always delivering on their promises. Highly recommend for B2B liquidation needs."</p>
                     <div class="testimonial-author">
-                        <img src="https://i.pravatar.cc/150?img=33" alt="Client" class="author-avatar">
+                        <img src="https://i.pravatar.cc/150?img=33" alt="Amit Patel" class="author-avatar">
                         <div class="author-info">
                             <h4>Amit Patel</h4>
-                            <p>Director, Global Traders</p>
+                            <p>Wholesale Distributor, Ahmedabad</p>
                         </div>
                     </div>
                 </div>
@@ -1072,35 +1256,34 @@
         </div>
     </section>
 
-    <!-- Blog Section -->
     <section id="blog" class="blog">
         <div class="container">
             <h2 class="section-title">Latest Insights</h2>
             <div class="blog-grid">
                 <div class="blog-card">
-                    <img src="https://images.unsplash.com/photo-1556740758-90de374c12ad?w=600" alt="Blog" class="blog-image">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600" alt="Blog post" class="blog-image">
                     <div class="blog-content">
-                        <p class="blog-date">January 8, 2025</p>
-                        <h3 class="blog-title">Maximizing ROI in B2B Liquidation</h3>
-                        <p class="blog-excerpt">Learn the strategies top businesses use to maximize returns when dealing with surplus inventory...</p>
+                        <p class="blog-date">January 5, 2026</p>
+                        <h3 class="blog-title">Understanding B2B Liquidation Markets in India</h3>
+                        <p class="blog-excerpt">Explore the growing opportunities in India's B2B liquidation sector and how businesses can benefit from strategic inventory management.</p>
                         <a href="#" class="read-more">Read More →</a>
                     </div>
                 </div>
                 <div class="blog-card">
-                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600" alt="Blog" class="blog-image">
+                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600" alt="Blog post" class="blog-image">
                     <div class="blog-content">
-                        <p class="blog-date">January 5, 2025</p>
-                        <h3 class="blog-title">The Future of Wholesale Trading</h3>
-                        <p class="blog-excerpt">Discover how digital platforms are revolutionizing the wholesale and liquidation industry...</p>
+                        <p class="blog-date">December 28, 2025</p>
+                        <h3 class="blog-title">5 Tips for Successful Liquidation Buying</h3>
+                        <p class="blog-excerpt">Learn the essential strategies for making profitable purchases in the liquidation market and avoiding common pitfalls.</p>
                         <a href="#" class="read-more">Read More →</a>
                     </div>
                 </div>
                 <div class="blog-card">
-                    <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600" alt="Blog" class="blog-image">
+                    <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=600" alt="Blog post" class="blog-image">
                     <div class="blog-content">
-                        <p class="blog-date">January 2, 2025</p>
-                        <h3 class="blog-title">Building Trust in B2B Transactions</h3>
-                        <p class="blog-excerpt">Essential tips for establishing credibility and trust in the B2B liquidation marketplace...</p>
+                        <p class="blog-date">December 20, 2025</p>
+                        <h3 class="blog-title">The Future of Wholesale Distribution</h3>
+                        <p class="blog-excerpt">Discover how technology and changing market dynamics are reshaping the wholesale distribution landscape in India.</p>
                         <a href="#" class="read-more">Read More →</a>
                     </div>
                 </div>
@@ -1112,9 +1295,9 @@
         <div class="container">
             <h2 class="section-title">About AK Brands Marketing</h2>
             <div class="about-content">
-                <p>AK Brands Marketing is India's premier B2B liquidation platform, connecting businesses with premium stock lots from leading brands. With years of experience in the liquidation industry, we've built a reputation for reliability, quality, and exceptional service.</p>
-                <p>Our mission is to provide a transparent, efficient, and trustworthy marketplace where businesses can buy and sell liquidation stock with confidence. We serve retailers, wholesalers, and distributors across India, helping them maximize value and minimize risk.</p>
-                <p>Whether you're looking to source quality products at competitive prices or liquidate excess inventory, AK Brands Marketing is your trusted partner for success.</p>
+                <p>AK Brands Marketing is India's premier B2B liquidation platform, connecting buyers and sellers of quality liquidation stock across the country. With years of experience in the industry, we've built a reputation for reliability, transparency, and exceptional service.</p>
+                <p>Our mission is to provide businesses with access to high-quality liquidation inventory at competitive prices, while offering sellers a trusted platform to move their excess stock efficiently. We handle everything from quality verification to logistics, making the entire process seamless for our clients.</p>
+                <p>Join thousands of satisfied businesses who trust AK Brands Marketing for their liquidation needs.</p>
             </div>
         </div>
     </section>
@@ -1123,61 +1306,195 @@
         <div class="contact-info">
             <h2>Get In Touch</h2>
             <div class="contact-details">
-                <p>📧 Email: <a href="mailto:akbrandsmarketing@gmail.com">akbrandsmarketing@gmail.com</a></p>
-                <p>📱 Phone: <a href="tel:+918660502217">+91 8660502217</a></p>
-                <p>📍 Location: Bengaluru, Karnataka, India</p>
+                <p>📞 Phone: +91 98765 43210</p>
+                <p>📧 Email: <a href="mailto:contact@akbrands.com">contact@akbrands.com</a></p>
+                <p>📍 Location: Mumbai, Maharashtra, India</p>
+                <p>🕒 Business Hours: Mon-Sat, 9:00 AM - 6:00 PM</p>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2025 AK Brands Marketing. All rights reserved.</p>
+        <p>&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
     </footer>
+
+    <!-- Buy Modal -->
+    <div id="buyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeBuyModal()">&times;</span>
+            <h2 class="modal-title">🛒 Buy Liquidation Stock</h2>
+            <form class="modal-form" onsubmit="submitBuyForm(event)">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Business Name *</label>
+                    <input type="text" required placeholder="Enter your business name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" required placeholder="+91 98765 43210">
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Product Category *</label>
+                    <select required>
+                        <option value="">Select category</option>
+                        <option>Electronics</option>
+                        <option>Clothing & Apparel</option>
+                        <option>Home & Kitchen</option>
+                        <option>Toys & Games</option>
+                        <option>Sports & Fitness</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantity Required</label>
+                    <input type="text" placeholder="e.g., 100 units, 1 pallet">
+                </div>
+                <div class="form-group">
+                    <label>Additional Details</label>
+                    <textarea placeholder="Tell us more about your requirements..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Submit Inquiry</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sell Modal -->
+    <div id="sellModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeSellModal()">&times;</span>
+            <h2 class="modal-title">💼 Sell Your Stock</h2>
+            <form class="modal-form" onsubmit="submitSellForm(event)">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Business Name *</label>
+                    <input type="text" required placeholder="Enter your business name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" required placeholder="+91 98765 43210">
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Product Category *</label>
+                    <select required>
+                        <option value="">Select category</option>
+                        <option>Electronics</option>
+                        <option>Clothing & Apparel</option>
+                        <option>Home & Kitchen</option>
+                        <option>Toys & Games</option>
+                        <option>Sports & Fitness</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantity Available</label>
+                    <input type="text" placeholder="e.g., 500 units, 5 pallets">
+                </div>
+                <div class="form-group">
+                    <label>Product Details</label>
+                    <textarea placeholder="Describe your products, condition, pricing expectations..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Submit Listing</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Auction Modal -->
+    <div id="auctionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAuctionModal()">&times;</span>
+            <h2 class="modal-title">🔨 Live Auction Registration</h2>
+            <form class="modal-form" onsubmit="submitAuctionForm(event)">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Business Name *</label>
+                    <input type="text" required placeholder="Enter your business name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" required placeholder="+91 98765 43210">
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Interested Categories</label>
+                    <select required>
+                        <option value="">Select category</option>
+                        <option>Electronics</option>
+                        <option>Clothing & Apparel</option>
+                        <option>Home & Kitchen</option>
+                        <option>Toys & Games</option>
+                        <option>Sports & Fitness</option>
+                        <option>All Categories</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Budget Range</label>
+                    <input type="text" placeholder="e.g., ₹50,000 - ₹2,00,000">
+                </div>
+                <div class="form-group">
+                    <label>Additional Information</label>
+                    <textarea placeholder="Tell us about your auction interests..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Register for Auction</button>
+            </form>
+        </div>
+    </div>
 
     <!-- OTP Modal -->
     <div id="otpModal" class="otp-modal">
         <div class="otp-content">
-            <h2 class="otp-title">🔐 Secure Login</h2>
-            <p class="otp-subtitle">
-                Enter your authorized phone number and secret code to receive OTP
-            </p>
+            <h2 class="otp-title">🔐 Orders Management</h2>
+            <p class="otp-subtitle">Enter your registered phone number to receive OTP</p>
             
-            <div id="phoneInputSection">
-                <div class="phone-input-container">
-                    <input type="tel" id="phoneInput" class="phone-input" placeholder="Enter 10-digit mobile number" maxlength="10" pattern="[0-9]{10}">
-                    <input type="text" id="secretCodeInput" class="secret-code-input" placeholder="Enter secret code" maxlength="10">
-                </div>
-                <button class="send-otp-btn" onclick="requestOTP()">Send OTP</button>
+            <div class="phone-input-container">
+                <input type="tel" id="phoneNumber" class="phone-input" placeholder="+91 98765 43210" maxlength="13">
+                <button class="send-otp-btn" onclick="sendOTP()">Send OTP</button>
             </div>
-            
-            <div class="otp-loading" id="otpLoading">
-                <div class="spinner"></div>
-                <p style="margin-top: 1rem;">Sending OTP via WhatsApp...</p>
-            </div>
-            
-            <div id="otpInputSection" style="display: none;">
+
+            <div id="otpSection" style="display: none;">
+                <p class="otp-subtitle">Enter the 6-digit OTP sent to your phone</p>
                 <div class="otp-input-container">
-                    <input type="text" maxlength="1" class="otp-digit" id="otp1" oninput="moveToNext(this, 'otp2')" onkeydown="moveToPrev(event, this, null)">
-                    <input type="text" maxlength="1" class="otp-digit" id="otp2" oninput="moveToNext(this, 'otp3')" onkeydown="moveToPrev(event, this, 'otp1')">
-                    <input type="text" maxlength="1" class="otp-digit" id="otp3" oninput="moveToNext(this, 'otp4')" onkeydown="moveToPrev(event, this, 'otp2')">
-                    <input type="text" maxlength="1" class="otp-digit" id="otp4" oninput="moveToNext(this, 'otp5')" onkeydown="moveToPrev(event, this, 'otp3')">
-                    <input type="text" maxlength="1" class="otp-digit" id="otp5" oninput="moveToNext(this, 'otp6')" onkeydown="moveToPrev(event, this, 'otp4')">
-                    <input type="text" maxlength="1" class="otp-digit" id="otp6" oninput="handleLastDigit()" onkeydown="moveToPrev(event, this, 'otp5')">
+                    <input type="text" class="otp-digit" maxlength="1" id="otp1" oninput="moveToNext(this, 'otp2')">
+                    <input type="text" class="otp-digit" maxlength="1" id="otp2" oninput="moveToNext(this, 'otp3')">
+                    <input type="text" class="otp-digit" maxlength="1" id="otp3" oninput="moveToNext(this, 'otp4')">
+                    <input type="text" class="otp-digit" maxlength="1" id="otp4" oninput="moveToNext(this, 'otp5')">
+                    <input type="text" class="otp-digit" maxlength="1" id="otp5" oninput="moveToNext(this, 'otp6')">
+                    <input type="text" class="otp-digit" maxlength="1" id="otp6">
                 </div>
                 
-                <div class="otp-error" id="otpError">❌ Invalid OTP. Please try again.</div>
-                
-                <div class="otp-timer" id="otpTimer"></div>
+                <div class="otp-error" id="otpError">Invalid OTP. Please try again.</div>
+                <div class="otp-loading" id="otpLoading">
+                    <div class="spinner"></div>
+                </div>
                 
                 <div class="otp-buttons">
-                    <button class="otp-btn otp-verify" onclick="verifyOTP()">Verify</button>
-                    <button class="otp-btn otp-resend" id="resendBtn" onclick="resendOTP()" disabled>Resend OTP</button>
+                    <button class="otp-btn otp-verify" onclick="verifyOTP()">Verify OTP</button>
+                    <button class="otp-btn otp-resend" onclick="resendOTP()" id="resendBtn">Resend OTP</button>
                 </div>
+                
+                <div class="otp-timer" id="otpTimer"></div>
             </div>
-            
-            <div class="otp-error" id="phoneError" style="margin-top: 1rem;">❌ Unauthorized access</div>
-            
-            <button class="otp-btn otp-cancel" onclick="closeOTPModal()" style="width: 100%; margin-top: 1rem;">Cancel</button>
+
+            <button class="otp-btn otp-cancel" onclick="closeOTPModal()" style="margin-top: 1rem; width: 100%;">Cancel</button>
         </div>
     </div>
 
@@ -1187,7 +1504,7 @@
             document.getElementById('menuDropdown').classList.toggle('show');
         }
 
-        // Close dropdown when clicking outside
+        // Close menu when clicking outside
         window.onclick = function(event) {
             if (!event.target.matches('.menu-button')) {
                 var dropdowns = document.getElementsByClassName('dropdown-content');
@@ -1200,200 +1517,154 @@
             }
         }
 
-        // OTP Authentication System
-        const AUTHORIZED_PHONE = "8660502217";
-        const SECRET_CODE = "MSZMA";
-        
-        let generatedOTP = '';
-        let otpTimer = null;
-        let resendTimer = null;
-        let otpExpiryTime = null;
-        let enteredPhone = '';
-
-        function generateOTP() {
-            return Math.floor(100000 + Math.random() * 900000).toString();
+        // Modal Functions
+        function openBuyModal() {
+            document.getElementById('buyModal').classList.add('show');
         }
 
+        function closeBuyModal() {
+            document.getElementById('buyModal').classList.remove('show');
+        }
+
+        function openSellModal() {
+            document.getElementById('sellModal').classList.add('show');
+        }
+
+        function closeSellModal() {
+            document.getElementById('sellModal').classList.remove('show');
+        }
+
+        function openAuctionModal() {
+            document.getElementById('auctionModal').classList.add('show');
+        }
+
+        function closeAuctionModal() {
+            document.getElementById('auctionModal').classList.remove('show');
+        }
+
+        function submitBuyForm(e) {
+            e.preventDefault();
+            alert('Thank you for your inquiry! Our team will contact you shortly.');
+            closeBuyModal();
+        }
+
+        function submitSellForm(e) {
+            e.preventDefault();
+            alert('Thank you for listing with us! Our team will review and contact you shortly.');
+            closeSellModal();
+        }
+
+        function submitAuctionForm(e) {
+            e.preventDefault();
+            alert('Registration successful! We will notify you about upcoming auctions.');
+            closeAuctionModal();
+        }
+
+        // OTP Modal Functions
         function openOTPModal() {
             document.getElementById('otpModal').classList.add('show');
-            document.getElementById('phoneInput').focus();
-        }
-
-        function requestOTP() {
-            const phoneInput = document.getElementById('phoneInput').value.trim();
-            const secretCodeInput = document.getElementById('secretCodeInput').value.trim().toUpperCase();
-            
-            if (phoneInput.length !== 10 || !/^\d+$/.test(phoneInput)) {
-                showPhoneError('Please enter a valid 10-digit mobile number');
-                return;
-            }
-            
-            if (phoneInput !== AUTHORIZED_PHONE) {
-                showPhoneError('Unauthorized phone number. Access denied.');
-                return;
-            }
-            
-            if (secretCodeInput !== SECRET_CODE) {
-                showPhoneError('Invalid secret code. Access denied.');
-                return;
-            }
-            
-            enteredPhone = phoneInput;
-            sendOTP();
-        }
-
-        function sendOTP() {
-            generatedOTP = generateOTP();
-            otpExpiryTime = Date.now() + (5 * 60 * 1000);
-            
-            document.getElementById('phoneInputSection').style.display = 'none';
-            document.getElementById('otpLoading').classList.add('show');
-            document.getElementById('otpInputSection').style.display = 'none';
-            
-            const message = `🔐 *AK Brands Marketing - Secure Login*\n\nYour OTP for Orders Management:\n\n*${generatedOTP}*\n\nValid for 5 minutes.\n\n⚠️ Do not share this code with anyone.`;
-            const whatsappUrl = `https://wa.me/91${enteredPhone}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-            
-            setTimeout(() => {
-                document.getElementById('otpLoading').classList.remove('show');
-                document.getElementById('otpInputSection').style.display = 'block';
-                document.getElementById('otp1').focus();
-                startOTPTimer();
-                startResendTimer();
-            }, 2000);
-        }
-
-        function startOTPTimer() {
-            updateTimerDisplay();
-            otpTimer = setInterval(() => {
-                if (Date.now() >= otpExpiryTime) {
-                    clearInterval(otpTimer);
-                    document.getElementById('otpTimer').textContent = '⏰ OTP expired. Please request a new one.';
-                    document.getElementById('otpTimer').style.color = '#ff6b6b';
-                } else {
-                    updateTimerDisplay();
-                }
-            }, 1000);
-        }
-
-        function updateTimerDisplay() {
-            const remaining = Math.max(0, Math.floor((otpExpiryTime - Date.now()) / 1000));
-            const minutes = Math.floor(remaining / 60);
-            const seconds = remaining % 60;
-            document.getElementById('otpTimer').textContent = `⏱️ OTP expires in ${minutes}:${seconds.toString().padStart(2, '0')}`;
-            document.getElementById('otpTimer').style.color = 'rgba(255,255,255,0.8)';
-        }
-
-        function startResendTimer() {
-            const resendBtn = document.getElementById('resendBtn');
-            let countdown = 60;
-            resendBtn.disabled = true;
-            resendBtn.textContent = `Resend (${countdown}s)`;
-            
-            resendTimer = setInterval(() => {
-                countdown--;
-                if (countdown <= 0) {
-                    clearInterval(resendTimer);
-                    resendBtn.disabled = false;
-                    resendBtn.textContent = 'Resend OTP';
-                } else {
-                    resendBtn.textContent = `Resend (${countdown}s)`;
-                }
-            }, 1000);
-        }
-
-        function resendOTP() {
-            clearInterval(otpTimer);
-            clearInterval(resendTimer);
-            clearOTPInputs();
-            sendOTP();
-        }
-
-        function moveToNext(current, nextId) {
-            if (current.value.length === 1 && nextId) {
-                document.getElementById(nextId).focus();
-            }
-        }
-
-        function moveToPrev(event, current, prevId) {
-            if (event.key === 'Backspace' && current.value === '' && prevId) {
-                document.getElementById(prevId).focus();
-            }
-        }
-
-        function handleLastDigit() {
-            const otp6 = document.getElementById('otp6');
-            if (otp6.value.length === 1) {
-                verifyOTP();
-            }
-        }
-
-        function verifyOTP() {
-            const enteredOTP = 
-                document.getElementById('otp1').value +
-                document.getElementById('otp2').value +
-                document.getElementById('otp3').value +
-                document.getElementById('otp4').value +
-                document.getElementById('otp5').value +
-                document.getElementById('otp6').value;
-            
-            if (enteredOTP.length !== 6) {
-                showOTPError('Please enter complete 6-digit OTP');
-                return;
-            }
-            
-            if (Date.now() >= otpExpiryTime) {
-                showOTPError('OTP has expired. Please request a new one.');
-                return;
-            }
-            
-            if (enteredOTP === generatedOTP) {
-                clearInterval(otpTimer);
-                clearInterval(resendTimer);
-                closeOTPModal();
-                alert('✅ Login successful! Welcome to Orders Management.\n\nNote: Orders Management system is under development and will be available soon.');
-            } else {
-                showOTPError('Invalid OTP. Please try again.');
-                clearOTPInputs();
-                document.getElementById('otp1').focus();
-            }
-        }
-
-        function showOTPError(message) {
-            const errorDiv = document.getElementById('otpError');
-            errorDiv.textContent = `❌ ${message}`;
-            errorDiv.classList.add('show');
-            setTimeout(() => {
-                errorDiv.classList.remove('show');
-            }, 3000);
-        }
-
-        function showPhoneError(message) {
-            const errorDiv = document.getElementById('phoneError');
-            errorDiv.textContent = `❌ ${message}`;
-            errorDiv.classList.add('show');
-            setTimeout(() => {
-                errorDiv.classList.remove('show');
-            }, 3000);
-        }
-
-        function clearOTPInputs() {
-            for (let i = 1; i <= 6; i++) {
-                document.getElementById(`otp${i}`).value = '';
-            }
+            document.getElementById('menuDropdown').classList.remove('show');
         }
 
         function closeOTPModal() {
             document.getElementById('otpModal').classList.remove('show');
-            clearInterval(otpTimer);
-            clearInterval(resendTimer);
+            document.getElementById('otpSection').style.display = 'none';
+            document.getElementById('phoneNumber').value = '';
             clearOTPInputs();
-            document.getElementById('phoneInput').value = '';
-            document.getElementById('secretCodeInput').value = '';
-            document.getElementById('phoneError').classList.remove('show');
-            document.getElementById('phoneInputSection').style.display = 'block';
-            document.getElementById('otpInputSection').style.display = 'none';
         }
+
+        function sendOTP() {
+            const phone = document.getElementById('phoneNumber').value;
+            if (!phone || phone.length < 10) {
+                alert('Please enter a valid phone number');
+                return;
+            }
+            
+            // Simulate OTP sending
+            document.getElementById('otpSection').style.display = 'block';
+            document.getElementById('otp1').focus();
+            startTimer();
+            alert('OTP sent to ' + phone);
+        }
+
+        function moveToNext(current, nextId) {
+            if (current.value.length === 1) {
+                if (nextId) {
+                    document.getElementById(nextId).focus();
+                }
+            }
+        }
+
+        function verifyOTP() {
+            const otp = document.getElementById('otp1').value +
+                       document.getElementById('otp2').value +
+                       document.getElementById('otp3').value +
+                       document.getElementById('otp4').value +
+                       document.getElementById('otp5').value +
+                       document.getElementById('otp6').value;
+            
+            if (otp.length !== 6) {
+                document.getElementById('otpError').classList.add('show');
+                return;
+            }
+
+            document.getElementById('otpLoading').classList.add('show');
+            
+            // Simulate verification
+            setTimeout(() => {
+                document.getElementById('otpLoading').classList.remove('show');
+                alert('OTP Verified! Redirecting to Orders Management...');
+                closeOTPModal();
+            }, 1500);
+        }
+
+        function resendOTP() {
+            clearOTPInputs();
+            document.getElementById('otp1').focus();
+            startTimer();
+            alert('OTP resent successfully!');
+        }
+
+        function clearOTPInputs() {
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById('otp' + i).value = '';
+            }
+            document.getElementById('otpError').classList.remove('show');
+        }
+
+        let timerInterval;
+        function startTimer() {
+            let timeLeft = 60;
+            const timerElement = document.getElementById('otpTimer');
+            const resendBtn = document.getElementById('resendBtn');
+            
+            resendBtn.disabled = true;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = `Resend OTP in ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerElement.textContent = '';
+                    resendBtn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>
