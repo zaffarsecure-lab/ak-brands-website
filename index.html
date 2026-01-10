@@ -165,12 +165,10 @@
             background: linear-gradient(to bottom, transparent 0%, transparent 75%, #34495e 75%, #2c3e50 80%, #34495e 80%, #34495e 100%);
         }
 
-        /* Pause animations when dropdown is open */
         .animation-section.paused * {
             animation-play-state: paused !important;
         }
 
-        /* Connection Line from AK to Supplier */
         .connection-line {
             position: absolute;
             bottom: 42%;
@@ -201,7 +199,6 @@
             color: #3498db;
         }
 
-        /* Business Locations */
         .business-locations {
             position: absolute;
             bottom: 30%;
@@ -235,7 +232,6 @@
         .office { color: #1abc9c; }
         .customer { color: #f39c12; }
 
-        /* Customer Animation */
         .customer-person {
             position: absolute;
             bottom: 30%;
@@ -246,34 +242,13 @@
         }
 
         @keyframes customerJourney {
-            0%, 5% {
-                right: 20%;
-                transform: scaleX(1);
-                opacity: 1;
-            }
-            15% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 1;
-            }
-            20%, 25% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 1;
-            }
-            30% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 0;
-            }
-            100% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 0;
-            }
+            0%, 5% { right: 20%; transform: scaleX(1); opacity: 1; }
+            15% { right: 50%; transform: scaleX(1) translateX(50%); opacity: 1; }
+            20%, 25% { right: 50%; transform: scaleX(1) translateX(50%); opacity: 1; }
+            30% { right: 50%; transform: scaleX(1) translateX(50%); opacity: 0; }
+            100% { right: 50%; transform: scaleX(1) translateX(50%); opacity: 0; }
         }
 
-        /* Order & Payment Animation */
         .order-payment {
             position: absolute;
             bottom: 35%;
@@ -293,7 +268,6 @@
             100% { opacity: 0; transform: translateX(-50%) scale(0); }
         }
 
-        /* Packing Animation */
         .packing-boxes {
             position: absolute;
             bottom: 35%;
@@ -313,7 +287,6 @@
             100% { opacity: 0; transform: scale(0); }
         }
 
-        /* Truck Animation - FLIPPED to face RIGHT */
         .truck-container {
             position: absolute;
             bottom: 28%;
@@ -333,33 +306,14 @@
         }
 
         @keyframes truckDelivery {
-            0%, 55% {
-                left: 15%;
-                opacity: 0;
-            }
-            60% {
-                left: 15%;
-                opacity: 1;
-            }
-            85% {
-                left: 80%;
-                opacity: 1;
-            }
-            90% {
-                left: 80%;
-                opacity: 1;
-            }
-            95% {
-                left: 80%;
-                opacity: 0;
-            }
-            100% {
-                left: 80%;
-                opacity: 0;
-            }
+            0%, 55% { left: 15%; opacity: 0; }
+            60% { left: 15%; opacity: 1; }
+            85% { left: 80%; opacity: 1; }
+            90% { left: 80%; opacity: 1; }
+            95% { left: 80%; opacity: 0; }
+            100% { left: 80%; opacity: 0; }
         }
 
-        /* Delivery Confirmation */
         .delivery-check {
             position: absolute;
             bottom: 35%;
@@ -393,7 +347,7 @@
             z-index: 5;
         }
 
-        /* Hero Section with Warehouse Background */
+        /* Hero Section */
         .hero {
             position: relative;
             color: white;
@@ -442,7 +396,7 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.4);
         }
 
-        /* Action Boxes - Eye-Catching */
+        /* Action Boxes with Golden Border */
         .action-boxes {
             display: flex;
             justify-content: center;
@@ -456,8 +410,29 @@
             cursor: pointer;
             text-align: center;
             position: relative;
+            padding: 2rem 3rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 3px solid;
             animation: pulse 2s ease-in-out infinite;
             transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .action-box.buy {
+            border-color: #FFD700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .action-box.sell {
+            border-color: #FFD700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .action-box.auction {
+            border-color: #FFD700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.1);
         }
 
         @keyframes pulse {
@@ -468,6 +443,7 @@
         .action-box:hover {
             animation: none;
             transform: translateY(-10px) scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6), inset 0 0 30px rgba(255, 215, 0, 0.2);
         }
 
         .action-box-icon {
@@ -485,35 +461,15 @@
             text-shadow: 0 4px 15px rgba(0,0,0,0.7);
             letter-spacing: 1px;
             text-transform: uppercase;
-        }
-
-        .action-box.buy .action-box-title {
-            background: linear-gradient(45deg, #3498db, #5dade2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .action-box.sell .action-box-title {
-            background: linear-gradient(45deg, #1abc9c, #48c9b0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .action-box.auction .action-box-title {
-            background: linear-gradient(45deg, #e74c3c, #ec7063);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #FFD700;
         }
 
         .action-box:hover .action-box-icon {
             transform: rotate(10deg) scale(1.2);
-            filter: drop-shadow(0 8px 25px rgba(255,255,255,0.3));
+            filter: drop-shadow(0 8px 25px rgba(255, 215, 0, 0.5));
         }
 
-        /* Modal/Popup Styles */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -524,6 +480,7 @@
             height: 100%;
             background-color: rgba(0,0,0,0.7);
             backdrop-filter: blur(5px);
+            overflow-y: auto;
         }
 
         .modal.show {
@@ -547,6 +504,7 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             animation: slideUp 0.3s ease;
             position: relative;
+            margin: 2rem auto;
         }
 
         @keyframes slideUp {
@@ -634,6 +592,423 @@
         .submit-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 20px rgba(255,255,255,0.4);
+        }
+
+        /* Product Catalog Section */
+        .product-catalog {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-category {
+            color: #667eea;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .product-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            color: #2c3e50;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1abc9c;
+            margin-bottom: 1rem;
+        }
+
+        .product-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .product-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Image Gallery Section */
+        .gallery {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            cursor: pointer;
+            height: 300px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 1.5rem;
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+
+        .author-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .author-info p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .stars {
+            color: #FFD700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Blog Section */
+        .blog {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-date {
+            color: #999;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.8rem;
+        }
+
+        .blog-excerpt {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .read-more:hover {
+            gap: 1rem;
+        }
+
+        /* Live Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1500;
+        }
+
+        .chat-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(26, 188, 156, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(26, 188, 156, 0.6);
+        }
+
+        .chat-box {
+            display: none;
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-box.show {
+            display: flex;
+            animation: slideUp 0.3s ease;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            font-size: 1.1rem;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .chat-message.bot {
+            background: white;
+            margin-right: auto;
+        }
+
+        .chat-message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .chat-input-container {
+            padding: 1rem;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .chat-send {
+            padding: 0.8rem 1.5rem;
+            background: #1abc9c;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Payment Section */
+        .payment-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 2rem auto;
+        }
+
+        .payment-method {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .payment-method:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .payment-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .payment-name {
+            font-weight: 600;
+            color: #2c3e50;
         }
 
         /* OTP Modal */
@@ -1011,6 +1386,10 @@
                 gap: 2rem;
             }
 
+            .action-box {
+                padding: 1.5rem 2rem;
+            }
+
             .action-box-icon {
                 font-size: 3.5rem;
             }
@@ -1032,6 +1411,13 @@
                 height: 50px;
                 font-size: 1.2rem;
             }
+
+            .chat-box {
+                width: 100%;
+                height: 100%;
+                bottom: 0;
+                border-radius: 0;
+            }
         }
     </style>
 </head>
@@ -1049,6 +1435,10 @@
                 <button class="menu-button" onclick="toggleMenu()">☰</button>
                 <div class="dropdown-content" id="menuDropdown">
                     <a href="#home">Home</a>
+                    <a href="#products">Products</a>
+                    <a href="#gallery">Gallery</a>
+                    <a href="#testimonials">Testimonials</a>
+                    <a href="#blog">Blog</a>
                     <a href="#features">Services</a>
                     <a href="#about">About</a>
                     <a href="#contact">Contact</a>
@@ -1057,14 +1447,9 @@
             </div>
         </div>
 
-        <!-- Animation Section Below Logo -->
         <div class="animation-section" id="animationSection">
             <div class="road-lines"></div>
-            
-            <!-- Connection Line from AK to Supplier -->
             <div class="connection-line"></div>
-            
-            <!-- Business Locations -->
             <div class="business-locations">
                 <div class="location">
                     <div class="location-icon">🏭</div>
@@ -1079,22 +1464,12 @@
                     <div class="location-label customer">Customer</div>
                 </div>
             </div>
-
-            <!-- Customer Journey -->
             <div class="customer-person">🚶</div>
-            
-            <!-- Order & Payment -->
             <div class="order-payment">💳📝</div>
-            
-            <!-- Packing -->
             <div class="packing-boxes">📦📦📦</div>
-            
-            <!-- Truck Delivery -->
             <div class="truck-container">
                 <div class="truck">🚚</div>
             </div>
-            
-            <!-- Delivery Confirmation -->
             <div class="delivery-check">✅</div>
         </div>
     </header>
@@ -1104,7 +1479,6 @@
             <h1>India's Leading B2B Liquidation Platform</h1>
             <p>Trusted partner for buying and selling liquidation stock lots</p>
             
-            <!-- Action Boxes - Eye-Catching -->
             <div class="action-boxes">
                 <div class="action-box buy" onclick="openModal('buy')">
                     <span class="action-box-icon">🛒</span>
@@ -1123,6 +1497,258 @@
             </div>
         </div>
     </section>
+
+    <!-- Product Catalog Section -->
+    <section id="products" class="product-catalog">
+        <div class="container">
+            <h2 class="section-title">Featured Products</h2>
+            <div class="catalog-grid">
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=500" alt="T-Shirts" class="product-image">
+                    <div class="product-info">
+                        <div class="product-category">Garments</div>
+                        <h3 class="product-title">Premium T-Shirts Lot</h3>
+                        <p class="product-description">Bulk lot of 500 premium quality t-shirts, mixed sizes and colors</p>
+                        <div class="product-price">₹45,000</div>
+                        <button class="product-btn" onclick="openModal('buy')">Inquire Now</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" alt="Shoes" class="product-image">
+                    <div class="product-info">
+                        <div class="product-category">Footwear</div>
+                        <h3 class="product-title">Sports Shoes Collection</h3>
+                        <p class="product-description">300 pairs of branded sports shoes, assorted sizes</p>
+                        <div class="product-price">₹1,20,000</div>
+                        <button class="product-btn" onclick="openModal('buy')">Inquire Now</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" alt="Electronics" class="product-image">
+                    <div class="product-info">
+                        <div class="product-category">Electronics</div>
+                        <h3 class="product-title">Headphones Bulk Lot</h3>
+                        <p class="product-description">200 units of wireless headphones, sealed boxes</p>
+                        <div class="product-price">₹85,000</div>
+                        <button class="product-btn" onclick="openModal('buy')">Inquire Now</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=500" alt="Home Decor" class="product-image">
+                    <div class="product-info">
+                        <div class="product-category">Home & Kitchen</div>
+                        <h3 class="product-title">Kitchen Appliances Set</h3>
+                        <p class="product-description">Mixed lot of 150 kitchen appliances and utensils</p>
+                        <div class="product-price">₹65,000</div>
+                        <button class="product-btn" onclick="openModal('buy')">Inquire Now</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=500" alt="Toys" class="product-image">
+                    <div class="product-info">
+                        <div class="product-category">Toys & Games</div>
+                        <h3 class="product-title">Kids Toys Assortment</h3>
+                        <p class="product-description">400 pieces of educational and fun toys for kids</p>
+                        <div class="product-price">₹55,000</div>
+                        <button class="product-btn" onclick="openModal('buy')">Inquire Now</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1556906781-9a412961c28c?w=500" alt="Beauty Products" class="product-image">
+                    <div class="product-info">
+                        <div class="product-category">Beauty & Care</div>
+                        <h3 class="product-title">Cosmetics Bulk Package</h3>
+                        <p class="product-description">250 units of branded cosmetics and skincare products</p>
+                        <div class="product-price">₹75,000</div>
+                        <button class="product-btn" onclick="openModal('buy')">Inquire Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2 class="section-title">Our Warehouse Gallery</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=600" alt="Warehouse 1">
+                    <div class="gallery-overlay">
+                        <h3>Main Warehouse</h3>
+                        <p>10,000 sq ft storage facility</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600" alt="Warehouse 2">
+                    <div class="gallery-overlay">
+                        <h3>Sorting Area</h3>
+                        <p>Quality inspection zone</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=600" alt="Warehouse 3">
+                    <div class="gallery-overlay">
+                        <h3>Packing Section</h3>
+                        <p>Professional packaging services</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600" alt="Warehouse 4">
+                    <div class="gallery-overlay">
+                        <h3>Loading Bay</h3>
+                        <p>Efficient logistics operations</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1601598851547-4302969d0614?w=600" alt="Warehouse 5">
+                    <div class="gallery-overlay">
+                        <h3>Inventory Management</h3>
+                        <p>Advanced tracking systems</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=600" alt="Warehouse 6">
+                    <div class="gallery-overlay">
+                        <h3>Distribution Center</h3>
+                        <p>Pan-India delivery network</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Clients Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"AK Brands Marketing has been our trusted partner for 3 years. Their quality products and reliable service have helped us grow our retail business significantly."</p>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/150?img=12" alt="Rajesh Kumar" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Rajesh Kumar</h4>
+                            <p>Retail Store Owner, Mumbai</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Excellent liquidation platform! The variety of products and competitive pricing make it perfect for wholesalers like us. Highly recommended!"</p>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/150?img=45" alt="Priya Sharma" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Priya Sharma</h4>
+                            <p>Wholesale Distributor, Delhi</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Professional service and genuine products. The team is always responsive and helps us find the best deals. Great experience overall!"</p>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/150?img=33" alt="Amit Patel" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Amit Patel</h4>
+                            <p>E-commerce Seller, Bangalore</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="blog">
+        <div class="container">
+            <h2 class="section-title">Latest Insights</h2>
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500" alt="Blog 1" class="blog-image">
+                    <div class="blog-content">
+                        <div class="blog-date">December 15, 2024</div>
+                        <h3 class="blog-title">Top 10 Tips for Buying Liquidation Stock</h3>
+                        <p class="blog-excerpt">Learn the essential strategies to maximize your profits when purchasing liquidation inventory...</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500" alt="Blog 2" class="blog-image">
+                    <div class="blog-content">
+                        <div class="blog-date">December 10, 2024</div>
+                        <h3 class="blog-title">Understanding B2B Liquidation Market in India</h3>
+                        <p class="blog-excerpt">A comprehensive guide to the growing liquidation industry and its opportunities...</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=500" alt="Blog 3" class="blog-image">
+                    <div class="blog-content">
+                        <div class="blog-date">December 5, 2024</div>
+                        <h3 class="blog-title">How to Verify Quality of Liquidation Products</h3>
+                        <p class="blog-excerpt">Essential quality checks and verification methods for liquidation stock purchases...</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Methods Section -->
+    <section id="payment" class="payment-section">
+        <div class="container">
+            <h2 class="section-title">Secure Payment Options</h2>
+            <div class="payment-methods">
+                <div class="payment-method">
+                    <div class="payment-icon">💳</div>
+                    <div class="payment-name">Credit/Debit Cards</div>
+                </div>
+                <div class="payment-method">
+                    <div class="payment-icon">🏦</div>
+                    <div class="payment-name">Net Banking</div>
+                </div>
+                <div class="payment-method">
+                    <div class="payment-icon">📱</div>
+                    <div class="payment-name">UPI Payment</div>
+                </div>
+                <div class="payment-method">
+                    <div class="payment-icon">💰</div>
+                    <div class="payment-name">Bank Transfer</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Chat Widget -->
+    <div class="chat-widget">
+        <button class="chat-button" onclick="toggleChat()">💬</button>
+        <div class="chat-box" id="chatBox">
+            <div class="chat-header">
+                <h3>Chat with Us</h3>
+                <button class="chat-close" onclick="toggleChat()">×</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot">
+                    Hello! Welcome to AK Brands Marketing. How can I help you today?
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleChatEnter(event)">
+                <button class="chat-send" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Buy Modal -->
     <div id="buyModal" class="modal">
@@ -1347,14 +1973,10 @@
     </footer>
 
     <script>
-        // Menu Toggle
         function toggleMenu() {
             const dropdown = document.getElementById('menuDropdown');
             const animationSection = document.getElementById('animationSection');
-            
             dropdown.classList.toggle('show');
-            
-            // Pause/resume animation based on dropdown state
             if (dropdown.classList.contains('show')) {
                 animationSection.classList.add('paused');
             } else {
@@ -1362,12 +1984,10 @@
             }
         }
 
-        // Close dropdown when clicking outside
         window.onclick = function(event) {
             if (!event.target.matches('.menu-button')) {
                 const dropdowns = document.getElementsByClassName('dropdown-content');
                 const animationSection = document.getElementById('animationSection');
-                
                 for (let i = 0; i < dropdowns.length; i++) {
                     const openDropdown = dropdowns[i];
                     if (openDropdown.classList.contains('show')) {
@@ -1378,7 +1998,6 @@
             }
         }
 
-        // Modal Functions for Buy/Sell/Auction
         function openModal(type) {
             const modal = document.getElementById(type + 'Modal');
             modal.classList.add('show');
@@ -1398,7 +2017,6 @@
             event.target.reset();
         }
 
-        // Close modal when clicking outside
         window.addEventListener('click', function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.classList.remove('show');
@@ -1406,10 +2024,44 @@
             }
         });
 
-        // OTP Authentication System
+        // Live Chat Functions
+        function toggleChat() {
+            const chatBox = document.getElementById('chatBox');
+            chatBox.classList.toggle('show');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (message) {
+                const messagesDiv = document.getElementById('chatMessages');
+                const userMsg = document.createElement('div');
+                userMsg.className = 'chat-message user';
+                userMsg.textContent = message;
+                messagesDiv.appendChild(userMsg);
+                input.value = '';
+                
+                setTimeout(() => {
+                    const botMsg = document.createElement('div');
+                    botMsg.className = 'chat-message bot';
+                    botMsg.textContent = 'Thank you for your message! Our team will respond shortly. For immediate assistance, please call +91 8660502217.';
+                    messagesDiv.appendChild(botMsg);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }, 1000);
+                
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        }
+
+        function handleChatEnter(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // OTP System
         const AUTHORIZED_PHONE = "8660502217";
         const SECRET_CODE = "MSZMA";
-        
         let generatedOTP = '';
         let otpTimer = null;
         let resendTimer = null;
@@ -1600,6 +2252,21 @@
             document.getElementById('phoneInputSection').style.display = 'block';
             document.getElementById('otpInputSection').style.display = 'none';
         }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    const dropdown = document.getElementById('menuDropdown');
+                    if (dropdown.classList.contains('show')) {
+                        dropdown.classList.remove('show');
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
