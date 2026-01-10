@@ -375,7 +375,7 @@
             background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
                         url('https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600') center/cover;
             color: white;
-            padding: 6rem 2rem;
+            padding: 6rem 2rem 4rem 2rem;
             text-align: center;
             position: relative;
         }
@@ -395,69 +395,45 @@
             text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
 
-        /* Action Boxes - Buy, Sell, Live Auction */
-        .action-boxes {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            max-width: 1000px;
+        /* Simple Action Icons - No Boxes */
+        .action-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5rem;
+            max-width: 800px;
             margin: 0 auto;
             padding: 0 1rem;
         }
 
-        .action-box {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 2.5rem 2rem;
-            border-radius: 15px;
-            border: 3px solid #FFD700;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transition: all 0.3s;
-            cursor: pointer;
+        .action-item {
             text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .action-box:hover {
+        .action-item:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.4);
-            border-color: #FFA500;
         }
 
-        .action-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
+        .action-item:hover .simple-icon {
+            transform: scale(1.2);
+        }
+
+        .simple-icon {
+            font-size: 5rem;
             display: block;
-        }
-
-        .action-box h3 {
-            color: #2c3e50;
-            font-size: 1.8rem;
             margin-bottom: 0.8rem;
+            transition: transform 0.3s;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
+        }
+
+        .action-label {
+            font-size: 1.3rem;
             font-weight: 700;
-        }
-
-        .action-box p {
-            color: #555;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: white;
-            color: #667eea;
-            padding: 1rem 2.5rem;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            margin-top: 2rem;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
         }
 
         /* Features Section */
@@ -1079,8 +1055,16 @@
                 font-size: 2rem;
             }
 
-            .action-boxes {
-                grid-template-columns: 1fr;
+            .action-icons {
+                gap: 2rem;
+            }
+
+            .simple-icon {
+                font-size: 3.5rem;
+            }
+
+            .action-label {
+                font-size: 1rem;
             }
 
             .otp-digit {
@@ -1161,26 +1145,21 @@
         <h1>India's Leading B2B Liquidation Platform</h1>
         <p>Trusted partner for buying and selling liquidation stock lots</p>
         
-        <!-- Action Boxes -->
-        <div class="action-boxes">
-            <div class="action-box" onclick="openBuyModal()">
-                <span class="action-icon">🛒</span>
-                <h3>Buy</h3>
-                <p>Purchase quality liquidation stock at competitive prices</p>
+        <!-- Simple Action Icons - No Boxes -->
+        <div class="action-icons">
+            <div class="action-item" onclick="openBuyModal()">
+                <span class="simple-icon">🛒</span>
+                <div class="action-label">Buy</div>
             </div>
-            <div class="action-box" onclick="openSellModal()">
-                <span class="action-icon">💼</span>
-                <h3>Sell</h3>
-                <p>List your excess inventory and reach verified buyers</p>
+            <div class="action-item" onclick="openSellModal()">
+                <span class="simple-icon">💼</span>
+                <div class="action-label">Sell</div>
             </div>
-            <div class="action-box" onclick="openAuctionModal()">
-                <span class="action-icon">🔨</span>
-                <h3>Live Auction</h3>
-                <p>Participate in real-time bidding for exclusive deals</p>
+            <div class="action-item" onclick="openAuctionModal()">
+                <span class="simple-icon">🔨</span>
+                <div class="action-label">Live Auction</div>
             </div>
         </div>
-        
-        <a href="#contact" class="cta-button">Get Started Today</a>
     </section>
 
     <section id="features" class="features">
