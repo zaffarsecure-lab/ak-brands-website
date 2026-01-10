@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AK Brands Marketing - India's Leading B2B Liquidation Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>AK Brands - Premium Surplus Garments</title>
     <style>
         * {
             margin: 0;
@@ -13,655 +12,199 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
         }
 
         /* Header Styles */
         header {
-            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
-            padding: 1.2rem 0 0 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            position: sticky;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(26, 188, 156, 0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .header-container {
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 10;
+            list-style: none;
+            gap: 2rem;
         }
 
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-        }
-
-        .logo-img {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-            filter: drop-shadow(0 3px 10px rgba(26, 188, 156, 0.3));
-            transition: transform 0.3s ease;
-        }
-
-        .logo-img:hover {
-            transform: scale(1.05);
-        }
-
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .brand-name {
-            font-size: 1.75rem;
+        .nav-links a {
+            color: white;
+            text-decoration: none;
             font-weight: 500;
-            font-family: 'Playfair Display', Georgia, serif;
-            color: #1abc9c;
-            letter-spacing: 0.5px;
-            line-height: 1.2;
-            position: relative;
+            transition: opacity 0.3s;
         }
 
-        .brand-name .ak {
-            font-weight: 600;
-            color: #16a085;
+        .nav-links a:hover {
+            opacity: 0.8;
         }
 
-        .brand-tagline {
-            font-size: 0.75rem;
-            color: #95a5a6;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            font-family: 'Playfair Display', Georgia, serif;
-            opacity: 0.85;
-            font-style: italic;
-        }
-
-        /* Dropdown Menu */
-        .menu-dropdown {
-            position: relative;
-        }
-
-        .menu-button {
+        .menu-toggle {
+            display: none;
             background: none;
             border: none;
-            color: #ecf0f1;
-            font-size: 1.8rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            transition: color 0.3s;
-        }
-
-        .menu-button:hover {
-            color: #1abc9c;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: rgba(44, 62, 80, 0.98);
-            min-width: 180px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            border-radius: 8px;
-            margin-top: 0.5rem;
-            overflow: hidden;
-            z-index: 1001;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(26, 188, 156, 0.3);
-        }
-
-        .dropdown-content.show {
-            display: block;
-            animation: dropdownSlide 0.3s ease-out;
-        }
-
-        @keyframes dropdownSlide {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .dropdown-content a {
-            color: #ecf0f1;
-            padding: 1rem 1.5rem;
-            text-decoration: none;
-            display: block;
-            transition: all 0.3s;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .dropdown-content a:hover {
-            background: rgba(26, 188, 156, 0.2);
-            color: #1abc9c;
-            padding-left: 2rem;
-        }
-
-        /* Animation Section */
-        .animation-section {
-            position: relative;
-            width: 100%;
-            height: 140px;
-            margin-top: 1rem;
-            background: linear-gradient(to bottom, transparent 0%, transparent 75%, #34495e 75%, #2c3e50 80%, #34495e 80%, #34495e 100%);
-        }
-
-        /* Business Locations */
-        .business-locations {
-            position: absolute;
-            bottom: 30%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 5%;
-            z-index: 10;
-        }
-
-        .location {
-            text-align: center;
-            position: relative;
-        }
-
-        .location-icon {
-            font-size: 2.5rem;
-            margin-bottom: 5px;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
-        }
-
-        .location-label {
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #ecf0f1;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-            white-space: nowrap;
-        }
-
-        .supplier { color: #3498db; }
-        .office { color: #1abc9c; }
-        .customer { color: #e74c3c; }
-
-        /* Network Towers */
-        .network-tower {
-            position: absolute;
-            top: -30px;
-            font-size: 1.5rem;
-            animation: towerSignal 2s ease-in-out infinite;
-        }
-
-        @keyframes towerSignal {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-
-        /* Customer Animation */
-        .customer-person {
-            position: absolute;
-            bottom: 30%;
-            right: 20%;
-            font-size: 2rem;
-            z-index: 15;
-            animation: customerJourney 30s ease-in-out infinite;
-        }
-
-        @keyframes customerJourney {
-            0%, 5% {
-                right: 20%;
-                transform: scaleX(1);
-                opacity: 1;
-            }
-            15% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 1;
-            }
-            20%, 25% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 1;
-            }
-            30% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 0;
-            }
-            100% {
-                right: 50%;
-                transform: scaleX(1) translateX(50%);
-                opacity: 0;
-            }
-        }
-
-        /* Order & Payment Animation */
-        .order-payment {
-            position: absolute;
-            bottom: 35%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.5rem;
-            z-index: 15;
-            opacity: 0;
-            animation: showOrderPayment 30s ease-in-out infinite;
-        }
-
-        @keyframes showOrderPayment {
-            0%, 20% { opacity: 0; transform: translateX(-50%) scale(0); }
-            25% { opacity: 1; transform: translateX(-50%) scale(1.2); }
-            30% { opacity: 1; transform: translateX(-50%) scale(1); }
-            35% { opacity: 0; transform: translateX(-50%) scale(0); }
-            100% { opacity: 0; transform: translateX(-50%) scale(0); }
-        }
-
-        /* Packing Animation */
-        .packing-boxes {
-            position: absolute;
-            bottom: 35%;
-            left: 15%;
-            font-size: 1.5rem;
-            z-index: 15;
-            opacity: 0;
-            animation: packingGoods 30s ease-in-out infinite;
-        }
-
-        @keyframes packingGoods {
-            0%, 40% { opacity: 0; transform: scale(0); }
-            45% { opacity: 1; transform: scale(1.2); }
-            50% { opacity: 1; transform: scale(1); }
-            55% { opacity: 1; transform: scale(1); }
-            60% { opacity: 0; transform: scale(0); }
-            100% { opacity: 0; transform: scale(0); }
-        }
-
-        /* Truck Animation - FLIPPED to face RIGHT */
-        .truck-container {
-            position: absolute;
-            bottom: 28%;
-            width: 100%;
-            height: 80px;
-            z-index: 20;
-        }
-
-        .truck {
-            position: absolute;
-            left: 15%;
-            bottom: 0;
-            font-size: 3rem;
-            opacity: 0;
-            transform: scaleX(-1);
-            animation: truckDelivery 30s ease-in-out infinite;
-        }
-
-        @keyframes truckDelivery {
-            0%, 55% {
-                left: 15%;
-                opacity: 0;
-            }
-            60% {
-                left: 15%;
-                opacity: 1;
-            }
-            85% {
-                left: 80%;
-                opacity: 1;
-            }
-            90% {
-                left: 80%;
-                opacity: 1;
-            }
-            95% {
-                left: 80%;
-                opacity: 0;
-            }
-            100% {
-                left: 80%;
-                opacity: 0;
-            }
-        }
-
-        /* Delivery Confirmation */
-        .delivery-check {
-            position: absolute;
-            bottom: 35%;
-            right: 15%;
-            font-size: 2rem;
-            z-index: 15;
-            opacity: 0;
-            animation: deliveryComplete 30s ease-in-out infinite;
-        }
-
-        @keyframes deliveryComplete {
-            0%, 85% { opacity: 0; transform: scale(0) rotate(0deg); }
-            90% { opacity: 1; transform: scale(1.3) rotate(360deg); }
-            95% { opacity: 1; transform: scale(1) rotate(360deg); }
-            100% { opacity: 0; transform: scale(0) rotate(360deg); }
-        }
-
-        .road-lines {
-            position: absolute;
-            bottom: 25%;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent 0px,
-                transparent 20px,
-                rgba(255,255,255,0.3) 20px,
-                rgba(255,255,255,0.3) 40px
-            );
-            z-index: 5;
-        }
-
-        /* Hero Section with Warehouse Background */
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-                        url('https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600') center/cover;
             color: white;
-            padding: 6rem 2rem 4rem 2rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8rem 2rem 4rem;
             text-align: center;
-            position: relative;
+            margin-top: 60px;
         }
 
         .hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
-            font-weight: 700;
-            font-family: 'Inter', sans-serif;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s;
         }
 
         .hero p {
             font-size: 1.3rem;
-            margin-bottom: 3rem;
-            opacity: 0.95;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s 0.2s backwards;
         }
 
-        /* Simple Action Icons - No Boxes */
-        .action-icons {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 5rem;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        .action-item {
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .action-item:hover {
-            transform: translateY(-10px);
-        }
-
-        .action-item:hover .simple-icon {
-            transform: scale(1.2);
-        }
-
-        .simple-icon {
-            font-size: 5rem;
-            display: block;
-            margin-bottom: 0.8rem;
-            transition: transform 0.3s;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
-        }
-
-        .action-label {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            letter-spacing: 0.5px;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 4rem 2rem;
-            background: #f8f9fa;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #2c3e50;
-            font-family: 'Inter', sans-serif;
-            font-weight: 700;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
+        .cta-button {
             background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-card h3 {
             color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-            font-family: 'Inter', sans-serif;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 1s 0.4s backwards;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        /* Testimonials Section */
-        .testimonials {
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Sections */
+        section {
             padding: 4rem 2rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .testimonial-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 15px;
-            border: 2px solid rgba(255,255,255,0.2);
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #667eea;
         }
 
-        .testimonial-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-            font-style: italic;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .author-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 3px solid white;
-        }
-
-        .author-info h4 {
-            font-size: 1.1rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .author-info p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .stars {
-            color: #FFD700;
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Blog Section */
-        .blog {
-            padding: 4rem 2rem;
-            background: #f8f9fa;
-        }
-
-        .blog-grid {
+        /* Products Grid */
+        .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            margin-top: 3rem;
         }
 
-        .blog-card {
+        .product-card {
             background: white;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .blog-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
         }
 
-        .blog-image {
+        .product-image {
             width: 100%;
-            height: 220px;
-            object-fit: cover;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
         }
 
-        .blog-content {
+        .product-info {
             padding: 1.5rem;
         }
 
-        .blog-date {
-            color: #999;
-            font-size: 0.85rem;
+        .product-info h3 {
+            color: #667eea;
             margin-bottom: 0.5rem;
         }
 
-        .blog-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 0.8rem;
-            color: #2c3e50;
+        /* Contact Form */
+        .contact-form {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
 
-        .blog-excerpt {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 1rem;
+        .form-group {
+            margin-bottom: 1.5rem;
         }
 
-        .read-more {
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
             color: #667eea;
             font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: gap 0.3s;
         }
 
-        .read-more:hover {
-            gap: 1rem;
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
         }
 
-        /* About Section */
-        .about {
-            padding: 4rem 2rem;
-            background: white;
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
         }
 
-        .about-content {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .about-content p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #555;
-            margin-bottom: 1rem;
-        }
-
-        /* Contact Section */
-        .contact {
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .contact-info {
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .contact-info h2 {
-            margin-bottom: 2rem;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .contact-details {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .contact-details a {
-            color: white;
-            text-decoration: none;
-            transition: opacity 0.3s;
-        }
-
-        .contact-details a:hover {
-            opacity: 0.8;
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
         }
 
         /* Footer */
@@ -670,6 +213,19 @@
             color: white;
             text-align: center;
             padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Modal Styles */
@@ -681,521 +237,86 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            overflow-y: auto;
-        }
-
-        .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease;
-            padding: 1rem;
+            background-color: rgba(0,0,0,0.7);
+            animation: fadeIn 0.3s;
         }
 
         .modal-content {
             background: white;
-            padding: 2rem;
+            margin: 5% auto;
+            padding: 0;
             border-radius: 20px;
-            width: 95%;
-            max-width: 450px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
-            animation: slideUp 0.5s ease;
-            position: relative;
-            margin: auto;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideDown 0.4s;
         }
 
-        .close-modal {
-            position: absolute;
-            top: 1rem;
-            right: 1.5rem;
-            font-size: 2rem;
-            cursor: pointer;
-            color: #999;
-            transition: color 0.3s;
-            z-index: 10;
-        }
-
-        .close-modal:hover {
-            color: #333;
-        }
-
-        .modal-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: #2c3e50;
-            text-align: center;
-            padding-right: 2rem;
-        }
-
-        .modal-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: #555;
-            font-size: 0.95rem;
-        }
-
-        .form-group input {
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .submit-btn {
+        .modal-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 1rem;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        /* Welcome Message Modal - Responsive */
-        .welcome-modal {
-            display: none;
-            position: fixed;
-            z-index: 3000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            overflow-y: auto;
-        }
-
-        .welcome-modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease;
-            padding: 1rem;
-        }
-
-        .welcome-content {
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-            padding: 2rem 1.5rem;
-            border-radius: 20px;
-            width: 95%;
-            max-width: 500px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            animation: slideUp 0.5s ease;
+            padding: 2rem;
+            border-radius: 20px 20px 0 0;
             text-align: center;
+        }
+
+        .modal-header h2 {
             color: white;
-            border: 3px solid rgba(255,255,255,0.3);
-            margin: auto;
-        }
-
-        .welcome-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            animation: bounce 1s ease infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .welcome-title {
+            margin: 0;
             font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            font-family: 'Playfair Display', serif;
-            line-height: 1.3;
         }
 
-        .welcome-subtitle {
-            font-size: 1.1rem;
-            margin-bottom: 1.2rem;
-            opacity: 0.95;
+        .modal-body {
+            padding: 2rem;
         }
 
-        .welcome-message {
-            background: rgba(255,255,255,0.15);
-            padding: 1.2rem;
-            border-radius: 15px;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-            font-size: 0.95rem;
-            border: 2px solid rgba(255,255,255,0.2);
+        .close {
+            color: white;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: transform 0.3s;
         }
 
-        .whatsapp-btn {
+        .close:hover {
+            transform: rotate(90deg);
+        }
+
+        .whatsapp-button {
             background: #25D366;
             color: white;
             padding: 1rem 2rem;
             border: none;
             border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-            text-decoration: none;
-            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
             width: 100%;
-            max-width: 300px;
-        }
-
-        .whatsapp-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
-            background: #20BA5A;
-        }
-
-        .whatsapp-icon {
-            font-size: 1.3rem;
-        }
-
-        .close-welcome {
-            margin-top: 1rem;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            padding: 0.7rem 1.5rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .close-welcome:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        /* Password Modal */
-        .password-modal {
-            display: none;
-            position: fixed;
-            z-index: 3000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            overflow-y: auto;
-        }
-
-        .password-modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease;
-            padding: 1rem;
-        }
-
-        .password-content {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            padding: 2rem;
-            border-radius: 20px;
-            width: 95%;
-            max-width: 450px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
-            animation: slideUp 0.5s ease;
-            text-align: center;
-            color: white;
-            border: 2px solid rgba(26, 188, 156, 0.3);
-            margin: auto;
-        }
-
-        .password-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #1abc9c;
-        }
-
-        .password-subtitle {
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
-            line-height: 1.5;
-        }
-
-        .password-input-group {
-            margin-bottom: 1.2rem;
-            text-align: left;
-        }
-
-        .password-input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #1abc9c;
-            font-size: 0.95rem;
-        }
-
-        .password-input {
-            width: 100%;
-            padding: 0.9rem;
-            border: 2px solid rgba(26, 188, 156, 0.5);
-            border-radius: 10px;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .password-input::placeholder {
-            color: rgba(255,255,255,0.5);
-        }
-
-        .password-input:focus {
-            outline: none;
-            border-color: #1abc9c;
-            background: rgba(255,255,255,0.15);
-        }
-
-        .password-error {
-            color: #ff6b6b;
-            font-size: 0.9rem;
-            margin: 1rem 0;
-            display: none;
-        }
-
-        .password-error.show {
-            display: block;
-            animation: shake 0.5s;
-        }
-
-        .password-buttons {
-            display: flex;
-            gap: 1rem;
             margin-top: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
 
-        .password-btn {
-            flex: 1;
-            padding: 0.9rem;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
+        .whatsapp-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
         }
 
-        .password-verify {
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-            color: white;
-        }
-
-        .password-cancel {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 2px solid rgba(255,255,255,0.3);
-        }
-
-        .password-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        /* Database Management Modal */
-        .database-modal {
-            display: none;
-            position: fixed;
-            z-index: 3000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            overflow-y: auto;
-        }
-
-        .database-modal.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .database-content {
-            background: white;
-            margin: 2rem auto;
-            padding: 2rem;
-            border-radius: 20px;
-            width: 95%;
-            max-width: 900px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
-            animation: slideUp 0.5s ease;
-        }
-
-        .database-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 3px solid #1abc9c;
-        }
-
-        .database-header h2 {
-            color: #2c3e50;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .close-database {
-            font-size: 2rem;
-            cursor: pointer;
-            color: #999;
-            transition: color 0.3s;
-        }
-
-        .close-database:hover {
-            color: #333;
-        }
-
-        .database-tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            flex: 1;
-            min-width: 150px;
-            padding: 1rem;
-            background: #f8f9fa;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-            color: white;
-            border-color: #1abc9c;
-        }
-
-        .tab-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .database-form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.2rem;
-        }
-
-        .database-form .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .database-form .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .database-form label {
-            font-weight: 600;
+        .welcome-text {
             color: #555;
-            font-size: 0.95rem;
-        }
-
-        .database-form input,
-        .database-form textarea {
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .database-form textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .database-form input:focus,
-        .database-form textarea:focus {
-            outline: none;
-            border-color: #1abc9c;
-        }
-
-        .database-form-actions {
-            grid-column: 1 / -1;
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .database-btn {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
+            line-height: 1.8;
+            margin: 1rem 0;
             font-size: 1rem;
         }
 
-        .database-btn-save {
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-            color: white;
-        }
-
-        .database-btn-clear {
-            background: #f8f9fa;
-            color: #555;
-            border: 2px solid #ddd;
-        }
-
-        .database-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        .welcome-text strong {
+            color: #667eea;
         }
 
         @keyframes fadeIn {
@@ -1203,9 +324,58 @@
             to { opacity: 1; }
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Password Modal Styles */
+        .password-input {
+            width: 100%;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .password-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .password-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 600;
+            animation: shake 0.5s;
         }
 
         @keyframes shake {
@@ -1214,45 +384,260 @@
             75% { transform: translateX(10px); }
         }
 
-        /* Responsive */
+        /* Database Management Styles */
+        .database-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-button:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .database-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row.full-width {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-clear {
+            background: #e0e0e0;
+            color: #666;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.3s;
+        }
+
+        .btn-clear:hover {
+            background: #d0d0d0;
+        }
+
+        /* Purchase Order Styles */
+        .po-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .po-section h3 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .autocomplete-container {
+            position: relative;
+        }
+
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #667eea;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .autocomplete-list.show {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .autocomplete-item:hover {
+            background: #f0f0f0;
+        }
+
+        .payment-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .file-upload-container {
+            margin-top: 0.5rem;
+        }
+
+        .file-upload-label {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .file-upload-label:hover {
+            background: #5568d3;
+        }
+
+        .file-upload-input {
+            display: none;
+        }
+
+        .file-preview {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .amount-summary {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .amount-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .amount-row.pending {
+            color: #f39c12;
+            font-weight: bold;
+            background: #fff9e6;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+        .amount-row.completed {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .date-input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .date-input-group label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .animation-section {
-                height: 100px;
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0;
             }
 
-            .header-container {
-                flex-direction: row;
-                justify-content: space-between;
-                padding: 0 1rem;
+            .nav-links.active {
+                display: flex;
             }
 
-            .logo-img {
-                width: 55px;
-                height: 55px;
+            .nav-links li {
+                padding: 1rem 0;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
             }
 
-            .brand-name {
-                font-size: 1.4rem;
-            }
-
-            .brand-tagline {
-                font-size: 0.6rem;
-            }
-
-            .location-icon {
-                font-size: 1.5rem;
-            }
-
-            .location-label {
-                font-size: 0.5rem;
-            }
-
-            .truck {
-                font-size: 2rem;
-            }
-
-            .customer-person {
-                font-size: 1.5rem;
+            .menu-toggle {
+                display: block;
             }
 
             .hero h1 {
@@ -1263,645 +648,744 @@
                 font-size: 1.1rem;
             }
 
-            .section-title {
+            h2 {
                 font-size: 2rem;
             }
 
-            .action-icons {
-                gap: 2rem;
-            }
-
-            .simple-icon {
-                font-size: 3.5rem;
-            }
-
-            .action-label {
-                font-size: 1rem;
-            }
-
             .modal-content {
+                margin: 10% auto;
+                width: 95%;
+                max-height: 80vh;
+            }
+
+            .modal-header {
                 padding: 1.5rem;
             }
 
-            .modal-title {
+            .modal-header h2 {
                 font-size: 1.5rem;
             }
 
-            .welcome-content {
-                padding: 1.5rem 1rem;
+            .modal-body {
+                padding: 1.5rem;
             }
 
-            .welcome-icon {
-                font-size: 3rem;
-            }
-
-            .welcome-title {
-                font-size: 1.5rem;
-            }
-
-            .welcome-subtitle {
-                font-size: 1rem;
-            }
-
-            .welcome-message {
-                font-size: 0.9rem;
-                padding: 1rem;
-            }
-
-            .whatsapp-btn {
-                padding: 0.9rem 1.5rem;
+            .welcome-text {
                 font-size: 0.95rem;
             }
 
-            .database-content {
-                padding: 1.5rem;
-                margin: 1rem;
+            .database-tabs {
+                flex-direction: column;
+                gap: 0;
             }
 
-            .database-header h2 {
-                font-size: 1.5rem;
+            .tab-button {
+                padding: 0.8rem 1rem;
+                border-bottom: 1px solid #e0e0e0;
+                border-left: 3px solid transparent;
             }
 
-            .database-form {
+            .tab-button.active {
+                border-bottom: 1px solid #e0e0e0;
+                border-left-color: #667eea;
+            }
+
+            .form-row {
                 grid-template-columns: 1fr;
             }
 
-            .tab-btn {
-                min-width: 120px;
-                padding: 0.8rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .welcome-title {
-                font-size: 1.3rem;
+            .payment-row {
+                grid-template-columns: 1fr;
             }
 
-            .welcome-subtitle {
-                font-size: 0.95rem;
-            }
-
-            .welcome-message {
-                font-size: 0.85rem;
-            }
-
-            .whatsapp-btn {
-                font-size: 0.9rem;
-                padding: 0.8rem 1.2rem;
-            }
-
-            .modal-title {
-                font-size: 1.3rem;
+            .status-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header>
-        <div class="header-container">
-            <div class="logo-section">
-                <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg" alt="AK Brands Marketing Logo" class="logo-img">
-                <div class="brand-text">
-                    <div class="brand-name"><span class="ak">AK</span> Brands Marketing</div>
-                    <div class="brand-tagline">Trusted Firm</div>
-                </div>
-            </div>
-            <div class="menu-dropdown">
-                <button class="menu-button" onclick="toggleMenu()">☰</button>
-                <div class="dropdown-content" id="menuDropdown">
-                    <a href="#home">Home</a>
-                    <a href="#features">Services</a>
-                    <a href="#testimonials">Testimonials</a>
-                    <a href="#blog">Blog</a>
-                    <a href="#about">About</a>
-                    <a href="#contact">Contact</a>
-                    <a onclick="openPasswordModal()">Orders Management</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Animation Section Below Logo -->
-        <div class="animation-section">
-            <div class="road-lines"></div>
-            
-            <!-- Business Locations with Network Towers -->
-            <div class="business-locations">
-                <div class="location">
-                    <div class="network-tower">📡</div>
-                    <div class="location-icon">🏭</div>
-                    <div class="location-label supplier">Supplier</div>
-                </div>
-                <div class="location">
-                    <div class="network-tower">📡</div>
-                    <div class="location-icon">🏢</div>
-                    <div class="location-label office">AK</div>
-                </div>
-                <div class="location">
-                    <div class="network-tower">📡</div>
-                    <div class="location-icon">🏪</div>
-                    <div class="location-label customer">Customer</div>
-                </div>
-            </div>
-
-            <!-- Customer Journey -->
-            <div class="customer-person">🚶</div>
-            
-            <!-- Order & Payment -->
-            <div class="order-payment">💳📝</div>
-            
-            <!-- Packing -->
-            <div class="packing-boxes">📦📦📦</div>
-            
-            <!-- Truck Delivery -->
-            <div class="truck-container">
-                <div class="truck">🚚</div>
-            </div>
-            
-            <!-- Delivery Confirmation -->
-            <div class="delivery-check">✅</div>
-        </div>
+        <nav>
+            <div class="logo">AK BRANDS</div>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#" onclick="openOrdersManagement(); return false;">Orders Management</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <section id="home" class="hero">
-        <h1>India's Leading B2B Liquidation Platform</h1>
-        <p>Trusted partner for buying and selling liquidation stock lots</p>
-        
-        <!-- Simple Action Icons - No Boxes -->
-        <div class="action-icons">
-            <div class="action-item" onclick="openBuyModal()">
-                <span class="simple-icon">🛒</span>
-                <div class="action-label">Buy</div>
-            </div>
-            <div class="action-item" onclick="openSellModal()">
-                <span class="simple-icon">💼</span>
-                <div class="action-label">Sell</div>
-            </div>
-            <div class="action-item" onclick="openAuctionModal()">
-                <span class="simple-icon">🔨</span>
-                <div class="action-label">Live Auction</div>
-            </div>
-        </div>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h1>Welcome to AK Brands</h1>
+        <p>Premium Surplus Garments at Unbeatable Prices</p>
+        <a href="#contact" class="cta-button">Get in Touch</a>
     </section>
 
-    <section id="features" class="features">
-        <div class="container">
-            <h2 class="section-title">Our Services</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>🏭 Bulk Liquidation</h3>
-                    <p>Access to large-scale liquidation stock from top brands and retailers across India.</p>
+    <!-- Products Section -->
+    <section id="products">
+        <h2>Our Products</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-image">👕</div>
+                <div class="product-info">
+                    <h3>T-Shirts</h3>
+                    <p>High-quality surplus t-shirts from premium brands</p>
                 </div>
-                <div class="feature-card">
-                    <h3>✅ Quality Assurance</h3>
-                    <p>All products are verified and graded to ensure you get exactly what you expect.</p>
+            </div>
+            <div class="product-card">
+                <div class="product-image">👔</div>
+                <div class="product-info">
+                    <h3>Shirts</h3>
+                    <p>Formal and casual shirts in various styles</p>
                 </div>
-                <div class="feature-card">
-                    <h3>🚚 Logistics Support</h3>
-                    <p>End-to-end logistics solutions for seamless delivery across the country.</p>
+            </div>
+            <div class="product-card">
+                <div class="product-image">👖</div>
+                <div class="product-info">
+                    <h3>Jeans</h3>
+                    <p>Durable denim jeans for every occasion</p>
                 </div>
-                <div class="feature-card">
-                    <h3>💰 Competitive Pricing</h3>
-                    <p>Best market rates with transparent pricing and no hidden costs.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🤝 Trusted Network</h3>
-                    <p>Connect with verified buyers and sellers in our trusted B2B network.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>📊 Market Insights</h3>
-                    <p>Get real-time market data and trends to make informed business decisions.</p>
+            </div>
+            <div class="product-card">
+                <div class="product-image">👗</div>
+                <div class="product-info">
+                    <h3>Dresses</h3>
+                    <p>Elegant dresses for all seasons</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="testimonials" class="testimonials">
-        <div class="container">
-            <h2 class="section-title">What Our Clients Say</h2>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p class="testimonial-text">"AK Brands has been our go-to partner for liquidation stock. Their quality and service are unmatched in the industry."</p>
-                    <div class="testimonial-author">
-                        <img src="https://i.pravatar.cc/150?img=12" alt="Rajesh Kumar" class="author-avatar">
-                        <div class="author-info">
-                            <h4>Rajesh Kumar</h4>
-                            <p>Retail Business Owner, Mumbai</p>
-                        </div>
-                    </div>
+    <!-- About Section -->
+    <section id="about">
+        <h2>About Us</h2>
+        <p style="text-align: center; max-width: 800px; margin: 0 auto; font-size: 1.1rem; line-height: 1.8;">
+            AK Brands is your trusted source for premium surplus garments. We specialize in providing high-quality 
+            clothing at competitive prices, ensuring our customers get the best value for their money. With years 
+            of experience in the industry, we've built strong relationships with manufacturers and suppliers worldwide.
+        </p>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <div class="contact-form">
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
                 </div>
-                <div class="testimonial-card">
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p class="testimonial-text">"Professional service and great deals. We've saved thousands on inventory costs thanks to AK Brands Marketing."</p>
-                    <div class="testimonial-author">
-                        <img src="https://i.pravatar.cc/150?img=45" alt="Priya Sharma" class="author-avatar">
-                        <div class="author-info">
-                            <h4>Priya Sharma</h4>
-                            <p>E-commerce Entrepreneur, Delhi</p>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
                 </div>
-                <div class="testimonial-card">
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p class="testimonial-text">"Reliable, transparent, and always delivering on their promises. Highly recommend for B2B liquidation needs."</p>
-                    <div class="testimonial-author">
-                        <img src="https://i.pravatar.cc/150?img=33" alt="Amit Patel" class="author-avatar">
-                        <div class="author-info">
-                            <h4>Amit Patel</h4>
-                            <p>Wholesale Distributor, Ahmedabad</p>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
                 </div>
-            </div>
+                <button type="submit" class="cta-button" style="width: 100%;">Send Message</button>
+            </form>
         </div>
     </section>
 
-    <section id="blog" class="blog">
-        <div class="container">
-            <h2 class="section-title">Latest Insights</h2>
-            <div class="blog-grid">
-                <div class="blog-card">
-                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600" alt="Blog post" class="blog-image">
-                    <div class="blog-content">
-                        <p class="blog-date">January 5, 2026</p>
-                        <h3 class="blog-title">Understanding B2B Liquidation Markets in India</h3>
-                        <p class="blog-excerpt">Explore the growing opportunities in India's B2B liquidation sector and how businesses can benefit from strategic inventory management.</p>
-                        <a href="#" class="read-more">Read More →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600" alt="Blog post" class="blog-image">
-                    <div class="blog-content">
-                        <p class="blog-date">December 28, 2025</p>
-                        <h3 class="blog-title">5 Tips for Successful Liquidation Buying</h3>
-                        <p class="blog-excerpt">Learn the essential strategies for making profitable purchases in the liquidation market and avoiding common pitfalls.</p>
-                        <a href="#" class="read-more">Read More →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=600" alt="Blog post" class="blog-image">
-                    <div class="blog-content">
-                        <p class="blog-date">December 20, 2025</p>
-                        <h3 class="blog-title">The Future of Wholesale Distribution</h3>
-                        <p class="blog-excerpt">Discover how technology and changing market dynamics are reshaping the wholesale distribution landscape in India.</p>
-                        <a href="#" class="read-more">Read More →</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="about" class="about">
-        <div class="container">
-            <h2 class="section-title">About AK Brands Marketing</h2>
-            <div class="about-content">
-                <p>AK Brands Marketing is India's premier B2B liquidation platform, connecting buyers and sellers of quality liquidation stock across the country. With years of experience in the industry, we've built a reputation for reliability, transparency, and exceptional service.</p>
-                <p>Our mission is to provide businesses with access to high-quality liquidation inventory at competitive prices, while offering sellers a trusted platform to move their excess stock efficiently. We handle everything from quality verification to logistics, making the entire process seamless for our clients.</p>
-                <p>Join thousands of satisfied businesses who trust AK Brands Marketing for their liquidation needs.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="contact">
-        <div class="contact-info">
-            <h2>Get In Touch</h2>
-            <div class="contact-details">
-                <p>📞 Phone: +91 98765 43210</p>
-                <p>📧 Email: <a href="mailto:contact@akbrands.com">contact@akbrands.com</a></p>
-                <p>📍 Location: Mumbai, Maharashtra, India</p>
-                <p>🕒 Business Hours: Mon-Sat, 9:00 AM - 6:00 PM</p>
-            </div>
-        </div>
-    </section>
-
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
+        <p>&copy; 2024 AK Brands. All rights reserved.</p>
+        <p>Premium Surplus Garments Supplier</p>
     </footer>
 
-    <!-- Buy Modal -->
-    <div id="buyModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeBuyModal()">&times;</span>
-            <h2 class="modal-title">🛒 Buy Stock Lots</h2>
-            <form class="modal-form" onsubmit="submitBuyForm(event)">
-                <div class="form-group">
-                    <label>Your Name *</label>
-                    <input type="text" id="buyName" required placeholder="Enter your full name">
-                </div>
-                <div class="form-group">
-                    <label>Mobile Number *</label>
-                    <input type="tel" id="buyMobile" required placeholder="+91 98765 43210" pattern="[+]?[0-9]{10,13}">
-                </div>
-                <button type="submit" class="submit-btn">Submit Request</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Sell Modal -->
-    <div id="sellModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeSellModal()">&times;</span>
-            <h2 class="modal-title">💼 Sell Your Stock</h2>
-            <form class="modal-form" onsubmit="submitSellForm(event)">
-                <div class="form-group">
-                    <label>Your Name *</label>
-                    <input type="text" id="sellName" required placeholder="Enter your full name">
-                </div>
-                <div class="form-group">
-                    <label>Mobile Number *</label>
-                    <input type="tel" id="sellMobile" required placeholder="+91 98765 43210" pattern="[+]?[0-9]{10,13}">
-                </div>
-                <button type="submit" class="submit-btn">Submit Request</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Auction Modal -->
-    <div id="auctionModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeAuctionModal()">&times;</span>
-            <h2 class="modal-title">🔨 Live Auction</h2>
-            <form class="modal-form" onsubmit="submitAuctionForm(event)">
-                <div class="form-group">
-                    <label>Your Name *</label>
-                    <input type="text" id="auctionName" required placeholder="Enter your full name">
-                </div>
-                <div class="form-group">
-                    <label>Mobile Number *</label>
-                    <input type="tel" id="auctionMobile" required placeholder="+91 98765 43210" pattern="[+]?[0-9]{10,13}">
-                </div>
-                <button type="submit" class="submit-btn">Submit Request</button>
-            </form>
-        </div>
-    </div>
-
     <!-- Welcome Modal -->
-    <div id="welcomeModal" class="welcome-modal">
-        <div class="welcome-content">
-            <div class="welcome-icon">🎉</div>
-            <h2 class="welcome-title">Welcome to AK Brands Marketing© Family!</h2>
-            <p class="welcome-subtitle">We're thrilled to have you with us!</p>
-            <div class="welcome-message">
-                <p><strong>🚧 Work in Progress</strong></p>
-                <p>We're currently building our online product catalog. Until then, please join our WhatsApp community to browse and buy stock lots directly!</p>
+    <div id="welcomeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeWelcomeModal()">&times;</span>
+                <h2>Welcome to AK Brands! 👋</h2>
             </div>
-            <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" class="whatsapp-btn">
-                <span class="whatsapp-icon">📱</span>
-                Join WhatsApp Community
-            </a>
-            <button class="close-welcome" onclick="closeWelcomeModal()">Close</button>
+            <div class="modal-body">
+                <p class="welcome-text">
+                    <strong>Hello!</strong> We're thrilled to have you here. 
+                </p>
+                <p class="welcome-text">
+                    At <strong>AK Brands</strong>, we specialize in providing <strong>premium surplus garments</strong> 
+                    at unbeatable prices. Whether you're looking for bulk orders or individual pieces, we've got you covered!
+                </p>
+                <p class="welcome-text">
+                    🌟 <strong>Why Choose Us?</strong><br>
+                    ✓ High-quality branded garments<br>
+                    ✓ Competitive wholesale prices<br>
+                    ✓ Fast and reliable delivery<br>
+                    ✓ Excellent customer service
+                </p>
+                <p class="welcome-text">
+                    Have questions or ready to place an order? <strong>Let's chat on WhatsApp!</strong>
+                </p>
+                <a href="https://wa.me/919876543210" class="whatsapp-button" target="_blank">
+                    💬 Chat on WhatsApp
+                </a>
+            </div>
         </div>
     </div>
 
     <!-- Password Modal -->
-    <div id="passwordModal" class="password-modal">
-        <div class="password-content">
-            <h2 class="password-title">🔐 Secure Access</h2>
-            <p class="password-subtitle">Enter password and secret code to access Orders Management</p>
-            
-            <div class="password-input-group">
-                <label>Password</label>
-                <input type="password" id="passwordInput" class="password-input" placeholder="Enter password">
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closePasswordModal()">&times;</span>
+                <h2>🔐 Secure Access</h2>
             </div>
-
-            <div class="password-input-group">
-                <label>Secret Code</label>
-                <input type="password" id="secretCodeInput" class="password-input" placeholder="Enter secret code">
-            </div>
-
-            <div class="password-error" id="passwordError">Invalid password or secret code. Please try again.</div>
-
-            <div class="password-buttons">
-                <button class="password-btn password-verify" onclick="verifyPassword()">Verify & Access</button>
-                <button class="password-btn password-cancel" onclick="closePasswordModal()">Cancel</button>
+            <div class="modal-body">
+                <p class="welcome-text" style="text-align: center;">
+                    Please enter your credentials to access Orders Management
+                </p>
+                <input type="password" id="passwordInput" class="password-input" placeholder="Enter Password" />
+                <input type="text" id="secretCodeInput" class="password-input" placeholder="Enter Secret Code" />
+                <button onclick="verifyPassword()" class="password-submit">Access Dashboard</button>
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
             </div>
         </div>
     </div>
 
-    <!-- Database Management Modal -->
-    <div id="databaseModal" class="database-modal">
-        <div class="database-content">
-            <div class="database-header">
-                <h2>📊 Database Management</h2>
-                <span class="close-database" onclick="closeDatabaseModal()">&times;</span>
+    <!-- Orders Management Modal -->
+    <div id="ordersModal" class="modal">
+        <div class="modal-content" style="max-width: 1200px;">
+            <div class="modal-header">
+                <span class="close" onclick="closeOrdersModal()">&times;</span>
+                <h2>📊 Orders Management Dashboard</h2>
             </div>
+            <div class="modal-body">
+                <div class="database-tabs">
+                    <button class="tab-button active" onclick="switchTab('customer')">👥 Customer Database</button>
+                    <button class="tab-button" onclick="switchTab('supplier')">🏭 Supplier Database</button>
+                    <button class="tab-button" onclick="switchTab('purchase')">📦 Purchase Order</button>
+                </div>
 
-            <div class="database-tabs">
-                <button class="tab-btn active" onclick="switchTab('customer')">👥 Customer Database</button>
-                <button class="tab-btn" onclick="switchTab('supplier')">🏭 Supplier Database</button>
-            </div>
+                <!-- Customer Database Tab -->
+                <div id="customerTab" class="tab-content active">
+                    <div class="database-form">
+                        <form id="customerForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="customerName">Name *</label>
+                                    <input type="text" id="customerName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="customerContact">Contact Details *</label>
+                                    <input type="tel" id="customerContact" required>
+                                </div>
+                            </div>
+                            <div class="form-row full-width">
+                                <div class="form-group">
+                                    <label for="customerAddress">Address *</label>
+                                    <textarea id="customerAddress" required></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="customerCity">City *</label>
+                                    <input type="text" id="customerCity" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="customerState">State *</label>
+                                    <input type="text" id="customerState" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="customerPincode">Pincode *</label>
+                                    <input type="text" id="customerPincode" pattern="[0-9]{6}" maxlength="6" required>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-save">💾 Save Customer</button>
+                                <button type="button" class="btn-clear" onclick="clearCustomerForm()">🔄 Clear</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
-            <!-- Customer Database Form -->
-            <div id="customerTab" class="tab-content active">
-                <form class="database-form" onsubmit="saveCustomer(event)">
-                    <div class="form-group">
-                        <label>Name *</label>
-                        <input type="text" id="customerName" required placeholder="Full name">
+                <!-- Supplier Database Tab -->
+                <div id="supplierTab" class="tab-content">
+                    <div class="database-form">
+                        <form id="supplierForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="supplierName">Name *</label>
+                                    <input type="text" id="supplierName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="supplierContact">Contact Details *</label>
+                                    <input type="tel" id="supplierContact" required>
+                                </div>
+                            </div>
+                            <div class="form-row full-width">
+                                <div class="form-group">
+                                    <label for="supplierAddress">Address *</label>
+                                    <textarea id="supplierAddress" required></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="supplierCity">City *</label>
+                                    <input type="text" id="supplierCity" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="supplierState">State *</label>
+                                    <input type="text" id="supplierState" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="supplierPincode">Pincode *</label>
+                                    <input type="text" id="supplierPincode" pattern="[0-9]{6}" maxlength="6" required>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-save">💾 Save Supplier</button>
+                                <button type="button" class="btn-clear" onclick="clearSupplierForm()">🔄 Clear</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label>Contact Details *</label>
-                        <input type="tel" id="customerContact" required placeholder="+91 98765 43210">
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Address *</label>
-                        <textarea id="customerAddress" required placeholder="Complete address"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>City *</label>
-                        <input type="text" id="customerCity" required placeholder="City">
-                    </div>
-                    <div class="form-group">
-                        <label>State *</label>
-                        <input type="text" id="customerState" required placeholder="State">
-                    </div>
-                    <div class="form-group">
-                        <label>Pincode *</label>
-                        <input type="text" id="customerPincode" required placeholder="Pincode" pattern="[0-9]{6}">
-                    </div>
-                    <div class="database-form-actions">
-                        <button type="submit" class="database-btn database-btn-save">💾 Save Customer</button>
-                        <button type="button" class="database-btn database-btn-clear" onclick="clearCustomerForm()">🔄 Clear Form</button>
-                    </div>
-                </form>
-            </div>
+                </div>
 
-            <!-- Supplier Database Form -->
-            <div id="supplierTab" class="tab-content">
-                <form class="database-form" onsubmit="saveSupplier(event)">
-                    <div class="form-group">
-                        <label>Name *</label>
-                        <input type="text" id="supplierName" required placeholder="Full name">
-                    </div>
-                    <div class="form-group">
-                        <label>Contact Details *</label>
-                        <input type="tel" id="supplierContact" required placeholder="+91 98765 43210">
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Address *</label>
-                        <textarea id="supplierAddress" required placeholder="Complete address"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>City *</label>
-                        <input type="text" id="supplierCity" required placeholder="City">
-                    </div>
-                    <div class="form-group">
-                        <label>State *</label>
-                        <input type="text" id="supplierState" required placeholder="State">
-                    </div>
-                    <div class="form-group">
-                        <label>Pincode *</label>
-                        <input type="text" id="supplierPincode" required placeholder="Pincode" pattern="[0-9]{6}">
-                    </div>
-                    <div class="database-form-actions">
-                        <button type="submit" class="database-btn database-btn-save">💾 Save Supplier</button>
-                        <button type="button" class="database-btn database-btn-clear" onclick="clearSupplierForm()">🔄 Clear Form</button>
-                    </div>
-                </form>
+                <!-- Purchase Order Tab -->
+                <div id="purchaseTab" class="tab-content">
+                    <form id="purchaseOrderForm">
+                        <!-- Section 1: Customer Details -->
+                        <div class="po-section">
+                            <h3>1️⃣ Customer Details</h3>
+                            <div class="form-row">
+                                <div class="form-group autocomplete-container">
+                                    <label for="poCustomerName">Customer Name *</label>
+                                    <input type="text" id="poCustomerName" required autocomplete="off" oninput="searchCustomer(this.value)">
+                                    <div id="customerAutocomplete" class="autocomplete-list"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="poCustomerContact">Contact</label>
+                                    <input type="text" id="poCustomerContact" readonly>
+                                </div>
+                            </div>
+                            <div class="form-row full-width">
+                                <div class="form-group">
+                                    <label for="poCustomerAddress">Address</label>
+                                    <textarea id="poCustomerAddress" readonly></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="poCustomerCity">City</label>
+                                    <input type="text" id="poCustomerCity" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="poCustomerState">State</label>
+                                    <input type="text" id="poCustomerState" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="poCustomerPincode">Pincode</label>
+                                    <input type="text" id="poCustomerPincode" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 2: Supplier Details -->
+                        <div class="po-section">
+                            <h3>2️⃣ Supplier Details</h3>
+                            <div class="form-row">
+                                <div class="form-group autocomplete-container">
+                                    <label for="poSupplierName">Supplier Name *</label>
+                                    <input type="text" id="poSupplierName" required autocomplete="off" oninput="searchSupplier(this.value)">
+                                    <div id="supplierAutocomplete" class="autocomplete-list"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="poSupplierContact">Contact</label>
+                                    <input type="text" id="poSupplierContact" readonly>
+                                </div>
+                            </div>
+                            <div class="form-row full-width">
+                                <div class="form-group">
+                                    <label for="poSupplierAddress">Address</label>
+                                    <textarea id="poSupplierAddress" readonly></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="poSupplierCity">City</label>
+                                    <input type="text" id="poSupplierCity" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="poSupplierState">State</label>
+                                    <input type="text" id="poSupplierState" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="poSupplierPincode">Pincode</label>
+                                    <input type="text" id="poSupplierPincode" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Product Details -->
+                        <div class="po-section">
+                            <h3>3️⃣ Product Details</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="lotNumber">Lot Number *</label>
+                                    <input type="text" id="lotNumber" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category">Category *</label>
+                                    <input type="text" id="category" required>
+                                </div>
+                            </div>
+                            <div class="form-row full-width">
+                                <div class="form-group">
+                                    <label for="description">Description *</label>
+                                    <textarea id="description" required></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="quantity">Quantity *</label>
+                                    <input type="number" id="quantity" required oninput="calculateTotal()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ratePerPiece">Rate per Piece *</label>
+                                    <input type="number" id="ratePerPiece" step="0.01" required oninput="calculateTotal()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="totalAmount">Total Amount</label>
+                                    <input type="number" id="totalAmount" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Payment Details -->
+                        <div class="po-section">
+                            <h3>4️⃣ Payment Details</h3>
+                            
+                            <!-- Token Payment -->
+                            <div class="payment-row">
+                                <div class="form-group">
+                                    <label>Payment Method</label>
+                                    <select id="tokenPaymentMethod" class="form-group input">
+                                        <option value="">Select Method</option>
+                                        <option value="Bank">Bank Transfer</option>
+                                        <option value="UPI">UPI</option>
+                                        <option value="Cash">Cash</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Token Amount</label>
+                                    <input type="number" id="tokenAmount" step="0.01" oninput="calculatePaymentBalance()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Reference Number</label>
+                                    <input type="text" id="tokenReference">
+                                </div>
+                            </div>
+                            <div class="file-upload-container">
+                                <label class="file-upload-label">
+                                    📎 Upload Token Payment Screenshot
+                                    <input type="file" class="file-upload-input" id="tokenScreenshot" accept="image/*" onchange="handleFileUpload(this, 'tokenPreview')">
+                                </label>
+                                <div id="tokenPreview" class="file-preview"></div>
+                            </div>
+
+                            <!-- 1st Part Payment -->
+                            <div class="payment-row" style="margin-top: 1.5rem;">
+                                <div class="form-group">
+                                    <label>1st Part Amount</label>
+                                    <input type="number" id="firstPartAmount" step="0.01" oninput="calculatePaymentBalance()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Reference Number</label>
+                                    <input type="text" id="firstPartReference">
+                                </div>
+                                <div class="form-group">
+                                    <label class="file-upload-label">
+                                        📎 Upload Screenshot
+                                        <input type="file" class="file-upload-input" id="firstPartScreenshot" accept="image/*" onchange="handleFileUpload(this, 'firstPartPreview')">
+                                    </label>
+                                    <div id="firstPartPreview" class="file-preview"></div>
+                                </div>
+                            </div>
+
+                            <!-- 2nd Part Payment -->
+                            <div class="payment-row">
+                                <div class="form-group">
+                                    <label>2nd Part Amount</label>
+                                    <input type="number" id="secondPartAmount" step="0.01" oninput="calculatePaymentBalance()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Reference Number</label>
+                                    <input type="text" id="secondPartReference">
+                                </div>
+                                <div class="form-group">
+                                    <label class="file-upload-label">
+                                        📎 Upload Screenshot
+                                        <input type="file" class="file-upload-input" id="secondPartScreenshot" accept="image/*" onchange="handleFileUpload(this, 'secondPartPreview')">
+                                    </label>
+                                    <div id="secondPartPreview" class="file-preview"></div>
+                                </div>
+                            </div>
+
+                            <!-- 3rd Part Payment -->
+                            <div class="payment-row">
+                                <div class="form-group">
+                                    <label>3rd Part Amount</label>
+                                    <input type="number" id="thirdPartAmount" step="0.01" oninput="calculatePaymentBalance()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Reference Number</label>
+                                    <input type="text" id="thirdPartReference">
+                                </div>
+                                <div class="form-group">
+                                    <label class="file-upload-label">
+                                        📎 Upload Screenshot
+                                        <input type="file" class="file-upload-input" id="thirdPartScreenshot" accept="image/*" onchange="handleFileUpload(this, 'thirdPartPreview')">
+                                    </label>
+                                    <div id="thirdPartPreview" class="file-preview"></div>
+                                </div>
+                            </div>
+
+                            <!-- Final Payment -->
+                            <div class="payment-row">
+                                <div class="form-group">
+                                    <label>Final Amount</label>
+                                    <input type="number" id="finalAmount" step="0.01" oninput="calculatePaymentBalance()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Reference Number</label>
+                                    <input type="text" id="finalReference">
+                                </div>
+                                <div class="form-group">
+                                    <label class="file-upload-label">
+                                        📎 Upload Screenshot
+                                        <input type="file" class="file-upload-input" id="finalScreenshot" accept="image/*" onchange="handleFileUpload(this, 'finalPreview')">
+                                    </label>
+                                    <div id="finalPreview" class="file-preview"></div>
+                                </div>
+                            </div>
+
+                            <!-- Payment Summary -->
+                            <div class="amount-summary">
+                                <div class="amount-row">
+                                    <span>Total Order Amount:</span>
+                                    <span id="summaryTotalAmount">₹0.00</span>
+                                </div>
+                                <div class="amount-row">
+                                    <span>Total Amount Received:</span>
+                                    <span id="summaryReceivedAmount">₹0.00</span>
+                                </div>
+                                <div class="amount-row" id="pendingAmountRow">
+                                    <span>Pending Amount:</span>
+                                    <span id="summaryPendingAmount">₹0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 5: Logistics Details -->
+                        <div class="po-section">
+                            <h3>5️⃣ Logistics Details</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="logisticsName">Logistics Name</label>
+                                    <input type="text" id="logisticsName">
+                                </div>
+                                <div class="form-group">
+                                    <label for="trackingNumber">Tracking Number</label>
+                                    <input type="text" id="trackingNumber">
+                                </div>
+                                <div class="form-group">
+                                    <label for="shippingType">Shipping Type</label>
+                                    <select id="shippingType" class="form-group input">
+                                        <option value="">Select Type</option>
+                                        <option value="Prepaid">Prepaid</option>
+                                        <option value="COD">COD</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="codAmount">COD Amount (if applicable)</label>
+                                    <input type="number" id="codAmount" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="trackingLink">Tracking Link</label>
+                                    <input type="url" id="trackingLink">
+                                </div>
+                            </div>
+                            <div class="file-upload-container">
+                                <label class="file-upload-label">
+                                    📎 Upload LR Copy
+                                    <input type="file" class="file-upload-input" id="lrCopy" accept="image/*,application/pdf" onchange="handleFileUpload(this, 'lrPreview')">
+                                </label>
+                                <div id="lrPreview" class="file-preview"></div>
+                            </div>
+                        </div>
+
+                        <!-- Section 6: Status -->
+                        <div class="po-section">
+                            <h3>6️⃣ Order Status</h3>
+                            <div class="status-grid">
+                                <div class="date-input-group">
+                                    <label for="lotBookedDate">Lot Booked Date</label>
+                                    <input type="date" id="lotBookedDate" class="form-group input">
+                                </div>
+                                <div class="date-input-group">
+                                    <label for="lotPackingDate">Lot Packing Date</label>
+                                    <input type="date" id="lotPackingDate" class="form-group input">
+                                </div>
+                                <div class="date-input-group">
+                                    <label for="lrReceivedDate">LR Received Date</label>
+                                    <input type="date" id="lrReceivedDate" class="form-group input">
+                                </div>
+                                <div class="date-input-group">
+                                    <label for="expectedDeliveryDate">Expected Delivery Date</label>
+                                    <input type="date" id="expectedDeliveryDate" class="form-group input">
+                                </div>
+                                <div class="date-input-group">
+                                    <label for="deliveredDate">Delivered Date</label>
+                                    <input type="date" id="deliveredDate" class="form-group input">
+                                </div>
+                                <div class="date-input-group">
+                                    <label for="rtvRaisedDate">RTV Raised Date (if any)</label>
+                                    <input type="date" id="rtvRaisedDate" class="form-group input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-save">💾 Save Purchase Order</button>
+                            <button type="button" class="btn-clear" onclick="clearPurchaseOrderForm()">🔄 Clear</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Menu Toggle
-        function toggleMenu() {
-            document.getElementById('menuDropdown').classList.toggle('show');
-        }
-
-        // Close menu when clicking outside
-        window.onclick = function(event) {
-            if (!event.target.matches('.menu-button')) {
-                var dropdowns = document.getElementsByClassName('dropdown-content');
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
-        }
-
-        // Modal Functions
-        function openBuyModal() {
-            document.getElementById('buyModal').classList.add('show');
-        }
-
-        function closeBuyModal() {
-            document.getElementById('buyModal').classList.remove('show');
-        }
-
-        function openSellModal() {
-            document.getElementById('sellModal').classList.add('show');
-        }
-
-        function closeSellModal() {
-            document.getElementById('sellModal').classList.remove('show');
-        }
-
-        function openAuctionModal() {
-            document.getElementById('auctionModal').classList.add('show');
-        }
-
-        function closeAuctionModal() {
-            document.getElementById('auctionModal').classList.remove('show');
-        }
-
-        function openWelcomeModal() {
-            document.getElementById('welcomeModal').classList.add('show');
-        }
+        // Show welcome modal on page load
+        window.onload = function() {
+            document.getElementById('welcomeModal').style.display = 'block';
+        };
 
         function closeWelcomeModal() {
-            document.getElementById('welcomeModal').classList.remove('show');
+            document.getElementById('welcomeModal').style.display = 'none';
         }
 
-        function submitBuyForm(e) {
-            e.preventDefault();
-            const name = document.getElementById('buyName').value;
-            const mobile = document.getElementById('buyMobile').value;
-            
-            console.log('Buy Request:', { name, mobile });
-            
-            closeBuyModal();
-            openWelcomeModal();
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
         }
 
-        function submitSellForm(e) {
-            e.preventDefault();
-            const name = document.getElementById('sellName').value;
-            const mobile = document.getElementById('sellMobile').value;
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const welcomeModal = document.getElementById('welcomeModal');
+            const passwordModal = document.getElementById('passwordModal');
+            const ordersModal = document.getElementById('ordersModal');
             
-            console.log('Sell Request:', { name, mobile });
-            
-            closeSellModal();
-            openWelcomeModal();
-        }
+            if (event.target == welcomeModal) {
+                closeWelcomeModal();
+            }
+            if (event.target == passwordModal) {
+                closePasswordModal();
+            }
+            if (event.target == ordersModal) {
+                closeOrdersModal();
+            }
+        };
 
-        function submitAuctionForm(e) {
+        // Contact form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('auctionName').value;
-            const mobile = document.getElementById('auctionMobile').value;
-            
-            console.log('Auction Request:', { name, mobile });
-            
-            closeAuctionModal();
-            openWelcomeModal();
-        }
+            alert('Thank you for your message! We will get back to you soon.');
+            this.reset();
+        });
 
         // Password Modal Functions
-        function openPasswordModal() {
-            document.getElementById('passwordModal').classList.add('show');
-            document.getElementById('menuDropdown').classList.remove('show');
+        function openOrdersManagement() {
+            document.getElementById('passwordModal').style.display = 'block';
         }
 
         function closePasswordModal() {
-            document.getElementById('passwordModal').classList.remove('show');
+            document.getElementById('passwordModal').style.display = 'none';
             document.getElementById('passwordInput').value = '';
             document.getElementById('secretCodeInput').value = '';
-            document.getElementById('passwordError').classList.remove('show');
+            document.getElementById('errorMessage').style.display = 'none';
         }
 
         function verifyPassword() {
             const password = document.getElementById('passwordInput').value;
             const secretCode = document.getElementById('secretCodeInput').value;
-            
-            // Check credentials
+            const errorMessage = document.getElementById('errorMessage');
+
             if (password === 'AK2024@Secure' && secretCode === 'MSZMA') {
                 closePasswordModal();
-                openDatabaseModal();
+                document.getElementById('ordersModal').style.display = 'block';
             } else {
-                document.getElementById('passwordError').classList.add('show');
-                setTimeout(() => {
-                    document.getElementById('passwordError').classList.remove('show');
-                }, 3000);
+                errorMessage.textContent = '❌ Invalid credentials. Please try again.';
+                errorMessage.style.display = 'block';
             }
         }
 
-        // Database Modal Functions
-        function openDatabaseModal() {
-            document.getElementById('databaseModal').classList.add('show');
+        // Allow Enter key to submit password
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyPassword();
+        });
+        document.getElementById('secretCodeInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyPassword();
+        });
+
+        // Orders Modal Functions
+        function closeOrdersModal() {
+            document.getElementById('ordersModal').style.display = 'none';
         }
 
-        function closeDatabaseModal() {
-            document.getElementById('databaseModal').classList.remove('show');
-        }
-
-        function switchTab(tab) {
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        // Tab Switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            // Add active class to selected tab
-            if (tab === 'customer') {
-                document.querySelector('.tab-btn:first-child').classList.add('active');
-                document.getElementById('customerTab').classList.add('active');
-            } else {
-                document.querySelector('.tab-btn:last-child').classList.add('active');
-                document.getElementById('supplierTab').classList.add('active');
-            }
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
         }
 
-        function saveCustomer(e) {
+        // LocalStorage for Customer and Supplier Data
+        function getCustomers() {
+            return JSON.parse(localStorage.getItem('customers') || '[]');
+        }
+
+        function saveCustomer(customer) {
+            const customers = getCustomers();
+            customers.push(customer);
+            localStorage.setItem('customers', JSON.stringify(customers));
+        }
+
+        function getSuppliers() {
+            return JSON.parse(localStorage.getItem('suppliers') || '[]');
+        }
+
+        function saveSupplier(supplier) {
+            const suppliers = getSuppliers();
+            suppliers.push(supplier);
+            localStorage.setItem('suppliers', JSON.stringify(suppliers));
+        }
+
+        // Customer Form
+        document.getElementById('customerForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            
             const customer = {
                 name: document.getElementById('customerName').value,
                 contact: document.getElementById('customerContact').value,
@@ -1911,22 +1395,19 @@
                 pincode: document.getElementById('customerPincode').value
             };
             
-            console.log('Customer Saved:', customer);
-            alert('✅ Customer data saved successfully!');
+            saveCustomer(customer);
+            alert('✅ Customer saved successfully!');
             clearCustomerForm();
-        }
+        });
 
         function clearCustomerForm() {
-            document.getElementById('customerName').value = '';
-            document.getElementById('customerContact').value = '';
-            document.getElementById('customerAddress').value = '';
-            document.getElementById('customerCity').value = '';
-            document.getElementById('customerState').value = '';
-            document.getElementById('customerPincode').value = '';
+            document.getElementById('customerForm').reset();
         }
 
-        function saveSupplier(e) {
+        // Supplier Form
+        document.getElementById('supplierForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            
             const supplier = {
                 name: document.getElementById('supplierName').value,
                 contact: document.getElementById('supplierContact').value,
@@ -1936,32 +1417,165 @@
                 pincode: document.getElementById('supplierPincode').value
             };
             
-            console.log('Supplier Saved:', supplier);
-            alert('✅ Supplier data saved successfully!');
+            saveSupplier(supplier);
+            alert('✅ Supplier saved successfully!');
             clearSupplierForm();
-        }
+        });
 
         function clearSupplierForm() {
-            document.getElementById('supplierName').value = '';
-            document.getElementById('supplierContact').value = '';
-            document.getElementById('supplierAddress').value = '';
-            document.getElementById('supplierCity').value = '';
-            document.getElementById('supplierState').value = '';
-            document.getElementById('supplierPincode').value = '';
+            document.getElementById('supplierForm').reset();
         }
 
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+        // Autocomplete Functions
+        function searchCustomer(query) {
+            const customers = getCustomers();
+            const autocomplete = document.getElementById('customerAutocomplete');
+            
+            if (query.length < 2) {
+                autocomplete.classList.remove('show');
+                return;
+            }
+            
+            const filtered = customers.filter(c => 
+                c.name.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (filtered.length > 0) {
+                autocomplete.innerHTML = filtered.map(c => 
+                    `<div class="autocomplete-item" onclick="selectCustomer('${c.name}')">${c.name}</div>`
+                ).join('');
+                autocomplete.classList.add('show');
+            } else {
+                autocomplete.classList.remove('show');
+            }
+        }
+
+        function selectCustomer(name) {
+            const customers = getCustomers();
+            const customer = customers.find(c => c.name === name);
+            
+            if (customer) {
+                document.getElementById('poCustomerName').value = customer.name;
+                document.getElementById('poCustomerContact').value = customer.contact;
+                document.getElementById('poCustomerAddress').value = customer.address;
+                document.getElementById('poCustomerCity').value = customer.city;
+                document.getElementById('poCustomerState').value = customer.state;
+                document.getElementById('poCustomerPincode').value = customer.pincode;
+            }
+            
+            document.getElementById('customerAutocomplete').classList.remove('show');
+        }
+
+        function searchSupplier(query) {
+            const suppliers = getSuppliers();
+            const autocomplete = document.getElementById('supplierAutocomplete');
+            
+            if (query.length < 2) {
+                autocomplete.classList.remove('show');
+                return;
+            }
+            
+            const filtered = suppliers.filter(s => 
+                s.name.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (filtered.length > 0) {
+                autocomplete.innerHTML = filtered.map(s => 
+                    `<div class="autocomplete-item" onclick="selectSupplier('${s.name}')">${s.name}</div>`
+                ).join('');
+                autocomplete.classList.add('show');
+            } else {
+                autocomplete.classList.remove('show');
+            }
+        }
+
+        function selectSupplier(name) {
+            const suppliers = getSuppliers();
+            const supplier = suppliers.find(s => s.name === name);
+            
+            if (supplier) {
+                document.getElementById('poSupplierName').value = supplier.name;
+                document.getElementById('poSupplierContact').value = supplier.contact;
+                document.getElementById('poSupplierAddress').value = supplier.address;
+                document.getElementById('poSupplierCity').value = supplier.city;
+                document.getElementById('poSupplierState').value = supplier.state;
+                document.getElementById('poSupplierPincode').value = supplier.pincode;
+            }
+            
+            document.getElementById('supplierAutocomplete').classList.remove('show');
+        }
+
+        // Product Calculations
+        function calculateTotal() {
+            const quantity = parseFloat(document.getElementById('quantity').value) || 0;
+            const rate = parseFloat(document.getElementById('ratePerPiece').value) || 0;
+            const total = quantity * rate;
+            
+            document.getElementById('totalAmount').value = total.toFixed(2);
+            calculatePaymentBalance();
+        }
+
+        // Payment Calculations
+        function calculatePaymentBalance() {
+            const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
+            const tokenAmount = parseFloat(document.getElementById('tokenAmount').value) || 0;
+            const firstPart = parseFloat(document.getElementById('firstPartAmount').value) || 0;
+            const secondPart = parseFloat(document.getElementById('secondPartAmount').value) || 0;
+            const thirdPart = parseFloat(document.getElementById('thirdPartAmount').value) || 0;
+            const finalAmount = parseFloat(document.getElementById('finalAmount').value) || 0;
+            
+            const totalReceived = tokenAmount + firstPart + secondPart + thirdPart + finalAmount;
+            const pending = totalAmount - totalReceived;
+            
+            document.getElementById('summaryTotalAmount').textContent = '₹' + totalAmount.toFixed(2);
+            document.getElementById('summaryReceivedAmount').textContent = '₹' + totalReceived.toFixed(2);
+            document.getElementById('summaryPendingAmount').textContent = '₹' + pending.toFixed(2);
+            
+            const pendingRow = document.getElementById('pendingAmountRow');
+            if (pending === 0) {
+                pendingRow.classList.remove('pending');
+                pendingRow.classList.add('completed');
+            } else {
+                pendingRow.classList.add('pending');
+                pendingRow.classList.remove('completed');
+            }
+        }
+
+        // File Upload Handler
+        function handleFileUpload(input, previewId) {
+            const file = input.files[0];
+            const preview = document.getElementById(previewId);
+            
+            if (file) {
+                preview.textContent = `✅ ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+            } else {
+                preview.textContent = '';
+            }
+        }
+
+        // Purchase Order Form Submission
+        document.getElementById('purchaseOrderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Here you would collect all the form data and save it
+            alert('✅ Purchase Order saved successfully!');
+            
+            // Optionally clear the form
+            // clearPurchaseOrderForm();
+        });
+
+        function clearPurchaseOrderForm() {
+            document.getElementById('purchaseOrderForm').reset();
+            calculatePaymentBalance();
+        }
+
+        // Close autocomplete when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.autocomplete-container')) {
+                document.querySelectorAll('.autocomplete-list').forEach(list => {
+                    list.classList.remove('show');
+                });
+            }
         });
     </script>
 </body>
