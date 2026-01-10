@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AK Brands Marketing - India's Leading B2B Liquidation Platform</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="AK Brands Marketing - India's premier B2B liquidation platform connecting retailers with surplus inventory. Discover unbeatable deals on branded products.">
+    <meta name="keywords" content="B2B liquidation, surplus inventory, wholesale deals, branded products, retail liquidation India">
+    <meta name="author" content="AK Brands Marketing">
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.0/docx.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -20,12 +24,13 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             line-height: 1.6;
             color: #333;
+            overflow-x: hidden;
         }
 
         /* Header Styles */
         header {
             background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
-            padding: 1.2rem 0 0 0;
+            padding: 1.2rem 0;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             position: sticky;
             top: 0;
@@ -40,8 +45,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
-            z-index: 10;
         }
 
         .logo-section {
@@ -75,7 +78,6 @@
             color: #1abc9c;
             letter-spacing: 0.5px;
             line-height: 1.2;
-            position: relative;
         }
 
         .brand-name .ak {
@@ -151,8 +153,6 @@
             display: block;
             transition: all 0.3s;
             font-weight: 500;
-            position: relative;
-            z-index: 1;
             cursor: pointer;
         }
 
@@ -162,29 +162,215 @@
             padding-left: 2rem;
         }
 
-        /* Secret Code Input */
-        .secret-code-input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid rgba(26, 188, 156, 0.5);
-            border-radius: 10px;
-            background: rgba(255,255,255,0.1);
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
             color: white;
-            font-size: 1.1rem;
+            padding: 6rem 2rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(26, 188, 156, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(22, 160, 133, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-family: 'Playfair Display', Georgia, serif;
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            color: #bdc3c7;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+            padding: 1.2rem 3rem;
+            text-decoration: none;
+            border-radius: 50px;
             font-weight: 600;
-            letter-spacing: 1px;
-            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(26, 188, 156, 0.3);
+            border: 2px solid transparent;
         }
 
-        .secret-code-input::placeholder {
-            color: rgba(255,255,255,0.5);
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(26, 188, 156, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .secret-code-input:focus {
-            outline: none;
+        /* Features Section */
+        .features {
+            padding: 5rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            font-family: 'Playfair Display', Georgia, serif;
+            color: #2c3e50;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(26, 188, 156, 0.15);
             border-color: #1abc9c;
-            background: rgba(255,255,255,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+
+        .feature-card p {
+            color: #7f8c8d;
+            line-height: 1.8;
+        }
+
+        /* About Section */
+        .about {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .about-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about p {
+            font-size: 1.2rem;
+            line-height: 2;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: white;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .contact-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(26, 188, 156, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(26, 188, 156, 0.1);
+            border-color: #1abc9c;
+            transform: translateY(-5px);
+        }
+
+        .contact-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #1abc9c;
+        }
+
+        .contact-item p {
+            font-size: 1.1rem;
+            color: #bdc3c7;
+        }
+
+        .contact-item a {
+            color: #1abc9c;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-item a:hover {
+            color: #16a085;
+        }
+
+        /* Footer */
+        footer {
+            background: #0a0a0a;
+            color: #95a5a6;
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(26, 188, 156, 0.1);
         }
 
         /* OTP Modal */
@@ -224,7 +410,6 @@
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            font-family: 'Inter', sans-serif;
             color: #1abc9c;
         }
 
@@ -239,7 +424,7 @@
             margin-bottom: 1.5rem;
         }
 
-        .phone-input {
+        .phone-input, .secret-code-input {
             width: 100%;
             padding: 1rem;
             border: 2px solid rgba(26, 188, 156, 0.5);
@@ -253,11 +438,11 @@
             margin-bottom: 1rem;
         }
 
-        .phone-input::placeholder {
+        .phone-input::placeholder, .secret-code-input::placeholder {
             color: rgba(255,255,255,0.5);
         }
 
-        .phone-input:focus {
+        .phone-input:focus, .secret-code-input:focus {
             outline: none;
             border-color: #1abc9c;
             background: rgba(255,255,255,0.15);
@@ -348,13 +533,7 @@
             color: white;
         }
 
-        .otp-resend {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 2px solid rgba(255,255,255,0.3);
-        }
-
-        .otp-cancel {
+        .otp-resend, .otp-cancel {
             background: rgba(255,255,255,0.1);
             color: white;
             border: 2px solid rgba(255,255,255,0.3);
@@ -416,12 +595,157 @@
             75% { transform: translateX(10px); }
         }
 
-        /* Rest of your existing styles... */
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-name {
+                font-size: 1.4rem;
+            }
+
+            .logo-img {
+                width: 60px;
+                height: 60px;
+            }
+
+            .otp-digit {
+                width: 40px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Your existing HTML content -->
-    
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <img src="https://i.postimg.cc/Kz0Yz0Yz/AK-Brands-Marketing-Logo.png" alt="AK Brands Marketing Logo" class="logo-img">
+                <div class="brand-text">
+                    <div class="brand-name"><span class="ak">AK</span> Brands Marketing</div>
+                    <div class="brand-tagline">India's Premier B2B Liquidation Platform</div>
+                </div>
+            </div>
+            <div class="menu-dropdown">
+                <button class="menu-button" onclick="toggleMenu()">☰</button>
+                <div class="dropdown-content" id="dropdownMenu">
+                    <a href="#home">Home</a>
+                    <a href="#features">Features</a>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                    <a onclick="openOTPModal()">Orders Management</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Transform Surplus into Success</h1>
+            <p>India's most trusted B2B liquidation platform connecting retailers with premium surplus inventory. Unlock unbeatable deals on branded products.</p>
+            <a href="#contact" class="cta-button">Get Started Today</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <h2 class="section-title">Why Choose AK Brands Marketing?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🏆</span>
+                    <h3>Premium Quality</h3>
+                    <p>Access authentic branded products from trusted sources. Every item verified for quality and authenticity.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">💰</span>
+                    <h3>Unbeatable Prices</h3>
+                    <p>Maximize your margins with wholesale liquidation prices. Save up to 70% on retail prices.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🚚</span>
+                    <h3>Fast Delivery</h3>
+                    <p>Pan-India delivery network ensuring your orders reach you quickly and safely.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🤝</span>
+                    <h3>Trusted Partner</h3>
+                    <p>Join thousands of satisfied retailers who trust us for their inventory needs.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3>Diverse Inventory</h3>
+                    <p>Wide range of categories including electronics, fashion, home goods, and more.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🔒</span>
+                    <h3>Secure Transactions</h3>
+                    <p>Safe and secure payment options with complete transparency in every deal.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="about-container">
+            <h2 class="section-title">About AK Brands Marketing</h2>
+            <p>
+                AK Brands Marketing is India's leading B2B liquidation platform, revolutionizing how retailers access surplus inventory. 
+                We bridge the gap between manufacturers with excess stock and retailers seeking quality products at competitive prices.
+            </p>
+            <p>
+                With years of industry expertise and a commitment to excellence, we've built a reputation for reliability, 
+                transparency, and exceptional service. Our mission is to empower retailers across India with access to 
+                premium branded products that help them grow their businesses.
+            </p>
+            <p>
+                Whether you're a small retailer or a large distributor, AK Brands Marketing is your trusted partner 
+                for sustainable and profitable inventory solutions.
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="contact-container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h3>📧 Email</h3>
+                    <p><a href="mailto:akbrandsmarketing@gmail.com">akbrandsmarketing@gmail.com</a></p>
+                </div>
+                <div class="contact-item">
+                    <h3>📱 Phone</h3>
+                    <p><a href="tel:+918660502217">+91 86605 02217</a></p>
+                </div>
+                <div class="contact-item">
+                    <h3>💬 WhatsApp</h3>
+                    <p><a href="https://wa.me/918660502217" target="_blank">Chat with us on WhatsApp</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 AK Brands Marketing. All rights reserved.</p>
+        <p>India's Premier B2B Liquidation Platform</p>
+    </footer>
+
+    <!-- OTP Modal -->
     <div id="otpModal" class="otp-modal">
         <div class="otp-content">
             <h2 class="otp-title">🔐 Secure Login</h2>
@@ -469,6 +793,23 @@
     </div>
 
     <script>
+        // Menu Toggle
+        function toggleMenu() {
+            const dropdown = document.getElementById('dropdownMenu');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.menu-button')) {
+                const dropdown = document.getElementById('dropdownMenu');
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        }
+
+        // OTP Authentication System
         const AUTHORIZED_PHONE = "8660502217";
         const SECRET_CODE = "MSZMA";
         
@@ -480,6 +821,11 @@
 
         function generateOTP() {
             return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        function openOTPModal() {
+            document.getElementById('otpModal').classList.add('show');
+            document.getElementById('phoneInput').focus();
         }
 
         function requestOTP() {
@@ -614,8 +960,7 @@
                 clearInterval(otpTimer);
                 clearInterval(resendTimer);
                 closeOTPModal();
-                // Show orders section
-                alert('✅ Login successful! Welcome to Orders Management.');
+                alert('✅ Login successful! Welcome to Orders Management.\n\nNote: Orders Management system is under development and will be available soon.');
             } else {
                 showOTPError('Invalid OTP. Please try again.');
                 clearOTPInputs();
@@ -655,9 +1000,23 @@
             document.getElementById('phoneInput').value = '';
             document.getElementById('secretCodeInput').value = '';
             document.getElementById('phoneError').classList.remove('show');
+            document.getElementById('phoneInputSection').style.display = 'block';
+            document.getElementById('otpInputSection').style.display = 'none';
         }
 
-        // Your existing JavaScript code...
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>
