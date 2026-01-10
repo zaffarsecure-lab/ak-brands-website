@@ -4,15 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AK Brands Marketing - India's Leading B2B Liquidation Platform</title>
-    
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="AK Brands Marketing - India's premier B2B liquidation platform connecting retailers with surplus inventory. Discover unbeatable deals on branded products.">
-    <meta name="keywords" content="B2B liquidation, surplus inventory, wholesale deals, branded products, retail liquidation India">
-    <meta name="author" content="AK Brands Marketing">
-    
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <style>
         * {
             margin: 0;
@@ -24,13 +16,12 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             line-height: 1.6;
             color: #333;
-            overflow-x: hidden;
         }
 
         /* Header Styles */
         header {
             background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
-            padding: 1.2rem 0;
+            padding: 1.2rem 0 0 0;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             position: sticky;
             top: 0;
@@ -45,6 +36,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
+            z-index: 10;
         }
 
         .logo-section {
@@ -78,6 +71,7 @@
             color: #1abc9c;
             letter-spacing: 0.5px;
             line-height: 1.2;
+            position: relative;
         }
 
         .brand-name .ak {
@@ -162,82 +156,265 @@
             padding-left: 2rem;
         }
 
+        /* Animation Section */
+        .animation-section {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            margin-top: 1rem;
+            background: linear-gradient(to bottom, transparent 0%, transparent 75%, #34495e 75%, #2c3e50 80%, #34495e 80%, #34495e 100%);
+        }
+
+        /* Business Locations */
+        .business-locations {
+            position: absolute;
+            bottom: 30%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5%;
+            z-index: 10;
+        }
+
+        .location {
+            text-align: center;
+            position: relative;
+        }
+
+        .location-icon {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+        }
+
+        .location-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ecf0f1;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+
+        .supplier { color: #3498db; }
+        .office { color: #1abc9c; }
+        .customer { color: #e74c3c; }
+
+        /* Network Towers */
+        .network-tower {
+            position: absolute;
+            top: -30px;
+            font-size: 1.5rem;
+            animation: towerSignal 2s ease-in-out infinite;
+        }
+
+        @keyframes towerSignal {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* Customer Animation */
+        .customer-person {
+            position: absolute;
+            bottom: 30%;
+            right: 20%;
+            font-size: 2rem;
+            z-index: 15;
+            animation: customerJourney 30s ease-in-out infinite;
+        }
+
+        @keyframes customerJourney {
+            0%, 5% {
+                right: 20%;
+                transform: scaleX(1);
+                opacity: 1;
+            }
+            15% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 1;
+            }
+            20%, 25% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 1;
+            }
+            30% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 0;
+            }
+            100% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 0;
+            }
+        }
+
+        /* Order & Payment Animation */
+        .order-payment {
+            position: absolute;
+            bottom: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            z-index: 15;
+            opacity: 0;
+            animation: showOrderPayment 30s ease-in-out infinite;
+        }
+
+        @keyframes showOrderPayment {
+            0%, 20% { opacity: 0; transform: translateX(-50%) scale(0); }
+            25% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+            30% { opacity: 1; transform: translateX(-50%) scale(1); }
+            35% { opacity: 0; transform: translateX(-50%) scale(0); }
+            100% { opacity: 0; transform: translateX(-50%) scale(0); }
+        }
+
+        /* Packing Animation */
+        .packing-boxes {
+            position: absolute;
+            bottom: 35%;
+            left: 15%;
+            font-size: 1.5rem;
+            z-index: 15;
+            opacity: 0;
+            animation: packingGoods 30s ease-in-out infinite;
+        }
+
+        @keyframes packingGoods {
+            0%, 40% { opacity: 0; transform: scale(0); }
+            45% { opacity: 1; transform: scale(1.2); }
+            50% { opacity: 1; transform: scale(1); }
+            55% { opacity: 1; transform: scale(1); }
+            60% { opacity: 0; transform: scale(0); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        /* Truck Animation - FLIPPED to face RIGHT */
+        .truck-container {
+            position: absolute;
+            bottom: 28%;
+            width: 100%;
+            height: 80px;
+            z-index: 20;
+        }
+
+        .truck {
+            position: absolute;
+            left: 15%;
+            bottom: 0;
+            font-size: 3rem;
+            opacity: 0;
+            transform: scaleX(-1);
+            animation: truckDelivery 30s ease-in-out infinite;
+        }
+
+        @keyframes truckDelivery {
+            0%, 55% {
+                left: 15%;
+                opacity: 0;
+            }
+            60% {
+                left: 15%;
+                opacity: 1;
+            }
+            85% {
+                left: 80%;
+                opacity: 1;
+            }
+            90% {
+                left: 80%;
+                opacity: 1;
+            }
+            95% {
+                left: 80%;
+                opacity: 0;
+            }
+            100% {
+                left: 80%;
+                opacity: 0;
+            }
+        }
+
+        /* Delivery Confirmation */
+        .delivery-check {
+            position: absolute;
+            bottom: 35%;
+            right: 15%;
+            font-size: 2rem;
+            z-index: 15;
+            opacity: 0;
+            animation: deliveryComplete 30s ease-in-out infinite;
+        }
+
+        @keyframes deliveryComplete {
+            0%, 85% { opacity: 0; transform: scale(0) rotate(0deg); }
+            90% { opacity: 1; transform: scale(1.3) rotate(360deg); }
+            95% { opacity: 1; transform: scale(1) rotate(360deg); }
+            100% { opacity: 0; transform: scale(0) rotate(360deg); }
+        }
+
+        .road-lines {
+            position: absolute;
+            bottom: 25%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 20px,
+                rgba(255,255,255,0.3) 20px,
+                rgba(255,255,255,0.3) 40px
+            );
+            z-index: 5;
+        }
+
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 6rem 2rem;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(26, 188, 156, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(22, 160, 133, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .hero-content {
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
+            font-size: 3rem;
+            margin-bottom: 1rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
-            font-family: 'Playfair Display', Georgia, serif;
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.2;
+            font-family: 'Inter', sans-serif;
         }
 
         .hero p {
             font-size: 1.3rem;
-            margin-bottom: 2.5rem;
-            color: #bdc3c7;
-            line-height: 1.8;
+            margin-bottom: 2rem;
+            opacity: 0.95;
         }
 
         .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-            color: white;
-            padding: 1.2rem 3rem;
+            background: white;
+            color: #667eea;
+            padding: 1rem 2.5rem;
             text-decoration: none;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(26, 188, 156, 0.3);
-            border: 2px solid transparent;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .cta-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(26, 188, 156, 0.4);
-            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
 
         /* Features Section */
         .features {
-            padding: 5rem 2rem;
+            padding: 4rem 2rem;
             background: #f8f9fa;
         }
 
-        .features-container {
+        .container {
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -245,132 +422,97 @@
         .section-title {
             text-align: center;
             font-size: 2.5rem;
-            font-weight: 700;
             margin-bottom: 3rem;
-            font-family: 'Playfair Display', Georgia, serif;
             color: #2c3e50;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
         }
 
         .feature-card {
             background: white;
-            padding: 2.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
         }
 
         .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(26, 188, 156, 0.15);
-            border-color: #1abc9c;
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            display: block;
+            transform: translateY(-5px);
         }
 
         .feature-card h3 {
-            font-size: 1.5rem;
+            color: #667eea;
             margin-bottom: 1rem;
-            color: #2c3e50;
-            font-family: 'Playfair Display', Georgia, serif;
-        }
-
-        .feature-card p {
-            color: #7f8c8d;
-            line-height: 1.8;
+            font-size: 1.5rem;
+            font-family: 'Inter', sans-serif;
         }
 
         /* About Section */
         .about {
-            padding: 5rem 2rem;
+            padding: 4rem 2rem;
             background: white;
         }
 
-        .about-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .about p {
-            font-size: 1.2rem;
-            line-height: 2;
-            color: #555;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Contact Section */
-        .contact {
-            padding: 5rem 2rem;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-            color: white;
-        }
-
-        .contact-container {
+        .about-content {
             max-width: 800px;
             margin: 0 auto;
             text-align: center;
         }
 
+        .about-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
         .contact-info {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-info h2 {
+            margin-bottom: 2rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .contact-details {
             display: flex;
             flex-direction: column;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .contact-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 2rem;
-            border-radius: 15px;
-            border: 1px solid rgba(26, 188, 156, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .contact-item:hover {
-            background: rgba(26, 188, 156, 0.1);
-            border-color: #1abc9c;
-            transform: translateY(-5px);
-        }
-
-        .contact-item h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.8rem;
-            color: #1abc9c;
-        }
-
-        .contact-item p {
+            gap: 1rem;
             font-size: 1.1rem;
-            color: #bdc3c7;
         }
 
-        .contact-item a {
-            color: #1abc9c;
+        .contact-details a {
+            color: white;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: opacity 0.3s;
         }
 
-        .contact-item a:hover {
-            color: #16a085;
+        .contact-details a:hover {
+            opacity: 0.8;
         }
 
         /* Footer */
         footer {
-            background: #0a0a0a;
-            color: #95a5a6;
+            background: #2c3e50;
+            color: white;
             text-align: center;
             padding: 2rem;
-            border-top: 1px solid rgba(26, 188, 156, 0.1);
         }
 
         /* OTP Modal */
@@ -595,27 +737,56 @@
             75% { transform: translateX(10px); }
         }
 
-        /* Responsive Design */
+        /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
+            .animation-section {
+                height: 100px;
             }
 
-            .hero p {
-                font-size: 1.1rem;
+            .header-container {
+                flex-direction: row;
+                justify-content: space-between;
             }
 
-            .features-grid {
-                grid-template-columns: 1fr;
+            .logo-img {
+                width: 55px;
+                height: 55px;
             }
 
             .brand-name {
                 font-size: 1.4rem;
             }
 
-            .logo-img {
-                width: 60px;
-                height: 60px;
+            .brand-tagline {
+                font-size: 0.6rem;
+            }
+
+            .location-icon {
+                font-size: 1.5rem;
+            }
+
+            .location-label {
+                font-size: 0.5rem;
+            }
+
+            .truck {
+                font-size: 2rem;
+            }
+
+            .customer-person {
+                font-size: 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
             }
 
             .otp-digit {
@@ -627,122 +798,131 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="header-container">
             <div class="logo-section">
-                <img src="https://i.postimg.cc/Kz0Yz0Yz/AK-Brands-Marketing-Logo.png" alt="AK Brands Marketing Logo" class="logo-img">
+                <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg" alt="AK Brands Marketing Logo" class="logo-img">
                 <div class="brand-text">
                     <div class="brand-name"><span class="ak">AK</span> Brands Marketing</div>
-                    <div class="brand-tagline">India's Premier B2B Liquidation Platform</div>
+                    <div class="brand-tagline">Trusted Firm</div>
                 </div>
             </div>
             <div class="menu-dropdown">
                 <button class="menu-button" onclick="toggleMenu()">☰</button>
-                <div class="dropdown-content" id="dropdownMenu">
+                <div class="dropdown-content" id="menuDropdown">
                     <a href="#home">Home</a>
-                    <a href="#features">Features</a>
+                    <a href="#features">Services</a>
                     <a href="#about">About</a>
                     <a href="#contact">Contact</a>
                     <a onclick="openOTPModal()">Orders Management</a>
                 </div>
             </div>
         </div>
+
+        <!-- Animation Section Below Logo -->
+        <div class="animation-section">
+            <div class="road-lines"></div>
+            
+            <!-- Business Locations with Network Towers -->
+            <div class="business-locations">
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="location-icon">🏭</div>
+                    <div class="location-label supplier">Supplier</div>
+                </div>
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="location-icon">🏢</div>
+                    <div class="location-label office">AK</div>
+                </div>
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="location-icon">🏪</div>
+                    <div class="location-label customer">Customer</div>
+                </div>
+            </div>
+
+            <!-- Customer Journey -->
+            <div class="customer-person">🚶</div>
+            
+            <!-- Order & Payment -->
+            <div class="order-payment">💳📝</div>
+            
+            <!-- Packing -->
+            <div class="packing-boxes">📦📦📦</div>
+            
+            <!-- Truck Delivery -->
+            <div class="truck-container">
+                <div class="truck">🚚</div>
+            </div>
+            
+            <!-- Delivery Confirmation -->
+            <div class="delivery-check">✅</div>
+        </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1>Transform Surplus into Success</h1>
-            <p>India's most trusted B2B liquidation platform connecting retailers with premium surplus inventory. Unlock unbeatable deals on branded products.</p>
-            <a href="#contact" class="cta-button">Get Started Today</a>
-        </div>
+    <section id="home" class="hero">
+        <h1>India's Leading B2B Liquidation Platform</h1>
+        <p>Trusted partner for buying and selling liquidation stock lots</p>
+        <a href="#contact" class="cta-button">Get Started Today</a>
     </section>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="features-container">
-            <h2 class="section-title">Why Choose AK Brands Marketing?</h2>
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <span class="feature-icon">🏆</span>
-                    <h3>Premium Quality</h3>
-                    <p>Access authentic branded products from trusted sources. Every item verified for quality and authenticity.</p>
+                    <h3>🏢 Bulk Liquidation</h3>
+                    <p>Access premium liquidation stock lots from top brands at competitive prices. Perfect for retailers and wholesalers.</p>
                 </div>
                 <div class="feature-card">
-                    <span class="feature-icon">💰</span>
-                    <h3>Unbeatable Prices</h3>
-                    <p>Maximize your margins with wholesale liquidation prices. Save up to 70% on retail prices.</p>
+                    <h3>🤝 Trusted Network</h3>
+                    <p>Connect with verified buyers and sellers across India. Build lasting business relationships.</p>
                 </div>
                 <div class="feature-card">
-                    <span class="feature-icon">🚚</span>
-                    <h3>Fast Delivery</h3>
-                    <p>Pan-India delivery network ensuring your orders reach you quickly and safely.</p>
+                    <h3>📦 Quality Assurance</h3>
+                    <p>All stock lots are verified and quality-checked to ensure you get the best value for your investment.</p>
                 </div>
                 <div class="feature-card">
-                    <span class="feature-icon">🤝</span>
-                    <h3>Trusted Partner</h3>
-                    <p>Join thousands of satisfied retailers who trust us for their inventory needs.</p>
+                    <h3>🚚 Logistics Support</h3>
+                    <p>End-to-end logistics solutions to ensure smooth delivery of your liquidation stock across India.</p>
                 </div>
                 <div class="feature-card">
-                    <span class="feature-icon">📊</span>
-                    <h3>Diverse Inventory</h3>
-                    <p>Wide range of categories including electronics, fashion, home goods, and more.</p>
+                    <h3>💼 Business Solutions</h3>
+                    <p>Customized B2B solutions tailored to your specific business needs and requirements.</p>
                 </div>
                 <div class="feature-card">
-                    <span class="feature-icon">🔒</span>
-                    <h3>Secure Transactions</h3>
-                    <p>Safe and secure payment options with complete transparency in every deal.</p>
+                    <h3>📊 Market Insights</h3>
+                    <p>Get access to market trends, pricing insights, and industry analysis to make informed decisions.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="about-container">
+    <section id="about" class="about">
+        <div class="container">
             <h2 class="section-title">About AK Brands Marketing</h2>
-            <p>
-                AK Brands Marketing is India's leading B2B liquidation platform, revolutionizing how retailers access surplus inventory. 
-                We bridge the gap between manufacturers with excess stock and retailers seeking quality products at competitive prices.
-            </p>
-            <p>
-                With years of industry expertise and a commitment to excellence, we've built a reputation for reliability, 
-                transparency, and exceptional service. Our mission is to empower retailers across India with access to 
-                premium branded products that help them grow their businesses.
-            </p>
-            <p>
-                Whether you're a small retailer or a large distributor, AK Brands Marketing is your trusted partner 
-                for sustainable and profitable inventory solutions.
-            </p>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="contact-container">
-            <h2 class="section-title">Get In Touch</h2>
-            <div class="contact-info">
-                <div class="contact-item">
-                    <h3>📧 Email</h3>
-                    <p><a href="mailto:akbrandsmarketing@gmail.com">akbrandsmarketing@gmail.com</a></p>
-                </div>
-                <div class="contact-item">
-                    <h3>📱 Phone</h3>
-                    <p><a href="tel:+918660502217">+91 86605 02217</a></p>
-                </div>
-                <div class="contact-item">
-                    <h3>💬 WhatsApp</h3>
-                    <p><a href="https://wa.me/918660502217" target="_blank">Chat with us on WhatsApp</a></p>
-                </div>
+            <div class="about-content">
+                <p>AK Brands Marketing is India's premier B2B liquidation platform, connecting businesses with premium stock lots from leading brands. With years of experience in the liquidation industry, we've built a reputation for reliability, quality, and exceptional service.</p>
+                <p>Our mission is to provide a transparent, efficient, and trustworthy marketplace where businesses can buy and sell liquidation stock with confidence. We serve retailers, wholesalers, and distributors across India, helping them maximize value and minimize risk.</p>
+                <p>Whether you're looking to source quality products at competitive prices or liquidate excess inventory, AK Brands Marketing is your trusted partner for success.</p>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <section id="contact" class="contact">
+        <div class="contact-info">
+            <h2>Get In Touch</h2>
+            <div class="contact-details">
+                <p>📧 Email: <a href="mailto:akbrandsmarketing@gmail.com">akbrandsmarketing@gmail.com</a></p>
+                <p>📱 Phone: <a href="tel:+918660502217">+91 8660502217</a></p>
+                <p>📍 Location: Bengaluru, Karnataka, India</p>
+            </div>
+        </div>
+    </section>
+
     <footer>
         <p>&copy; 2025 AK Brands Marketing. All rights reserved.</p>
-        <p>India's Premier B2B Liquidation Platform</p>
     </footer>
 
     <!-- OTP Modal -->
@@ -795,16 +975,18 @@
     <script>
         // Menu Toggle
         function toggleMenu() {
-            const dropdown = document.getElementById('dropdownMenu');
-            dropdown.classList.toggle('show');
+            document.getElementById('menuDropdown').classList.toggle('show');
         }
 
         // Close dropdown when clicking outside
         window.onclick = function(event) {
             if (!event.target.matches('.menu-button')) {
-                const dropdown = document.getElementById('dropdownMenu');
-                if (dropdown.classList.contains('show')) {
-                    dropdown.classList.remove('show');
+                var dropdowns = document.getElementsByClassName('dropdown-content');
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
                 }
             }
         }
@@ -1003,20 +1185,6 @@
             document.getElementById('phoneInputSection').style.display = 'block';
             document.getElementById('otpInputSection').style.display = 'none';
         }
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
     </script>
 </body>
 </html>
