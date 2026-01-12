@@ -1,0 +1,46 @@
+name: Add Google Analytics
+
+on:
+  workflow_dispatch:
+
+jobs:
+  add-analytics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: add-analytics-tracking
+          
+      - name: Add Google Analytics to index.html
+        run: |
+          # Google Analytics code
+          cat > ga-code.txt << 'EOF'
+      <!-- Google Analytics 4 - Visitor Tracking -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-SH29FGTV34"></script>
+      <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          
+          gtag('config', 'G-SH29FGTV34', {
+              'anonymize_ip': true,
+              'cookie_flags': 'SameSite=None;Secure'
+          });
+      </script>
+
+  EOF
+          
+          # Insert after <head> tag
+          sed -i '/<head>/r ga-code.txt' index.html
+          
+          # Clean up
+          rm ga-code.txt
+          
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add index.html
+          git commit -m "Add Google Analytics G-SH29FGTV34 tracking"
+          git push
