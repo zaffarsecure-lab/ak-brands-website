@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics & Lead Capture - Setup Instructions</title>
+    
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX'); // Replace with your GA4 ID
+    </script>
+    
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "XXXXXXXXXX"); // Replace with your Clarity ID
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            color: #764ba2;
+            margin: 2rem 0 1rem 0;
+            font-size: 1.8rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 {
+            color: #667eea;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+        
+        .setup-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        code {
+            background: #2c3e50;
+            color: #1abc9c;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .step {
+            background: white;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            border-left: 3px solid #1abc9c;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        /* Cookie Consent Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(44, 62, 80, 0.98);
+            color: white;
+            padding: 1.5rem;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+            z-index: 10000;
+            display: none;
+        }
+        
+        .cookie-banner.show {
+            display: block;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        .cookie-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .cookie-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .cookie-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .cookie-btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .accept-btn {
+            background: #1abc9c;
+            color: white;
+        }
+        
+        .accept-btn:hover {
+            background: #16a085;
+            transform: translateY(-2px);
+        }
+        
+        .decline-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .decline-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        /* Lead Capture Form */
+        .lead-form {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            color: white;
+            margin: 2rem 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: #1abc9c;
+            color: white;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: #16a085;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .form-success {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .form-error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Analytics & Lead Capture System</h1>
+        <p style="font-size: 1.1rem; color: #666; margin-bottom: 2rem;">
+            Complete setup guide for tracking visitors and capturing leads legally and effectively.
+        </p>
+        
+        <h2>📊 Part 1: Analytics Setup (Track Anonymous Visitors)</h2>
+        
+        <div class="setup-section">
+            <h3>🔹 Google Analytics 4 (GA4)</h3>
+            <div class="step">
+                <strong>Step 1:</strong> Go to <a href="https://analytics.google.com" target="_blank">Google Analytics</a>
+            </div>
+            <div class="step">
+                <strong>Step 2:</strong> Click "Start measuring" → Create Account → Create Property
+            </div>
+            <div class="step">
+                <strong>Step 3:</strong> Get your Measurement ID (format: G-XXXXXXXXXX)
+            </div>
+            <div class="step">
+                <strong>Step 4:</strong> Replace <code>G-XXXXXXXXXX</code> in the code above with your actual ID
+            </div>
+            
+            <div class="success">
+                ✅ <strong>What you'll track:</strong> Page views, visitor location (city/country), device type, time on site, bounce rate, traffic sources
+            </div>
+        </div>
+        
+        <div class="setup-section">
+            <h3>🔹 Microsoft Clarity (Heatmaps & Session Recordings)</h3>
+            <div class="step">
+                <strong>Step 1:</strong> Go to <a href="https://clarity.microsoft.com" target="_blank">Microsoft Clarity</a>
+            </div>
+            <div class="step">
+                <strong>Step 2:</strong> Sign in with Microsoft account → Add new project
+            </div>
+            <div class="step">
+                <strong>Step 3:</strong> Enter your website URL → Get Project ID
+            </div>
+            <div class="step">
+                <strong>Step 4:</strong> Replace <code>XXXXXXXXXX</code> in Clarity script with your Project ID
+            </div>
+            
+            <div class="success">
+                ✅ <strong>What you'll see:</strong> Heatmaps (where users click), session recordings (watch user behavior), scroll depth, rage clicks
+            </div>
+        </div>
+        
+        <h2>📝 Part 2: Lead Capture Form</h2>
+        
+        <div class="lead-form">
+            <h3 style="margin-top: 0; color: white;">💼 Get a Free Quote</h3>
+            <p style="margin-bottom: 2rem;">Fill out the form below and we'll get back to you within 24 hours!</p>
+            
+            <form id="leadForm">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="+91 XXXXXXXXXX">
+                </div>
+                
+                <div class="form-group">
+                    <label for="company">Company Name</label>
+                    <input type="text" id="company" name="company" placeholder="Your company name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="interest">I'm interested in *</label>
+                    <select id="interest" name="interest" required>
+                        <option value="">Select an option</option>
+                        <option value="buying">Buying Liquidation Stock</option>
+                        <option value="selling">Selling Excess Inventory</option>
+                        <option value="auction">Live Auction Participation</option>
+                        <option value="partnership">Business Partnership</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" placeholder="Tell us more about your requirements..."></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Submit Inquiry</button>
+                
+                <div class="form-success" id="formSuccess">
+                    ✅ Thank you! Your inquiry has been submitted successfully. We'll contact you soon!
+                </div>
+                
+                <div class="form-error" id="formError">
+                    ❌ Something went wrong. Please try again or contact us directly.
+                </div>
+            </form>
+        </div>
+        
+        <h2>🍪 Part 3: Cookie Consent Banner</h2>
+        
+        <div class="setup-section">
+            <p>The cookie consent banner is already included below. It will show automatically on first visit.</p>
+            <div class="success">
+                ✅ <strong>Compliant with:</strong> GDPR, CCPA, India's DPDP Act 2023
+            </div>
+        </div>
+        
+        <h2>📈 Part 4: Integration Instructions</h2>
+        
+        <div class="setup-section">
+            <h3>To add this to your main website:</h3>
+            
+            <div class="step">
+                <strong>1. Copy Analytics Scripts</strong>
+                <p>Copy the Google Analytics and Microsoft Clarity scripts from the <code>&lt;head&gt;</code> section above</p>
+            </div>
+            
+            <div class="step">
+                <strong>2. Paste in index.html</strong>
+                <p>Add them right after the <code>&lt;head&gt;</code> tag in your main index.html file</p>
+            </div>
+            
+            <div class="step">
+                <strong>3. Add Lead Form</strong>
+                <p>Copy the lead form HTML and CSS, paste it in your Contact section or create a new "Get Quote" section</p>
+            </div>
+            
+            <div class="step">
+                <strong>4. Add Cookie Banner</strong>
+                <p>Copy the cookie banner HTML and JavaScript, paste it before the closing <code>&lt;/body&gt;</code> tag</p>
+            </div>
+        </div>
+        
+        <h2>📊 What Data You'll Collect</h2>
+        
+        <div class="setup-section">
+            <h3>Anonymous Analytics Data (No consent needed):</h3>
+            <ul style="margin-left: 2rem; line-height: 2;">
+                <li>📍 Location: City, State, Country (not exact address)</li>
+                <li>📱 Device: Desktop, Mobile, Tablet</li>
+                <li>🌐 Browser: Chrome, Safari, Firefox, etc.</li>
+                <li>⏱️ Time on site, pages visited</li>
+                <li>🔗 Traffic source: Google, Direct, Social Media</li>
+                <li>🖱️ Click patterns, scroll depth (Clarity)</li>
+            </ul>
+        </div>
+        
+        <div class="setup-section">
+            <h3>Lead Data (With user consent via form):</h3>
+            <ul style="margin-left: 2rem; line-height: 2;">
+                <li>👤 Name</li>
+                <li>📧 Email</li>
+                <li>📞 Phone</li>
+                <li>🏢 Company</li>
+                <li>💼 Business interest</li>
+                <li>💬 Message/Requirements</li>
+            </ul>
+        </div>
+        
+        <div class="warning">
+            ⚠️ <strong>Important:</strong> Never collect personal data without user consent. The lead form approach is legal because users voluntarily provide information.
+        </div>
+    </div>
+    
+    <!-- Cookie Consent Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <strong>🍪 We use cookies</strong>
+                <p style="margin-top: 0.5rem; opacity: 0.9;">
+                    We use cookies and similar technologies to improve your experience, analyze site traffic, and personalize content. 
+                    By clicking "Accept", you consent to our use of cookies.
+                </p>
+            </div>
+            <div class="cookie-buttons">
+                <button class="cookie-btn decline-btn" onclick="declineCookies()">Decline</button>
+                <button class="cookie-btn accept-btn" onclick="acceptCookies()">Accept All</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Cookie Consent Management
+        window.addEventListener('load', function() {
+            const cookieConsent = localStorage.getItem('cookieConsent');
+            if (!cookieConsent) {
+                document.getElementById('cookieBanner').classList.add('show');
+            }
+        });
+        
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            document.getElementById('cookieBanner').classList.remove('show');
+            
+            // Enable analytics tracking
+            gtag('consent', 'update', {
+                'analytics_storage': 'granted'
+            });
+        }
+        
+        function declineCookies() {
+            localStorage.setItem('cookieConsent', 'declined');
+            document.getElementById('cookieBanner').classList.remove('show');
+            
+            // Disable analytics tracking
+            gtag('consent', 'update', {
+                'analytics_storage': 'denied'
+            });
+        }
+        
+        // Lead Form Submission
+        document.getElementById('leadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                company: document.getElementById('company').value,
+                interest: document.getElementById('interest').value,
+                message: document.getElementById('message').value,
+                timestamp: new Date().toISOString(),
+                source: window.location.href
+            };
+            
+            // Track form submission in Google Analytics
+            gtag('event', 'lead_submission', {
+                'event_category': 'Lead',
+                'event_label': formData.interest,
+                'value': 1
+            });
+            
+            // Save to localStorage (temporary - replace with Google Sheets or backend)
+            const leads = JSON.parse(localStorage.getItem('leads') || '[]');
+            leads.push(formData);
+            localStorage.setItem('leads', JSON.stringify(leads));
+            
+            // Show success message
+            document.getElementById('formSuccess').style.display = 'block';
+            document.getElementById('formError').style.display = 'none';
+            
+            // Reset form
+            this.reset();
+            
+            // Send to WhatsApp (optional)
+            const whatsappMessage = `🎯 New Lead from Website!\n\n` +
+                `👤 Name: ${formData.name}\n` +
+                `📧 Email: ${formData.email}\n` +
+                `📞 Phone: ${formData.phone}\n` +
+                `🏢 Company: ${formData.company}\n` +
+                `💼 Interest: ${formData.interest}\n` +
+                `💬 Message: ${formData.message}`;
+            
+            const whatsappUrl = `https://wa.me/918660502217?text=${encodeURIComponent(whatsappMessage)}`;
+            
+            // Optional: Auto-open WhatsApp after 2 seconds
+            setTimeout(() => {
+                if (confirm('Would you like to send this inquiry via WhatsApp as well?')) {
+                    window.open(whatsappUrl, '_blank');
+                }
+            }, 2000);
+        });
+        
+        // Track page views
+        gtag('event', 'page_view', {
+            'page_title': document.title,
+            'page_location': window.location.href,
+            'page_path': window.location.pathname
+        });
+        
+        // Track scroll depth
+        let maxScroll = 0;
+        window.addEventListener('scroll', function() {
+            const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            if (scrollPercent > maxScroll) {
+                maxScroll = Math.round(scrollPercent / 25) * 25; // Track in 25% increments
+                gtag('event', 'scroll', {
+                    'event_category': 'Engagement',
+                    'event_label': maxScroll + '%',
+                    'value': maxScroll
+                });
+            }
+        });
+        
+        // Track time on page
+        let startTime = Date.now();
+        window.addEventListener('beforeunload', function() {
+            const timeSpent = Math.round((Date.now() - startTime) / 1000);
+            gtag('event', 'time_on_page', {
+                'event_category': 'Engagement',
+                'event_label': document.title,
+                'value': timeSpent
+            });
+        });
+    </script>
+</body>
+</html>
