@@ -1,1 +1,1968 @@
-I need to get the full original content first. Let me retrieve it from the GitHub API.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AK Brands Marketing - India's Leading B2B Liquidation Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
+            padding: 1.2rem 0 0 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(26, 188, 156, 0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .logo-img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            filter: drop-shadow(0 3px 10px rgba(26, 188, 156, 0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .brand-name {
+            font-size: 1.75rem;
+            font-weight: 500;
+            font-family: 'Playfair Display', Georgia, serif;
+            color: #1abc9c;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            position: relative;
+        }
+
+        .brand-name .ak {
+            font-weight: 600;
+            color: #16a085;
+        }
+
+        .brand-tagline {
+            font-size: 0.75rem;
+            color: #95a5a6;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            font-family: 'Playfair Display', Georgia, serif;
+            opacity: 0.85;
+            font-style: italic;
+        }
+
+        /* Dropdown Menu */
+        .menu-dropdown {
+            position: relative;
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            color: #ecf0f1;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .menu-button:hover {
+            color: #1abc9c;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: rgba(44, 62, 80, 0.98);
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+            z-index: 1001;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(26, 188, 156, 0.3);
+        }
+
+        .dropdown-content.show {
+            display: block;
+            animation: dropdownSlide 0.3s ease-out;
+        }
+
+        @keyframes dropdownSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-content a {
+            color: #ecf0f1;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(26, 188, 156, 0.2);
+            color: #1abc9c;
+            padding-left: 2rem;
+        }
+
+        /* Animation Section */
+        .animation-section {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            margin-top: 1rem;
+            background: linear-gradient(to bottom, transparent 0%, transparent 75%, #34495e 75%, #2c3e50 80%, #34495e 80%, #34495e 100%);
+        }
+
+        /* Business Locations */
+        .business-locations {
+            position: absolute;
+            bottom: 30%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5%;
+            z-index: 10;
+        }
+
+        .location {
+            text-align: center;
+            position: relative;
+        }
+
+        .location-icon {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+        }
+
+        .location-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ecf0f1;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+
+        .supplier { color: #3498db; }
+        .office { color: #1abc9c; }
+        .customer { color: #e74c3c; }
+
+        /* Network Towers */
+        .network-tower {
+            position: absolute;
+            top: -30px;
+            font-size: 1.5rem;
+            animation: towerSignal 2s ease-in-out infinite;
+        }
+
+        @keyframes towerSignal {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* Customer Animation */
+        .customer-person {
+            position: absolute;
+            bottom: 30%;
+            right: 20%;
+            font-size: 2rem;
+            z-index: 15;
+            animation: customerJourney 30s ease-in-out infinite;
+        }
+
+        @keyframes customerJourney {
+            0%, 5% {
+                right: 20%;
+                transform: scaleX(1);
+                opacity: 1;
+            }
+            15% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 1;
+            }
+            20%, 25% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 1;
+            }
+            30% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 0;
+            }
+            100% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 0;
+            }
+        }
+
+        /* Order & Payment Animation */
+        .order-payment {
+            position: absolute;
+            bottom: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            z-index: 15;
+            opacity: 0;
+            animation: showOrderPayment 30s ease-in-out infinite;
+        }
+
+        @keyframes showOrderPayment {
+            0%, 20% { opacity: 0; transform: translateX(-50%) scale(0); }
+            25% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+            30% { opacity: 1; transform: translateX(-50%) scale(1); }
+            35% { opacity: 0; transform: translateX(-50%) scale(0); }
+            100% { opacity: 0; transform: translateX(-50%) scale(0); }
+        }
+
+        /* Packing Animation */
+        .packing-boxes {
+            position: absolute;
+            bottom: 35%;
+            left: 15%;
+            font-size: 1.5rem;
+            z-index: 15;
+            opacity: 0;
+            animation: packingGoods 30s ease-in-out infinite;
+        }
+
+        @keyframes packingGoods {
+            0%, 40% { opacity: 0; transform: scale(0); }
+            45% { opacity: 1; transform: scale(1.2); }
+            50% { opacity: 1; transform: scale(1); }
+            55% { opacity: 1; transform: scale(1); }
+            60% { opacity: 0; transform: scale(0); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        /* Truck Animation - FLIPPED to face RIGHT */
+        .truck-container {
+            position: absolute;
+            bottom: 28%;
+            width: 100%;
+            height: 80px;
+            z-index: 20;
+        }
+
+        .truck {
+            position: absolute;
+            left: 15%;
+            bottom: 0;
+            font-size: 3rem;
+            opacity: 0;
+            transform: scaleX(-1);
+            animation: truckDelivery 30s ease-in-out infinite;
+        }
+
+        @keyframes truckDelivery {
+            0%, 55% {
+                left: 15%;
+                opacity: 0;
+            }
+            60% {
+                left: 15%;
+                opacity: 1;
+            }
+            85% {
+                left: 80%;
+                opacity: 1;
+            }
+            90% {
+                left: 80%;
+                opacity: 1;
+            }
+            95% {
+                left: 80%;
+                opacity: 0;
+            }
+            100% {
+                left: 80%;
+                opacity: 0;
+            }
+        }
+
+        /* Delivery Confirmation */
+        .delivery-check {
+            position: absolute;
+            bottom: 35%;
+            right: 15%;
+            font-size: 2rem;
+            z-index: 15;
+            opacity: 0;
+            animation: deliveryComplete 30s ease-in-out infinite;
+        }
+
+        @keyframes deliveryComplete {
+            0%, 85% { opacity: 0; transform: scale(0) rotate(0deg); }
+            90% { opacity: 1; transform: scale(1.3) rotate(360deg); }
+            95% { opacity: 1; transform: scale(1) rotate(360deg); }
+            100% { opacity: 0; transform: scale(0) rotate(360deg); }
+        }
+
+        .road-lines {
+            position: absolute;
+            bottom: 25%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 20px,
+                rgba(255,255,255,0.3) 20px,
+                rgba(255,255,255,0.3) 40px
+            );
+            z-index: 5;
+        }
+
+        /* Hero Section with Warehouse Background */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                        url('https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600') center/cover;
+            color: white;
+            padding: 6rem 2rem 4rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        /* Simple Action Icons - No Boxes */
+        .action-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .action-item {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .action-item:hover .simple-icon {
+            transform: scale(1.2);
+        }
+
+        .simple-icon {
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 0.8rem;
+            transition: transform 0.3s;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
+        }
+
+        .action-label {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #2c3e50;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+
+        .author-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .author-info p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .stars {
+            color: #FFD700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Blog Section */
+        .blog {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-date {
+            color: #999;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #2c3e50;
+        }
+
+        .blog-excerpt {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s;
+        }
+
+        .read-more:hover {
+            gap: 1rem;
+        }
+
+        /* About Section */
+        .about {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .contact-info {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-info h2 {
+            margin-bottom: 2rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .contact-details a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .contact-details a:hover {
+            opacity: 0.8;
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 450px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            animation: slideUp 0.5s ease;
+            position: relative;
+            margin: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+            z-index: 10;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            text-align: center;
+            padding-right: 2rem;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Welcome Message Modal - Responsive */
+        .welcome-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
+        }
+
+        .welcome-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+            padding: 1rem;
+        }
+
+        .welcome-content {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: slideUp 0.5s ease;
+            text-align: center;
+            color: white;
+            border: 3px solid rgba(255,255,255,0.3);
+            margin: auto;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .welcome-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.3;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .welcome-message {
+            background: rgba(255,255,255,0.15);
+            padding: 1.2rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+            background: #20BA5A;
+        }
+
+        .whatsapp-icon {
+            font-size: 1.3rem;
+        }
+
+        .close-welcome {
+            margin-top: 1rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .close-welcome:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Password Modal */
+        .password-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
+        }
+
+        .password-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+            padding: 1rem;
+        }
+
+        .password-content {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 450px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            animation: slideUp 0.5s ease;
+            text-align: center;
+            color: white;
+            border: 2px solid rgba(26, 188, 156, 0.3);
+            margin: auto;
+        }
+
+        .password-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1abc9c;
+        }
+
+        .password-subtitle {
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .password-input-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .password-input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1abc9c;
+            font-size: 0.95rem;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid rgba(26, 188, 156, 0.5);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .password-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #1abc9c;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .password-error {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .password-error.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        .password-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .password-btn {
+            flex: 1;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .password-verify {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+        }
+
+        .password-cancel {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .password-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Database Management Modal */
+        .database-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
+        }
+
+        .database-modal.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .database-content {
+            background: white;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 900px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            animation: slideUp 0.5s ease;
+        }
+
+        .database-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #1abc9c;
+        }
+
+        .database-header h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .close-database {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .close-database:hover {
+            color: #333;
+        }
+
+        .database-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 1rem;
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+            border-color: #1abc9c;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .database-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .database-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .database-form .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .database-form label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .database-form input,
+        .database-form textarea {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .database-form textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .database-form input:focus,
+        .database-form textarea:focus {
+            outline: none;
+            border-color: #1abc9c;
+        }
+
+        .database-form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .database-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .database-btn-save {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+        }
+
+        .database-btn-clear {
+            background: #f8f9fa;
+            color: #555;
+            border: 2px solid #ddd;
+        }
+
+        .database-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .animation-section {
+                height: 100px;
+            }
+
+            .header-container {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 0 1rem;
+            }
+
+            .logo-img {
+                width: 55px;
+                height: 55px;
+            }
+
+            .brand-name {
+                font-size: 1.4rem;
+            }
+
+            .brand-tagline {
+                font-size: 0.6rem;
+            }
+
+            .location-icon {
+                font-size: 1.5rem;
+            }
+
+            .location-label {
+                font-size: 0.5rem;
+            }
+
+            .truck {
+                font-size: 2rem;
+            }
+
+            .customer-person {
+                font-size: 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .action-icons {
+                gap: 2rem;
+            }
+
+            .simple-icon {
+                font-size: 3.5rem;
+            }
+
+            .action-label {
+                font-size: 1rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+
+            .modal-title {
+                font-size: 1.5rem;
+            }
+
+            .welcome-content {
+                padding: 1.5rem 1rem;
+            }
+
+            .welcome-icon {
+                font-size: 3rem;
+            }
+
+            .welcome-title {
+                font-size: 1.5rem;
+            }
+
+            .welcome-subtitle {
+                font-size: 1rem;
+            }
+
+            .welcome-message {
+                font-size: 0.9rem;
+                padding: 1rem;
+            }
+
+            .whatsapp-btn {
+                padding: 0.9rem 1.5rem;
+                font-size: 0.95rem;
+            }
+
+            .database-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .database-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .database-form {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-btn {
+                min-width: 120px;
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome-title {
+                font-size: 1.3rem;
+            }
+
+            .welcome-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .welcome-message {
+                font-size: 0.85rem;
+            }
+
+            .whatsapp-btn {
+                font-size: 0.9rem;
+                padding: 0.8rem 1.2rem;
+            }
+
+            .modal-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg" alt="AK Brands Marketing Logo" class="logo-img">
+                <div class="brand-text">
+                    <div class="brand-name"><span class="ak">AK</span> Brands Marketing</div>
+                    <div class="brand-tagline">Trusted Firm</div>
+                </div>
+            </div>
+            <div class="menu-dropdown">
+                <button class="menu-button" onclick="toggleMenu()">☰</button>
+                <div class="dropdown-content" id="menuDropdown">
+                    <a href="#home">Home</a>
+                    <a href="#features">Services</a>
+                    <a href="#testimonials">Testimonials</a>
+                    <a href="#blog">Blog</a>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                    <a onclick="openPasswordModal()">Orders Management</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animation Section Below Logo -->
+        <div class="animation-section">
+            <div class="road-lines"></div>
+            
+            <!-- Business Locations with Network Towers -->
+            <div class="business-locations">
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="location-icon">🏭</div>
+                    <div class="location-label supplier">Supplier</div>
+                </div>
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="location-icon">🏢</div>
+                    <div class="location-label office">AK</div>
+                </div>
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="location-icon">🏪</div>
+                    <div class="location-label customer">Customer</div>
+                </div>
+            </div>
+
+            <!-- Customer Journey -->
+            <div class="customer-person">🚶</div>
+            
+            <!-- Order & Payment -->
+            <div class="order-payment">💳📝</div>
+            
+            <!-- Packing -->
+            <div class="packing-boxes">📦📦📦</div>
+            
+            <!-- Truck Delivery -->
+            <div class="truck-container">
+                <div class="truck">🚚</div>
+            </div>
+            
+            <!-- Delivery Confirmation -->
+            <div class="delivery-check">✅</div>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <h1>India's Leading B2B Liquidation Platform</h1>
+        <p>Trusted partner for buying and selling liquidation stock lots</p>
+        
+        <!-- Simple Action Icons - No Boxes -->
+        <div class="action-icons">
+            <div class="action-item" onclick="openBuyModal()">
+                <span class="simple-icon">🛒</span>
+                <div class="action-label">Buy</div>
+            </div>
+            <div class="action-item" onclick="openSellModal()">
+                <span class="simple-icon">💼</span>
+                <div class="action-label">Sell</div>
+            </div>
+            <div class="action-item" onclick="openAuctionModal()">
+                <span class="simple-icon">🔨</span>
+                <div class="action-label">Live Auction</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🏭 Bulk Liquidation</h3>
+                    <p>Access to large-scale liquidation stock from top brands and retailers across India.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>✅ Quality Assurance</h3>
+                    <p>All products are verified and graded to ensure you get exactly what you expect.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🚚 Logistics Support</h3>
+                    <p>End-to-end logistics solutions for seamless delivery across the country.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💰 Competitive Pricing</h3>
+                    <p>Best market rates with transparent pricing and no hidden costs.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🤝 Trusted Network</h3>
+                    <p>Connect with verified buyers and sellers in our trusted B2B network.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📊 Market Insights</h3>
+                    <p>Get real-time market data and trends to make informed business decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Clients Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"AK Brands has been our go-to partner for liquidation stock. Their quality and service are unmatched in the industry."</p>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/150?img=12" alt="Rajesh Kumar" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Rajesh Kumar</h4>
+                            <p>Retail Business Owner, Mumbai</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Professional service and great deals. We've saved thousands on inventory costs thanks to AK Brands Marketing."</p>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/150?img=45" alt="Priya Sharma" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Priya Sharma</h4>
+                            <p>E-commerce Entrepreneur, Delhi</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Reliable, transparent, and always delivering on their promises. Highly recommend for B2B liquidation needs."</p>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/150?img=33" alt="Amit Patel" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Amit Patel</h4>
+                            <p>Wholesale Distributor, Ahmedabad</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="blog" class="blog">
+        <div class="container">
+            <h2 class="section-title">Latest Insights</h2>
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600" alt="Blog post" class="blog-image">
+                    <div class="blog-content">
+                        <p class="blog-date">January 5, 2026</p>
+                        <h3 class="blog-title">Understanding B2B Liquidation Markets in India</h3>
+                        <p class="blog-excerpt">Explore the growing opportunities in India's B2B liquidation sector and how businesses can benefit from strategic inventory management.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600" alt="Blog post" class="blog-image">
+                    <div class="blog-content">
+                        <p class="blog-date">December 28, 2025</p>
+                        <h3 class="blog-title">5 Tips for Successful Liquidation Buying</h3>
+                        <p class="blog-excerpt">Learn the essential strategies for making profitable purchases in the liquidation market and avoiding common pitfalls.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=600" alt="Blog post" class="blog-image">
+                    <div class="blog-content">
+                        <p class="blog-date">December 20, 2025</p>
+                        <h3 class="blog-title">The Future of Wholesale Distribution</h3>
+                        <p class="blog-excerpt">Discover how technology and changing market dynamics are reshaping the wholesale distribution landscape in India.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">About AK Brands Marketing</h2>
+            <div class="about-content">
+                <p>AK Brands Marketing is India's premier B2B liquidation platform, connecting buyers and sellers of quality liquidation stock across the country. With years of experience in the industry, we've built a reputation for reliability, transparency, and exceptional service.</p>
+                <p>Our mission is to provide businesses with access to high-quality liquidation inventory at competitive prices, while offering sellers a trusted platform to move their excess stock efficiently. We handle everything from quality verification to logistics, making the entire process seamless for our clients.</p>
+                <p>Join thousands of satisfied businesses who trust AK Brands Marketing for their liquidation needs.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="contact-info">
+            <h2>Get In Touch</h2>
+            <div class="contact-details">
+                <p>📞 Phone: +91 98765 43210</p>
+                <p>📧 Email: <a href="mailto:contact@akbrands.com">contact@akbrands.com</a></p>
+                <p>📍 Location: Mumbai, Maharashtra, India</p>
+                <p>🕒 Business Hours: Mon-Sat, 9:00 AM - 6:00 PM</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
+    </footer>
+
+    <!-- Buy Modal -->
+    <div id="buyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeBuyModal()">&times;</span>
+            <h2 class="modal-title">🛒 Buy Stock Lots</h2>
+            <form class="modal-form" onsubmit="submitBuyForm(event)">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" id="buyName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number *</label>
+                    <input type="tel" id="buyMobile" required placeholder="+91 98765 43210" pattern="[+]?[0-9]{10,13}">
+                </div>
+                <button type="submit" class="submit-btn">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sell Modal -->
+    <div id="sellModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeSellModal()">&times;</span>
+            <h2 class="modal-title">💼 Sell Your Stock</h2>
+            <form class="modal-form" onsubmit="submitSellForm(event)">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" id="sellName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number *</label>
+                    <input type="tel" id="sellMobile" required placeholder="+91 98765 43210" pattern="[+]?[0-9]{10,13}">
+                </div>
+                <button type="submit" class="submit-btn">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Auction Modal -->
+    <div id="auctionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAuctionModal()">&times;</span>
+            <h2 class="modal-title">🔨 Live Auction</h2>
+            <form class="modal-form" onsubmit="submitAuctionForm(event)">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" id="auctionName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number *</label>
+                    <input type="tel" id="auctionMobile" required placeholder="+91 98765 43210" pattern="[+]?[0-9]{10,13}">
+                </div>
+                <button type="submit" class="submit-btn">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Welcome Modal -->
+    <div id="welcomeModal" class="welcome-modal">
+        <div class="welcome-content">
+            <div class="welcome-icon">🎉</div>
+            <h2 class="welcome-title">Welcome to AK Brands Marketing© Family!</h2>
+            <p class="welcome-subtitle">We're thrilled to have you with us!</p>
+            <div class="welcome-message">
+                <p><strong>🚧 Work in Progress</strong></p>
+                <p>We're currently building our online product catalog. Until then, please join our WhatsApp community to browse and buy stock lots directly!</p>
+            </div>
+            <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" class="whatsapp-btn">
+                <span class="whatsapp-icon">📱</span>
+                Join WhatsApp Community
+            </a>
+            <button class="close-welcome" onclick="closeWelcomeModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-content">
+            <h2 class="password-title">🔐 Secure Access</h2>
+            <p class="password-subtitle">Enter password and secret code to access Orders Management</p>
+            
+            <div class="password-input-group">
+                <label>Password</label>
+                <input type="password" id="passwordInput" class="password-input" placeholder="Enter password">
+            </div>
+
+            <div class="password-input-group">
+                <label>Secret Code</label>
+                <input type="password" id="secretCodeInput" class="password-input" placeholder="Enter secret code">
+            </div>
+
+            <div class="password-error" id="passwordError">Invalid password or secret code. Please try again.</div>
+
+            <div class="password-buttons">
+                <button class="password-btn password-verify" onclick="verifyPassword()">Verify & Access</button>
+                <button class="password-btn password-cancel" onclick="closePasswordModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Database Management Modal -->
+    <div id="databaseModal" class="database-modal">
+        <div class="database-content">
+            <div class="database-header">
+                <h2>📊 Database Management</h2>
+                <span class="close-database" onclick="closeDatabaseModal()">&times;</span>
+            </div>
+
+            <div class="database-tabs">
+                <button class="tab-btn active" onclick="switchTab('customer')">👥 Customer Database</button>
+                <button class="tab-btn" onclick="switchTab('supplier')">🏭 Supplier Database</button>
+            </div>
+
+            <!-- Customer Database Form -->
+            <div id="customerTab" class="tab-content active">
+                <form class="database-form" onsubmit="saveCustomer(event)">
+                    <div class="form-group">
+                        <label>Name *</label>
+                        <input type="text" id="customerName" required placeholder="Full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Details *</label>
+                        <input type="tel" id="customerContact" required placeholder="+91 98765 43210">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Address *</label>
+                        <textarea id="customerAddress" required placeholder="Complete address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" id="customerCity" required placeholder="City">
+                    </div>
+                    <div class="form-group">
+                        <label>State *</label>
+                        <input type="text" id="customerState" required placeholder="State">
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode *</label>
+                        <input type="text" id="customerPincode" required placeholder="Pincode" pattern="[0-9]{6}">
+                    </div>
+                    <div class="database-form-actions">
+                        <button type="submit" class="database-btn database-btn-save">💾 Save Customer</button>
+                        <button type="button" class="database-btn database-btn-clear" onclick="clearCustomerForm()">🔄 Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Supplier Database Form -->
+            <div id="supplierTab" class="tab-content">
+                <form class="database-form" onsubmit="saveSupplier(event)">
+                    <div class="form-group">
+                        <label>Name *</label>
+                        <input type="text" id="supplierName" required placeholder="Full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Details *</label>
+                        <input type="tel" id="supplierContact" required placeholder="+91 98765 43210">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Address *</label>
+                        <textarea id="supplierAddress" required placeholder="Complete address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" id="supplierCity" required placeholder="City">
+                    </div>
+                    <div class="form-group">
+                        <label>State *</label>
+                        <input type="text" id="supplierState" required placeholder="State">
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode *</label>
+                        <input type="text" id="supplierPincode" required placeholder="Pincode" pattern="[0-9]{6}">
+                    </div>
+                    <div class="database-form-actions">
+                        <button type="submit" class="database-btn database-btn-save">💾 Save Supplier</button>
+                        <button type="button" class="database-btn database-btn-clear" onclick="clearSupplierForm()">🔄 Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menu Toggle
+        function toggleMenu() {
+            document.getElementById('menuDropdown').classList.toggle('show');
+        }
+
+        // Close menu when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.menu-button')) {
+                var dropdowns = document.getElementsByClassName('dropdown-content');
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        // Modal Functions
+        function openBuyModal() {
+            document.getElementById('buyModal').classList.add('show');
+        }
+
+        function closeBuyModal() {
+            document.getElementById('buyModal').classList.remove('show');
+        }
+
+        function openSellModal() {
+            document.getElementById('sellModal').classList.add('show');
+        }
+
+        function closeSellModal() {
+            document.getElementById('sellModal').classList.remove('show');
+        }
+
+        function openAuctionModal() {
+            document.getElementById('auctionModal').classList.add('show');
+        }
+
+        function closeAuctionModal() {
+            document.getElementById('auctionModal').classList.remove('show');
+        }
+
+        function openWelcomeModal() {
+            document.getElementById('welcomeModal').classList.add('show');
+        }
+
+        function closeWelcomeModal() {
+            document.getElementById('welcomeModal').classList.remove('show');
+        }
+
+        function submitBuyForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('buyName').value;
+            const mobile = document.getElementById('buyMobile').value;
+            
+            console.log('Buy Request:', { name, mobile });
+            
+            closeBuyModal();
+            openWelcomeModal();
+        }
+
+        function submitSellForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('sellName').value;
+            const mobile = document.getElementById('sellMobile').value;
+            
+            console.log('Sell Request:', { name, mobile });
+            
+            closeSellModal();
+            openWelcomeModal();
+        }
+
+        function submitAuctionForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('auctionName').value;
+            const mobile = document.getElementById('auctionMobile').value;
+            
+            console.log('Auction Request:', { name, mobile });
+            
+            closeAuctionModal();
+            openWelcomeModal();
+        }
+
+        // Password Modal Functions
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.add('show');
+            document.getElementById('menuDropdown').classList.remove('show');
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('show');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('secretCodeInput').value = '';
+            document.getElementById('passwordError').classList.remove('show');
+        }
+
+        function verifyPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const secretCode = document.getElementById('secretCodeInput').value;
+            
+            // Check credentials
+            if (password === 'AK2024@Secure' && secretCode === 'MSZMA') {
+                closePasswordModal();
+                openDatabaseModal();
+            } else {
+                document.getElementById('passwordError').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('passwordError').classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Database Modal Functions
+        function openDatabaseModal() {
+            document.getElementById('databaseModal').classList.add('show');
+        }
+
+        function closeDatabaseModal() {
+            document.getElementById('databaseModal').classList.remove('show');
+        }
+
+        function switchTab(tab) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab
+            if (tab === 'customer') {
+                document.querySelector('.tab-btn:first-child').classList.add('active');
+                document.getElementById('customerTab').classList.add('active');
+            } else {
+                document.querySelector('.tab-btn:last-child').classList.add('active');
+                document.getElementById('supplierTab').classList.add('active');
+            }
+        }
+
+        function saveCustomer(e) {
+            e.preventDefault();
+            const customer = {
+                name: document.getElementById('customerName').value,
+                contact: document.getElementById('customerContact').value,
+                address: document.getElementById('customerAddress').value,
+                city: document.getElementById('customerCity').value,
+                state: document.getElementById('customerState').value,
+                pincode: document.getElementById('customerPincode').value
+            };
+            
+            console.log('Customer Saved:', customer);
+            alert('✅ Customer data saved successfully!');
+            clearCustomerForm();
+        }
+
+        function clearCustomerForm() {
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerContact').value = '';
+            document.getElementById('customerAddress').value = '';
+            document.getElementById('customerCity').value = '';
+            document.getElementById('customerState').value = '';
+            document.getElementById('customerPincode').value = '';
+        }
+
+        function saveSupplier(e) {
+            e.preventDefault();
+            const supplier = {
+                name: document.getElementById('supplierName').value,
+                contact: document.getElementById('supplierContact').value,
+                address: document.getElementById('supplierAddress').value,
+                city: document.getElementById('supplierCity').value,
+                state: document.getElementById('supplierState').value,
+                pincode: document.getElementById('supplierPincode').value
+            };
+            
+            console.log('Supplier Saved:', supplier);
+            alert('✅ Supplier data saved successfully!');
+            clearSupplierForm();
+        }
+
+        function clearSupplierForm() {
+            document.getElementById('supplierName').value = '';
+            document.getElementById('supplierContact').value = '';
+            document.getElementById('supplierAddress').value = '';
+            document.getElementById('supplierCity').value = '';
+            document.getElementById('supplierState').value = '';
+            document.getElementById('supplierPincode').value = '';
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
