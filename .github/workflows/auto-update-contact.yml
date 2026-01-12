@@ -1,0 +1,49 @@
+name: Auto Update Contact Information
+
+on:
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  update-contact:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: update-contact-info
+          
+      - name: Update contact information
+        run: |
+          echo "🔄 Updating contact information..."
+          
+          # Make replacements
+          sed -i 's/+91 98765 43210/+91 8660502217/g' index.html
+          sed -i 's/contact@akbrands\.com/abdul@akbrandsmarketing.com/g' index.html
+          sed -i 's/Mumbai, Maharashtra, India/Bengaluru, Karnataka, India/g' index.html
+          sed -i 's/Mon-Sat, 9:00 AM - 6:00 PM/Mon-Sat, 9 AM to 6 PM/g' index.html
+          
+          echo "✅ Contact information updated!"
+          
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add index.html
+          git commit -m "Update contact information to Bengaluru office" || echo "No changes to commit"
+          git push
+          
+      - name: Success message
+        run: |
+          echo "=========================================="
+          echo "✅ CONTACT INFORMATION UPDATED!"
+          echo "=========================================="
+          echo ""
+          echo "Changes made:"
+          echo "  • Phone: +91 8660502217"
+          echo "  • Email: abdul@akbrandsmarketing.com"
+          echo "  • Location: Bengaluru, Karnataka, India"
+          echo "  • Hours: Mon-Sat, 9 AM to 6 PM"
+          echo ""
+          echo "Next: Create Pull Request to merge into main"
+          echo "https://github.com/zaffarsecure-lab/ak-brands-website/compare/main...update-contact-info"
