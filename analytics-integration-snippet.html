@@ -1,0 +1,657 @@
+<!-- 
+===========================================
+ANALYTICS & LEAD CAPTURE INTEGRATION SNIPPET
+===========================================
+
+INSTRUCTIONS:
+1. Copy the code from "STEP 1" and paste it RIGHT AFTER the <head> tag in index.html
+2. Copy the code from "STEP 2" and paste it in your Contact section
+3. Copy the code from "STEP 3" and paste it RIGHT BEFORE the </body> tag
+
+After you get your Google Analytics ID, Clarity ID, and Google Sheets URL,
+I'll update these placeholders for you.
+-->
+
+<!-- ============================================ -->
+<!-- STEP 1: PASTE THIS RIGHT AFTER <head> TAG -->
+<!-- ============================================ -->
+
+    <!-- Google Analytics 4 - Visitor Tracking -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GOOGLE_ANALYTICS_ID_HERE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        // Default consent to denied
+        gtag('consent', 'default', {
+            'analytics_storage': 'denied'
+        });
+        
+        gtag('config', 'GOOGLE_ANALYTICS_ID_HERE', {
+            'anonymize_ip': true,
+            'cookie_flags': 'SameSite=None;Secure'
+        });
+    </script>
+
+    <!-- Microsoft Clarity - Heatmaps & Session Recordings -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "CLARITY_PROJECT_ID_HERE");
+    </script>
+
+    <!-- Lead Capture Styles -->
+    <style>
+        /* Lead Capture Form Styles */
+        .lead-capture-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 4rem 2rem;
+            margin: 3rem 0;
+        }
+        
+        .lead-form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .lead-form-title {
+            text-align: center;
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+        }
+        
+        .lead-form-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .required-mark {
+            color: #e74c3c;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .form-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .form-success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        
+        .form-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        
+        /* Cookie Consent Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(44, 62, 80, 0.98);
+            color: white;
+            padding: 1.5rem;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+            z-index: 10000;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+        
+        .cookie-banner.show {
+            display: block;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        
+        .cookie-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .cookie-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .cookie-text strong {
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cookie-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .cookie-btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .accept-btn {
+            background: #1abc9c;
+            color: white;
+        }
+        
+        .accept-btn:hover {
+            background: #16a085;
+            transform: translateY(-2px);
+        }
+        
+        .decline-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .decline-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .lead-form-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            .lead-form-title {
+                font-size: 2rem;
+            }
+            
+            .cookie-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .cookie-buttons {
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            .cookie-btn {
+                width: 100%;
+            }
+        }
+    </style>
+
+<!-- ============================================ -->
+<!-- STEP 2: PASTE THIS IN YOUR CONTACT SECTION -->
+<!-- (Add this before or after your existing contact info) -->
+<!-- ============================================ -->
+
+    <!-- Lead Capture Section -->
+    <section class="lead-capture-section" id="get-quote">
+        <div class="lead-form-container">
+            <h2 class="lead-form-title">💼 Get a Free Quote</h2>
+            <p class="lead-form-subtitle">
+                Fill out the form below and we'll get back to you within 24 hours!
+            </p>
+            
+            <form id="leadCaptureForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="leadName">
+                            Full Name <span class="required-mark">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="leadName" 
+                            name="name" 
+                            required 
+                            placeholder="Enter your full name"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="leadEmail">
+                            Email Address <span class="required-mark">*</span>
+                        </label>
+                        <input 
+                            type="email" 
+                            id="leadEmail" 
+                            name="email" 
+                            required 
+                            placeholder="your@email.com"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="leadPhone">
+                            Phone Number <span class="required-mark">*</span>
+                        </label>
+                        <input 
+                            type="tel" 
+                            id="leadPhone" 
+                            name="phone" 
+                            required 
+                            placeholder="+91 XXXXXXXXXX"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="leadCompany">
+                            Company Name
+                        </label>
+                        <input 
+                            type="text" 
+                            id="leadCompany" 
+                            name="company" 
+                            placeholder="Your company name"
+                        >
+                    </div>
+                    
+                    <div class="form-group form-group-full">
+                        <label for="leadInterest">
+                            I'm interested in <span class="required-mark">*</span>
+                        </label>
+                        <select id="leadInterest" name="interest" required>
+                            <option value="">Select an option</option>
+                            <option value="buying">Buying Liquidation Stock</option>
+                            <option value="selling">Selling Excess Inventory</option>
+                            <option value="auction">Live Auction Participation</option>
+                            <option value="partnership">Business Partnership</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group form-group-full">
+                        <label for="leadMessage">
+                            Message
+                        </label>
+                        <textarea 
+                            id="leadMessage" 
+                            name="message" 
+                            placeholder="Tell us more about your requirements..."
+                        ></textarea>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    📨 Submit Inquiry
+                </button>
+                
+                <div class="form-message form-success" id="formSuccess">
+                    ✅ Thank you! Your inquiry has been submitted successfully. We'll contact you soon!
+                </div>
+                
+                <div class="form-message form-error" id="formError">
+                    ❌ Something went wrong. Please try again or contact us directly at +91 8660502217
+                </div>
+            </form>
+        </div>
+    </section>
+
+<!-- ============================================ -->
+<!-- STEP 3: PASTE THIS RIGHT BEFORE </body> TAG -->
+<!-- ============================================ -->
+
+    <!-- Cookie Consent Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <strong>🍪 We use cookies</strong>
+                <p style="margin-top: 0.5rem; opacity: 0.9;">
+                    We use cookies and similar technologies to improve your experience, analyze site traffic, 
+                    and personalize content. By clicking "Accept", you consent to our use of cookies.
+                </p>
+            </div>
+            <div class="cookie-buttons">
+                <button class="cookie-btn decline-btn" onclick="declineCookies()">Decline</button>
+                <button class="cookie-btn accept-btn" onclick="acceptCookies()">Accept All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics & Lead Capture JavaScript -->
+    <script>
+        // Google Sheets Web App URL (will be updated after you deploy)
+        const GOOGLE_SHEETS_URL = 'GOOGLE_SHEETS_WEB_APP_URL_HERE';
+        
+        // ============================================
+        // COOKIE CONSENT MANAGEMENT
+        // ============================================
+        window.addEventListener('load', function() {
+            const cookieConsent = localStorage.getItem('cookieConsent');
+            if (!cookieConsent) {
+                setTimeout(() => {
+                    document.getElementById('cookieBanner').classList.add('show');
+                }, 1000);
+            } else if (cookieConsent === 'accepted') {
+                enableAnalytics();
+            }
+        });
+        
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            document.getElementById('cookieBanner').classList.remove('show');
+            enableAnalytics();
+            
+            // Track consent
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'cookie_consent', {
+                    'event_category': 'Consent',
+                    'event_label': 'Accepted',
+                    'value': 1
+                });
+            }
+        }
+        
+        function declineCookies() {
+            localStorage.setItem('cookieConsent', 'declined');
+            document.getElementById('cookieBanner').classList.remove('show');
+            
+            // Track decline
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'cookie_consent', {
+                    'event_category': 'Consent',
+                    'event_label': 'Declined',
+                    'value': 0
+                });
+            }
+        }
+        
+        function enableAnalytics() {
+            if (typeof gtag !== 'undefined') {
+                gtag('consent', 'update', {
+                    'analytics_storage': 'granted'
+                });
+            }
+        }
+        
+        // ============================================
+        // LEAD FORM SUBMISSION
+        // ============================================
+        document.getElementById('leadCaptureForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '⏳ Submitting...';
+            submitBtn.disabled = true;
+            
+            const formData = {
+                name: document.getElementById('leadName').value,
+                email: document.getElementById('leadEmail').value,
+                phone: document.getElementById('leadPhone').value,
+                company: document.getElementById('leadCompany').value || 'Not provided',
+                interest: document.getElementById('leadInterest').value,
+                message: document.getElementById('leadMessage').value || 'No message',
+                timestamp: new Date().toISOString(),
+                source: window.location.href,
+                userAgent: navigator.userAgent,
+                referrer: document.referrer || 'Direct',
+                screenResolution: screen.width + 'x' + screen.height,
+                language: navigator.language
+            };
+            
+            try {
+                // Save to Google Sheets
+                if (GOOGLE_SHEETS_URL !== 'GOOGLE_SHEETS_WEB_APP_URL_HERE') {
+                    await fetch(GOOGLE_SHEETS_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                }
+                
+                // Save to localStorage as backup
+                const leads = JSON.parse(localStorage.getItem('akBrandsLeads') || '[]');
+                leads.push(formData);
+                localStorage.setItem('akBrandsLeads', JSON.stringify(leads));
+                
+                // Track in Google Analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'lead_submission', {
+                        'event_category': 'Lead',
+                        'event_label': formData.interest,
+                        'value': 1
+                    });
+                }
+                
+                // Show success message
+                document.getElementById('formSuccess').style.display = 'block';
+                document.getElementById('formError').style.display = 'none';
+                
+                // Reset form
+                this.reset();
+                
+                // Send WhatsApp notification
+                const whatsappMessage = `🎯 *New Lead from AK Brands Website!*\n\n` +
+                    `👤 *Name:* ${formData.name}\n` +
+                    `📧 *Email:* ${formData.email}\n` +
+                    `📞 *Phone:* ${formData.phone}\n` +
+                    `🏢 *Company:* ${formData.company}\n` +
+                    `💼 *Interest:* ${formData.interest}\n` +
+                    `💬 *Message:* ${formData.message}\n\n` +
+                    `🕐 *Time:* ${new Date(formData.timestamp).toLocaleString('en-IN')}`;
+                
+                const whatsappUrl = `https://wa.me/918660502217?text=${encodeURIComponent(whatsappMessage)}`;
+                
+                // Optional: Auto-open WhatsApp
+                setTimeout(() => {
+                    if (confirm('✅ Inquiry submitted! Would you like to send this via WhatsApp as well?')) {
+                        window.open(whatsappUrl, '_blank');
+                    }
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Lead submission error:', error);
+                document.getElementById('formError').style.display = 'block';
+                document.getElementById('formSuccess').style.display = 'none';
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // ============================================
+        // ANALYTICS EVENT TRACKING
+        // ============================================
+        
+        // Track page view
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                'page_title': document.title,
+                'page_location': window.location.href,
+                'page_path': window.location.pathname
+            });
+        }
+        
+        // Track scroll depth
+        let maxScroll = 0;
+        window.addEventListener('scroll', function() {
+            const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            if (scrollPercent > maxScroll) {
+                const milestone = Math.round(scrollPercent / 25) * 25;
+                if (milestone > maxScroll && typeof gtag !== 'undefined') {
+                    maxScroll = milestone;
+                    gtag('event', 'scroll', {
+                        'event_category': 'Engagement',
+                        'event_label': milestone + '%',
+                        'value': milestone
+                    });
+                }
+            }
+        });
+        
+        // Track time on page
+        let startTime = Date.now();
+        window.addEventListener('beforeunload', function() {
+            const timeSpent = Math.round((Date.now() - startTime) / 1000);
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'time_on_page', {
+                    'event_category': 'Engagement',
+                    'event_label': document.title,
+                    'value': timeSpent
+                });
+            }
+        });
+        
+        // Track button clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'click', {
+                        'event_category': 'Interaction',
+                        'event_label': e.target.textContent.trim(),
+                        'value': 1
+                    });
+                }
+            }
+        });
+        
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        
+        // Download leads as CSV
+        function downloadLeads() {
+            const leads = JSON.parse(localStorage.getItem('akBrandsLeads') || '[]');
+            if (leads.length === 0) {
+                alert('No leads to download');
+                return;
+            }
+            
+            const headers = ['Timestamp', 'Name', 'Email', 'Phone', 'Company', 'Interest', 'Message', 'Source'];
+            const csvContent = [
+                headers.join(','),
+                ...leads.map(lead => [
+                    lead.timestamp,
+                    lead.name,
+                    lead.email,
+                    lead.phone,
+                    lead.company,
+                    lead.interest,
+                    `"${lead.message.replace(/"/g, '""')}"`,
+                    lead.source
+                ].join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ak-brands-leads-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // View leads in console
+        function viewLeads() {
+            const leads = JSON.parse(localStorage.getItem('akBrandsLeads') || '[]');
+            console.table(leads);
+            return leads;
+        }
+        
+        // Make functions available globally
+        window.AKBrandsAnalytics = {
+            downloadLeads: downloadLeads,
+            viewLeads: viewLeads
+        };
+    </script>
