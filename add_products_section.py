@@ -1,0 +1,334 @@
+#!/usr/bin/env python3
+"""
+Automated script to add Products section to AK Brands Marketing website
+This script will:
+1. Add "Products" to the menu
+2. Add Products section CSS
+3. Add Products section HTML
+"""
+
+import re
+
+print("🚀 Starting Products Section Implementation...")
+print("=" * 60)
+
+# Read the current index.html
+with open('index.html', 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# STEP 1: Add Products to Menu
+print("\n📋 STEP 1: Adding 'Products' to menu...")
+
+menu_old = '''                <div class="dropdown-content" id="menuDropdown">
+                    <a href="#home">Home</a>
+                    <a href="#features">Services</a>
+                    <a href="#testimonials">Testimonials</a>
+                    <a href="#blog">Blog</a>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                    <a onclick="openPasswordModal()">Orders Management</a>
+                </div>'''
+
+menu_new = '''                <div class="dropdown-content" id="menuDropdown">
+                    <a href="#home">Home</a>
+                    <a href="#products">Products</a>
+                    <a href="#features">Services</a>
+                    <a href="#testimonials">Testimonials</a>
+                    <a href="#blog">Blog</a>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                    <a onclick="openPasswordModal()">Orders Management</a>
+                </div>'''
+
+if menu_old in content:
+    content = content.replace(menu_old, menu_new)
+    print("✅ Menu updated successfully!")
+else:
+    print("⚠️  Warning: Menu section not found in expected format")
+
+# STEP 2: Add Products Section CSS
+print("\n🎨 STEP 2: Adding Products section CSS...")
+
+products_css = '''
+        /* Products Section */
+        .products {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .products-intro {
+            max-width: 900px;
+            margin: 0 auto 3rem auto;
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-category {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .product-category h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .product-category ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .product-category li {
+            padding: 0.5rem 0;
+            color: #666;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .product-category li:last-child {
+            border-bottom: none;
+        }
+
+        .product-category li:before {
+            content: "✓";
+            color: #1abc9c;
+            font-weight: bold;
+        }
+
+        .products-footer {
+            max-width: 900px;
+            margin: 3rem auto 0 auto;
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .products-footer h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .products-footer p {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+'''
+
+# Find the closing </style> tag and insert CSS before it
+style_close_pattern = r'(\s*)</style>'
+if re.search(style_close_pattern, content):
+    content = re.sub(style_close_pattern, products_css + r'\1</style>', content, count=1)
+    print("✅ CSS added successfully!")
+else:
+    print("⚠️  Warning: </style> tag not found")
+
+# STEP 3: Add Products Section HTML
+print("\n📝 STEP 3: Adding Products section HTML...")
+
+products_html = '''
+    <section id="products" class="products">
+        <div class="container">
+            <h2 class="section-title">Our Products</h2>
+            <div class="products-intro">
+                <p>AK Brands Marketing offers a wide range of B2B liquidation, surplus, and wholesale products in India, sourced from trusted manufacturers, distributors, and sellers across the country. Our product portfolio is designed to meet the needs of retailers, resellers, wholesalers, and online sellers.</p>
+            </div>
+            
+            <div class="products-grid">
+                <div class="product-category">
+                    <h3>👔 Garments & Apparels</h3>
+                    <ul>
+                        <li>Men's, women's & kids clothing</li>
+                        <li>Western & ethnic wear</li>
+                        <li>Undergarments & innerwear</li>
+                        <li>Fashion surplus & clearance stock</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>👟 Footwear</h3>
+                    <ul>
+                        <li>Casual, formal & sports footwear</li>
+                        <li>Men's, women's & kids shoes</li>
+                        <li>Bulk & liquidation footwear lots</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🏠 Home Appliances & Large Appliances</h3>
+                    <ul>
+                        <li>Small home appliances</li>
+                        <li>Large appliances (ACs, refrigerators, washing machines, etc.)</li>
+                        <li>Clearance & surplus appliance stock</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>📱 Electronics & Mobile Accessories</h3>
+                    <ul>
+                        <li>Consumer electronics</li>
+                        <li>Mobile phones & accessories</li>
+                        <li>Chargers, earphones, power banks & gadgets</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🛒 FMCG & Groceries</h3>
+                    <ul>
+                        <li>Fast-moving consumer goods</li>
+                        <li>Packaged food & grocery items</li>
+                        <li>Daily essentials & household supplies</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🍽️ Crockery & Kitchenware</h3>
+                    <ul>
+                        <li>Crockery sets</li>
+                        <li>Kitchen utilities & utensils</li>
+                        <li>Home-use & commercial kitchen products</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🪑 Furniture</h3>
+                    <ul>
+                        <li>Home & office furniture</li>
+                        <li>Plastic, metal & wooden furniture</li>
+                        <li>Clearance & bulk furniture stock</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🧳 Luggage & Travel Products</h3>
+                    <ul>
+                        <li>Suitcases, trolley bags & backpacks</li>
+                        <li>Travel accessories & storage solutions</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🧸 Toys & Baby Care Products</h3>
+                    <ul>
+                        <li>Kids toys & games</li>
+                        <li>Baby care items & essentials</li>
+                        <li>Educational & recreational products</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>⌚ Watches & Fashion Accessories</h3>
+                    <ul>
+                        <li>Branded & non-branded watches</li>
+                        <li>Belts, wallets, sunglasses & accessories</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🏋️ Sports, Fitness & Gym Equipment</h3>
+                    <ul>
+                        <li>Gym & fitness equipment</li>
+                        <li>Sports goods & accessories</li>
+                        <li>Home workout & training products</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🚴 Cycles & Outdoor Products</h3>
+                    <ul>
+                        <li>Bicycles & cycling accessories</li>
+                        <li>Outdoor & recreational items</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>💄 Beauty, Cosmetics & Personal Care</h3>
+                    <ul>
+                        <li>Beauty & cosmetic products</li>
+                        <li>Bath & personal care items</li>
+                        <li>Grooming & hygiene products</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🎨 Home Décor & Fancy Items</h3>
+                    <ul>
+                        <li>Decorative home accessories</li>
+                        <li>Gift items & fancy products</li>
+                        <li>Seasonal & trending décor</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🔧 Hardware & Electrical Items</h3>
+                    <ul>
+                        <li>Electrical fittings & accessories</li>
+                        <li>Hardware tools & supplies</li>
+                        <li>Construction & utility items</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="products-footer">
+                <h3>Product Sourcing & Supply</h3>
+                <p>All products are available through verified liquidation stock, surplus inventory, and wholesale sourcing, with quality checks, transparent pricing, and PAN-India delivery support.</p>
+            </div>
+        </div>
+    </section>
+
+'''
+
+# Find the features section and insert products section before it
+features_pattern = r'(\s*)<section id="features" class="features">'
+if re.search(features_pattern, content):
+    content = re.sub(features_pattern, products_html + r'\1<section id="features" class="features">', content, count=1)
+    print("✅ Products section HTML added successfully!")
+else:
+    print("⚠️  Warning: Features section not found")
+
+# Write the updated content back to index.html
+with open('index.html', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print("\n" + "=" * 60)
+print("✅ Products Section Implementation Complete!")
+print("=" * 60)
+print("\n📋 Summary of Changes:")
+print("  ✓ Added 'Products' menu item")
+print("  ✓ Added Products section CSS styling")
+print("  ✓ Added Products section with 15 product categories")
+print("\n🎯 Next Steps:")
+print("  1. Review the changes in index.html")
+print("  2. Test the website locally")
+print("  3. Commit and push to GitHub")
+print("  4. Create a Pull Request")
+print("  5. Merge to main branch")
+print("\n🌐 The Products section will appear between Home and Services!")

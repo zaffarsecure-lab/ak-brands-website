@@ -1,0 +1,122 @@
+name: Add Products Section
+
+on:
+  workflow_dispatch:
+
+jobs:
+  add-products:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: add-products-section
+          
+      - name: Add Products Section
+        run: |
+          # Step 1: Add Products to menu
+          sed -i 's|<a href="#home">Home</a>|<a href="#home">Home</a>\n                    <a href="#products">Products</a>|' index.html
+          
+          # Step 2: Add Products CSS before </style>
+          sed -i '/<\/style>/i\
+          \
+                  /* Products Section */\
+                  .products {\
+                      padding: 4rem 2rem;\
+                      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);\
+                  }\
+          \
+                  .products-intro {\
+                      max-width: 900px;\
+                      margin: 0 auto 3rem auto;\
+                      text-align: center;\
+                      font-size: 1.1rem;\
+                      line-height: 1.8;\
+                      color: #555;\
+                  }\
+          \
+                  .products-grid {\
+                      display: grid;\
+                      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\
+                      gap: 2rem;\
+                      max-width: 1200px;\
+                      margin: 0 auto;\
+                  }\
+          \
+                  .product-category {\
+                      background: white;\
+                      padding: 2rem;\
+                      border-radius: 12px;\
+                      box-shadow: 0 4px 15px rgba(0,0,0,0.1);\
+                      transition: transform 0.3s, box-shadow 0.3s;\
+                  }\
+          \
+                  .product-category:hover {\
+                      transform: translateY(-5px);\
+                      box-shadow: 0 8px 25px rgba(0,0,0,0.15);\
+                  }\
+          \
+                  .product-category h3 {\
+                      color: #667eea;\
+                      margin-bottom: 1rem;\
+                      font-size: 1.4rem;\
+                      display: flex;\
+                      align-items: center;\
+                      gap: 0.5rem;\
+                  }\
+          \
+                  .product-category ul {\
+                      list-style: none;\
+                      padding: 0;\
+                  }\
+          \
+                  .product-category li {\
+                      padding: 0.5rem 0;\
+                      color: #666;\
+                      border-bottom: 1px solid #f0f0f0;\
+                      display: flex;\
+                      align-items: center;\
+                      gap: 0.5rem;\
+                  }\
+          \
+                  .product-category li:last-child {\
+                      border-bottom: none;\
+                  }\
+          \
+                  .product-category li:before {\
+                      content: "✓";\
+                      color: #1abc9c;\
+                      font-weight: bold;\
+                  }\
+          \
+                  .products-footer {\
+                      max-width: 900px;\
+                      margin: 3rem auto 0 auto;\
+                      text-align: center;\
+                      padding: 2rem;\
+                      background: white;\
+                      border-radius: 12px;\
+                      box-shadow: 0 4px 15px rgba(0,0,0,0.1);\
+                  }\
+          \
+                  .products-footer h3 {\
+                      color: #667eea;\
+                      margin-bottom: 1rem;\
+                      font-size: 1.5rem;\
+                  }\
+          \
+                  .products-footer p {\
+                      color: #666;\
+                      font-size: 1.1rem;\
+                      line-height: 1.8;\
+                  }' index.html
+          
+          echo "✅ CSS added"
+          
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add index.html
+          git commit -m "Add Products section with 15 categories" || echo "No changes to commit"
+          git push
