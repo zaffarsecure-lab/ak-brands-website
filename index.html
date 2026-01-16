@@ -702,7 +702,271 @@
             font-size: 1.2rem;
             margin-bottom: 1rem;
         }
+.terms, .policies {
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
 
+.policies {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+.terms-content, .policies-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.terms-intro, .policies-intro {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.policies-intro {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.terms-intro h3, .policies-intro h3 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.terms-intro p, .policies-intro p {
+    font-size: 1rem;
+    opacity: 0.95;
+}
+
+.terms-section, .policy-section {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border-left: 5px solid #667eea;
+}
+
+.policy-section {
+    border-left-color: #f5576c;
+}
+
+.terms-section h3, .policy-section h3 {
+    color: #667eea;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 3px solid #667eea;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.policy-section h3 {
+    color: #f5576c;
+    border-bottom-color: #f5576c;
+}
+
+.terms-section h4, .policy-section h4 {
+    color: #495057;
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+    border-left: 3px solid #667eea;
+}
+
+.policy-section h4 {
+    border-left-color: #f5576c;
+}
+
+.terms-section p, .policy-section p {
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.terms-section ul, .policy-section ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+
+.terms-section ul li, .policy-section ul li {
+    padding: 0.8rem 0;
+    padding-left: 2.5rem;
+    position: relative;
+    line-height: 1.7;
+    color: #666;
+}
+
+.terms-section ul li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #667eea;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.policy-section ul li:before {
+    content: "•";
+    position: absolute;
+    left: 0.5rem;
+    color: #f5576c;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.terms-highlight, .policy-highlight {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+}
+
+.policy-highlight {
+    background: #f8d7da;
+    border-left-color: #dc3545;
+}
+
+.terms-highlight strong, .policy-highlight strong {
+    color: #856404;
+}
+
+.policy-highlight strong {
+    color: #721c24;
+}
+
+.info-box {
+    background: #d1ecf1;
+    border-left: 4px solid #17a2b8;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+}
+
+.info-box strong {
+    color: #0c5460;
+}
+
+.success-box {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+}
+
+.success-box strong {
+    color: #155724;
+}
+
+.terms-footer, .policies-footer {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    margin-top: 3rem;
+    border: 2px solid #667eea;
+}
+
+.policies-footer {
+    border-color: #f5576c;
+}
+
+.terms-footer p, .policies-footer p {
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.terms-contact, .policies-contact {
+    color: #667eea;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.policies-contact {
+    color: #f5576c;
+}
+
+.process-steps {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin: 1rem 0;
+}
+
+.process-step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.process-step:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.step-number {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-right: 1rem;
+}
+
+.step-content h5 {
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.step-content p {
+    color: #666;
+    margin: 0;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .terms-content, .policies-content {
+        padding: 2rem 1.5rem;
+    }
+
+    .terms-section, .policy-section {
+        padding: 1.5rem;
+    }
+
+    .terms-section h3, .policy-section h3 {
+        font-size: 1.3rem;
+    }
+
+    .terms-intro h3, .policies-intro h3 {
+        font-size: 1.4rem;
+    }
+
+    .step-number {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+}
         /* Blog Section */
         .blog {
             padding: 4rem 2rem;
@@ -1682,16 +1946,17 @@
             <div class="menu-dropdown">
                 <button class="menu-button" onclick="toggleMenu()">☰</button>
                 <div class="dropdown-content" id="menuDropdown">
-                    <a href="#home">Home</a>
-                    <a href="#features">Services</a>
-                    <a href="#testimonials">Testimonials</a>
-                    <a href="#blog">Blog</a>
-                    <a href="#about">About</a>
-                    <a href="#contact">Contact</a>
-                    <a onclick="openPasswordModal()">Orders Management</a>
-                </div>
-            </div>
-        </div>
+    <a href="#home">Home</a>
+    <a href="#products">Products</a>
+    <a href="#features">Services</a>
+    <a href="#testimonials">Testimonials</a>
+    <a href="#blog">Blog</a>
+    <a href="#about">About</a>
+    <a href="#terms">Terms & Conditions</a>
+    <a href="#policies">Business Policies</a>
+    <a href="#contact">Contact</a>
+    <a onclick="openPasswordModal()">Orders Management</a>
+</div>
 
         <!-- Animation Section Below Logo -->
         <div class="animation-section">
