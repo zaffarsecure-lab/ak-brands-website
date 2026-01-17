@@ -2033,6 +2033,129 @@
             font-size: 1.1rem;
             line-height: 1.8;
         }</style>
+    
+        /* Testimonial Form Styles */
+        .testimonial-form-container {
+            max-width: 700px;
+            margin: 4rem auto 0 auto;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(26, 188, 156, 0.2);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .testimonial-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #34495e;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1abc9c;
+            box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.1);
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .star {
+            transition: transform 0.2s ease, filter 0.2s ease;
+            filter: grayscale(100%);
+        }
+
+        .star:hover,
+        .star.active {
+            transform: scale(1.2);
+            filter: grayscale(0%);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(26, 188, 156, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 188, 156, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonial-form-container {
+                padding: 1.5rem;
+                margin: 2rem 1rem 0 1rem;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+        }
 </head>
 <body>
     <header>
@@ -2416,6 +2539,50 @@
                 </div>
             </div>
         </div>
+        
+            <!-- Testimonial Submission Form -->
+            <div class="testimonial-form-container">
+                <h3 class="form-title">Share Your Experience</h3>
+                <p class="form-subtitle">We'd love to hear about your experience with AK Brands Marketing!</p>
+                <form class="testimonial-form" id="testimonialForm" onsubmit="submitTestimonial(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Your Name *</label>
+                            <input type="text" id="testimonialName" required placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label>Business/Company</label>
+                            <input type="text" id="testimonialBusiness" placeholder="Your business name (optional)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City *</label>
+                            <input type="text" id="testimonialCity" required placeholder="Your city">
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile Number *</label>
+                            <input type="tel" id="testimonialMobile" required placeholder="+91 98765 43210" pattern="[+]?[0-9]{10,13}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Rating *</label>
+                        <div class="star-rating" id="starRating">
+                            <span class="star" data-rating="1">⭐</span>
+                            <span class="star" data-rating="2">⭐</span>
+                            <span class="star" data-rating="3">⭐</span>
+                            <span class="star" data-rating="4">⭐</span>
+                            <span class="star" data-rating="5">⭐</span>
+                        </div>
+                        <input type="hidden" id="testimonialRating" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Testimonial *</label>
+                        <textarea id="testimonialText" required placeholder="Share your experience with AK Brands Marketing..." rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Submit Testimonial</button>
+                </form>
+            </div>
     </section>
 
     <section id="blog" class="blog">
