@@ -1,35 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SH29FGTV34"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-SH29FGTV34');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AK Brands Marketing - Premium Digital Marketing Solutions</title>
-    <meta name="description" content="AK Brands Marketing offers premium digital marketing solutions including SEO, social media marketing, content creation, and brand strategy to elevate your business.">
-    <meta name="keywords" content="digital marketing, SEO, social media marketing, content creation, brand strategy, AK Brands">
-    <meta name="author" content="AK Brands Marketing">
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="AK Brands Marketing - Premium Digital Marketing Solutions">
-    <meta property="og:description" content="Elevate your brand with our comprehensive digital marketing services. Expert SEO, social media management, and content creation.">
-    <meta property="og:image" content="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg">
-    <meta property="og:url" content="https://akbrandsmarketing.com">
-    <meta property="og:type" content="website">
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AK Brands Marketing - Premium Digital Marketing Solutions">
-    <meta name="twitter:description" content="Elevate your brand with our comprehensive digital marketing services.">
-    <meta name="twitter:image" content="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>AK Brands Marketing - India's Leading B2B Liquidation Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -37,31 +19,21 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --text-dark: #2d3748;
-            --text-light: #718096;
-            --bg-light: #f7fafc;
-        }
-
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             line-height: 1.6;
-            color: var(--text-dark);
-            overflow-x: hidden;
+            color: #333;
         }
 
         /* Header Styles */
         header {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 1rem 0;
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
+            padding: 1.2rem 0 0 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(26, 188, 156, 0.1);
         }
 
         .header-container {
@@ -71,364 +43,642 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
+            z-index: 10;
         }
 
         .logo-section {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.2rem;
         }
 
         .logo-img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            filter: drop-shadow(0 3px 10px rgba(26, 188, 156, 0.3));
+            transition: transform 0.3s ease;
         }
 
-        .logo-text h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 0;
+        .logo-img:hover {
+            transform: scale(1.05);
         }
 
-        .logo-text p {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin: 0;
-        }
-
-        nav ul {
-            list-style: none;
+        .brand-text {
             display: flex;
-            gap: 2rem;
+            flex-direction: column;
+            gap: 3px;
         }
 
-        nav a {
-            color: white;
-            text-decoration: none;
+        .brand-name {
+            font-size: 1.75rem;
             font-weight: 500;
-            transition: all 0.3s ease;
+            font-family: 'Playfair Display', Georgia, serif;
+            color: #1abc9c;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
             position: relative;
         }
 
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: white;
-            transition: width 0.3s ease;
+        .brand-name .ak {
+            font-weight: 600;
+            color: #16a085;
         }
 
-        nav a:hover::after {
-            width: 100%;
+        .brand-tagline {
+            font-size: 0.75rem;
+            color: #95a5a6;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            font-family: 'Playfair Display', Georgia, serif;
+            opacity: 0.85;
+            font-style: italic;
         }
 
-        .menu-toggle {
-            display: none;
+        /* Dropdown Menu */
+        .menu-dropdown {
+            position: relative;
+        }
+
+        .menu-button {
             background: none;
             border: none;
-            color: white;
-            font-size: 1.5rem;
+            color: #ecf0f1;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .menu-button:hover {
+            color: #1abc9c;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: rgba(44, 62, 80, 0.98);
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+            z-index: 1001;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(26, 188, 156, 0.3);
+        }
+
+        .dropdown-content.show {
+            display: block;
+            animation: dropdownSlide 0.3s ease-out;
+        }
+
+        @keyframes dropdownSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-content a {
+            color: #ecf0f1;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s;
+            font-weight: 500;
             cursor: pointer;
         }
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%),
-                        url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200') center/cover;
-            color: white;
-            padding: 8rem 2rem;
+        .dropdown-content a:hover {
+            background: rgba(26, 188, 156, 0.2);
+            color: #1abc9c;
+            padding-left: 2rem;
+        }
+
+        /* Animation Section */
+        .animation-section {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            margin-top: 1rem;
+            background: linear-gradient(to bottom, transparent 0%, transparent 75%, #34495e 75%, #2c3e50 80%, #34495e 80%, #34495e 100%);
+        }
+
+        /* Business Locations */
+        .business-locations {
+            position: absolute;
+            bottom: 30%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5%;
+            z-index: 10;
+        }
+
+        .location {
             text-align: center;
             position: relative;
-            overflow: hidden;
         }
 
-        .hero::before {
-            content: '';
+        .location-icon {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+        }
+
+        .location-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ecf0f1;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+
+        .supplier { color: #3498db; }
+        .office { color: #1abc9c; }
+        .customer { color: #e74c3c; }
+
+        /* Network Towers */
+        .network-tower {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: -30px;
+            font-size: 1.5rem;
+            animation: towerSignal 2s ease-in-out infinite;
+        }
+
+        @keyframes towerSignal {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* Customer Animation */
+        .customer-person {
+            position: absolute;
+            bottom: 30%;
+            right: 20%;
+            font-size: 2rem;
+            z-index: 15;
+            animation: customerJourney 30s ease-in-out infinite;
+        }
+
+        @keyframes customerJourney {
+            0%, 5% {
+                right: 20%;
+                transform: scaleX(1);
+                opacity: 1;
+            }
+            15% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 1;
+            }
+            20%, 25% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 1;
+            }
+            30% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 0;
+            }
+            100% {
+                right: 50%;
+                transform: scaleX(1) translateX(50%);
+                opacity: 0;
+            }
+        }
+
+        /* Order & Payment Animation */
+        .order-payment {
+            position: absolute;
+            bottom: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            z-index: 15;
+            opacity: 0;
+            animation: showOrderPayment 30s ease-in-out infinite;
+        }
+
+        @keyframes showOrderPayment {
+            0%, 20% { opacity: 0; transform: translateX(-50%) scale(0); }
+            25% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+            30% { opacity: 1; transform: translateX(-50%) scale(1); }
+            35% { opacity: 0; transform: translateX(-50%) scale(0); }
+            100% { opacity: 0; transform: translateX(-50%) scale(0); }
+        }
+
+        /* Packing Animation */
+        .packing-boxes {
+            position: absolute;
+            bottom: 35%;
+            left: 15%;
+            font-size: 1.5rem;
+            z-index: 15;
+            opacity: 0;
+            animation: packingGoods 30s ease-in-out infinite;
+        }
+
+        @keyframes packingGoods {
+            0%, 40% { opacity: 0; transform: scale(0); }
+            45% { opacity: 1; transform: scale(1.2); }
+            50% { opacity: 1; transform: scale(1); }
+            55% { opacity: 1; transform: scale(1); }
+            60% { opacity: 0; transform: scale(0); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        /* Truck Animation - FLIPPED to face RIGHT */
+        .truck-container {
+            position: absolute;
+            bottom: 28%;
+            width: 100%;
+            height: 80px;
+            z-index: 20;
+        }
+
+        .truck {
+            position: absolute;
+            left: 15%;
             bottom: 0;
-            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            font-size: 3rem;
+            opacity: 0;
+            transform: scaleX(-1);
+            animation: truckDelivery 30s ease-in-out infinite;
         }
 
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
+        @keyframes truckDelivery {
+            0%, 55% {
+                left: 15%;
+                opacity: 0;
+            }
+            60% {
+                left: 15%;
+                opacity: 1;
+            }
+            85% {
+                left: 80%;
+                opacity: 1;
+            }
+            90% {
+                left: 80%;
+                opacity: 1;
+            }
+            95% {
+                left: 80%;
+                opacity: 0;
+            }
+            100% {
+                left: 80%;
+                opacity: 0;
+            }
+        }
+
+        /* Delivery Confirmation */
+        .delivery-check {
+            position: absolute;
+            bottom: 35%;
+            right: 15%;
+            font-size: 2rem;
+            z-index: 15;
+            opacity: 0;
+            animation: deliveryComplete 30s ease-in-out infinite;
+        }
+
+        @keyframes deliveryComplete {
+            0%, 85% { opacity: 0; transform: scale(0) rotate(0deg); }
+            90% { opacity: 1; transform: scale(1.3) rotate(360deg); }
+            95% { opacity: 1; transform: scale(1) rotate(360deg); }
+            100% { opacity: 0; transform: scale(0) rotate(360deg); }
+        }
+
+        .road-lines {
+            position: absolute;
+            bottom: 25%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 20px,
+                rgba(255,255,255,0.3) 20px,
+                rgba(255,255,255,0.3) 40px
+            );
+            z-index: 5;
+        }
+
+        /* Hero Section with Warehouse Background */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                        url('https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600') center/cover;
+            color: white;
+            padding: 6rem 2rem 4rem 2rem;
+            text-align: center;
             position: relative;
-            z-index: 1;
         }
 
-        .hero h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            animation: fadeInUp 1s ease;
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         .hero p {
             font-size: 1.3rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
             opacity: 0.95;
-            animation: fadeInUp 1s ease 0.2s backwards;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
 
-        .cta-buttons {
+        /* Simple Action Icons - No Boxes */
+        .action-icons {
             display: flex;
-            gap: 1rem;
             justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeInUp 1s ease 0.4s backwards;
+            align-items: center;
+            gap: 5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
         }
 
-        .btn {
-            padding: 1rem 2.5rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
+        .action-item {
+            text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
+            transition: all 0.3s;
         }
 
-        .btn-primary {
-            background: white;
-            color: #667eea;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        .action-item:hover {
+            transform: translateY(-10px);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        .action-item:hover .simple-icon {
+            transform: scale(1.2);
         }
 
-        .btn-secondary {
-            background: transparent;
+        .simple-icon {
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 0.8rem;
+            transition: transform 0.3s;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
+        }
+
+        .action-label {
+            font-size: 1.3rem;
+            font-weight: 700;
             color: white;
-            border: 2px solid white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
         }
 
-        .btn-secondary:hover {
-            background: white;
-            color: #667eea;
+        /* Features Section */
+        .features {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
         }
 
-        /* Services Section */
-        .services {
-            padding: 6rem 2rem;
-            background: var(--bg-light);
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .section-title {
             text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .section-title h2 {
-            font-family: 'Playfair Display', serif;
             font-size: 2.5rem;
-            color: var(--text-dark);
-            margin-bottom: 1rem;
+            margin-bottom: 3rem;
+            color: #2c3e50;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
         }
 
-        .section-title p {
-            color: var(--text-light);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .services-grid {
-            max-width: 1200px;
-            margin: 0 auto;
+        .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
         }
 
-        .service-card {
+        .feature-card {
             background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
         }
 
-        .service-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: var(--primary-gradient);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
+        .feature-card:hover {
+            transform: translateY(-5px);
         }
 
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-        }
-
-        .service-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .service-icon {
-            font-size: 3rem;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1.5rem;
-        }
-
-        .service-card h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-dark);
-        }
-
-        .service-card p {
-            color: var(--text-light);
-            line-height: 1.8;
-        }
-
-        /* About Section */
-        .about {
-            padding: 6rem 2rem;
-            background: white;
-        }
-
-        .about-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .about-text h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-dark);
-        }
-
-        .about-text p {
-            color: var(--text-light);
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
-
-        .about-features {
-            list-style: none;
-            margin-top: 2rem;
-        }
-
-        .about-features li {
-            padding: 1rem 0;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .about-features i {
+        .feature-card h3 {
             color: #667eea;
-            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-family: 'Inter', sans-serif;
         }
+/* Services Section Styles */
+.services-intro {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto 3rem auto;
+    font-size: 1.2rem;
+    color: #555;
+    line-height: 1.8;
+}
 
-        .about-image {
-            position: relative;
-        }
+.service-section {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
 
-        .about-image img {
-            width: 100%;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-        }
+.service-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
 
-        /* Stats Section */
-        .stats {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 4rem 2rem;
-        }
+.service-heading {
+    color: #1abc9c;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
 
-        .stats-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 3rem;
-            text-align: center;
-        }
+.service-description {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+}
 
-        .stat-item h3 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
+.service-list ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
 
-        .stat-item p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
+.service-list li {
+    padding: 1rem 1.2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid #1abc9c;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #444;
+    transition: all 0.3s;
+}
 
+.service-list li:hover {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: white;
+    transform: translateX(5px);
+    border-left-color: #16a085;
+}
+
+.service-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 10px;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.feature-item:hover {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: white;
+    transform: scale(1.05);
+    border-color: #16a085;
+}
+
+.feature-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.feature-item span:last-child {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.services-footer {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    margin-top: 3rem;
+    box-shadow: 0 5px 20px rgba(26, 188, 156, 0.3);
+}
+
+.services-footer p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin: 0;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .service-section {
+        padding: 1.5rem;
+    }
+
+    .service-heading {
+        font-size: 1.4rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .service-list ul {
+        grid-template-columns: 1fr;
+    }
+
+    .service-features {
+        grid-template-columns: 1fr;
+    }
+
+    .services-intro {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+
+    .services-footer p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .service-heading {
+        font-size: 1.2rem;
+    }
+
+    .feature-item {
+        padding: 1rem;
+    }
+
+    .feature-icon {
+        font-size: 1.5rem;
+    }
+}
+        
         /* Testimonials Section */
         .testimonials {
-            padding: 6rem 2rem;
-            background: var(--bg-light);
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
 
         .testimonials-grid {
-            max-width: 1200px;
-            margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .testimonial-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            position: relative;
-        }
-
-        .testimonial-card::before {
-            content: '"';
-            position: absolute;
-            top: 1rem;
-            left: 1.5rem;
-            font-size: 5rem;
-            color: #667eea;
-            opacity: 0.2;
-            font-family: 'Playfair Display', serif;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
         .testimonial-text {
-            color: var(--text-light);
+            font-size: 1.1rem;
             line-height: 1.8;
             margin-bottom: 1.5rem;
-            position: relative;
-            z-index: 1;
+            font-style: italic;
         }
 
         .testimonial-author {
@@ -438,928 +688,1335 @@
         }
 
         .author-avatar {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background: var(--primary-gradient);
+            border: 3px solid white;
         }
 
         .author-info h4 {
-            color: var(--text-dark);
-            margin-bottom: 0.25rem;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
         }
 
         .author-info p {
-            color: var(--text-light);
             font-size: 0.9rem;
+            opacity: 0.8;
         }
 
-        .rating {
-            color: #fbbf24;
-            margin-top: 1rem;
+        .stars {
+            color: #FFD700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+/* PART 2: ADD CSS STYLES */
+/* Add this CSS after the testimonials section styles (around line 600-700) */
+
+/* Terms & Conditions and Business Policies Sections */
+.terms, .policies {
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.policies {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+.terms-content, .policies-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.terms-intro, .policies-intro {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.policies-intro {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.terms-intro h3, .policies-intro h3 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.terms-intro p, .policies-intro p {
+    font-size: 1rem;
+    opacity: 0.95;
+}
+
+.terms-section, .policy-section {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border-left: 5px solid #667eea;
+}
+
+.policy-section {
+    border-left-color: #f5576c;
+}
+
+.terms-section h3, .policy-section h3 {
+    color: #667eea;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 3px solid #667eea;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.policy-section h3 {
+    color: #f5576c;
+    border-bottom-color: #f5576c;
+}
+
+.terms-section h4, .policy-section h4 {
+    color: #495057;
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+    border-left: 3px solid #667eea;
+}
+
+.policy-section h4 {
+    border-left-color: #f5576c;
+}
+
+.terms-section p, .policy-section p {
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.terms-section ul, .policy-section ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+
+.terms-section ul li, .policy-section ul li {
+    padding: 0.8rem 0;
+    padding-left: 2.5rem;
+    position: relative;
+    line-height: 1.7;
+    color: #666;
+}
+
+.terms-section ul li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #667eea;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.policy-section ul li:before {
+    content: "•";
+    position: absolute;
+    left: 0.5rem;
+    color: #f5576c;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.terms-highlight, .policy-highlight {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+}
+
+.policy-highlight {
+    background: #f8d7da;
+    border-left-color: #dc3545;
+}
+
+.terms-highlight strong, .policy-highlight strong {
+    color: #856404;
+}
+
+.policy-highlight strong {
+    color: #721c24;
+}
+
+.info-box {
+    background: #d1ecf1;
+    border-left: 4px solid #17a2b8;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+}
+
+.info-box strong {
+    color: #0c5460;
+}
+
+.success-box {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+}
+
+.success-box strong {
+    color: #155724;
+}
+
+.terms-footer, .policies-footer {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    margin-top: 3rem;
+    border: 2px solid #667eea;
+}
+
+.policies-footer {
+    border-color: #f5576c;
+}
+
+.terms-footer p, .policies-footer p {
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.terms-contact, .policies-contact {
+    color: #667eea;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.policies-contact {
+    color: #f5576c;
+}
+
+.process-steps {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin: 1rem 0;
+}
+
+.process-step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.process-step:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.step-number {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-right: 1rem;
+}
+
+.step-content h5 {
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.step-content p {
+    color: #666;
+    margin: 0;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .terms-content, .policies-content {
+        padding: 2rem 1.5rem;
+    }
+
+    .terms-section, .policy-section {
+        padding: 1.5rem;
+    }
+
+    .terms-section h3, .policy-section h3 {
+        font-size: 1.3rem;
+    }
+
+    .terms-intro h3, .policies-intro h3 {
+        font-size: 1.4rem;
+    }
+
+    .step-number {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+}
+        /* Blog Section */
+        .blog {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-date {
+            color: #999;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #2c3e50;
+        }
+
+        .blog-excerpt {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s;
+        }
+
+        .read-more:hover {
+            gap: 1rem;
+        }
+
+        /* About Section */
+        .about {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1rem;
         }
 
         /* Contact Section */
         .contact {
-            padding: 6rem 2rem;
-            background: white;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
 
-        .contact-content {
-            max-width: 1200px;
+        .contact-info {
+            max-width: 600px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            text-align: center;
         }
 
-        .contact-info h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-dark);
+        .contact-info h2 {
+            margin-bottom: 2rem;
+            font-family: 'Inter', sans-serif;
         }
 
         .contact-details {
-            list-style: none;
-            margin-bottom: 2rem;
-        }
-
-        .contact-details li {
-            padding: 1rem 0;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 1rem;
-            color: var(--text-light);
+            font-size: 1.1rem;
         }
 
-        .contact-details i {
-            color: #667eea;
-            font-size: 1.2rem;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .social-links a {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
+        .contact-details a {
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: opacity 0.3s;
         }
 
-        .social-links a:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .contact-form {
-            background: var(--bg-light);
-            padding: 2.5rem;
-            border-radius: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-dark);
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 150px;
+        .contact-details a:hover {
+            opacity: 0.8;
         }
 
         /* Footer */
         footer {
-            background: #1a202c;
+            background: #2c3e50;
             color: white;
-            padding: 3rem 2rem 1rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-section h3 {
-            font-family: 'Playfair Display', serif;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.75rem;
-        }
-
-        .footer-section a {
-            color: #a0aec0;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
             text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid #2d3748;
-            color: #a0aec0;
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .menu-toggle {
-                display: block;
-            }
-
-            nav {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: var(--primary-gradient);
-                padding: 1rem;
-                display: none;
-            }
-
-            nav.active {
-                display: block;
-            }
-
-            nav ul {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .hero h2 {
-                font-size: 2.5rem;
-            }
-
-            .about-content,
-            .contact-content {
-                grid-template-columns: 1fr;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        /* Products Section */
-        .products {
-            padding: 6rem 2rem;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-
-        .products-grid {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 3rem;
-            margin-top: 3rem;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-        }
-
-        .product-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            z-index: 10;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .product-image-container {
-            position: relative;
-            height: 300px;
-            overflow: hidden;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .product-card:hover .product-image {
-            transform: scale(1.1);
-        }
-
-        .product-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
-            padding: 2rem;
-            transform: translateY(100%);
-            transition: transform 0.4s ease;
-        }
-
-        .product-card:hover .product-overlay {
-            transform: translateY(0);
-        }
-
-        .quick-view-btn {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .quick-view-btn:hover {
-            background: #667eea;
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .product-content {
             padding: 2rem;
         }
 
-        .product-category {
-            color: #667eea;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        .product-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            color: #2d3748;
-            margin-bottom: 1rem;
-            line-height: 1.3;
-        }
-
-        .product-description {
-            color: #718096;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
-
-        .product-features {
-            list-style: none;
-            margin-bottom: 1.5rem;
-        }
-
-        .product-features li {
-            padding: 0.5rem 0;
-            color: #4a5568;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .product-features i {
-            color: #667eea;
-            font-size: 1rem;
-        }
-
-        .product-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1.5rem;
-            border-top: 2px solid #e2e8f0;
-        }
-
-        .product-price {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .product-price-label {
-            font-size: 0.9rem;
-            color: #a0aec0;
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-
-        .buy-now-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .buy-now-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .product-rating {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .stars {
-            color: #fbbf24;
-        }
-
-        .rating-count {
-            color: #a0aec0;
-            font-size: 0.9rem;
-        }
-
-        /* Product Tags */
-        .product-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .product-tag {
-            background: #edf2f7;
-            color: #4a5568;
-            padding: 0.4rem 1rem;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        /* Delivery Info */
-        .delivery-info {
-            background: #f7fafc;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .delivery-info i {
-            color: #48bb78;
-            font-size: 1.5rem;
-        }
-
-        .delivery-text {
-            flex: 1;
-        }
-
-        .delivery-text strong {
-            color: #2d3748;
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-
-        .delivery-text span {
-            color: #718096;
-            font-size: 0.9rem;
-        }
-
-        /* Responsive Products */
-        @media (max-width: 768px) {
-            .products-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .product-footer {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: stretch;
-            }
-
-            .buy-now-btn {
-                width: 100%;
-            }
-        }
-
-        /* Enhanced Product Animations */
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .product-badge {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        /* Products Section Enhancements */
-        .products-header {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 4rem;
-        }
-
-        .products-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            color: #2d3748;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .products-header p {
-            font-size: 1.2rem;
-            color: #718096;
-            line-height: 1.8;
-        }
-
-        /* Product Filter Buttons */
-        .product-filters {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 0.75rem 2rem;
-            border: 2px solid #667eea;
-            background: white;
-            color: #667eea;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        /* Trust Badges */
-        .trust-badges {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin-top: 4rem;
-            flex-wrap: wrap;
-        }
-
-        .trust-badge {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            color: #4a5568;
-        }
-
-        .trust-badge i {
-            font-size: 2rem;
-            color: #667eea;
-        }
-
-        .trust-badge-text strong {
-            display: block;
-            color: #2d3748;
-            margin-bottom: 0.25rem;
-        }
-
-        .trust-badge-text span {
-            font-size: 0.9rem;
-            color: #718096;
-        }
-
-        /* Product Comparison Table */
-        .comparison-table {
-            max-width: 1200px;
-            margin: 4rem auto;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .comparison-table table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .comparison-table th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
-            text-align: left;
-            font-weight: 600;
-        }
-
-        .comparison-table td {
-            padding: 1.5rem;
-            border-bottom: 1px solid #e2e8f0;
-            color: #4a5568;
-        }
-
-        .comparison-table tr:hover {
-            background: #f7fafc;
-        }
-
-        .check-icon {
-            color: #48bb78;
-            font-size: 1.2rem;
-        }
-
-        .cross-icon {
-            color: #f56565;
-            font-size: 1.2rem;
-        }
-
-        /* FAQ Section for Products */
-        .product-faq {
-            max-width: 800px;
-            margin: 4rem auto;
-        }
-
-        .faq-item {
-            background: white;
-            margin-bottom: 1rem;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .faq-question {
-            padding: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            color: #2d3748;
-            transition: all 0.3s ease;
-        }
-
-        .faq-question:hover {
-            background: #f7fafc;
-            color: #667eea;
-        }
-
-        .faq-answer {
-            padding: 0 1.5rem 1.5rem;
-            color: #718096;
-            line-height: 1.8;
-            display: none;
-        }
-
-        .faq-item.active .faq-answer {
-            display: block;
-        }
-
-        .faq-icon {
-            transition: transform 0.3s ease;
-        }
-
-        .faq-item.active .faq-icon {
-            transform: rotate(180deg);
-        }
-
-        /* Newsletter Signup */
-        .newsletter-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 4rem 2rem;
-            margin-top: 4rem;
-            border-radius: 20px;
-            text-align: center;
-            color: white;
-        }
-
-        .newsletter-section h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .newsletter-section p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .newsletter-form {
-            display: flex;
-            gap: 1rem;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .newsletter-form input {
-            flex: 1;
-            padding: 1rem 1.5rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-        }
-
-        .newsletter-form button {
-            padding: 1rem 2.5rem;
-            background: white;
-            color: #667eea;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .newsletter-form button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        /* Product Gallery Modal */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
+            z-index: 2000;
             left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
         }
 
-        .modal.active {
+        .modal.show {
             display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+            padding: 1rem;
         }
 
         .modal-content {
-            max-width: 90%;
-            max-height: 90%;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 450px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            animation: slideUp 0.5s ease;
             position: relative;
+            margin: auto;
         }
 
-        .modal-image {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
-
-        .modal-close {
+        .close-modal {
             position: absolute;
-            top: -40px;
-            right: 0;
-            color: white;
+            top: 1rem;
+            right: 1.5rem;
             font-size: 2rem;
             cursor: pointer;
-            background: none;
-            border: none;
+            color: #999;
+            transition: color 0.3s;
+            z-index: 10;
         }
 
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
+        .close-modal:hover {
+            color: #333;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            text-align: center;
+            padding-right: 2rem;
         }
 
-        /* Scroll to Top Button */
-        .scroll-top {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 50px;
-            height: 50px;
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            padding: 1rem;
             border: none;
-            border-radius: 50%;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
             cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Welcome Message Modal - Responsive */
+        .welcome-modal {
             display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .scroll-top:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-        }
-
-        .scroll-top.visible {
-            display: flex;
-        }
-
-        /* Product Card Hover Effects */
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
+            position: fixed;
+            z-index: 3000;
             left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            border-radius: 20px;
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
         }
 
-        .product-card:hover::before {
-            opacity: 1;
-        }
-
-        /* Responsive Enhancements */
-        @media (max-width: 768px) {
-            .products-header h2 {
-                font-size: 2rem;
-            }
-
-            .newsletter-form {
-                flex-direction: column;
-            }
-
-            .trust-badges {
-                gap: 1.5rem;
-            }
-
-            .comparison-table {
-                overflow-x: auto;
-            }
-        }
-
-        /* Additional Product Styles */
-        .limited-offer {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 1rem;
-        }
-
-        .stock-status {
+        .welcome-modal.show {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+            padding: 1rem;
+        }
+
+        .welcome-content {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: slideUp 0.5s ease;
+            text-align: center;
+            color: white;
+            border: 3px solid rgba(255,255,255,0.3);
+            margin: auto;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
             margin-bottom: 1rem;
+            animation: bounce 1s ease infinite;
         }
 
-        .stock-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #48bb78;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
-        .stock-indicator.low {
-            background: #f6ad55;
+        .welcome-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.3;
         }
 
-        .stock-indicator.out {
-            background: #f56565;
+        .welcome-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            opacity: 0.95;
         }
 
-        .stock-text {
-            color: #4a5568;
+        .welcome-message {
+            background: rgba(255,255,255,0.15);
+            padding: 1.2rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+            background: #20BA5A;
+        }
+
+        .whatsapp-icon {
+            font-size: 1.3rem;
+        }
+
+        .close-welcome {
+            margin-top: 1rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .close-welcome:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Password Modal */
+        .password-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
+        }
+
+        .password-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+            padding: 1rem;
+        }
+
+        .password-content {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 450px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            animation: slideUp 0.5s ease;
+            text-align: center;
+            color: white;
+            border: 2px solid rgba(26, 188, 156, 0.3);
+            margin: auto;
+        }
+
+        .password-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1abc9c;
+        }
+
+        .password-subtitle {
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .password-input-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .password-input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1abc9c;
+            font-size: 0.95rem;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid rgba(26, 188, 156, 0.5);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .password-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #1abc9c;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .password-error {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .password-error.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        .password-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .password-btn {
+            flex: 1;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .password-verify {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+        }
+
+        .password-cancel {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .password-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Database Management Modal */
+        .database-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
+        }
+
+        .database-modal.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .database-content {
+            background: white;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 1200px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            animation: slideUp 0.5s ease;
+        }
+
+        .database-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #1abc9c;
+        }
+
+        .database-header h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .close-database {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .close-database:hover {
+            color: #333;
+        }
+
+        .database-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 1rem;
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+            border-color: #1abc9c;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .database-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .database-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .database-form .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .database-form label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .database-form input,
+        .database-form textarea {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .database-form textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .database-form input:focus,
+        .database-form textarea:focus {
+            outline: none;
+            border-color: #1abc9c;
+        }
+
+        .database-form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .database-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .database-btn-save {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+        }
+
+        .database-btn-clear {
+            background: #f8f9fa;
+            color: #555;
+            border: 2px solid #ddd;
+        }
+
+        .database-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Database Table Styles */
+        .database-table-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-header h3 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .action-btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .download-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .whatsapp-share-btn {
+            background: #25D366;
+            color: white;
+        }
+
+        .whatsapp-share-btn:hover {
+            background: #20BA5A;
+            transform: translateY(-2px);
+        }
+
+        .database-table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .database-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .database-table thead {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+        }
+
+        .database-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .database-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
             font-size: 0.9rem;
         }
 
-        /* Product Wishlist Button */
-        .wishlist-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 45px;
-            height: 45px;
-            background: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        .database-table tbody tr:hover {
+            background: #f8f9fa;
         }
 
-        .wishlist-btn:hover {
-            transform: scale(1.1);
-            background: #667eea;
+        .table-action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .edit-btn {
+            background: #f39c12;
             color: white;
         }
 
-        .wishlist-btn i {
-            font-size: 1.2rem;
+        .edit-btn:hover {
+            background: #e67e22;
         }
 
-        /* Products Footer CTA */
-        .products-footer {
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
+        .empty-state {
             text-align: center;
-            margin-top: 4rem;
             padding: 3rem;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .animation-section {
+                height: 100px;
+            }
+
+            .header-container {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 0 1rem;
+            }
+
+            .logo-img {
+                width: 55px;
+                height: 55px;
+            }
+
+            .brand-name {
+                font-size: 1.4rem;
+            }
+
+            .brand-tagline {
+                font-size: 0.6rem;
+            }
+
+            .location-icon {
+                font-size: 1.5rem;
+            }
+
+            .location-label {
+                font-size: 0.5rem;
+            }
+
+            .truck {
+                font-size: 2rem;
+            }
+
+            .customer-person {
+                font-size: 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .action-icons {
+                gap: 2rem;
+            }
+
+            .simple-icon {
+                font-size: 3.5rem;
+            }
+
+            .action-label {
+                font-size: 1rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+
+            .modal-title {
+                font-size: 1.5rem;
+            }
+
+            .welcome-content {
+                padding: 1.5rem 1rem;
+            }
+
+            .welcome-icon {
+                font-size: 3rem;
+            }
+
+            .welcome-title {
+                font-size: 1.5rem;
+            }
+
+            .welcome-subtitle {
+                font-size: 1rem;
+            }
+
+            .welcome-message {
+                font-size: 0.9rem;
+                padding: 1rem;
+            }
+
+            .whatsapp-btn {
+                padding: 0.9rem 1.5rem;
+                font-size: 0.95rem;
+            }
+
+            .database-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .database-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .database-form {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-btn {
+                min-width: 120px;
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .table-actions {
+                flex-direction: column;
+            }
+
+            .database-table {
+                font-size: 0.85rem;
+            }
+
+            .database-table th,
+            .database-table td {
+                padding: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome-title {
+                font-size: 1.3rem;
+            }
+
+            .welcome-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .welcome-message {
+                font-size: 0.85rem;
+            }
+
+            .whatsapp-btn {
+                font-size: 0.9rem;
+                padding: 0.8rem 1.2rem;
+            }
+
+            .modal-title {
+                font-size: 1.3rem;
+            }
+        }
+    
+        /* Products Section */
+        .products {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .products-intro {
+            max-width: 900px;
+            margin: 0 auto 3rem auto;
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-category {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .product-category h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .product-category ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .product-category li {
+            padding: 0.5rem 0;
+            color: #666;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .product-category li:last-child {
+            border-bottom: none;
+        }
+
+        .product-category li:before {
+            content: "✓";
+            color: #1abc9c;
+            font-weight: bold;
+        }
+
+        .products-footer {
+            max-width: 900px;
+            margin: 3rem auto 0 auto;
+            text-align: center;
+            padding: 2rem;
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -1375,926 +2032,1142 @@
             color: #666;
             font-size: 1.1rem;
             line-height: 1.8;
-        }
-
-        /* Testimonial Form Styles */
-        .testimonial-form-container {
-            max-width: 700px;
-            margin: 4rem auto 0 auto;
-            padding: 2.5rem;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            border: 1px solid rgba(26, 188, 156, 0.2);
-        }
-
-        .form-title {
-            font-size: 2rem;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-            text-align: center;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .form-subtitle {
-            text-align: center;
-            color: #7f8c8d;
-            margin-bottom: 2rem;
-            font-size: 1rem;
-        }
-
-        .testimonial-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: #34495e;
-            font-size: 0.95rem;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            padding: 0.9rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #1abc9c;
-            box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.1);
-        }
-
-        .star-rating {
-            display: flex;
-            gap: 0.5rem;
-            font-size: 2rem;
-            cursor: pointer;
-        }
-
-        .star {
-            transition: transform 0.2s ease, filter 0.2s ease;
-            filter: grayscale(100%);
-        }
-
-        .star:hover,
-        .star.active {
-            transform: scale(1.2);
-            filter: grayscale(0%);
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(26, 188, 156, 0.3);
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(26, 188, 156, 0.4);
-        }
-
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .testimonial-form-container {
-                padding: 1.5rem;
-                margin: 2rem 1rem 0 1rem;
-            }
-
-            .form-title {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
-        
+        }</style>
 </head>
 <body>
     <header>
         <div class="header-container">
             <div class="logo-section">
                 <img src="https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-11T20-02-47-298Z-a17e40fd-chat-image-1765483367276-0.jpg" alt="AK Brands Marketing Logo" class="logo-img">
-                <div class="logo-text">
-                    <h1>AK Brands Marketing</h1>
-                    <p>Elevate Your Brand</p>
+                <div class="brand-text">
+                    <div class="brand-name"><span class="ak">AK</span> Brands Marketing</div>
+                    <div class="brand-tagline">Trusted Firm</div>
                 </div>
             </div>
-            <button class="menu-toggle" onclick="toggleMenu()">
-                <i class="fas fa-bars"></i>
-            </button>
-            <nav id="mainNav">
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#products">Products</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
+            <div class="menu-dropdown">
+                <button class="menu-button" onclick="toggleMenu()">☰</button>
+                <div class="dropdown-content" id="menuDropdown">
+                    <a href="#home">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="services.html">Services</a>
+                    <a href="#testimonials">Testimonials</a>
+                    <a href="#blog">Blog</a>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                    <a href="terms.html">Terms & Conditions</a>
+                    <a href="policies.html">Business Policies</a>
+                    <a onclick="openPasswordModal()">Orders Management</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animation Section Below Logo -->
+        <div class="animation-section">
+            <div class="road-lines"></div>
+            
+            <!-- Business Locations with Network Towers -->
+            <div class="business-locations">
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="location-icon">🏭</div>
+                    <div class="location-label supplier">Supplier</div>
+                </div>
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="location-icon">🏢</div>
+                    <div class="location-label office">AK</div>
+                </div>
+                <div class="location">
+                    <div class="network-tower">📡</div>
+                    <div class="location-icon">🏪</div>
+                    <div class="location-label customer">Customer</div>
+                </div>
+            </div>
+
+            <!-- Customer Journey -->
+            <div class="customer-person">🚶</div>
+            
+            <!-- Order & Payment -->
+            <div class="order-payment">💳📝</div>
+            
+            <!-- Packing -->
+            <div class="packing-boxes">📦📦📦</div>
+            
+            <!-- Truck Delivery -->
+            <div class="truck-container">
+                <div class="truck">🚚</div>
+            </div>
+            
+            <!-- Delivery Confirmation -->
+            <div class="delivery-check">✅</div>
         </div>
     </header>
 
     <section id="home" class="hero">
-        <div class="hero-content">
-            <h2>Transform Your Digital Presence</h2>
-            <p>We craft compelling digital experiences that drive growth and build lasting connections with your audience.</p>
-            <div class="cta-buttons">
-                <a href="#contact" class="btn btn-primary">Get Started</a>
-                <a href="#services" class="btn btn-secondary">Our Services</a>
+        <h1>India's Leading B2B Liquidation Platform</h1>
+        <p>Trusted partner for buying and selling liquidation stock lots</p>
+        
+        <!-- Simple Action Icons - No Boxes -->
+        <div class="action-icons">
+            <div class="action-item" onclick="openBuyModal()">
+                <span class="simple-icon">🛒</span>
+                <div class="action-label">Buy</div>
             </div>
-        </div>
-    </section>
-
-    <section id="services" class="services">
-        <div class="section-title">
-            <h2>Our Services</h2>
-            <p>Comprehensive digital marketing solutions tailored to your business needs</p>
-        </div>
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-search"></i>
-                </div>
-                <h3>SEO Optimization</h3>
-                <p>Boost your online visibility and rank higher in search results with our proven SEO strategies and techniques.</p>
+            <div class="action-item" onclick="openSellModal()">
+                <span class="simple-icon">💼</span>
+                <div class="action-label">Sell</div>
             </div>
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-bullhorn"></i>
-                </div>
-                <h3>Social Media Marketing</h3>
-                <p>Engage your audience and build a strong social presence across all major platforms with targeted campaigns.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-pen-fancy"></i>
-                </div>
-                <h3>Content Creation</h3>
-                <p>Compelling content that resonates with your audience and drives meaningful engagement and conversions.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h3>Analytics & Insights</h3>
-                <p>Data-driven strategies backed by comprehensive analytics to maximize your marketing ROI.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-palette"></i>
-                </div>
-                <h3>Brand Strategy</h3>
-                <p>Develop a unique brand identity that stands out and connects with your target market.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <h3>Email Marketing</h3>
-                <p>Personalized email campaigns that nurture leads and drive customer loyalty and retention.</p>
+            <div class="action-item" onclick="openAuctionModal()">
+                <span class="simple-icon">🔨</span>
+                <div class="action-label">Live Auction</div>
             </div>
         </div>
     </section>
 
     <section id="products" class="products">
-        <div class="products-header">
-            <h2>Premium Marketing Products</h2>
-            <p>Discover our curated selection of professional marketing tools and resources designed to accelerate your business growth</p>
+        <div class="container">
+            <h2 class="section-title">Our Products</h2>
+            <div class="products-intro">
+                <p>AK Brands Marketing offers a wide range of B2B liquidation, surplus, and wholesale products in India, sourced from trusted manufacturers, distributors, and sellers across the country. Our product portfolio is designed to meet the needs of retailers, resellers, wholesalers, and online sellers.</p>
+            </div>
+            
+            <div class="products-grid">
+                <div class="product-category">
+                    <h3>👔 Garments & Apparels</h3>
+                    <ul>
+                        <li>Men's, women's & kids clothing</li>
+                        <li>Western & ethnic wear</li>
+                        <li>Undergarments & innerwear</li>
+                        <li>Fashion surplus & clearance stock</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>👟 Footwear</h3>
+                    <ul>
+                        <li>Casual, formal & sports footwear</li>
+                        <li>Men's, women's & kids shoes</li>
+                        <li>Bulk & liquidation footwear lots</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🏠 Home Appliances & Large Appliances</h3>
+                    <ul>
+                        <li>Small home appliances</li>
+                        <li>Large appliances (ACs, refrigerators, washing machines, etc.)</li>
+                        <li>Clearance & surplus appliance stock</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>📱 Electronics & Mobile Accessories</h3>
+                    <ul>
+                        <li>Consumer electronics</li>
+                        <li>Mobile phones & accessories</li>
+                        <li>Chargers, earphones, power banks & gadgets</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🛒 FMCG & Groceries</h3>
+                    <ul>
+                        <li>Fast-moving consumer goods</li>
+                        <li>Packaged food & grocery items</li>
+                        <li>Daily essentials & household supplies</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🍽️ Crockery & Kitchenware</h3>
+                    <ul>
+                        <li>Crockery sets</li>
+                        <li>Kitchen utilities & utensils</li>
+                        <li>Home-use & commercial kitchen products</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🪑 Furniture</h3>
+                    <ul>
+                        <li>Home & office furniture</li>
+                        <li>Plastic, metal & wooden furniture</li>
+                        <li>Clearance & bulk furniture stock</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🧳 Luggage & Travel Products</h3>
+                    <ul>
+                        <li>Suitcases, trolley bags & backpacks</li>
+                        <li>Travel accessories & storage solutions</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🧸 Toys & Baby Care Products</h3>
+                    <ul>
+                        <li>Kids toys & games</li>
+                        <li>Baby care items & essentials</li>
+                        <li>Educational & recreational products</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>⌚ Watches & Fashion Accessories</h3>
+                    <ul>
+                        <li>Branded & non-branded watches</li>
+                        <li>Belts, wallets, sunglasses & accessories</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🏋️ Sports, Fitness & Gym Equipment</h3>
+                    <ul>
+                        <li>Gym & fitness equipment</li>
+                        <li>Sports goods & accessories</li>
+                        <li>Home workout & training products</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🚴 Cycles & Outdoor Products</h3>
+                    <ul>
+                        <li>Bicycles & cycling accessories</li>
+                        <li>Outdoor & recreational items</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>💄 Beauty, Cosmetics & Personal Care</h3>
+                    <ul>
+                        <li>Beauty & cosmetic products</li>
+                        <li>Bath & personal care items</li>
+                        <li>Grooming & hygiene products</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🎨 Home Décor & Fancy Items</h3>
+                    <ul>
+                        <li>Decorative home accessories</li>
+                        <li>Gift items & fancy products</li>
+                        <li>Seasonal & trending décor</li>
+                    </ul>
+                </div>
+
+                <div class="product-category">
+                    <h3>🔧 Hardware & Electrical Items</h3>
+                    <ul>
+                        <li>Electrical fittings & accessories</li>
+                        <li>Hardware tools & supplies</li>
+                        <li>Construction & utility items</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="products-footer">
+                <h3>Product Sourcing & Supply</h3>
+                <p>All products are available through verified liquidation stock, surplus inventory, and wholesale sourcing, with quality checks, transparent pricing, and PAN-India delivery support.</p>
+            </div>
         </div>
+    </section>
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">B2B Liquidation & Stock Lot Sourcing</h2>
+            
+            <div class="services-intro">
+                <p>We connect buyers and sellers of quality liquidation stock lots, surplus, and clearance inventory across multiple product categories.</p>
+            </div>
 
-        <div class="product-filters">
-            <button class="filter-btn active" onclick="filterProducts('all')">All Products</button>
-            <button class="filter-btn" onclick="filterProducts('digital')">Digital Tools</button>
-            <button class="filter-btn" onclick="filterProducts('templates')">Templates</button>
-            <button class="filter-btn" onclick="filterProducts('courses')">Courses</button>
+            <div class="service-section">
+                <h3 class="service-heading">📦 Our platform supports the sourcing and liquidation of:</h3>
+                <div class="service-list">
+                    <ul>
+                        <li>Excess inventory & overstock items</li>
+                        <li>Cancelled orders & shipment-cancelled lots</li>
+                        <li>Unsold, slow-moving & non-moving products</li>
+                        <li>Dead stock & warehouse clearance inventory</li>
+                        <li>Online return products & leftover stock</li>
+                        <li>Shop-closed inventory & orphan stock lots</li>
+                        <li>Factory surplus & F&D stocks</li>
+                        <li>Custom clearance & surplus imports</li>
+                        <li>Used products, minor & damaged items</li>
+                        <li>Scrap items & mixed liquidation lots</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="service-section">
+                <h3 class="service-heading">🏭 Bulk Product Sourcing</h3>
+                <p class="service-description">We source products directly from manufacturers and authorized wholesalers across India.</p>
+                <div class="service-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">💰</span>
+                        <span>Competitive bulk pricing</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📦</span>
+                        <span>Wide product categories under one platform</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔄</span>
+                        <span>Reliable and consistent supply</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-section">
+                <h3 class="service-heading">✅ Quality Verification & Inspection</h3>
+                <p class="service-description">Every lot goes through basic quality and quantity verification before dispatch.</p>
+                <div class="service-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">🔍</span>
+                        <span>Condition and assortment checks</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📋</span>
+                        <span>Pre-dispatch verification</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🛡️</span>
+                        <span>Reduced buyer risk</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-section">
+                <h3 class="service-heading">🚚 Logistics & PAN-India Delivery</h3>
+                <p class="service-description">We manage logistics coordination to ensure smooth delivery.</p>
+                <div class="service-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">🚛</span>
+                        <span>Transport & courier coordination</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📦</span>
+                        <span>Secure packaging & dispatch</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🇮🇳</span>
+                        <span>PAN-India shipment support</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-section">
+                <h3 class="service-heading">🤝 Business Support</h3>
+                <p class="service-description">We provide end-to-end business support to ensure smooth operations and reliable order fulfillment for our clients.</p>
+                <div class="service-list">
+                    <ul>
+                        <li>24/7 business support for buyers and sellers</li>
+                        <li>On-time dispatch follow-up with suppliers and warehouses</li>
+                        <li>Courier & transport coordination for every shipment</li>
+                        <li>Continuous package tracking until the customer receives the order</li>
+                        <li>Proactive issue resolution for delays, damages, or shortages</li>
+                        <li>Clear communication & status updates at every stage</li>
+                        <li>Support for bulk, mixed & liquidation shipments</li>
+                        <li>Post-dispatch assistance for delivery confirmation and closure</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="services-footer">
+                <p>All stock lots are sourced with clear communication, transparent processes, and end-to-end coordination, enabling businesses to liquidate inventory efficiently and buyers to access profitable resale opportunities.</p>
+            </div>
         </div>
-
-        <div class="products-grid">
-            <!-- Product 1: Social Media Master Kit -->
-            <div class="product-card" data-category="digital">
-                <span class="product-badge">Best Seller</span>
-                <button class="wishlist-btn">
-                    <i class="far fa-heart"></i>
-                </button>
-                <div class="product-image-container">
-                    <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800" alt="Social Media Master Kit" class="product-image">
-                    <div class="product-overlay">
-                        <button class="quick-view-btn">Quick View</button>
+    </section>
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Clients Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"AK Brands has been our go-to partner for liquidation stock. Their quality and service are unmatched in the industry."</p>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/150?img=12" alt="Rajesh Kumar" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Rajesh Kumar</h4>
+                            <p>Retail Business Owner, Mumbai</p>
+                        </div>
                     </div>
                 </div>
-                <div class="product-content">
-                    <div class="product-category">Digital Tools</div>
-                    <h3 class="product-title">Social Media Master Kit</h3>
-                    <div class="product-rating">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Professional service and great deals. We've saved thousands on inventory costs thanks to AK Brands Marketing."</p>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/150?img=45" alt="Priya Sharma" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Priya Sharma</h4>
+                            <p>E-commerce Entrepreneur, Delhi</p>
                         </div>
-                        <span class="rating-count">(247 reviews)</span>
-                    </div>
-                    <p class="product-description">Complete toolkit for managing and growing your social media presence across all platforms. Includes scheduling tools, analytics dashboard, and content templates.</p>
-                    
-                    <div class="product-tags">
-                        <span class="product-tag">Social Media</span>
-                        <span class="product-tag">Analytics</span>
-                        <span class="product-tag">Automation</span>
-                    </div>
-
-                    <ul class="product-features">
-                        <li><i class="fas fa-check-circle"></i> Multi-platform scheduling</li>
-                        <li><i class="fas fa-check-circle"></i> Advanced analytics dashboard</li>
-                        <li><i class="fas fa-check-circle"></i> 500+ content templates</li>
-                        <li><i class="fas fa-check-circle"></i> Hashtag research tool</li>
-                    </ul>
-
-                    <div class="delivery-info">
-                        <i class="fas fa-shipping-fast"></i>
-                        <div class="delivery-text">
-                            <strong>Instant Digital Delivery</strong>
-                            <span>Access immediately after purchase</span>
-                        </div>
-                    </div>
-
-                    <div class="stock-status">
-                        <div class="stock-indicator"></div>
-                        <span class="stock-text">In Stock - Digital Product</span>
-                    </div>
-
-                    <div class="product-footer">
-                        <div>
-                            <span class="product-price-label">Starting at</span>
-                            <div class="product-price">$199</div>
-                        </div>
-                        <button class="buy-now-btn">Buy Now</button>
                     </div>
                 </div>
-            </div>
-
-            <!-- Product 2: SEO Power Suite -->
-            <div class="product-card" data-category="digital">
-                <span class="product-badge">New</span>
-                <button class="wishlist-btn">
-                    <i class="far fa-heart"></i>
-                </button>
-                <div class="product-image-container">
-                    <img src="https://images.unsplash.com/photo-1432888622747-4eb9a8f2c293?w=800" alt="SEO Power Suite" class="product-image">
-                    <div class="product-overlay">
-                        <button class="quick-view-btn">Quick View</button>
-                    </div>
-                </div>
-                <div class="product-content">
-                    <div class="product-category">Digital Tools</div>
-                    <h3 class="product-title">SEO Power Suite</h3>
-                    <div class="product-rating">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Reliable, transparent, and always delivering on their promises. Highly recommend for B2B liquidation needs."</p>
+                    <div class="testimonial-author">
+                        <img src="https://i.pravatar.cc/150?img=33" alt="Amit Patel" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Amit Patel</h4>
+                            <p>Wholesale Distributor, Ahmedabad</p>
                         </div>
-                        <span class="rating-count">(189 reviews)</span>
-                    </div>
-                    <p class="product-description">Professional SEO toolkit with keyword research, rank tracking, backlink analysis, and site audit features. Everything you need to dominate search rankings.</p>
-                    
-                    <div class="product-tags">
-                        <span class="product-tag">SEO</span>
-                        <span class="product-tag">Keywords</span>
-                        <span class="product-tag">Analytics</span>
-                    </div>
-
-                    <ul class="product-features">
-                        <li><i class="fas fa-check-circle"></i> Advanced keyword research</li>
-                        <li><i class="fas fa-check-circle"></i> Competitor analysis</li>
-                        <li><i class="fas fa-check-circle"></i> Rank tracking & monitoring</li>
-                        <li><i class="fas fa-check-circle"></i> Technical SEO audit</li>
-                    </ul>
-
-                    <div class="delivery-info">
-                        <i class="fas fa-shipping-fast"></i>
-                        <div class="delivery-text">
-                            <strong>Instant Digital Delivery</strong>
-                            <span>Access immediately after purchase</span>
-                        </div>
-                    </div>
-
-                    <div class="stock-status">
-                        <div class="stock-indicator"></div>
-                        <span class="stock-text">In Stock - Digital Product</span>
-                    </div>
-
-                    <div class="product-footer">
-                        <div>
-                            <span class="product-price-label">Starting at</span>
-                            <div class="product-price">$299</div>
-                        </div>
-                        <button class="buy-now-btn">Buy Now</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 3: Email Marketing Templates -->
-            <div class="product-card" data-category="templates">
-                <span class="product-badge">Popular</span>
-                <button class="wishlist-btn">
-                    <i class="far fa-heart"></i>
-                </button>
-                <div class="product-image-container">
-                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800" alt="Email Marketing Templates" class="product-image">
-                    <div class="product-overlay">
-                        <button class="quick-view-btn">Quick View</button>
-                    </div>
-                </div>
-                <div class="product-content">
-                    <div class="product-category">Templates</div>
-                    <h3 class="product-title">Email Marketing Templates</h3>
-                    <div class="product-rating">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <span class="rating-count">(312 reviews)</span>
-                    </div>
-                    <p class="product-description">200+ professionally designed email templates for every occasion. Fully responsive, customizable, and optimized for maximum engagement and conversions.</p>
-                    
-                    <div class="product-tags">
-                        <span class="product-tag">Email</span>
-                        <span class="product-tag">Templates</span>
-                        <span class="product-tag">Responsive</span>
-                    </div>
-
-                    <ul class="product-features">
-                        <li><i class="fas fa-check-circle"></i> 200+ premium templates</li>
-                        <li><i class="fas fa-check-circle"></i> Mobile responsive design</li>
-                        <li><i class="fas fa-check-circle"></i> Easy customization</li>
-                        <li><i class="fas fa-check-circle"></i> All major ESP compatible</li>
-                    </ul>
-
-                    <div class="delivery-info">
-                        <i class="fas fa-shipping-fast"></i>
-                        <div class="delivery-text">
-                            <strong>Instant Digital Delivery</strong>
-                            <span>Download immediately after purchase</span>
-                        </div>
-                    </div>
-
-                    <div class="stock-status">
-                        <div class="stock-indicator"></div>
-                        <span class="stock-text">In Stock - Digital Product</span>
-                    </div>
-
-                    <div class="product-footer">
-                        <div>
-                            <span class="product-price-label">Starting at</span>
-                            <div class="product-price">$149</div>
-                        </div>
-                        <button class="buy-now-btn">Buy Now</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 4: Content Marketing Masterclass -->
-            <div class="product-card" data-category="courses">
-                <span class="product-badge">Limited Offer</span>
-                <button class="wishlist-btn">
-                    <i class="far fa-heart"></i>
-                </button>
-                <div class="product-image-container">
-                    <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800" alt="Content Marketing Masterclass" class="product-image">
-                    <div class="product-overlay">
-                        <button class="quick-view-btn">Quick View</button>
-                    </div>
-                </div>
-                <div class="product-content">
-                    <div class="product-category">Courses</div>
-                    <h3 class="product-title">Content Marketing Masterclass</h3>
-                    <div class="product-rating">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <span class="rating-count">(428 reviews)</span>
-                    </div>
-                    <p class="product-description">Comprehensive video course covering content strategy, creation, distribution, and optimization. Learn from industry experts with real-world case studies.</p>
-                    
-                    <div class="product-tags">
-                        <span class="product-tag">Course</span>
-                        <span class="product-tag">Video</span>
-                        <span class="product-tag">Certificate</span>
-                    </div>
-
-                    <ul class="product-features">
-                        <li><i class="fas fa-check-circle"></i> 50+ video lessons</li>
-                        <li><i class="fas fa-check-circle"></i> Downloadable resources</li>
-                        <li><i class="fas fa-check-circle"></i> Certificate of completion</li>
-                        <li><i class="fas fa-check-circle"></i> Lifetime access</li>
-                    </ul>
-
-                    <div class="delivery-info">
-                        <i class="fas fa-shipping-fast"></i>
-                        <div class="delivery-text">
-                            <strong>Instant Access</strong>
-                            <span>Start learning immediately</span>
-                        </div>
-                    </div>
-
-                    <div class="stock-status">
-                        <div class="stock-indicator low"></div>
-                        <span class="stock-text">Limited Spots Available</span>
-                    </div>
-
-                    <div class="product-footer">
-                        <div>
-                            <span class="product-price-label">Starting at</span>
-                            <div class="product-price">$399</div>
-                        </div>
-                        <button class="buy-now-btn">Enroll Now</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 5: Brand Identity Package -->
-            <div class="product-card" data-category="templates">
-                <span class="product-badge">Premium</span>
-                <button class="wishlist-btn">
-                    <i class="far fa-heart"></i>
-                </button>
-                <div class="product-image-container">
-                    <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800" alt="Brand Identity Package" class="product-image">
-                    <div class="product-overlay">
-                        <button class="quick-view-btn">Quick View</button>
-                    </div>
-                </div>
-                <div class="product-content">
-                    <div class="product-category">Templates</div>
-                    <h3 class="product-title">Brand Identity Package</h3>
-                    <div class="product-rating">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <span class="rating-count">(156 reviews)</span>
-                    </div>
-                    <p class="product-description">Complete brand identity toolkit including logo templates, color palettes, typography guides, and brand guidelines. Perfect for startups and rebrands.</p>
-                    
-                    <div class="product-tags">
-                        <span class="product-tag">Branding</span>
-                        <span class="product-tag">Design</span>
-                        <span class="product-tag">Templates</span>
-                    </div>
-
-                    <ul class="product-features">
-                        <li><i class="fas fa-check-circle"></i> 100+ logo templates</li>
-                        <li><i class="fas fa-check-circle"></i> Brand guidelines template</li>
-                        <li><i class="fas fa-check-circle"></i> Color palette generator</li>
-                        <li><i class="fas fa-check-circle"></i> Typography pairings</li>
-                    </ul>
-
-                    <div class="delivery-info">
-                        <i class="fas fa-shipping-fast"></i>
-                        <div class="delivery-text">
-                            <strong>Instant Digital Delivery</strong>
-                            <span>All files delivered instantly</span>
-                        </div>
-                    </div>
-
-                    <div class="stock-status">
-                        <div class="stock-indicator"></div>
-                        <span class="stock-text">In Stock - Digital Product</span>
-                    </div>
-
-                    <div class="product-footer">
-                        <div>
-                            <span class="product-price-label">Starting at</span>
-                            <div class="product-price">$249</div>
-                        </div>
-                        <button class="buy-now-btn">Buy Now</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 6: Analytics Dashboard Pro -->
-            <div class="product-card" data-category="digital">
-                <span class="product-badge">Trending</span>
-                <button class="wishlist-btn">
-                    <i class="far fa-heart"></i>
-                </button>
-                <div class="product-image-container">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800" alt="Analytics Dashboard Pro" class="product-image">
-                    <div class="product-overlay">
-                        <button class="quick-view-btn">Quick View</button>
-                    </div>
-                </div>
-                <div class="product-content">
-                    <div class="product-category">Digital Tools</div>
-                    <h3 class="product-title">Analytics Dashboard Pro</h3>
-                    <div class="product-rating">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <span class="rating-count">(203 reviews)</span>
-                    </div>
-                    <p class="product-description">Unified analytics platform that consolidates data from all your marketing channels. Real-time insights, custom reports, and predictive analytics.</p>
-                    
-                    <div class="product-tags">
-                        <span class="product-tag">Analytics</span>
-                        <span class="product-tag">Reporting</span>
-                        <span class="product-tag">AI-Powered</span>
-                    </div>
-
-                    <ul class="product-features">
-                        <li><i class="fas fa-check-circle"></i> Multi-channel integration</li>
-                        <li><i class="fas fa-check-circle"></i> Custom report builder</li>
-                        <li><i class="fas fa-check-circle"></i> AI-powered insights</li>
-                        <li><i class="fas fa-check-circle"></i> Real-time data sync</li>
-                    </ul>
-
-                    <div class="delivery-info">
-                        <i class="fas fa-shipping-fast"></i>
-                        <div class="delivery-text">
-                            <strong>Instant Setup</strong>
-                            <span>Get started in minutes</span>
-                        </div>
-                    </div>
-
-                    <div class="stock-status">
-                        <div class="stock-indicator"></div>
-                        <span class="stock-text">In Stock - Digital Product</span>
-                    </div>
-
-                    <div class="product-footer">
-                        <div>
-                            <span class="product-price-label">Starting at</span>
-                            <div class="product-price">$349</div>
-                        </div>
-                        <button class="buy-now-btn">Buy Now</button>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Trust Badges -->
-        <div class="trust-badges">
-            <div class="trust-badge">
-                <i class="fas fa-shield-alt"></i>
-                <div class="trust-badge-text">
-                    <strong>Secure Payment</strong>
-                    <span>256-bit SSL encryption</span>
+    <section id="blog" class="blog">
+        <div class="container">
+            <h2 class="section-title">Latest Insights</h2>
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600" alt="Blog post" class="blog-image">
+                    <div class="blog-content">
+                        <p class="blog-date">January 5, 2026</p>
+                        <h3 class="blog-title">Understanding B2B Liquidation Markets in India</h3>
+                        <p class="blog-excerpt">Explore the growing opportunities in India's B2B liquidation sector and how businesses can benefit from strategic inventory management.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600" alt="Blog post" class="blog-image">
+                    <div class="blog-content">
+                        <p class="blog-date">December 28, 2025</p>
+                        <h3 class="blog-title">5 Tips for Successful Liquidation Buying</h3>
+                        <p class="blog-excerpt">Learn the essential strategies for making profitable purchases in the liquidation market and avoiding common pitfalls.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=600" alt="Blog post" class="blog-image">
+                    <div class="blog-content">
+                        <p class="blog-date">December 20, 2025</p>
+                        <h3 class="blog-title">The Future of Wholesale Distribution</h3>
+                        <p class="blog-excerpt">Discover how technology and changing market dynamics are reshaping the wholesale distribution landscape in India.</p>
+                        <a href="#" class="read-more">Read More →</a>
+                    </div>
                 </div>
             </div>
-            <div class="trust-badge">
-                <i class="fas fa-undo"></i>
-                <div class="trust-badge-text">
-                    <strong>30-Day Guarantee</strong>
-                    <span>Money-back guarantee</span>
-                </div>
-            </div>
-            <div class="trust-badge">
-                <i class="fas fa-headset"></i>
-                <div class="trust-badge-text">
-                    <strong>24/7 Support</strong>
-                    <span>Expert assistance</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Newsletter Section -->
-        <div class="newsletter-section">
-            <h3>Stay Updated</h3>
-            <p>Subscribe to get exclusive deals and product updates</p>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit">Subscribe</button>
-            </form>
-        </div>
-
-        <!-- Products Footer -->
-        <div class="products-footer">
-            <h3>Need a Custom Solution?</h3>
-            <p>Our team can create tailored marketing solutions specifically for your business needs. Contact us to discuss your requirements and get a personalized quote.</p>
-            <a href="#contact" class="btn btn-primary" style="margin-top: 1.5rem;">Contact Us</a>
         </div>
     </section>
 
     <section id="about" class="about">
-        <div class="about-content">
-            <div class="about-text">
-                <h2>About AK Brands Marketing</h2>
-                <p>We are a team of passionate digital marketing professionals dedicated to helping businesses thrive in the digital landscape. With years of experience and a proven track record, we deliver results that matter.</p>
-                <p>Our approach combines creativity with data-driven strategies to ensure your brand not only stands out but also achieves measurable growth.</p>
-                <ul class="about-features">
-                    <li><i class="fas fa-check"></i> 10+ Years of Industry Experience</li>
-                    <li><i class="fas fa-check"></i> 500+ Successful Projects</li>
-                    <li><i class="fas fa-check"></i> Award-Winning Team</li>
-                    <li><i class="fas fa-check"></i> Client-Centric Approach</li>
-                </ul>
+        <div class="container">
+            <h2 class="section-title">About AK Brands Marketing</h2>
+            <div class="about-content">
+                                <p>AK Brands Marketing is one of India's leading B2B liquidation and stock lot sourcing platforms, connecting buyers and sellers of quality liquidation inventory across India. With years of hands-on experience in the wholesale and liquidation industry, we have earned a strong reputation for reliability, transparency, and customer-focused service.</p>
+                <p>We specialize in helping retailers, resellers, wholesalers, and online sellers access verified liquidation stock, factory surplus, and clearance inventory at competitive prices. At the same time, we provide manufacturers and distributors with a trusted platform to liquidate excess, slow-moving, or surplus stock efficiently.</p>
+                <p>Our end-to-end approach covers quality verification, pricing support, documentation, and logistics coordination, ensuring a smooth and hassle-free experience for both buyers and sellers. Every transaction is handled with professionalism and clear communication, making us a preferred partner in the Indian liquidation market.</p>
+                <p>Today, thousands of businesses across India trust AK Brands Marketing for dependable liquidation sourcing, profitable resale opportunities, and long-term business growth.</p>
             </div>
-            <div class="about-image">
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800" alt="Team collaboration">
-            </div>
-        </div>
-    </section>
-
-    <section class="stats">
-        <div class="stats-grid">
-            <div class="stat-item">
-                <h3>500+</h3>
-                <p>Happy Clients</p>
-            </div>
-            <div class="stat-item">
-                <h3>1000+</h3>
-                <p>Projects Completed</p>
-            </div>
-            <div class="stat-item">
-                <h3>50+</h3>
-                <p>Team Members</p>
-            </div>
-            <div class="stat-item">
-                <h3>15+</h3>
-                <p>Awards Won</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="testimonials" class="testimonials">
-        <div class="section-title">
-            <h2>What Our Clients Say</h2>
-            <p>Real feedback from businesses we've helped grow</p>
-        </div>
-        <div class="testimonials-grid">
-            <div class="testimonial-card">
-                <p class="testimonial-text">"AK Brands Marketing transformed our online presence completely. Our website traffic increased by 300% in just 6 months!"</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar"></div>
-                    <div class="author-info">
-                        <h4>Sarah Johnson</h4>
-                        <p>CEO, TechStart Inc.</p>
-                    </div>
-                </div>
-                <div class="rating">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-            </div>
-            <div class="testimonial-card">
-                <p class="testimonial-text">"Professional, creative, and results-driven. The team at AK Brands exceeded all our expectations."</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar"></div>
-                    <div class="author-info">
-                        <h4>Michael Chen</h4>
-                        <p>Marketing Director, GrowthCo</p>
-                    </div>
-                </div>
-                <div class="rating">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-            </div>
-            <div class="testimonial-card">
-                <p class="testimonial-text">"Their strategic approach to social media marketing helped us build a loyal community of over 100K followers."</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar"></div>
-                    <div class="author-info">
-                        <h4>Emily Rodriguez</h4>
-                        <p>Founder, StyleHub</p>
-                    </div>
-                </div>
-                <div class="rating">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Testimonial Submission Form -->
-        <div class="testimonial-form-container">
-            <h2 class="form-title">Share Your Experience</h2>
-            <p class="form-subtitle">We'd love to hear about your experience with AK Brands Marketing</p>
-            
-            <form class="testimonial-form" id="testimonialForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="fullName">Full Name *</label>
-                        <input type="text" id="fullName" name="fullName" required placeholder="John Doe">
-                    </div>
-                    <div class="form-group">
-                        <label for="company">Company/Organization</label>
-                        <input type="text" id="company" name="company" placeholder="Your Company">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="email">Email Address *</label>
-                        <input type="email" id="email" name="email" required placeholder="john@example.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="position">Position/Title</label>
-                        <input type="text" id="position" name="position" placeholder="CEO, Marketing Manager, etc.">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="rating">Rating *</label>
-                    <div class="star-rating" id="starRating">
-                        <span class="star" data-rating="1">⭐</span>
-                        <span class="star" data-rating="2">⭐</span>
-                        <span class="star" data-rating="3">⭐</span>
-                        <span class="star" data-rating="4">⭐</span>
-                        <span class="star" data-rating="5">⭐</span>
-                    </div>
-                    <input type="hidden" id="ratingValue" name="rating" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="testimonial">Your Testimonial *</label>
-                    <textarea id="testimonial" name="testimonial" required rows="6" placeholder="Share your experience with AK Brands Marketing..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="service">Service Used</label>
-                    <input type="text" id="service" name="service" placeholder="e.g., SEO, Social Media Marketing, Content Creation">
-                </div>
-
-                <button type="submit" class="submit-btn">Submit Testimonial</button>
-            </form>
         </div>
     </section>
 
     <section id="contact" class="contact">
-        <div class="section-title">
+        <div class="contact-info">
             <h2>Get In Touch</h2>
-            <p>Let's discuss how we can help grow your business</p>
-        </div>
-        <div class="contact-content">
-            <div class="contact-info">
-                <h3>Contact Information</h3>
-                <ul class="contact-details">
-                    <li>
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>123 Marketing Street, Digital City, DC 12345</span>
-                    </li>
-                    <li>
-                        <i class="fas fa-phone"></i>
-                        <span>+1 (555) 123-4567</span>
-                    </li>
-                    <li>
-                        <i class="fas fa-envelope"></i>
-                        <span>hello@akbrandsmarketing.com</span>
-                    </li>
-                    <li>
-                        <i class="fas fa-clock"></i>
-                        <span>Mon - Fri: 9:00 AM - 6:00 PM</span>
-                    </li>
-                </ul>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                </div>
+            <div class="contact-details">
+                <p>📞 Phone: +91 8660502217</p>
+                <p>📧 Email: <a href="mailto:abdul@akbrandsmarketing.com">abdul@akbrandsmarketing.com</a></p>
+                <p>📍 Location: Bengaluru, Karnataka, India</p>
+                <p>🕒 Business Hours: Mon-Sat, 9 AM to 6 PM</p>
             </div>
-            <form class="contact-form">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email-contact">Email</label>
-                    <input type="email" id="email-contact" required>
-                </div>
-                <div class="form-group">
-                    <label for="subject">Subject</label>
-                    <input type="text" id="subject" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Send Message</button>
-            </form>
         </div>
     </section>
 
+        
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>AK Brands Marketing</h3>
-                <p>Elevating brands through innovative digital marketing strategies and creative excellence.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Services</h3>
-                <ul>
-                    <li><a href="#services">SEO Optimization</a></li>
-                    <li><a href="#services">Social Media</a></li>
-                    <li><a href="#services">Content Creation</a></li>
-                    <li><a href="#services">Brand Strategy</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Connect</h3>
-                <ul>
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">LinkedIn</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 AK Brands Marketing. All rights reserved.</p>
-        </div>
+        <p>&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
     </footer>
 
-    <!-- Scroll to Top Button -->
-    <button class="scroll-top" id="scrollTop">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- Image Modal -->
-    <div class="modal" id="imageModal">
+    <!-- Buy Modal -->
+    <div id="buyModal" class="modal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">&times;</button>
-            <img src="" alt="Product Image" class="modal-image" id="modalImage">
+            <span class="close-modal" onclick="closeBuyModal()">&times;</span>
+            <h2 class="modal-title">🛒 Buy Stock Lots</h2>
+            <form class="modal-form" onsubmit="submitBuyForm(event)">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" id="buyName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number *</label>
+                    <input type="tel" id="buyMobile" required placeholder="+91 98765 43210" pattern="[+]?[0-9]{10,13}">
+                </div>
+                <button type="submit" class="submit-btn">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sell Modal -->
+    <div id="sellModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeSellModal()">&times;</span>
+            <h2 class="modal-title">💼 Sell Your Stock</h2>
+            <form class="modal-form" onsubmit="submitSellForm(event)">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" id="sellName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number *</label>
+                    <input type="tel" id="sellMobile" required placeholder="+91 98765 43210" pattern="[+]?[0-9]{10,13}">
+                </div>
+                <button type="submit" class="submit-btn">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Auction Modal -->
+    <div id="auctionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAuctionModal()">&times;</span>
+            <h2 class="modal-title">🔨 Live Auction</h2>
+            <form class="modal-form" onsubmit="submitAuctionForm(event)">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" id="auctionName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number *</label>
+                    <input type="tel" id="auctionMobile" required placeholder="+91 98765 43210" pattern="[+]?[0-9]{10,13}">
+                </div>
+                <button type="submit" class="submit-btn">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Welcome Modal -->
+    <div id="welcomeModal" class="welcome-modal">
+        <div class="welcome-content">
+            <div class="welcome-icon">🎉</div>
+            <h2 class="welcome-title">Welcome to AK Brands Marketing© Family!</h2>
+            <p class="welcome-subtitle">We're thrilled to have you with us!</p>
+            <div class="welcome-message">
+                <p><strong>🚧 Work in Progress</strong></p>
+                <p>We're currently building our online product catalog. Until then, please join our WhatsApp community to browse and buy stock lots directly!</p>
+            </div>
+            <a href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" class="whatsapp-btn">
+                <span class="whatsapp-icon">📱</span>
+                Join WhatsApp Community
+            </a>
+            <button class="close-welcome" onclick="closeWelcomeModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-content">
+            <h2 class="password-title">🔐 Secure Access</h2>
+            <p class="password-subtitle">Enter password and secret code to access Orders Management</p>
+            
+            <div class="password-input-group">
+                <label>Password</label>
+                <input type="password" id="passwordInput" class="password-input" placeholder="Enter password">
+            </div>
+
+            <div class="password-input-group">
+                <label>Secret Code</label>
+                <input type="password" id="secretCodeInput" class="password-input" placeholder="Enter secret code">
+            </div>
+
+            <div class="password-error" id="passwordError">Invalid password or secret code. Please try again.</div>
+
+            <div class="password-buttons">
+                <button class="password-btn password-verify" onclick="verifyPassword()">Verify & Access</button>
+                <button class="password-btn password-cancel" onclick="closePasswordModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Database Management Modal -->
+    <div id="databaseModal" class="database-modal">
+        <div class="database-content">
+            <div class="database-header">
+                <h2>📊 Database Management</h2>
+                <span class="close-database" onclick="closeDatabaseModal()">&times;</span>
+            </div>
+
+            <div class="database-tabs">
+                <button class="tab-btn active" onclick="switchTab('customer')">👥 Customer Database</button>
+                <button class="tab-btn" onclick="switchTab('supplier')">🏭 Supplier Database</button>
+            </div>
+
+            <!-- Customer Database Form -->
+            <div id="customerTab" class="tab-content active">
+                <form class="database-form" onsubmit="saveCustomer(event)">
+                    <div class="form-group">
+                        <label>Name *</label>
+                        <input type="text" id="customerName" required placeholder="Full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Details *</label>
+                        <input type="tel" id="customerContact" required placeholder="+91 98765 43210">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Address *</label>
+                        <textarea id="customerAddress" required placeholder="Complete address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" id="customerCity" required placeholder="City">
+                    </div>
+                    <div class="form-group">
+                        <label>State *</label>
+                        <input type="text" id="customerState" required placeholder="State">
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode *</label>
+                        <input type="text" id="customerPincode" required placeholder="Pincode" pattern="[0-9]{6}">
+                    </div>
+                    <div class="database-form-actions">
+                        <button type="submit" class="database-btn database-btn-save">💾 Save Customer</button>
+                        <button type="button" class="database-btn database-btn-clear" onclick="clearCustomerForm()">🔄 Clear Form</button>
+                    </div>
+                </form>
+
+                <!-- Customer Table -->
+                <div class="database-table-section">
+                    <div class="table-header">
+                        <h3>📋 Saved Customers</h3>
+                        <div class="table-actions">
+                            <button class="action-btn download-btn" onclick="downloadCustomers()">
+                                📥 Download CSV
+                            </button>
+                            <button class="action-btn whatsapp-share-btn" onclick="shareCustomersWhatsApp()">
+                                📱 Share via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                    <div id="customerTableContainer"></div>
+                </div>
+            </div>
+
+            <!-- Supplier Database Form -->
+            <div id="supplierTab" class="tab-content">
+                <form class="database-form" onsubmit="saveSupplier(event)">
+                    <div class="form-group">
+                        <label>Name *</label>
+                        <input type="text" id="supplierName" required placeholder="Full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Details *</label>
+                        <input type="tel" id="supplierContact" required placeholder="+91 98765 43210">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Address *</label>
+                        <textarea id="supplierAddress" required placeholder="Complete address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" id="supplierCity" required placeholder="City">
+                    </div>
+                    <div class="form-group">
+                        <label>State *</label>
+                        <input type="text" id="supplierState" required placeholder="State">
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode *</label>
+                        <input type="text" id="supplierPincode" required placeholder="Pincode" pattern="[0-9]{6}">
+                    </div>
+                    <div class="database-form-actions">
+                        <button type="submit" class="database-btn database-btn-save">💾 Save Supplier</button>
+                        <button type="button" class="database-btn database-btn-clear" onclick="clearSupplierForm()">🔄 Clear Form</button>
+                    </div>
+                </form>
+
+                <!-- Supplier Table -->
+                <div class="database-table-section">
+                    <div class="table-header">
+                        <h3>📋 Saved Suppliers</h3>
+                        <div class="table-actions">
+                            <button class="action-btn download-btn" onclick="downloadSuppliers()">
+                                📥 Download CSV
+                            </button>
+                            <button class="action-btn whatsapp-share-btn" onclick="shareSuppliersWhatsApp()">
+                                📱 Share via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                    <div id="supplierTableContainer"></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Mobile Menu Toggle
+        // LocalStorage keys
+        const CUSTOMERS_KEY = 'akbrands_customers';
+        const SUPPLIERS_KEY = 'akbrands_suppliers';
+
+        // Initialize data
+        let customers = JSON.parse(localStorage.getItem(CUSTOMERS_KEY)) || [];
+        let suppliers = JSON.parse(localStorage.getItem(SUPPLIERS_KEY)) || [];
+        let editingCustomerId = null;
+        let editingSupplierId = null;
+
+        // Menu Toggle
         function toggleMenu() {
-            const nav = document.getElementById('mainNav');
-            nav.classList.toggle('active');
+            document.getElementById('menuDropdown').classList.toggle('show');
         }
 
-        // Smooth Scrolling
+        // Close menu when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.menu-button')) {
+                var dropdowns = document.getElementsByClassName('dropdown-content');
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        // Modal Functions
+        function openBuyModal() {
+            document.getElementById('buyModal').classList.add('show');
+        }
+
+        function closeBuyModal() {
+            document.getElementById('buyModal').classList.remove('show');
+        }
+
+        function openSellModal() {
+            document.getElementById('sellModal').classList.add('show');
+        }
+
+        function closeSellModal() {
+            document.getElementById('sellModal').classList.remove('show');
+        }
+
+        function openAuctionModal() {
+            document.getElementById('auctionModal').classList.add('show');
+        }
+
+        function closeAuctionModal() {
+            document.getElementById('auctionModal').classList.remove('show');
+        }
+
+        function openWelcomeModal() {
+            document.getElementById('welcomeModal').classList.add('show');
+        }
+
+        function closeWelcomeModal() {
+            document.getElementById('welcomeModal').classList.remove('show');
+        }
+
+        function submitBuyForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('buyName').value;
+            const mobile = document.getElementById('buyMobile').value;
+            
+            console.log('Buy Request:', { name, mobile });
+            
+            closeBuyModal();
+            openWelcomeModal();
+        }
+
+        function submitSellForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('sellName').value;
+            const mobile = document.getElementById('sellMobile').value;
+            
+            console.log('Sell Request:', { name, mobile });
+            
+            closeSellModal();
+            openWelcomeModal();
+        }
+
+        function submitAuctionForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('auctionName').value;
+            const mobile = document.getElementById('auctionMobile').value;
+            
+            console.log('Auction Request:', { name, mobile });
+            
+            closeAuctionModal();
+            openWelcomeModal();
+        }
+
+        // Password Modal Functions
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.add('show');
+            document.getElementById('menuDropdown').classList.remove('show');
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('show');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('secretCodeInput').value = '';
+            document.getElementById('passwordError').classList.remove('show');
+        }
+
+        function verifyPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const secretCode = document.getElementById('secretCodeInput').value;
+            
+            // Check credentials
+            if (password === 'AK2024@Secure' && secretCode === 'MSZMA') {
+                closePasswordModal();
+                openDatabaseModal();
+            } else {
+                document.getElementById('passwordError').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('passwordError').classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Database Modal Functions
+        function openDatabaseModal() {
+            document.getElementById('databaseModal').classList.add('show');
+            renderCustomerTable();
+            renderSupplierTable();
+        }
+
+        function closeDatabaseModal() {
+            document.getElementById('databaseModal').classList.remove('show');
+        }
+
+        function switchTab(tab) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab
+            if (tab === 'customer') {
+                document.querySelector('.tab-btn:first-child').classList.add('active');
+                document.getElementById('customerTab').classList.add('active');
+            } else {
+                document.querySelector('.tab-btn:last-child').classList.add('active');
+                document.getElementById('supplierTab').classList.add('active');
+            }
+        }
+
+        // Customer Functions
+        function saveCustomer(e) {
+            e.preventDefault();
+            
+            const customer = {
+                id: editingCustomerId || Date.now().toString(),
+                name: document.getElementById('customerName').value,
+                contact: document.getElementById('customerContact').value,
+                address: document.getElementById('customerAddress').value,
+                city: document.getElementById('customerCity').value,
+                state: document.getElementById('customerState').value,
+                pincode: document.getElementById('customerPincode').value,
+                createdAt: editingCustomerId ? customers.find(c => c.id === editingCustomerId).createdAt : new Date().toISOString()
+            };
+            
+            if (editingCustomerId) {
+                // Update existing
+                const index = customers.findIndex(c => c.id === editingCustomerId);
+                customers[index] = customer;
+                editingCustomerId = null;
+            } else {
+                // Add new
+                customers.push(customer);
+            }
+            
+            localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(customers));
+            alert('✅ Customer data saved successfully!');
+            clearCustomerForm();
+            renderCustomerTable();
+        }
+
+        function clearCustomerForm() {
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerContact').value = '';
+            document.getElementById('customerAddress').value = '';
+            document.getElementById('customerCity').value = '';
+            document.getElementById('customerState').value = '';
+            document.getElementById('customerPincode').value = '';
+            editingCustomerId = null;
+        }
+
+        function editCustomer(id) {
+            const customer = customers.find(c => c.id === id);
+            if (customer) {
+                document.getElementById('customerName').value = customer.name;
+                document.getElementById('customerContact').value = customer.contact;
+                document.getElementById('customerAddress').value = customer.address;
+                document.getElementById('customerCity').value = customer.city;
+                document.getElementById('customerState').value = customer.state;
+                document.getElementById('customerPincode').value = customer.pincode;
+                editingCustomerId = id;
+                
+                // Scroll to form
+                document.getElementById('customerTab').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function deleteCustomer(id) {
+            if (confirm('Are you sure you want to delete this customer?')) {
+                customers = customers.filter(c => c.id !== id);
+                localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(customers));
+                renderCustomerTable();
+            }
+        }
+
+        function renderCustomerTable() {
+            const container = document.getElementById('customerTableContainer');
+            
+            if (customers.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No customers saved yet. Add your first customer above!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let tableHTML = `
+                <div class="database-table-wrapper">
+                    <table class="database-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Address</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Pincode</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            customers.forEach(customer => {
+                tableHTML += `
+                    <tr>
+                        <td>${customer.name}</td>
+                        <td>${customer.contact}</td>
+                        <td>${customer.address}</td>
+                        <td>${customer.city}</td>
+                        <td>${customer.state}</td>
+                        <td>${customer.pincode}</td>
+                        <td>
+                            <div class="table-action-btns">
+                                <button class="edit-btn" onclick="editCustomer('${customer.id}')">✏️ Edit</button>
+                                <button class="delete-btn" onclick="deleteCustomer('${customer.id}')">🗑️ Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            container.innerHTML = tableHTML;
+        }
+
+        function downloadCustomers() {
+            if (customers.length === 0) {
+                alert('No customers to download!');
+                return;
+            }
+            
+            let csv = 'Name,Contact,Address,City,State,Pincode\n';
+            customers.forEach(customer => {
+                csv += `"${customer.name}","${customer.contact}","${customer.address}","${customer.city}","${customer.state}","${customer.pincode}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AK_Brands_Customers_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function shareCustomersWhatsApp() {
+            if (customers.length === 0) {
+                alert('No customers to share!');
+                return;
+            }
+            
+            let message = '📋 *AK Brands - Customer Database*\n\n';
+            customers.forEach((customer, index) => {
+                message += `*${index + 1}. ${customer.name}*\n`;
+                message += `📞 ${customer.contact}\n`;
+                message += `📍 ${customer.address}, ${customer.city}, ${customer.state} - ${customer.pincode}\n\n`;
+            });
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Supplier Functions
+        function saveSupplier(e) {
+            e.preventDefault();
+            
+            const supplier = {
+                id: editingSupplierId || Date.now().toString(),
+                name: document.getElementById('supplierName').value,
+                contact: document.getElementById('supplierContact').value,
+                address: document.getElementById('supplierAddress').value,
+                city: document.getElementById('supplierCity').value,
+                state: document.getElementById('supplierState').value,
+                pincode: document.getElementById('supplierPincode').value,
+                createdAt: editingSupplierId ? suppliers.find(s => s.id === editingSupplierId).createdAt : new Date().toISOString()
+            };
+            
+            if (editingSupplierId) {
+                // Update existing
+                const index = suppliers.findIndex(s => s.id === editingSupplierId);
+                suppliers[index] = supplier;
+                editingSupplierId = null;
+            } else {
+                // Add new
+                suppliers.push(supplier);
+            }
+            
+            localStorage.setItem(SUPPLIERS_KEY, JSON.stringify(suppliers));
+            alert('✅ Supplier data saved successfully!');
+            clearSupplierForm();
+            renderSupplierTable();
+        }
+
+        function clearSupplierForm() {
+            document.getElementById('supplierName').value = '';
+            document.getElementById('supplierContact').value = '';
+            document.getElementById('supplierAddress').value = '';
+            document.getElementById('supplierCity').value = '';
+            document.getElementById('supplierState').value = '';
+            document.getElementById('supplierPincode').value = '';
+            editingSupplierId = null;
+        }
+
+        function editSupplier(id) {
+            const supplier = suppliers.find(s => s.id === id);
+            if (supplier) {
+                document.getElementById('supplierName').value = supplier.name;
+                document.getElementById('supplierContact').value = supplier.contact;
+                document.getElementById('supplierAddress').value = supplier.address;
+                document.getElementById('supplierCity').value = supplier.city;
+                document.getElementById('supplierState').value = supplier.state;
+                document.getElementById('supplierPincode').value = supplier.pincode;
+                editingSupplierId = id;
+                
+                // Scroll to form
+                document.getElementById('supplierTab').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function deleteSupplier(id) {
+            if (confirm('Are you sure you want to delete this supplier?')) {
+                suppliers = suppliers.filter(s => s.id !== id);
+                localStorage.setItem(SUPPLIERS_KEY, JSON.stringify(suppliers));
+                renderSupplierTable();
+            }
+        }
+
+        function renderSupplierTable() {
+            const container = document.getElementById('supplierTableContainer');
+            
+            if (suppliers.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No suppliers saved yet. Add your first supplier above!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let tableHTML = `
+                <div class="database-table-wrapper">
+                    <table class="database-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Address</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Pincode</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            suppliers.forEach(supplier => {
+                tableHTML += `
+                    <tr>
+                        <td>${supplier.name}</td>
+                        <td>${supplier.contact}</td>
+                        <td>${supplier.address}</td>
+                        <td>${supplier.city}</td>
+                        <td>${supplier.state}</td>
+                        <td>${supplier.pincode}</td>
+                        <td>
+                            <div class="table-action-btns">
+                                <button class="edit-btn" onclick="editSupplier('${supplier.id}')">✏️ Edit</button>
+                                <button class="delete-btn" onclick="deleteSupplier('${supplier.id}')">🗑️ Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            container.innerHTML = tableHTML;
+        }
+
+        function downloadSuppliers() {
+            if (suppliers.length === 0) {
+                alert('No suppliers to download!');
+                return;
+            }
+            
+            let csv = 'Name,Contact,Address,City,State,Pincode\n';
+            suppliers.forEach(supplier => {
+                csv += `"${supplier.name}","${supplier.contact}","${supplier.address}","${supplier.city}","${supplier.state}","${supplier.pincode}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AK_Brands_Suppliers_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function shareSuppliersWhatsApp() {
+            if (suppliers.length === 0) {
+                alert('No suppliers to share!');
+                return;
+            }
+            
+            let message = '📋 *AK Brands - Supplier Database*\n\n';
+            suppliers.forEach((supplier, index) => {
+                message += `*${index + 1}. ${supplier.name}*\n`;
+                message += `📞 ${supplier.contact}\n`;
+                message += `📍 ${supplier.address}, ${supplier.city}, ${supplier.state} - ${supplier.pincode}\n\n`;
+            });
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -2304,179 +3177,8 @@
                         behavior: 'smooth',
                         block: 'start'
                     });
-                    // Close mobile menu if open
-                    document.getElementById('mainNav').classList.remove('active');
                 }
             });
-        });
-
-        // Scroll to Top Button
-        const scrollTopBtn = document.getElementById('scrollTop');
-        
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                scrollTopBtn.classList.add('visible');
-            } else {
-                scrollTopBtn.classList.remove('visible');
-            }
-        });
-
-        scrollTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // Product Filter
-        function filterProducts(category) {
-            const products = document.querySelectorAll('.product-card');
-            const buttons = document.querySelectorAll('.filter-btn');
-            
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            products.forEach(product => {
-                if (category === 'all' || product.dataset.category === category) {
-                    product.style.display = 'block';
-                } else {
-                    product.style.display = 'none';
-                }
-            });
-        }
-
-        // FAQ Toggle
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const faqItem = question.parentElement;
-                faqItem.classList.toggle('active');
-            });
-        });
-
-        // Quick View Modal
-        document.querySelectorAll('.quick-view-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const productCard = btn.closest('.product-card');
-                const imgSrc = productCard.querySelector('.product-image').src;
-                document.getElementById('modalImage').src = imgSrc;
-                document.getElementById('imageModal').classList.add('active');
-            });
-        });
-
-        function closeModal() {
-            document.getElementById('imageModal').classList.remove('active');
-        }
-
-        // Wishlist Toggle
-        document.querySelectorAll('.wishlist-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const icon = btn.querySelector('i');
-                icon.classList.toggle('far');
-                icon.classList.toggle('fas');
-            });
-        });
-
-        // Newsletter Form
-        document.querySelector('.newsletter-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Thank you for subscribing!');
-            e.target.reset();
-        });
-
-        // Contact Form
-        document.querySelector('.contact-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Thank you for your message! We will get back to you soon.');
-            e.target.reset();
-        });
-
-        // Testimonial Form - Star Rating
-        const stars = document.querySelectorAll('.star');
-        const ratingValue = document.getElementById('ratingValue');
-
-        stars.forEach(star => {
-            star.addEventListener('click', function() {
-                const rating = this.getAttribute('data-rating');
-                ratingValue.value = rating;
-                
-                // Remove active class from all stars
-                stars.forEach(s => s.classList.remove('active'));
-                
-                // Add active class to clicked star and all previous stars
-                for (let i = 0; i < rating; i++) {
-                    stars[i].classList.add('active');
-                }
-            });
-
-            star.addEventListener('mouseenter', function() {
-                const rating = this.getAttribute('data-rating');
-                stars.forEach(s => s.classList.remove('active'));
-                for (let i = 0; i < rating; i++) {
-                    stars[i].classList.add('active');
-                }
-            });
-        });
-
-        document.getElementById('starRating').addEventListener('mouseleave', function() {
-            const currentRating = ratingValue.value;
-            stars.forEach(s => s.classList.remove('active'));
-            if (currentRating) {
-                for (let i = 0; i < currentRating; i++) {
-                    stars[i].classList.add('active');
-                }
-            }
-        });
-
-        // Testimonial Form Submission
-        document.getElementById('testimonialForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!ratingValue.value) {
-                alert('Please select a rating!');
-                return;
-            }
-
-            const formData = {
-                fullName: document.getElementById('fullName').value,
-                company: document.getElementById('company').value,
-                email: document.getElementById('email').value,
-                position: document.getElementById('position').value,
-                rating: ratingValue.value,
-                testimonial: document.getElementById('testimonial').value,
-                service: document.getElementById('service').value
-            };
-
-            console.log('Testimonial submitted:', formData);
-            
-            alert('Thank you for your testimonial! We appreciate your feedback.');
-            
-            // Reset form
-            this.reset();
-            stars.forEach(s => s.classList.remove('active'));
-            ratingValue.value = '';
-        });
-
-        // Animation on Scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.service-card, .product-card, .testimonial-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
         });
     </script>
 </body>
