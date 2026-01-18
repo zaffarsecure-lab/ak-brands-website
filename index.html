@@ -1103,12 +1103,56 @@
         }
 
         /* Footer */
-        footer {
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-        }
+footer {
+    background: #1a1a1a;
+    color: white;
+    padding: 2.5rem 2rem;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-copyright {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    color: #ccc;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.footer-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+    padding: 0.3rem 0;
+}
+
+.footer-link:hover {
+    color: #1abc9c;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .footer-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .footer-link {
+        font-size: 0.85rem;
+    }
+}        }
 
         /* Modal Styles */
         .modal {
@@ -2477,11 +2521,19 @@
         </div>
     </section>
 
-        
-    <footer>
-        <p>&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
-    </footer>
-
+        <footer>
+    <div class="footer-content">
+        <p class="footer-copyright">&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
+        <div class="footer-links">
+            <a href="terms.html" class="footer-link">Terms & Conditions</a>
+            <a href="return-refund.html" class="footer-link">Return & Refund Policy</a>
+            <a href="shipping-delivery.html" class="footer-link">Shipping & Delivery Policy</a>
+            <a href="privacy.html" class="footer-link">Privacy Policy</a>
+            <a href="disclaimer.html" class="footer-link">Disclaimer</a>
+            <a href="business-policy.html" class="footer-link">Business Policy</a>
+        </div>
+    </div>
+</footer>
     <!-- Buy Modal -->
     <div id="buyModal" class="modal">
         <div class="modal-content">
