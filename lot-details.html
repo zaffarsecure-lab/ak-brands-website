@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lot Details - AK Brands Marketing</title>
+    <title id="pageTitle">Lot Details - AK Brands Marketing</title>
+    
+    <!-- Open Graph Meta Tags for WhatsApp Preview -->
+    <meta property="og:title" content="Lot Details - AK Brands Marketing" id="ogTitle">
+    <meta property="og:description" content="View lot details and pricing information" id="ogDescription">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="" id="ogUrl">
+    <meta property="og:site_name" content="AK Brands Marketing">
+    <meta property="og:image" content="https://akbrandsmarketing.com/logo.png">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lot Details - AK Brands Marketing" id="twitterTitle">
+    <meta name="twitter:description" content="View lot details and pricing information" id="twitterDescription">
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -99,23 +113,21 @@
         }
 
         .section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
         }
 
         .description {
-            font-size: 0.95rem;
-            line-height: 1.8;
             color: #555;
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+            line-height: 1.8;
+            font-size: 1rem;
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -123,21 +135,22 @@
         /* Details Grid */
         .details-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
         }
 
         .detail-card {
-            background: #f8f9fa;
-            padding: 1.5rem 1rem;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
             text-align: center;
+            border: 2px solid #dee2e6;
             transition: all 0.3s;
         }
 
         .detail-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
         .detail-icon {
@@ -146,13 +159,14 @@
         }
 
         .detail-label {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #666;
             margin-bottom: 0.5rem;
+            font-weight: 600;
         }
 
         .detail-value {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #333;
             word-wrap: break-word;
@@ -160,74 +174,75 @@
 
         /* Price Section */
         .price-section {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
             padding: 1.5rem;
             border-radius: 15px;
-            margin: 2rem 0;
+            margin-bottom: 2rem;
+            border: 3px solid #ffc107;
         }
 
         .price-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 1rem;
-            margin-top: 1rem;
         }
 
         .price-item {
             text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
         }
 
         .price-label {
             font-size: 0.9rem;
-            opacity: 0.9;
+            color: #666;
             margin-bottom: 0.5rem;
+            font-weight: 600;
         }
 
         .price-value {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
+            color: #f39c12;
         }
 
-        /* Logistics Box */
+        /* Logistics */
         .logistics-box {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe6cc 100%);
             padding: 1.5rem;
-            border-radius: 10px;
-            color: #856404;
-            line-height: 1.8;
+            border-radius: 15px;
+            border: 2px solid #ffcc80;
         }
 
         .logistics-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1rem;
-            margin-top: 1rem;
         }
 
         .logistics-item {
             background: white;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 3px solid #ffc107;
+            padding: 1.2rem;
+            border-radius: 10px;
+            border-left: 4px solid #ff9800;
         }
 
         .logistics-item-label {
             font-size: 0.85rem;
             color: #666;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
         }
 
         .logistics-item-value {
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 1.1rem;
+            font-weight: 700;
             color: #333;
             word-wrap: break-word;
-            overflow-wrap: break-word;
         }
 
-        /* CTA Buttons */
+        /* CTA Section */
         .cta-section {
             display: grid;
             grid-template-columns: 1fr;
@@ -236,84 +251,113 @@
         }
 
         .btn {
-            padding: 1.2rem 2rem;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            padding: 1.2rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
         }
 
         .btn-whatsapp {
-            background: #25D366;
+            background: linear-gradient(135deg, #25D366 0%, #20BA5A 100%);
             color: white;
         }
 
         .btn-whatsapp:hover {
-            background: #20BA5A;
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .btn-copy:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.4);
         }
 
         .btn-home {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
 
         .btn-home:hover {
-            background: #5568d3;
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
 
-        /* Error/Loading States */
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #1abc9c;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Message Box */
         .message-box {
             text-align: center;
             padding: 4rem 2rem;
         }
 
         .message-icon {
-            font-size: 5rem;
+            font-size: 4rem;
             margin-bottom: 1rem;
         }
 
         .message-title {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 1rem;
-            color: #2c3e50;
+            color: #333;
+            margin-bottom: 0.5rem;
         }
 
         .message-text {
-            font-size: 1.1rem;
             color: #666;
-            margin-bottom: 2rem;
+            font-size: 1rem;
         }
 
-        /* Footer */
-        .footer {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            text-align: center;
-            color: #666;
-            font-size: 0.85rem;
-            line-height: 1.6;
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #333;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            z-index: 2000;
+            display: none;
         }
 
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
         }
 
         /* Responsive */
@@ -322,12 +366,20 @@
                 padding: 0.5rem;
             }
 
+            .container {
+                border-radius: 15px;
+            }
+
             .header {
                 padding: 1.5rem 1rem;
             }
 
+            .logo {
+                font-size: 2.5rem;
+            }
+
             .brand-name {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
             }
 
             .brand-tagline {
@@ -339,7 +391,7 @@
             }
 
             .lot-number {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
             }
 
             .content {
@@ -370,7 +422,7 @@
             }
 
             .cta-section {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -400,10 +452,34 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
     <script>
         // Get lot number from URL
         const urlParams = new URLSearchParams(window.location.search);
         const lotNumber = urlParams.get('lot');
+
+        // Update Open Graph meta tags dynamically
+        function updateMetaTags(lot) {
+            const currentUrl = window.location.href;
+            const title = `Lot ${lot.lotNumber} - ${lot.category} - ₹${lot.rate.toLocaleString()}/unit`;
+            const description = `${lot.description.substring(0, 150)}... | Quantity: ${lot.quantity} units | Location: ${lot.location}`;
+
+            // Update page title
+            document.getElementById('pageTitle').textContent = title;
+            
+            // Update Open Graph tags
+            document.getElementById('ogTitle').setAttribute('content', title);
+            document.getElementById('ogDescription').setAttribute('content', description);
+            document.getElementById('ogUrl').setAttribute('content', currentUrl);
+            
+            // Update Twitter tags
+            document.getElementById('twitterTitle').setAttribute('content', title);
+            document.getElementById('twitterDescription').setAttribute('content', description);
+        }
 
         // Load lots from localStorage (same as management page)
         function loadLotDetails() {
@@ -422,6 +498,9 @@
                 return;
             }
 
+            // Update meta tags for WhatsApp preview
+            updateMetaTags(lot);
+            
             displayLot(lot);
         }
 
@@ -533,6 +612,10 @@
                             <span>💬</span>
                             <span>Inquire on WhatsApp</span>
                         </a>
+                        <button class="btn btn-copy" onclick="copyLotLink()">
+                            <span>📋</span>
+                            <span>Copy Link</span>
+                        </button>
                         <a href="index.html" class="btn btn-home">
                             <span>🏠</span>
                             <span>View All Lots</span>
@@ -555,6 +638,36 @@
             document.getElementById('content').innerHTML = content;
         }
 
+        // Copy lot link to clipboard
+        function copyLotLink() {
+            const link = window.location.href;
+            
+            navigator.clipboard.writeText(link).then(() => {
+                showToast('📋 Link copied! You can now paste it in WhatsApp or anywhere else.');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('📋 Link copied! You can now paste it in WhatsApp or anywhere else.');
+            });
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
         // Show error message
         function showError(title, message) {
             const content = `
@@ -562,10 +675,12 @@
                     <div class="message-icon">❌</div>
                     <div class="message-title">${title}</div>
                     <div class="message-text">${message}</div>
-                    <a href="index.html" class="btn btn-home" style="max-width: 300px; margin: 0 auto;">
-                        <span>🏠</span>
-                        <span>Back to Home</span>
-                    </a>
+                    <div style="margin-top: 2rem;">
+                        <a href="index.html" class="btn btn-home" style="display: inline-flex;">
+                            <span>🏠</span>
+                            <span>Go to Homepage</span>
+                        </a>
+                    </div>
                 </div>
             `;
             document.getElementById('content').innerHTML = content;
@@ -573,7 +688,7 @@
 
         // Initialize
         if (!lotNumber) {
-            showError('No Lot Specified', 'Please use a valid lot link with a lot number.');
+            showError('Invalid URL', 'Please provide a lot number in the URL.');
         } else {
             loadLotDetails();
         }
