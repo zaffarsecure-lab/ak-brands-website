@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lot Details - AK Brands Marketing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .brand-tagline {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        /* Lot Header */
+        .lot-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .lot-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .lot-category {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Content */
+        .content {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .description {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #555;
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        /* Details Grid */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .detail-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #1abc9c;
+            transition: transform 0.3s;
+        }
+
+        .detail-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .detail-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Price Section */
+        .price-section {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(26, 188, 156, 0.3);
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .price-item {
+            text-align: center;
+        }
+
+        .price-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Logistics */
+        .logistics-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 1.5rem;
+            color: #856404;
+        }
+
+        .logistics-box strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #856404;
+        }
+
+        /* CTA Buttons */
+        .cta-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background: #20BA5A;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-home {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-home:hover {
+            background: #5568d3;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Error/Loading States */
+        .message-box {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .message-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .message-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .message-text {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .lot-number {
+                font-size: 2rem;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .price-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .cta-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🏢</div>
+            <div class="brand-name">AK Brands Marketing</div>
+            <div class="brand-tagline">India's Leading B2B Liquidation Platform</div>
+        </div>
+
+        <!-- Content -->
+        <div id="content">
+            <div class="message-box">
+                <div class="message-icon">⏳</div>
+                <div class="message-title">Loading...</div>
+                <div class="message-text">Please wait while we fetch lot details</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2024 AK Brands Marketing. All rights reserved.</p>
+            <p style="margin-top: 0.5rem;">📞 Contact: +91 98765 43210 | 📧 info@akbrands.com</p>
+        </div>
+    </div>
+
+    <script>
+        // Get lot number from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const lotNumber = urlParams.get('lot');
+
+        // Load lots from localStorage (same as management page)
+        function loadLotDetails() {
+            const saved = localStorage.getItem('akBrandsLots');
+            
+            if (!saved) {
+                showError('No lots found', 'Please add lots from the management page first.');
+                return;
+            }
+
+            const lots = JSON.parse(saved);
+            const lot = lots.find(l => l.lotNumber === lotNumber);
+
+            if (!lot) {
+                showError('Lot Not Found', `Sorry, lot "${lotNumber}" doesn't exist in our database.`);
+                return;
+            }
+
+            displayLot(lot);
+        }
+
+        // Display lot details
+        function displayLot(lot) {
+            const whatsappNumber = '919876543210'; // Replace with your actual WhatsApp number
+            const whatsappMessage = encodeURIComponent(
+                `Hi! I'm interested in:\n\n` +
+                `📦 Lot: ${lot.lotNumber}\n` +
+                `📝 ${lot.description}\n` +
+                `💰 Total Value: ₹${lot.totalPrice.toLocaleString()}\n` +
+                `📍 Location: ${lot.location}\n\n` +
+                `Please provide more details.`
+            );
+
+            const content = `
+                <!-- Lot Header -->
+                <div class="lot-header">
+                    <div class="lot-number">📦 ${lot.lotNumber}</div>
+                    <div class="lot-category">${lot.category}</div>
+                </div>
+
+                <!-- Content -->
+                <div class="content">
+                    <!-- Description -->
+                    <div class="section">
+                        <div class="section-title">
+                            <span>📝</span>
+                            <span>Product Description</span>
+                        </div>
+                        <div class="description">${lot.description}</div>
+                    </div>
+
+                    <!-- Details Grid -->
+                    <div class="section">
+                        <div class="section-title">
+                            <span>📊</span>
+                            <span>Lot Details</span>
+                        </div>
+                        <div class="details-grid">
+                            <div class="detail-card">
+                                <div class="detail-icon">📦</div>
+                                <div class="detail-label">Total Quantity</div>
+                                <div class="detail-value">${lot.quantity.toLocaleString()} units</div>
+                            </div>
+                            <div class="detail-card">
+                                <div class="detail-icon">🔢</div>
+                                <div class="detail-label">Minimum Order (MOQ)</div>
+                                <div class="detail-value">${lot.moq ? lot.moq.toLocaleString() + ' units' : 'No minimum'}</div>
+                            </div>
+                            <div class="detail-card">
+                                <div class="detail-icon">⭐</div>
+                                <div class="detail-label">Condition</div>
+                                <div class="detail-value">${lot.condition}</div>
+                            </div>
+                            <div class="detail-card">
+                                <div class="detail-icon">📍</div>
+                                <div class="detail-label">Location</div>
+                                <div class="detail-value">${lot.location}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price Section -->
+                    <div class="price-section">
+                        <h2 style="margin-bottom: 1rem;">💰 Pricing Information</h2>
+                        <div class="price-grid">
+                            <div class="price-item">
+                                <div class="price-label">Rate per Unit</div>
+                                <div class="price-value">₹${lot.rate.toLocaleString()}</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">Total Lot Value</div>
+                                <div class="price-value">₹${lot.totalPrice.toLocaleString()}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${lot.logistics ? `
+                    <!-- Logistics -->
+                    <div class="section">
+                        <div class="section-title">
+                            <span>🚚</span>
+                            <span>Logistics & Delivery</span>
+                        </div>
+                        <div class="logistics-box">
+                            <strong>Shipping Information:</strong>
+                            ${lot.logistics}
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- CTA Buttons -->
+                    <div class="cta-section">
+                        <a href="https://wa.me/${whatsappNumber}?text=${whatsappMessage}" 
+                           class="btn btn-whatsapp" target="_blank">
+                            <span>💬</span>
+                            <span>Inquire on WhatsApp</span>
+                        </a>
+                        <a href="index.html" class="btn btn-home">
+                            <span>🏠</span>
+                            <span>View All Lots</span>
+                        </a>
+                    </div>
+
+                    <!-- Metadata -->
+                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #f0f0f0; text-align: center; color: #999; font-size: 0.85rem;">
+                        <p>Last updated: ${new Date(lot.updatedAt).toLocaleDateString('en-IN', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('content').innerHTML = content;
+        }
+
+        // Show error message
+        function showError(title, message) {
+            const content = `
+                <div class="message-box">
+                    <div class="message-icon">❌</div>
+                    <div class="message-title">${title}</div>
+                    <div class="message-text">${message}</div>
+                    <a href="index.html" class="btn btn-home" style="max-width: 300px; margin: 0 auto;">
+                        <span>🏠</span>
+                        <span>Back to Home</span>
+                    </a>
+                </div>
+            `;
+            document.getElementById('content').innerHTML = content;
+        }
+
+        // Initialize
+        if (!lotNumber) {
+            showError('No Lot Specified', 'Please use a valid lot link with a lot number.');
+        } else {
+            loadLotDetails();
+        }
+    </script>
+</body>
+</html>
