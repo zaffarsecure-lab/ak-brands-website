@@ -12,11 +12,16 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 2rem;
+            padding: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -35,7 +40,7 @@
         .header {
             background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
             color: white;
-            padding: 2rem;
+            padding: 2rem 1rem;
             text-align: center;
         }
 
@@ -45,13 +50,14 @@
         }
 
         .brand-name {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.3rem;
+            word-wrap: break-word;
         }
 
         .brand-tagline {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             opacity: 0.9;
             font-style: italic;
         }
@@ -60,15 +66,16 @@
         .lot-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 2rem;
+            padding: 2rem 1rem;
             text-align: center;
         }
 
         .lot-number {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            word-wrap: break-word;
         }
 
         .lot-category {
@@ -82,7 +89,9 @@
 
         /* Content */
         .content {
-            padding: 2rem;
+            padding: 1.5rem;
+            width: 100%;
+            overflow-x: hidden;
         }
 
         .section {
@@ -100,25 +109,27 @@
         }
 
         .description {
-            font-size: 1rem;
+            font-size: 0.95rem;
             line-height: 1.8;
             color: #555;
             background: #f8f9fa;
             padding: 1.5rem;
             border-radius: 10px;
             border-left: 4px solid #667eea;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         /* Details Grid */
         .details-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 1rem;
         }
 
         .detail-card {
             background: #f8f9fa;
-            padding: 1.5rem;
+            padding: 1.5rem 1rem;
             border-radius: 10px;
             text-align: center;
             transition: all 0.3s;
@@ -135,30 +146,31 @@
         }
 
         .detail-label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #666;
             margin-bottom: 0.5rem;
         }
 
         .detail-value {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 700;
             color: #333;
+            word-wrap: break-word;
         }
 
         /* Price Section */
         .price-section {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 15px;
             margin: 2rem 0;
         }
 
         .price-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: 1fr;
+            gap: 1rem;
             margin-top: 1rem;
         }
 
@@ -173,7 +185,7 @@
         }
 
         .price-value {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
         }
 
@@ -189,7 +201,7 @@
 
         .logistics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: 1fr;
             gap: 1rem;
             margin-top: 1rem;
         }
@@ -208,15 +220,17 @@
         }
 
         .logistics-item-value {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             color: #333;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         /* CTA Buttons */
         .cta-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: 1fr;
             gap: 1rem;
             margin-top: 2rem;
         }
@@ -289,34 +303,74 @@
             padding: 1.5rem;
             text-align: center;
             color: #666;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             body {
-                padding: 1rem;
+                padding: 0.5rem;
+            }
+
+            .header {
+                padding: 1.5rem 1rem;
+            }
+
+            .brand-name {
+                font-size: 1.3rem;
+            }
+
+            .brand-tagline {
+                font-size: 0.75rem;
+            }
+
+            .lot-header {
+                padding: 1.5rem 1rem;
             }
 
             .lot-number {
-                font-size: 2rem;
+                font-size: 1.8rem;
+            }
+
+            .content {
+                padding: 1rem;
             }
 
             .details-grid {
                 grid-template-columns: 1fr;
             }
 
-            .price-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
+            .price-value {
+                font-size: 1.5rem;
             }
 
-            .cta-section {
+            .btn {
+                font-size: 1rem;
+                padding: 1rem 1.5rem;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .price-grid {
                 grid-template-columns: 1fr;
             }
 
             .logistics-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .cta-section {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -342,7 +396,7 @@
         <!-- Footer -->
         <div class="footer">
             <p>© 2024 AK Brands Marketing. All rights reserved.</p>
-            <p style="margin-top: 0.5rem;">📞 Contact: +91 98765 43210 | 📧 info@akbrands.com</p>
+            <p style="margin-top: 0.5rem;">📞 Contact: <a href="tel:+918660502217">+91 8660502217</a> | 📧 <a href="mailto:abdul@akbrandsmarketing.com">abdul@akbrandsmarketing.com</a></p>
         </div>
     </div>
 
@@ -373,13 +427,14 @@
 
         // Display lot details
         function displayLot(lot) {
-            const whatsappNumber = '918660502217'; // Replace with your actual WhatsApp number
+            const whatsappNumber = '918660502217';
             const totalValue = lot.quantity * lot.rate;
             const whatsappMessage = encodeURIComponent(
                 `Hi! I'm interested in:\n\n` +
                 `📦 Lot: ${lot.lotNumber}\n` +
                 `📝 ${lot.description}\n` +
-                `💰 Total Value: ₹${totalValue.toLocaleString()}\n` +
+                `💰 Rate: ₹${lot.rate.toLocaleString()} per unit\n` +
+                `📦 Quantity: ${lot.quantity.toLocaleString()} units\n` +
                 `📍 Location: ${lot.location}\n\n` +
                 `Please provide more details.`
             );
@@ -436,15 +491,11 @@
 
                     <!-- Price Section -->
                     <div class="price-section">
-                        <h2 style="margin-bottom: 1rem;">💰 Pricing Information</h2>
+                        <h2 style="margin-bottom: 1rem; font-size: 1.3rem;">💰 Pricing Information</h2>
                         <div class="price-grid">
                             <div class="price-item">
                                 <div class="price-label">Rate per Unit</div>
                                 <div class="price-value">₹${lot.rate.toLocaleString()}</div>
-                            </div>
-                            <div class="price-item">
-                                <div class="price-label">Total Lot Value</div>
-                                <div class="price-value">₹${totalValue.toLocaleString()}</div>
                             </div>
                         </div>
                     </div>
