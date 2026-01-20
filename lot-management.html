@@ -450,6 +450,18 @@
                             <input type="number" id="quantity" required placeholder="e.g., 100">
                         </div>
                         <div class="form-group">
+                            <label>Unit Type *</label>
+                            <select id="unitType" required>
+                                <option value="">Select unit type</option>
+                                <option value="pieces">Pieces</option>
+                                <option value="boxes">Boxes</option>
+                                <option value="units">Units</option>
+                                <option value="packs">Packs</option>
+                                <option value="bundles">Bundles</option>
+                                <option value="sets">Sets</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>MOQ (Minimum Order Quantity)</label>
                             <input type="number" id="moq" placeholder="e.g., 50">
                         </div>
@@ -472,6 +484,10 @@
                         <div class="form-group">
                             <label>Transportation</label>
                             <input type="text" id="transportation" placeholder="e.g., Air, Sea, Road">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Notes / Remarks</label>
+                            <textarea id="notes" placeholder="Add any additional important information or remarks"></textarea>
                         </div>
                     </div>
                 </form>
@@ -527,12 +543,14 @@
                 document.getElementById('category').value = lot.category;
                 document.getElementById('description').value = lot.description;
                 document.getElementById('quantity').value = lot.quantity;
+                document.getElementById('unitType').value = lot.unitType || 'units';
                 document.getElementById('moq').value = lot.moq || '';
                 document.getElementById('rate').value = lot.rate;
                 document.getElementById('location').value = lot.location;
                 document.getElementById('condition').value = lot.condition || '';
                 document.getElementById('courier').value = lot.courier || '';
                 document.getElementById('transportation').value = lot.transportation || '';
+                document.getElementById('notes').value = lot.notes || '';
             }
             
             document.getElementById('lotModal').classList.add('active');
@@ -551,12 +569,14 @@
                 category: document.getElementById('category').value,
                 description: document.getElementById('description').value,
                 quantity: parseInt(document.getElementById('quantity').value),
+                unitType: document.getElementById('unitType').value,
                 moq: parseInt(document.getElementById('moq').value) || 0,
                 rate: parseFloat(document.getElementById('rate').value),
                 location: document.getElementById('location').value,
                 condition: document.getElementById('condition').value,
                 courier: document.getElementById('courier').value,
                 transportation: document.getElementById('transportation').value,
+                notes: document.getElementById('notes').value,
                 createdAt: editingIndex === -1 ? new Date().toISOString() : lots[editingIndex].createdAt,
                 updatedAt: new Date().toISOString()
             };
@@ -673,6 +693,7 @@
                             <th>Category</th>
                             <th>Description</th>
                             <th>Qty</th>
+                            <th>Unit Type</th>
                             <th>MOQ</th>
                             <th>Rate</th>
                             <th>Location</th>
@@ -685,12 +706,14 @@
 
             data.forEach((lot, index) => {
                 const totalValue = lot.quantity * lot.rate;
+                const unitType = lot.unitType || 'units';
                 html += `
                     <tr>
                         <td><a href="javascript:void(0)" class="lot-number" onclick="openLotDetails('${lot.lotNumber}')">${lot.lotNumber}</a></td>
                         <td>${lot.category}</td>
                         <td>${lot.description.substring(0, 50)}${lot.description.length > 50 ? '...' : ''}</td>
                         <td>${lot.quantity}</td>
+                        <td>${unitType}</td>
                         <td>${lot.moq || '-'}</td>
                         <td>₹${lot.rate.toLocaleString()}</td>
                         <td>${lot.location}</td>
