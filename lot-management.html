@@ -52,69 +52,32 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
         }
 
         .btn-primary {
-            background: #1abc9c;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #16a085;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(26, 188, 156, 0.3);
-        }
-
-        .btn-secondary {
             background: white;
             color: #667eea;
         }
 
-        .btn-secondary:hover {
-            background: #f8f9fa;
+        .btn-primary:hover {
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
-        .btn-danger {
-            background: #e74c3c;
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
             color: white;
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
         }
 
-        .btn-danger:hover {
-            background: #c0392b;
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
         }
 
-        .btn-edit {
-            background: #3498db;
-            color: white;
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
-        }
-
-        .btn-edit:hover {
-            background: #2980b9;
-        }
-
-        .btn-copy {
-            background: #9b59b6;
-            color: white;
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
-        }
-
-        .btn-copy:hover {
-            background: #8e44ad;
-        }
-
-        /* Main Container */
+        /* Container */
         .container {
             max-width: 1400px;
             margin: 2rem auto;
-            padding: 0 2rem;
+            padding: 0 1rem;
         }
 
         /* Stats Cards */
@@ -133,22 +96,22 @@
             border-left: 4px solid #667eea;
         }
 
-        .stat-card h3 {
-            font-size: 0.9rem;
+        .stat-label {
+            font-size: 0.85rem;
             color: #666;
-            margin-bottom: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
         }
 
-        .stat-card .value {
+        .stat-value {
             font-size: 2rem;
             font-weight: 700;
-            color: #2c3e50;
+            color: #333;
         }
 
-        /* Lot Table */
-        .table-container {
+        /* Table Section */
+        .table-section {
             background: white;
             border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -157,7 +120,7 @@
 
         .table-header {
             padding: 1.5rem;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -165,21 +128,15 @@
 
         .table-header h2 {
             font-size: 1.3rem;
-            color: #2c3e50;
+            color: #333;
         }
 
         .search-box {
-            padding: 0.6rem 1rem;
-            border: 2px solid #e0e0e0;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
             font-size: 0.95rem;
             width: 300px;
-            transition: border 0.3s;
-        }
-
-        .search-box:focus {
-            outline: none;
-            border-color: #667eea;
         }
 
         table {
@@ -187,16 +144,13 @@
             border-collapse: collapse;
         }
 
-        thead {
-            background: #f8f9fa;
-        }
-
         th {
+            background: #f8f9fa;
             padding: 1rem;
             text-align: left;
             font-weight: 600;
-            color: #555;
-            font-size: 0.9rem;
+            color: #666;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -215,6 +169,14 @@
             font-weight: 700;
             color: #667eea;
             font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .lot-number:hover {
+            color: #764ba2;
+            text-decoration: underline;
         }
 
         .actions {
@@ -251,37 +213,23 @@
         }
 
         .modal-header {
-            padding: 1.5rem 2rem;
-            border-bottom: 2px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px 15px 0 0;
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
         }
 
         .modal-header h2 {
             font-size: 1.5rem;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 2rem;
-            color: white;
-            cursor: pointer;
-            line-height: 1;
+            color: #333;
         }
 
         .modal-body {
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
+            gap: 1rem;
         }
 
         .form-group {
@@ -294,50 +242,84 @@
         }
 
         .form-group label {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #555;
             font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
         }
 
         .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             padding: 0.75rem;
-            border: 2px solid #e0e0e0;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
             font-size: 0.95rem;
-            font-family: 'Inter', sans-serif;
-            transition: border 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
+            font-family: inherit;
         }
 
         .form-group textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 80px;
         }
 
         .modal-footer {
-            padding: 1.5rem 2rem;
-            border-top: 2px solid #f0f0f0;
+            padding: 1.5rem;
+            border-top: 1px solid #f0f0f0;
             display: flex;
             justify-content: flex-end;
             gap: 1rem;
         }
 
         .btn-cancel {
-            background: #95a5a6;
-            color: white;
+            background: #f0f0f0;
+            color: #666;
         }
 
         .btn-cancel:hover {
-            background: #7f8c8d;
+            background: #e0e0e0;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-copy {
+            background: #28a745;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #333;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Empty State */
@@ -358,47 +340,19 @@
             color: #666;
         }
 
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: #1abc9c;
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-            z-index: 2000;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .toast.active {
-            display: flex;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
             .header-content {
                 flex-direction: column;
                 gap: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
             }
 
             .search-box {
@@ -421,41 +375,40 @@
         <div class="header-content">
             <h1>📦 Lot Inventory Management</h1>
             <div class="header-actions">
-                <button class="btn btn-primary" onclick="openAddModal()">➕ Add New Lot</button>
-                <a href="index.html" class="btn btn-secondary">🏠 Back to Home</a>
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">🏠 Home</button>
+                <button class="btn btn-primary" onclick="openModal()">➕ Add New Lot</button>
             </div>
         </div>
     </div>
 
-    <!-- Main Container -->
+    <!-- Container -->
     <div class="container">
-        <!-- Stats -->
+        <!-- Stats Cards -->
         <div class="stats-grid">
             <div class="stat-card">
-                <h3>Total Lots</h3>
-                <div class="value" id="totalLots">0</div>
+                <div class="stat-label">Total Lots</div>
+                <div class="stat-value" id="totalLots">0</div>
             </div>
             <div class="stat-card">
-                <h3>Total Quantity</h3>
-                <div class="value" id="totalQuantity">0</div>
+                <div class="stat-label">Total Quantity</div>
+                <div class="stat-value" id="totalQuantity">0</div>
             </div>
             <div class="stat-card">
-                <h3>Total Value</h3>
-                <div class="value" id="totalValue">₹0</div>
+                <div class="stat-label">Total Value</div>
+                <div class="stat-value" id="totalValue">₹0</div>
             </div>
             <div class="stat-card">
-                <h3>Locations</h3>
-                <div class="value" id="totalLocations">0</div>
+                <div class="stat-label">Locations</div>
+                <div class="stat-value" id="totalLocations">0</div>
             </div>
         </div>
 
-        <!-- Lot Table -->
-        <div class="table-container">
+        <!-- Table Section -->
+        <div class="table-section">
             <div class="table-header">
                 <h2>All Lots</h2>
-                <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search lots..." onkeyup="searchLots()">
+                <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search lots..." oninput="searchLots()">
             </div>
-
             <div id="tableContent">
                 <!-- Table will be rendered here -->
             </div>
@@ -467,10 +420,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modalTitle">Add New Lot</h2>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="lotForm">
+                <form id="lotForm" onsubmit="event.preventDefault(); saveLot();">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Lot Number *</label>
@@ -482,10 +434,13 @@
                                 <option value="">Select Category</option>
                                 <option value="Electronics">Electronics</option>
                                 <option value="Clothing">Clothing</option>
+                                <option value="Footwear">Footwear</option>
                                 <option value="Home & Kitchen">Home & Kitchen</option>
                                 <option value="Toys">Toys</option>
-                                <option value="Sports">Sports</option>
                                 <option value="Books">Books</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Beauty">Beauty</option>
+                                <option value="Automotive">Automotive</option>
                                 <option value="Other">Other</option>
                             </select>
                         </div>
@@ -495,7 +450,7 @@
                         </div>
                         <div class="form-group">
                             <label>Quantity *</label>
-                            <input type="number" id="quantity" required placeholder="e.g., 500">
+                            <input type="number" id="quantity" required placeholder="e.g., 100" oninput="calculateTotal()">
                         </div>
                         <div class="form-group">
                             <label>MOQ (Minimum Order Quantity)</label>
@@ -503,7 +458,7 @@
                         </div>
                         <div class="form-group">
                             <label>Rate per Unit (₹) *</label>
-                            <input type="number" id="rate" required placeholder="e.g., 500">
+                            <input type="number" id="rate" required placeholder="e.g., 500" oninput="calculateTotal()">
                         </div>
                         <div class="form-group">
                             <label>Total Value (₹)</label>
@@ -552,8 +507,6 @@
             if (saved) {
                 lots = JSON.parse(saved);
             }
-            renderTable();
-            updateStats();
         }
 
         // Save lots to localStorage
@@ -561,42 +514,48 @@
             localStorage.setItem('akBrandsLots', JSON.stringify(lots));
         }
 
-        // Auto-calculate total price
-        document.getElementById('quantity').addEventListener('input', calculateTotal);
-        document.getElementById('rate').addEventListener('input', calculateTotal);
-
+        // Calculate Total Price
         function calculateTotal() {
-            const qty = parseFloat(document.getElementById('quantity').value) || 0;
+            const quantity = parseFloat(document.getElementById('quantity').value) || 0;
             const rate = parseFloat(document.getElementById('rate').value) || 0;
-            document.getElementById('totalPrice').value = qty * rate;
+            document.getElementById('totalPrice').value = quantity * rate;
         }
 
-        // Open Add Modal
-        function openAddModal() {
-            editingIndex = -1;
-            document.getElementById('modalTitle').textContent = 'Add New Lot';
-            document.getElementById('lotForm').reset();
-            document.getElementById('lotNumber').readOnly = false;
-            document.getElementById('lotModal').classList.add('active');
-        }
-
-        // Open Edit Modal
-        function editLot(index) {
-            editingIndex = index;
-            const lot = lots[index];
+        // Update Statistics
+        function updateStats() {
+            document.getElementById('totalLots').textContent = lots.length;
             
-            document.getElementById('modalTitle').textContent = 'Edit Lot';
-            document.getElementById('lotNumber').value = lot.lotNumber;
-            document.getElementById('lotNumber').readOnly = true;
-            document.getElementById('category').value = lot.category;
-            document.getElementById('description').value = lot.description;
-            document.getElementById('quantity').value = lot.quantity;
-            document.getElementById('moq').value = lot.moq;
-            document.getElementById('rate').value = lot.rate;
-            document.getElementById('totalPrice').value = lot.totalPrice;
-            document.getElementById('location').value = lot.location;
-            document.getElementById('condition').value = lot.condition;
-            document.getElementById('logistics').value = lot.logistics;
+            const totalQty = lots.reduce((sum, lot) => sum + lot.quantity, 0);
+            document.getElementById('totalQuantity').textContent = totalQty;
+            
+            const totalVal = lots.reduce((sum, lot) => sum + lot.totalPrice, 0);
+            document.getElementById('totalValue').textContent = '₹' + totalVal.toLocaleString();
+            
+            const uniqueLocations = [...new Set(lots.map(lot => lot.location))].length;
+            document.getElementById('totalLocations').textContent = uniqueLocations;
+        }
+
+        // Open Modal
+        function openModal(index = -1) {
+            editingIndex = index;
+            
+            if (index === -1) {
+                document.getElementById('modalTitle').textContent = 'Add New Lot';
+                document.getElementById('lotForm').reset();
+            } else {
+                document.getElementById('modalTitle').textContent = 'Edit Lot';
+                const lot = lots[index];
+                document.getElementById('lotNumber').value = lot.lotNumber;
+                document.getElementById('category').value = lot.category;
+                document.getElementById('description').value = lot.description;
+                document.getElementById('quantity').value = lot.quantity;
+                document.getElementById('moq').value = lot.moq;
+                document.getElementById('rate').value = lot.rate;
+                document.getElementById('totalPrice').value = lot.totalPrice;
+                document.getElementById('location').value = lot.location;
+                document.getElementById('condition').value = lot.condition;
+                document.getElementById('logistics').value = lot.logistics;
+            }
             
             document.getElementById('lotModal').classList.add('active');
         }
@@ -654,14 +613,26 @@
             }
         }
 
+        // Edit Lot
+        function editLot(index) {
+            openModal(index);
+        }
+
         // Copy Lot Link
         function copyLotLink(lotNumber) {
-            const baseUrl = window.location.origin;
-            const link = `${baseUrl}/lot-details.html?lot=${lotNumber}`;
+            const baseUrl = window.location.origin + window.location.pathname.replace('lot-management.html', '');
+            const link = `${baseUrl}lot-details.html?lot=${lotNumber}`;
             
             navigator.clipboard.writeText(link).then(() => {
                 showToast('📋 Link copied to clipboard!');
             });
+        }
+
+        // Open Lot Details
+        function openLotDetails(lotNumber) {
+            const baseUrl = window.location.origin + window.location.pathname.replace('lot-management.html', '');
+            const link = `${baseUrl}lot-details.html?lot=${lotNumber}`;
+            window.open(link, '_blank');
         }
 
         // Search Lots
@@ -712,7 +683,7 @@
             data.forEach((lot, index) => {
                 html += `
                     <tr>
-                        <td><span class="lot-number">${lot.lotNumber}</span></td>
+                        <td><a href="javascript:void(0)" class="lot-number" onclick="openLotDetails('${lot.lotNumber}')">${lot.lotNumber}</a></td>
                         <td>${lot.category}</td>
                         <td>${lot.description.substring(0, 50)}${lot.description.length > 50 ? '...' : ''}</td>
                         <td>${lot.quantity}</td>
@@ -739,32 +710,22 @@
             container.innerHTML = html;
         }
 
-        // Update Stats
-        function updateStats() {
-            document.getElementById('totalLots').textContent = lots.length;
-            
-            const totalQty = lots.reduce((sum, lot) => sum + lot.quantity, 0);
-            document.getElementById('totalQuantity').textContent = totalQty.toLocaleString();
-            
-            const totalVal = lots.reduce((sum, lot) => sum + lot.totalPrice, 0);
-            document.getElementById('totalValue').textContent = '₹' + totalVal.toLocaleString();
-            
-            const uniqueLocations = [...new Set(lots.map(lot => lot.location))].length;
-            document.getElementById('totalLocations').textContent = uniqueLocations;
-        }
-
         // Show Toast
         function showToast(message) {
             const toast = document.getElementById('toast');
-            document.getElementById('toastMessage').textContent = message;
-            toast.classList.add('active');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
             setTimeout(() => {
-                toast.classList.remove('active');
+                toast.classList.remove('show');
             }, 3000);
         }
 
         // Initialize
         loadLots();
+        renderTable();
+        updateStats();
     </script>
 </body>
 </html>
