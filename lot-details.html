@@ -112,16 +112,16 @@
         /* Details Grid */
         .details-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
         }
 
         .detail-card {
             background: #f8f9fa;
             padding: 1.5rem;
             border-radius: 10px;
-            border-left: 4px solid #1abc9c;
-            transition: transform 0.3s;
+            text-align: center;
+            transition: all 0.3s;
         }
 
         .detail-card:hover {
@@ -129,42 +129,37 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
+        .detail-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
         .detail-label {
             font-size: 0.85rem;
             color: #666;
             margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
         }
 
         .detail-value {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: #2c3e50;
-        }
-
-        .detail-icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+            color: #333;
         }
 
         /* Price Section */
         .price-section {
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
             padding: 2rem;
             border-radius: 15px;
-            text-align: center;
             margin: 2rem 0;
-            box-shadow: 0 10px 30px rgba(26, 188, 156, 0.3);
         }
 
         .price-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-top: 1.5rem;
+            gap: 1.5rem;
+            margin-top: 1rem;
         }
 
         .price-item {
@@ -182,19 +177,40 @@
             font-weight: 700;
         }
 
-        /* Logistics */
+        /* Logistics Box */
         .logistics-box {
             background: #fff3cd;
             border: 2px solid #ffc107;
-            border-radius: 10px;
             padding: 1.5rem;
+            border-radius: 10px;
             color: #856404;
+            line-height: 1.8;
         }
 
-        .logistics-box strong {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #856404;
+        .logistics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .logistics-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #ffc107;
+        }
+
+        .logistics-item-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+
+        .logistics-item-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
         }
 
         /* CTA Buttons */
@@ -298,6 +314,10 @@
             .cta-section {
                 grid-template-columns: 1fr;
             }
+
+            .logistics-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -354,11 +374,12 @@
         // Display lot details
         function displayLot(lot) {
             const whatsappNumber = '918660502217'; // Replace with your actual WhatsApp number
+            const totalValue = lot.quantity * lot.rate;
             const whatsappMessage = encodeURIComponent(
                 `Hi! I'm interested in:\n\n` +
                 `📦 Lot: ${lot.lotNumber}\n` +
                 `📝 ${lot.description}\n` +
-                `💰 Total Value: ₹${lot.totalPrice.toLocaleString()}\n` +
+                `💰 Total Value: ₹${totalValue.toLocaleString()}\n` +
                 `📍 Location: ${lot.location}\n\n` +
                 `Please provide more details.`
             );
@@ -398,11 +419,13 @@
                                 <div class="detail-label">Minimum Order (MOQ)</div>
                                 <div class="detail-value">${lot.moq ? lot.moq.toLocaleString() + ' units' : 'No minimum'}</div>
                             </div>
+                            ${lot.condition ? `
                             <div class="detail-card">
                                 <div class="detail-icon">⭐</div>
                                 <div class="detail-label">Condition</div>
                                 <div class="detail-value">${lot.condition}</div>
                             </div>
+                            ` : ''}
                             <div class="detail-card">
                                 <div class="detail-icon">📍</div>
                                 <div class="detail-label">Location</div>
@@ -421,12 +444,12 @@
                             </div>
                             <div class="price-item">
                                 <div class="price-label">Total Lot Value</div>
-                                <div class="price-value">₹${lot.totalPrice.toLocaleString()}</div>
+                                <div class="price-value">₹${totalValue.toLocaleString()}</div>
                             </div>
                         </div>
                     </div>
 
-                    ${lot.logistics ? `
+                    ${(lot.courier || lot.transportation) ? `
                     <!-- Logistics -->
                     <div class="section">
                         <div class="section-title">
@@ -434,8 +457,20 @@
                             <span>Logistics & Delivery</span>
                         </div>
                         <div class="logistics-box">
-                            <strong>Shipping Information:</strong>
-                            ${lot.logistics}
+                            <div class="logistics-grid">
+                                ${lot.courier ? `
+                                <div class="logistics-item">
+                                    <div class="logistics-item-label">Courier</div>
+                                    <div class="logistics-item-value">${lot.courier}</div>
+                                </div>
+                                ` : ''}
+                                ${lot.transportation ? `
+                                <div class="logistics-item">
+                                    <div class="logistics-item-label">Transportation</div>
+                                    <div class="logistics-item-value">${lot.transportation}</div>
+                                </div>
+                                ` : ''}
+                            </div>
                         </div>
                     </div>
                     ` : ''}
