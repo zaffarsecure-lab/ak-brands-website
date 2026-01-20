@@ -430,19 +430,7 @@
                         </div>
                         <div class="form-group">
                             <label>Category *</label>
-                            <select id="category" required>
-                                <option value="">Select Category</option>
-                                <option value="Electronics">Electronics</option>
-                                <option value="Clothing">Clothing</option>
-                                <option value="Footwear">Footwear</option>
-                                <option value="Home & Kitchen">Home & Kitchen</option>
-                                <option value="Toys">Toys</option>
-                                <option value="Books">Books</option>
-                                <option value="Sports">Sports</option>
-                                <option value="Beauty">Beauty</option>
-                                <option value="Automotive">Automotive</option>
-                                <option value="Other">Other</option>
-                            </select>
+                            <input type="text" id="category" required placeholder="e.g., Electronics, Clothing, etc.">
                         </div>
                         <div class="form-group full-width">
                             <label>Product Description *</label>
@@ -450,7 +438,7 @@
                         </div>
                         <div class="form-group">
                             <label>Quantity *</label>
-                            <input type="number" id="quantity" required placeholder="e.g., 100" oninput="calculateTotal()">
+                            <input type="number" id="quantity" required placeholder="e.g., 100">
                         </div>
                         <div class="form-group">
                             <label>MOQ (Minimum Order Quantity)</label>
@@ -458,11 +446,7 @@
                         </div>
                         <div class="form-group">
                             <label>Rate per Unit (₹) *</label>
-                            <input type="number" id="rate" required placeholder="e.g., 500" oninput="calculateTotal()">
-                        </div>
-                        <div class="form-group">
-                            <label>Total Value (₹)</label>
-                            <input type="number" id="totalPrice" readonly placeholder="Auto-calculated">
+                            <input type="number" id="rate" required placeholder="e.g., 500">
                         </div>
                         <div class="form-group">
                             <label>Location *</label>
@@ -470,17 +454,15 @@
                         </div>
                         <div class="form-group">
                             <label>Condition</label>
-                            <select id="condition">
-                                <option value="New">New</option>
-                                <option value="Grade A">Grade A</option>
-                                <option value="Grade B">Grade B</option>
-                                <option value="Refurbished">Refurbished</option>
-                                <option value="Used">Used</option>
-                            </select>
+                            <input type="text" id="condition" placeholder="e.g., New, Grade A, Refurbished">
                         </div>
-                        <div class="form-group full-width">
-                            <label>Logistics Details</label>
-                            <textarea id="logistics" placeholder="Shipping, handling, delivery timeline details"></textarea>
+                        <div class="form-group">
+                            <label>Courier</label>
+                            <input type="text" id="courier" placeholder="e.g., DHL, FedEx, Blue Dart">
+                        </div>
+                        <div class="form-group">
+                            <label>Transportation</label>
+                            <input type="text" id="transportation" placeholder="e.g., Air, Sea, Road">
                         </div>
                     </div>
                 </form>
@@ -514,13 +496,6 @@
             localStorage.setItem('akBrandsLots', JSON.stringify(lots));
         }
 
-        // Calculate Total Price
-        function calculateTotal() {
-            const quantity = parseFloat(document.getElementById('quantity').value) || 0;
-            const rate = parseFloat(document.getElementById('rate').value) || 0;
-            document.getElementById('totalPrice').value = quantity * rate;
-        }
-
         // Update Statistics
         function updateStats() {
             document.getElementById('totalLots').textContent = lots.length;
@@ -528,7 +503,7 @@
             const totalQty = lots.reduce((sum, lot) => sum + lot.quantity, 0);
             document.getElementById('totalQuantity').textContent = totalQty;
             
-            const totalVal = lots.reduce((sum, lot) => sum + lot.totalPrice, 0);
+            const totalVal = lots.reduce((sum, lot) => sum + (lot.quantity * lot.rate), 0);
             document.getElementById('totalValue').textContent = '₹' + totalVal.toLocaleString();
             
             const uniqueLocations = [...new Set(lots.map(lot => lot.location))].length;
@@ -549,12 +524,12 @@
                 document.getElementById('category').value = lot.category;
                 document.getElementById('description').value = lot.description;
                 document.getElementById('quantity').value = lot.quantity;
-                document.getElementById('moq').value = lot.moq;
+                document.getElementById('moq').value = lot.moq || '';
                 document.getElementById('rate').value = lot.rate;
-                document.getElementById('totalPrice').value = lot.totalPrice;
                 document.getElementById('location').value = lot.location;
-                document.getElementById('condition').value = lot.condition;
-                document.getElementById('logistics').value = lot.logistics;
+                document.getElementById('condition').value = lot.condition || '';
+                document.getElementById('courier').value = lot.courier || '';
+                document.getElementById('transportation').value = lot.transportation || '';
             }
             
             document.getElementById('lotModal').classList.add('active');
@@ -575,10 +550,10 @@
                 quantity: parseInt(document.getElementById('quantity').value),
                 moq: parseInt(document.getElementById('moq').value) || 0,
                 rate: parseFloat(document.getElementById('rate').value),
-                totalPrice: parseFloat(document.getElementById('totalPrice').value),
                 location: document.getElementById('location').value,
                 condition: document.getElementById('condition').value,
-                logistics: document.getElementById('logistics').value,
+                courier: document.getElementById('courier').value,
+                transportation: document.getElementById('transportation').value,
                 createdAt: editingIndex === -1 ? new Date().toISOString() : lots[editingIndex].createdAt,
                 updatedAt: new Date().toISOString()
             };
@@ -672,8 +647,8 @@
                             <th>Qty</th>
                             <th>MOQ</th>
                             <th>Rate</th>
-                            <th>Total Value</th>
                             <th>Location</th>
+                            <th>Condition</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -681,6 +656,7 @@
             `;
 
             data.forEach((lot, index) => {
+                const totalValue = lot.quantity * lot.rate;
                 html += `
                     <tr>
                         <td><a href="javascript:void(0)" class="lot-number" onclick="openLotDetails('${lot.lotNumber}')">${lot.lotNumber}</a></td>
@@ -689,8 +665,8 @@
                         <td>${lot.quantity}</td>
                         <td>${lot.moq || '-'}</td>
                         <td>₹${lot.rate.toLocaleString()}</td>
-                        <td>₹${lot.totalPrice.toLocaleString()}</td>
                         <td>${lot.location}</td>
+                        <td>${lot.condition || '-'}</td>
                         <td>
                             <div class="actions">
                                 <button class="btn btn-copy" onclick="copyLotLink('${lot.lotNumber}')" title="Copy Link">📋</button>
