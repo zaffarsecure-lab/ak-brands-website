@@ -681,12 +681,13 @@
             const lot = lots.find(l => l.lotNumber === lotNumber);
             const unitType = lot.unitType || 'units';
             
-            // Create formatted message - NO PRICE, cleaner format
-            const message = `🏢 *AK Brands Marketing*\n\n` +
-                `📦 Lot Number: ${lot.lotNumber}\n` +
+            // Create formatted message - starts directly with lot details
+            const message = `📦 Lot Number: ${lot.lotNumber}\n` +
                 `📝 Category: ${lot.category}\n` +
                 `📦 Quantity: ${lot.quantity.toLocaleString()} ${unitType}\n` +
-                `📍 Location: ${lot.location}\n\n` +
+                `🔢 MOQ: ${lot.moq ? lot.moq.toLocaleString() + ' ' + unitType : 'No minimum'}\n` +
+                `📍 Location: ${lot.location}\n` +
+                `💰 Rate: ?\n\n` +
                 `*AK Brands Marketing - Click to check Product Details & Final Price* 👇\n` +
                 `${link}`;
             
