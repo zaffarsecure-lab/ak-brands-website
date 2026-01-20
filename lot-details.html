@@ -673,21 +673,34 @@
             document.getElementById('content').innerHTML = content;
         }
 
-        // Copy lot link to clipboard
+        // Copy lot link to clipboard - NEW FORMAT
         function copyLotLink() {
             const link = window.location.href;
+            const saved = localStorage.getItem('akBrandsLots');
+            const lots = JSON.parse(saved);
+            const lot = lots.find(l => l.lotNumber === lotNumber);
+            const unitType = lot.unitType || 'units';
             
-            navigator.clipboard.writeText(link).then(() => {
-                showToast('📋 Link copied! You can now paste it in WhatsApp or anywhere else.');
+            // Create formatted message with clickable link text
+            const message = `🏢 *AK Brands Marketing*\n\n` +
+                `📦 Lot ${lot.lotNumber} - ${lot.category}\n` +
+                `💰 ₹${lot.rate.toLocaleString()}/${unitType}\n` +
+                `📦 Qty: ${lot.quantity.toLocaleString()} ${unitType}\n` +
+                `📍 ${lot.location}\n\n` +
+                `*AKBM Product Details - Click to check details* 👇\n` +
+                `${link}`;
+            
+            navigator.clipboard.writeText(message).then(() => {
+                showToast('📋 Message copied! Paste in WhatsApp - the link will be clickable.');
             }).catch(() => {
                 // Fallback for older browsers
                 const textArea = document.createElement('textarea');
-                textArea.value = link;
+                textArea.value = message;
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                showToast('📋 Link copied! You can now paste it in WhatsApp or anywhere else.');
+                showToast('📋 Message copied! Paste in WhatsApp - the link will be clickable.');
             });
         }
 
