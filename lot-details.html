@@ -673,7 +673,7 @@
             document.getElementById('content').innerHTML = content;
         }
 
-        // Copy lot link to clipboard - UPDATED FORMAT WITH LINK ON RATE LINE
+        // Copy lot link to clipboard - UPDATED FORMAT WITH "Click to check lowest rate" TEXT
         function copyLotLink() {
             const link = window.location.href;
             const saved = localStorage.getItem('akBrandsLots');
@@ -681,13 +681,15 @@
             const lot = lots.find(l => l.lotNumber === lotNumber);
             const unitType = lot.unitType || 'units';
             
-            // Create formatted message with link on rate line
+            // Create formatted message with "Click to check lowest rate" text before link
             const message = `📦 Lot Number: ${lot.lotNumber}\n` +
                 `📝 Category: ${lot.category}\n` +
                 `📦 Quantity: ${lot.quantity.toLocaleString()} ${unitType}\n` +
                 `🔢 MOQ: ${lot.moq ? lot.moq.toLocaleString() + ' ' + unitType : 'No minimum'}\n` +
                 `📍 Location: ${lot.location}\n` +
-                `💰 Rate: ${link}\n\n` +
+                `💰 Rate: ?\n` +
+                `Click to check lowest rate 👇\n` +
+                `${link}\n\n` +
                 `Trusted Firm AK Brands Marketing© - www.akbrandsmarketing.com\n\n` +
                 `https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq`;
             
