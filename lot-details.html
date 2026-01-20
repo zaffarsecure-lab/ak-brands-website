@@ -242,6 +242,26 @@
             word-wrap: break-word;
         }
 
+        /* Notes Section */
+        .notes-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid #64b5f6;
+        }
+
+        .notes-content {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 10px;
+            border-left: 4px solid #2196f3;
+            color: #555;
+            line-height: 1.8;
+            font-size: 1rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
         /* CTA Section */
         .cta-section {
             display: grid;
@@ -465,8 +485,9 @@
         // Update Open Graph meta tags dynamically
         function updateMetaTags(lot) {
             const currentUrl = window.location.href;
-            const title = `Lot ${lot.lotNumber} - ${lot.category} - ₹${lot.rate.toLocaleString()}/unit`;
-            const description = `${lot.description.substring(0, 150)}... | Quantity: ${lot.quantity} units | Location: ${lot.location}`;
+            const unitType = lot.unitType || 'units';
+            const title = `Lot ${lot.lotNumber} - ${lot.category} - ₹${lot.rate.toLocaleString()}/${unitType}`;
+            const description = `${lot.description.substring(0, 150)}... | Quantity: ${lot.quantity} ${unitType} | Location: ${lot.location}`;
 
             // Update page title
             document.getElementById('pageTitle').textContent = title;
@@ -508,12 +529,13 @@
         function displayLot(lot) {
             const whatsappNumber = '918660502217';
             const totalValue = lot.quantity * lot.rate;
+            const unitType = lot.unitType || 'units';
             const whatsappMessage = encodeURIComponent(
                 `Hi! I'm interested in:\n\n` +
                 `📦 Lot: ${lot.lotNumber}\n` +
                 `📝 ${lot.description}\n` +
-                `💰 Rate: ₹${lot.rate.toLocaleString()} per unit\n` +
-                `📦 Quantity: ${lot.quantity.toLocaleString()} units\n` +
+                `💰 Rate: ₹${lot.rate.toLocaleString()} per ${unitType}\n` +
+                `📦 Quantity: ${lot.quantity.toLocaleString()} ${unitType}\n` +
                 `📍 Location: ${lot.location}\n\n` +
                 `Please provide more details.`
             );
@@ -546,12 +568,12 @@
                             <div class="detail-card">
                                 <div class="detail-icon">📦</div>
                                 <div class="detail-label">Total Quantity</div>
-                                <div class="detail-value">${lot.quantity.toLocaleString()} units</div>
+                                <div class="detail-value">${lot.quantity.toLocaleString()} ${unitType}</div>
                             </div>
                             <div class="detail-card">
                                 <div class="detail-icon">🔢</div>
                                 <div class="detail-label">Minimum Order (MOQ)</div>
-                                <div class="detail-value">${lot.moq ? lot.moq.toLocaleString() + ' units' : 'No minimum'}</div>
+                                <div class="detail-value">${lot.moq ? lot.moq.toLocaleString() + ' ' + unitType : 'No minimum'}</div>
                             </div>
                             ${lot.condition ? `
                             <div class="detail-card">
@@ -573,7 +595,7 @@
                         <h2 style="margin-bottom: 1rem; font-size: 1.3rem;">💰 Pricing Information</h2>
                         <div class="price-grid">
                             <div class="price-item">
-                                <div class="price-label">Rate per Unit</div>
+                                <div class="price-label">Rate per ${unitType.charAt(0).toUpperCase() + unitType.slice(1, -1)}</div>
                                 <div class="price-value">₹${lot.rate.toLocaleString()}</div>
                             </div>
                         </div>
@@ -601,6 +623,19 @@
                                 </div>
                                 ` : ''}
                             </div>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    ${lot.notes ? `
+                    <!-- Notes/Remarks -->
+                    <div class="section">
+                        <div class="section-title">
+                            <span>📌</span>
+                            <span>Notes / Remarks</span>
+                        </div>
+                        <div class="notes-box">
+                            <div class="notes-content">${lot.notes}</div>
                         </div>
                     </div>
                     ` : ''}
