@@ -99,8 +99,6 @@
         .stat-label {
             font-size: 0.85rem;
             color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
             margin-bottom: 0.5rem;
         }
 
@@ -144,38 +142,37 @@
             border-collapse: collapse;
         }
 
-        th {
+        thead {
             background: #f8f9fa;
+        }
+
+        th {
             padding: 1rem;
             text-align: left;
             font-weight: 600;
             color: #666;
             font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         td {
             padding: 1rem;
-            border-bottom: 1px solid #f0f0f0;
+            border-top: 1px solid #f0f0f0;
             font-size: 0.95rem;
         }
 
-        tbody tr:hover {
+        tr:hover {
             background: #f8f9fa;
         }
 
         .lot-number {
-            font-weight: 700;
             color: #667eea;
-            font-size: 1rem;
-            cursor: pointer;
+            font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s;
+            cursor: pointer;
         }
 
         .lot-number:hover {
-            color: #764ba2;
             text-decoration: underline;
         }
 
@@ -301,6 +298,17 @@
             font-size: 0.9rem;
         }
 
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-whatsapp:hover {
+            background: #20BA5A;
+        }
+
         /* Toast */
         .toast {
             position: fixed;
@@ -351,8 +359,9 @@
                 grid-template-columns: 1fr;
             }
 
-            .form-grid {
-                grid-template-columns: 1fr;
+            .table-header {
+                flex-direction: column;
+                gap: 1rem;
             }
 
             .search-box {
@@ -366,6 +375,14 @@
             th, td {
                 padding: 0.75rem 0.5rem;
             }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -375,15 +392,15 @@
         <div class="header-content">
             <h1>📦 Lot Inventory Management</h1>
             <div class="header-actions">
-                <button class="btn btn-secondary" onclick="window.location.href='index.html'">🏠 Home</button>
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">🏠 View Website</button>
                 <button class="btn btn-primary" onclick="openModal()">➕ Add New Lot</button>
             </div>
         </div>
     </div>
 
-    <!-- Container -->
+    <!-- Main Container -->
     <div class="container">
-        <!-- Stats Cards -->
+        <!-- Statistics -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Lots</div>
@@ -599,8 +616,33 @@
             const link = `${baseUrl}lot-details.html?lot=${lotNumber}`;
             
             navigator.clipboard.writeText(link).then(() => {
-                showToast('📋 Link copied to clipboard!');
+                showToast('📋 Link copied! You can now paste it in WhatsApp or anywhere else.');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('📋 Link copied! You can now paste it in WhatsApp or anywhere else.');
             });
+        }
+
+        // Share on WhatsApp
+        function shareOnWhatsApp(lotNumber) {
+            const baseUrl = window.location.origin + window.location.pathname.replace('lot-management.html', '');
+            const link = `${baseUrl}lot-details.html?lot=${lotNumber}`;
+            const lot = lots.find(l => l.lotNumber === lotNumber);
+            
+            const message = encodeURIComponent(
+                `🏢 *AK Brands Marketing*\n\n` +
+                `Check out this lot:\n` +
+                `📦 ${lot.lotNumber} - ${lot.category}\n\n` +
+                `${link}`
+            );
+            
+            window.open(`https://wa.me/?text=${message}`, '_blank');
         }
 
         // Open Lot Details
@@ -670,6 +712,7 @@
                         <td>
                             <div class="actions">
                                 <button class="btn btn-copy" onclick="copyLotLink('${lot.lotNumber}')" title="Copy Link">📋</button>
+                                <button class="btn btn-whatsapp" onclick="shareOnWhatsApp('${lot.lotNumber}')" title="Share on WhatsApp">💬</button>
                                 <button class="btn btn-edit" onclick="editLot(${lots.indexOf(lot)})" title="Edit">✏️</button>
                                 <button class="btn btn-danger" onclick="deleteLot(${lots.indexOf(lot)})" title="Delete">🗑️</button>
                             </div>
