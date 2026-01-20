@@ -673,7 +673,7 @@
             document.getElementById('content').innerHTML = content;
         }
 
-        // Copy lot link to clipboard - NEW FORMAT
+        // Copy lot link to clipboard - UPDATED FORMAT
         function copyLotLink() {
             const link = window.location.href;
             const saved = localStorage.getItem('akBrandsLots');
@@ -681,13 +681,13 @@
             const lot = lots.find(l => l.lotNumber === lotNumber);
             const unitType = lot.unitType || 'units';
             
-            // Create formatted message with clickable link text
+            // Create formatted message - NO PRICE, cleaner format
             const message = `🏢 *AK Brands Marketing*\n\n` +
-                `📦 Lot ${lot.lotNumber} - ${lot.category}\n` +
-                `💰 ₹${lot.rate.toLocaleString()}/${unitType}\n` +
-                `📦 Qty: ${lot.quantity.toLocaleString()} ${unitType}\n` +
-                `📍 ${lot.location}\n\n` +
-                `*AKBM Product Details - Click to check details* 👇\n` +
+                `📦 Lot Number: ${lot.lotNumber}\n` +
+                `📝 Category: ${lot.category}\n` +
+                `📦 Quantity: ${lot.quantity.toLocaleString()} ${unitType}\n` +
+                `📍 Location: ${lot.location}\n\n` +
+                `*AK Brands Marketing - Click to check Product Details & Final Price* 👇\n` +
                 `${link}`;
             
             navigator.clipboard.writeText(message).then(() => {
