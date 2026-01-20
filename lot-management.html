@@ -407,14 +407,6 @@
                 <div class="stat-value" id="totalLots">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Total Quantity</div>
-                <div class="stat-value" id="totalQuantity">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Total Value</div>
-                <div class="stat-value" id="totalValue">₹0</div>
-            </div>
-            <div class="stat-card">
                 <div class="stat-label">Locations</div>
                 <div class="stat-value" id="totalLocations">0</div>
             </div>
@@ -516,12 +508,6 @@
         // Update Statistics
         function updateStats() {
             document.getElementById('totalLots').textContent = lots.length;
-            
-            const totalQty = lots.reduce((sum, lot) => sum + lot.quantity, 0);
-            document.getElementById('totalQuantity').textContent = totalQty;
-            
-            const totalVal = lots.reduce((sum, lot) => sum + (lot.quantity * lot.rate), 0);
-            document.getElementById('totalValue').textContent = '₹' + totalVal.toLocaleString();
             
             const uniqueLocations = [...new Set(lots.map(lot => lot.location))].length;
             document.getElementById('totalLocations').textContent = uniqueLocations;
