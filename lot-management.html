@@ -616,22 +616,33 @@
             openModal(index);
         }
 
-        // Copy Lot Link
+        // Copy Lot Link - NEW FORMAT
         function copyLotLink(lotNumber) {
             const baseUrl = window.location.origin + window.location.pathname.replace('lot-management.html', '');
             const link = `${baseUrl}lot-details.html?lot=${lotNumber}`;
+            const lot = lots.find(l => l.lotNumber === lotNumber);
+            const unitType = lot.unitType || 'units';
             
-            navigator.clipboard.writeText(link).then(() => {
-                showToast('📋 Link copied! You can now paste it in WhatsApp or anywhere else.');
+            // Create formatted message with clickable link text
+            const message = `🏢 *AK Brands Marketing*\n\n` +
+                `📦 Lot ${lot.lotNumber} - ${lot.category}\n` +
+                `💰 ₹${lot.rate.toLocaleString()}/${unitType}\n` +
+                `📦 Qty: ${lot.quantity.toLocaleString()} ${unitType}\n` +
+                `📍 ${lot.location}\n\n` +
+                `*AKBM Product Details - Click to check details* 👇\n` +
+                `${link}`;
+            
+            navigator.clipboard.writeText(message).then(() => {
+                showToast('📋 Message copied! Paste in WhatsApp - the link will be clickable.');
             }).catch(() => {
                 // Fallback for older browsers
                 const textArea = document.createElement('textarea');
-                textArea.value = link;
+                textArea.value = message;
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                showToast('📋 Link copied! You can now paste it in WhatsApp or anywhere else.');
+                showToast('📋 Message copied! Paste in WhatsApp - the link will be clickable.');
             });
         }
 
@@ -640,11 +651,15 @@
             const baseUrl = window.location.origin + window.location.pathname.replace('lot-management.html', '');
             const link = `${baseUrl}lot-details.html?lot=${lotNumber}`;
             const lot = lots.find(l => l.lotNumber === lotNumber);
+            const unitType = lot.unitType || 'units';
             
             const message = encodeURIComponent(
                 `🏢 *AK Brands Marketing*\n\n` +
-                `Check out this lot:\n` +
-                `📦 ${lot.lotNumber} - ${lot.category}\n\n` +
+                `📦 Lot ${lot.lotNumber} - ${lot.category}\n` +
+                `💰 ₹${lot.rate.toLocaleString()}/${unitType}\n` +
+                `📦 Qty: ${lot.quantity.toLocaleString()} ${unitType}\n` +
+                `📍 ${lot.location}\n\n` +
+                `*AKBM Product Details - Click to check details* 👇\n` +
                 `${link}`
             );
             
