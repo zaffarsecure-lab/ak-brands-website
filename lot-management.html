@@ -616,20 +616,20 @@
             openModal(index);
         }
 
-        // Copy Lot Link - NEW FORMAT
+        // Copy Lot Link - UPDATED FORMAT
         function copyLotLink(lotNumber) {
             const baseUrl = window.location.origin + window.location.pathname.replace('lot-management.html', '');
             const link = `${baseUrl}lot-details.html?lot=${lotNumber}`;
             const lot = lots.find(l => l.lotNumber === lotNumber);
             const unitType = lot.unitType || 'units';
             
-            // Create formatted message with clickable link text
+            // Create formatted message - NO PRICE, cleaner format
             const message = `🏢 *AK Brands Marketing*\n\n` +
-                `📦 Lot ${lot.lotNumber} - ${lot.category}\n` +
-                `💰 ₹${lot.rate.toLocaleString()}/${unitType}\n` +
-                `📦 Qty: ${lot.quantity.toLocaleString()} ${unitType}\n` +
-                `📍 ${lot.location}\n\n` +
-                `*AKBM Product Details - Click to check details* 👇\n` +
+                `📦 Lot Number: ${lot.lotNumber}\n` +
+                `📝 Category: ${lot.category}\n` +
+                `📦 Quantity: ${lot.quantity.toLocaleString()} ${unitType}\n` +
+                `📍 Location: ${lot.location}\n\n` +
+                `*AK Brands Marketing - Click to check Product Details & Final Price* 👇\n` +
                 `${link}`;
             
             navigator.clipboard.writeText(message).then(() => {
@@ -655,11 +655,11 @@
             
             const message = encodeURIComponent(
                 `🏢 *AK Brands Marketing*\n\n` +
-                `📦 Lot ${lot.lotNumber} - ${lot.category}\n` +
-                `💰 ₹${lot.rate.toLocaleString()}/${unitType}\n` +
-                `📦 Qty: ${lot.quantity.toLocaleString()} ${unitType}\n` +
-                `📍 ${lot.location}\n\n` +
-                `*AKBM Product Details - Click to check details* 👇\n` +
+                `📦 Lot Number: ${lot.lotNumber}\n` +
+                `📝 Category: ${lot.category}\n` +
+                `📦 Quantity: ${lot.quantity.toLocaleString()} ${unitType}\n` +
+                `📍 Location: ${lot.location}\n\n` +
+                `*AK Brands Marketing - Click to check Product Details & Final Price* 👇\n` +
                 `${link}`
             );
             
