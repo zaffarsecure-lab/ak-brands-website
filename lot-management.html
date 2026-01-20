@@ -616,25 +616,25 @@
             openModal(index);
         }
 
-        // Copy Lot Link - UPDATED FORMAT
+        // Copy Lot Link - UPDATED FORMAT WITH LINK ON RATE LINE
         function copyLotLink(lotNumber) {
             const baseUrl = window.location.origin + window.location.pathname.replace('lot-management.html', '');
             const link = `${baseUrl}lot-details.html?lot=${lotNumber}`;
             const lot = lots.find(l => l.lotNumber === lotNumber);
             const unitType = lot.unitType || 'units';
             
-            // Create formatted message - starts directly with lot details
+            // Create formatted message with link on rate line
             const message = `📦 Lot Number: ${lot.lotNumber}\n` +
                 `📝 Category: ${lot.category}\n` +
                 `📦 Quantity: ${lot.quantity.toLocaleString()} ${unitType}\n` +
                 `🔢 MOQ: ${lot.moq ? lot.moq.toLocaleString() + ' ' + unitType : 'No minimum'}\n` +
                 `📍 Location: ${lot.location}\n` +
-                `💰 Rate: ?\n\n` +
-                `*AK Brands Marketing - Click to check Product Details & Final Price* 👇\n` +
-                `${link}`;
+                `💰 Rate: ${link}\n\n` +
+                `Trusted Firm AK Brands Marketing© - www.akbrandsmarketing.com\n\n` +
+                `https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq`;
             
             navigator.clipboard.writeText(message).then(() => {
-                showToast('📋 Message copied! Paste in WhatsApp - the link will be clickable.');
+                showToast('📋 Message copied! Paste in WhatsApp - links will be clickable.');
             }).catch(() => {
                 // Fallback for older browsers
                 const textArea = document.createElement('textarea');
@@ -643,7 +643,7 @@
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                showToast('📋 Message copied! Paste in WhatsApp - the link will be clickable.');
+                showToast('📋 Message copied! Paste in WhatsApp - links will be clickable.');
             });
         }
 
@@ -660,9 +660,9 @@
                 `📦 Quantity: ${lot.quantity.toLocaleString()} ${unitType}\n` +
                 `🔢 MOQ: ${lot.moq ? lot.moq.toLocaleString() + ' ' + unitType : 'No minimum'}\n` +
                 `📍 Location: ${lot.location}\n` +
-                `💰 Rate: ?\n\n` +
-                `*AK Brands Marketing - Click to check Product Details & Final Price* 👇\n` +
-                `${link}`
+                `💰 Rate: ${link}\n\n` +
+                `Trusted Firm AK Brands Marketing© - www.akbrandsmarketing.com\n\n` +
+                `https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq`
             );
             
             window.open(`https://wa.me/?text=${message}`, '_blank');
