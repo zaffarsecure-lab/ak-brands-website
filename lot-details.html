@@ -502,29 +502,6 @@
             document.getElementById('twitterDescription').setAttribute('content', description);
         }
 
-        // Load lots from localStorage (same as management page)
-        function loadLotDetails() {
-            const saved = localStorage.getItem('akBrandsLots');
-            
-            if (!saved) {
-                showError('No lots found', 'Please add lots from the management page first.');
-                return;
-            }
-
-            const lots = JSON.parse(saved);
-            const lot = lots.find(l => l.lotNumber === lotNumber);
-
-            if (!lot) {
-                showError('Lot Not Found', `Sorry, lot "${lotNumber}" doesn't exist in our database.`);
-                return;
-            }
-
-            // Update meta tags for WhatsApp preview
-            updateMetaTags(lot);
-            
-            displayLot(lot);
-        }
-
         // Display lot details
         function displayLot(lot) {
             const whatsappNumber = '918660502217';
@@ -745,5 +722,26 @@
             loadLotDetails();
         }
     </script>
+<script>
+const params = new URLSearchParams(window.location.search);
+const lotNumber = params.get("lot");
+
+fetch("lots.json")
+  .then(res => res.json())
+  .then(data => {
+    const lot = data[lotNumber];
+    if (!lot) {
+      document.getElementById("content").innerHTML =
+        "<h2 style='text-align:center'>Lot not found</h2>";
+      return;
+    }
+    updateMetaTags(lot);
+    displayLot(lot);
+  })
+  .catch(() => {
+    document.getElementById("content").innerHTML =
+      "<h2 style='text-align:center'>Unable to load lot</h2>";
+  });
+</script>
 </body>
 </html>
