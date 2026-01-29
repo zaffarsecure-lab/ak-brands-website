@@ -1,15 +1,1 @@
-[
-  {
-    "lotNumber": "14381",
-    "category": "Branded Chairs",
-    "description": "Branded chairs liquidation stock",
-    "quantity": 2000,
-    "moq": 2000,
-    "rate": 0,
-    "unitType": "pieces",
-    "location": "Bengaluru",
-    "condition": "New",
-    "courier": "Available",
-    "notes": "Bulk buyers only"
-  }
-]
+[{"lotNumber":"Lot 14379","category":"Clothing","description":"Gown\n1. Fabric cotton and georgette \n2. Size S to XXL mixed ","quantity":240,"moq":120,"rate":130,"totalPrice":31200,"location":"Surat","condition":"New","logistics":"1. Courier door delivery - 25 to 30 Rupees Per Kg\n\n2. Transportation - 15 to 20 Rupees per Kg - Additional Auto charge, GST Bill, Labour charge ","createdAt":"2026-01-20T19:25:44.229Z","updatedAt":"2026-01-20T19:25:44.229Z"},{"lotNumber":"Lot 14378","category":"Chairs","description":"No Minor\nNo damage \nSlight Dusty","quantity":200,"moq":50,"rate":950,"location":"Mumbai","condition":"used","courier":"Charges - 25 to 30 Rupees per Kg all over India","transportation":"Charges - 15 to 20 Rupees (Additional Porter + GST)","createdAt":"2026-01-20T19:55:44.289Z","updatedAt":"2026-01-20T19:55:44.289Z"},{"lotNumber":"14380 So","category":"Heavy Party wear","description":"Ready made  \nMore designs than photos\nSizes Mixed","quantity":40,"unitType":"pieces","moq":40,"rate":580,"location":"Surat","condition":"Fresh","courier":"Courier charges Additional","transportation":"Transportation charges additional","notes":"Limited quantity","createdAt":"2026-01-21T07:06:00.469Z","updatedAt":"2026-01-21T07:06:00.469Z"},{"lotNumber":"14381","category":"Branded Chairs","description":"All stocks are branded \nNo damage, No Minor","quantity":2000,"unitType":"pieces","moq":2000,"rate":1650,"location":"Bengaluru","condition":"Fresh","courier":"Additional","transportation":"Additional","notes":"All are branded and fresh due to high quantity consider 10% damage or minor","createdAt":"2026-01-21T07:15:00.361Z","updatedAt":"2026-01-21T07:15:00.364Z"}]
