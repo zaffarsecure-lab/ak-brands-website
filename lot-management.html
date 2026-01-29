@@ -5,1155 +5,167 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lot Inventory Management - AK Brands</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- SheetJS for Excel Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- jsPDF for PDF Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f5f7fa;
-            color: #333;
-        }
-
-        /* Login Screen */
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1rem;
-        }
-
-        .login-box {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 400px;
-            width: 100%;
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .login-header h1 {
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .login-header p {
-            color: #666;
-            font-size: 0.95rem;
-        }
-
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .form-group-login {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group-login label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-group-login input {
-            padding: 0.75rem;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-family: inherit;
-        }
-
-        .btn-login {
-            padding: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .error-message {
-            background: #fee;
-            color: #c33;
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        /* Main App - Hidden by default */
-        .main-app {
-            display: none;
-        }
-
-        .main-app.active {
-            display: block;
-        }
-
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: white;
-            color: #667eea;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .btn-secondary {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .btn-logout {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
-
-        .btn-logout:hover {
-            background: rgba(255,100,100,0.3);
-        }
-
-        /* Container */
-        .container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border-left: 4px solid #667eea;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: #666;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #333;
-        }
-
-        /* Table Section */
-        .table-section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-
-        .table-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .table-header h2 {
-            font-size: 1.3rem;
-            color: #333;
-        }
-
-        .table-controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            padding: 0.75rem 1rem;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            width: 300px;
-        }
-
-        .export-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-export {
-            padding: 0.75rem 1rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: white;
-        }
-
-        .btn-excel {
-            background: #217346;
-        }
-
-        .btn-excel:hover {
-            background: #1a5c37;
-        }
-
-        .btn-pdf {
-            background: #dc3545;
-        }
-
-        .btn-pdf:hover {
-            background: #c82333;
-        }
-
-        .btn-csv {
-            background: #6c757d;
-        }
-
-        .btn-csv:hover {
-            background: #5a6268;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: #f8f9fa;
-        }
-
-        th {
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #666;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-        }
-
-        td {
-            padding: 1rem;
-            border-top: 1px solid #f0f0f0;
-            font-size: 0.95rem;
-        }
-
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        .lot-number {
-            color: #667eea;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .lot-number:hover {
-            text-decoration: underline;
-        }
-
-        .actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .modal-header h2 {
-            font-size: 1.5rem;
-            color: #333;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .form-group label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 0.75rem;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-family: inherit;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .modal-footer {
-            padding: 1.5rem;
-            border-top: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-        }
-
-        .btn-cancel {
-            background: #f0f0f0;
-            color: #666;
-        }
-
-        .btn-cancel:hover {
-            background: #e0e0e0;
-        }
-
-        .btn-edit {
-            background: #ffc107;
-            color: white;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        .btn-copy {
-            background: #28a745;
-            color: white;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        .btn-whatsapp {
-            background: #25D366;
-            color: white;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        .btn-whatsapp:hover {
-            background: #20BA5A;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: #333;
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s;
-            z-index: 2000;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: #999;
-        }
-
-        .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #666;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .table-header {
-                flex-direction: column;
-            }
-
-            .table-controls {
-                width: 100%;
-                flex-direction: column;
-            }
-
-            .search-box {
-                width: 100%;
-            }
-
-            .export-buttons {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            table {
-                font-size: 0.85rem;
-            }
-
-            th, td {
-                padding: 0.75rem 0.5rem;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .actions {
-                flex-direction: column;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f5f7fa; color: #333; }
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem; }
+        .login-box { background: white; padding: 3rem; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 400px; width: 100%; }
+        .login-header { text-align: center; margin-bottom: 2rem; }
+        .login-form { display: flex; flex-direction: column; gap: 1.5rem; }
+        .form-group-login { display: flex; flex-direction: column; }
+        .form-group-login label { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group-login input { padding: 0.75rem; border: 1px solid #e0e0e0; border-radius: 8px; }
+        .btn-login { padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .error-message { background: #fee; color: #c33; padding: 0.75rem; border-radius: 8px; font-size: 0.9rem; display: none; margin-bottom: 1rem; }
+        .error-message.show { display: block; }
+        .main-app { display: none; }
+        .main-app.active { display: block; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1400px; margin: 2rem auto; padding: 0 1rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #667eea; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .stat-value { font-size: 2rem; font-weight: 700; }
+        .table-section { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .table-header { padding: 1.5rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-secondary { background: #f0f0f0; color: #333; }
+        .btn-github { background: #24292e; color: white; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 15px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; padding: 2rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .full-width { grid-column: 1 / -1; }
+        .form-group { display: flex; flex-direction: column; margin-bottom: 1rem; }
+        .form-group label { font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group input, .form-group textarea, .form-group select { padding: 0.75rem; border: 1px solid #e0e0e0; border-radius: 8px; }
+        .toast { position: fixed; bottom: 2rem; right: 2rem; background: #333; color: white; padding: 1rem 1.5rem; border-radius: 8px; opacity: 0; transition: 0.3s; z-index: 2000; }
+        .toast.show { opacity: 1; }
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
+
     <div class="login-container" id="loginScreen">
         <div class="login-box">
-            <div class="login-header">
-                <h1>🔐 Secure Access</h1>
-                <p>Lot Inventory Management</p>
-            </div>
+            <div class="login-header"><h1>🔐 Admin Login</h1><p>AK Brands Management</p></div>
+            <div class="error-message" id="loginError">Invalid credentials!</div>
             <form class="login-form" onsubmit="event.preventDefault(); login();">
-                <div class="error-message" id="loginError">Invalid credentials</div>
-                <div class="form-group-login">
-                    <label>Username</label>
-                    <input type="text" id="username" required autocomplete="username">
-                </div>
-                <div class="form-group-login">
-                    <label>Password</label>
-                    <input type="password" id="password" required autocomplete="current-password">
-                </div>
+                <div class="form-group-login"><label>Username</label><input type="text" id="username" required></div>
+                <div class="form-group-login"><label>Password</label><input type="password" id="password" required></div>
                 <button type="submit" class="btn-login">Login</button>
             </form>
         </div>
     </div>
 
-    <!-- Main App -->
     <div class="main-app" id="mainApp">
-        <!-- Header -->
         <div class="header">
             <div class="header-content">
-                <h1>📦 Lot Inventory Management</h1>
-                <div class="header-actions">
-                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">🏠 View Website</button>
-                    <button class="btn btn-primary" onclick="openModal()">➕ Add New Lot</button>
-                    <button class="btn btn-logout" onclick="logout()">🚪 Logout</button>
+                <h1>📦 Inventory Manager</h1>
+                <div style="display:flex; gap: 10px;">
+                    <button class="btn btn-github" onclick="downloadForGitHub()">📥 Download for GitHub</button>
+                    <button class="btn btn-primary" onclick="openModal()">➕ Add Lot</button>
+                    <button class="btn btn-secondary" onclick="location.reload()">🚪 Logout</button>
                 </div>
             </div>
         </div>
 
-        <!-- Main Container -->
         <div class="container">
-            <!-- Statistics -->
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Total Lots</div>
-                    <div class="stat-value" id="totalLots">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Locations</div>
-                    <div class="stat-value" id="totalLocations">0</div>
-                </div>
+                <div class="stat-card"><div class="stat-label">Total Lots</div><div class="stat-value" id="totalLots">0</div></div>
             </div>
-
-            <!-- Table Section -->
             <div class="table-section">
-                <div class="table-header">
-                    <h2>All Lots</h2>
-                    <div class="table-controls">
-                        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search lots..." oninput="searchLots()">
-                        <div class="export-buttons">
-                            <button class="btn-export btn-excel" onclick="exportToExcel()">📊 Excel</button>
-                            <button class="btn-export btn-pdf" onclick="exportToPDF()">📄 PDF</button>
-                            <button class="btn-export btn-csv" onclick="exportToCSV()">📋 CSV</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="tableContent">
-                    <!-- Table will be rendered here -->
-                </div>
+                <div class="table-header"><h2>Current Inventory</h2><p>Data is saved in browser memory. Use the Download button to update GitHub.</p></div>
+                <div id="tableContent" style="padding: 20px;">Please add a lot to see the table.</div>
             </div>
         </div>
     </div>
 
-    <!-- Add/Edit Modal -->
     <div class="modal" id="lotModal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Add New Lot</h2>
-            </div>
-            <div class="modal-body">
-                <form id="lotForm" onsubmit="event.preventDefault(); saveLot();">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Lot Number *</label>
-                            <input type="text" id="lotNumber" required placeholder="e.g., AKB001">
-                        </div>
-                        <div class="form-group">
-                            <label>Category *</label>
-                            <input type="text" id="category" required placeholder="e.g., Electronics, Clothing, etc.">
-                        </div>
-                        <div class="form-group full-width">
-                            <label>Product Description *</label>
-                            <textarea id="description" required placeholder="Detailed description of the lot"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Quantity *</label>
-                            <input type="number" id="quantity" required placeholder="e.g., 100">
-                        </div>
-                        <div class="form-group">
-                            <label>Unit Type *</label>
-                            <select id="unitType" required>
-                                <option value="">Select unit type</option>
-                                <option value="pieces">Pieces</option>
-                                <option value="boxes">Boxes</option>
-                                <option value="units">Units</option>
-                                <option value="packs">Packs</option>
-                                <option value="bundles">Bundles</option>
-                                <option value="sets">Sets</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>MOQ (Minimum Order Quantity)</label>
-                            <input type="number" id="moq" placeholder="e.g., 50">
-                        </div>
-                        <div class="form-group">
-                            <label>Rate per Unit (₹) *</label>
-                            <input type="number" id="rate" required placeholder="e.g., 500">
-                        </div>
-                        <div class="form-group">
-                            <label>Location *</label>
-                            <input type="text" id="location" required placeholder="e.g., Mumbai Warehouse">
-                        </div>
-                        <div class="form-group">
-                            <label>Condition</label>
-                            <input type="text" id="condition" placeholder="e.g., New, Grade A, Refurbished">
-                        </div>
-                        <div class="form-group">
-                            <label>Courier</label>
-                            <input type="text" id="courier" placeholder="e.g., DHL, FedEx, Blue Dart">
-                        </div>
-                        <div class="form-group">
-                            <label>Transportation</label>
-                            <input type="text" id="transportation" placeholder="e.g., Air, Sea, Road">
-                        </div>
-                        <div class="form-group full-width">
-                            <label>Notes / Remarks</label>
-                            <textarea id="notes" placeholder="Add any additional important information or remarks"></textarea>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveLot()">💾 Save Lot</button>
-            </div>
+            <h2>Add New Lot</h2><br>
+            <form id="lotForm" onsubmit="event.preventDefault(); saveLot();">
+                <div class="form-grid">
+                    <div class="form-group"><label>Lot Number *</label><input type="text" id="lotNumber" required></div>
+                    <div class="form-group"><label>Category *</label><input type="text" id="category" required></div>
+                    <div class="form-group full-width"><label>Description</label><textarea id="description" required></textarea></div>
+                    <div class="form-group"><label>Quantity</label><input type="number" id="quantity" required></div>
+                    <div class="form-group"><label>Rate (₹)</label><input type="number" id="rate" required></div>
+                    <div class="form-group"><label>Unit Type</label><select id="unitType"><option value="pieces">Pieces</option><option value="units">Units</option></select></div>
+                    <div class="form-group"><label>Location</label><input type="text" id="location" required></div>
+                    <div class="form-group"><label>Condition</label><input type="text" id="condition"></div>
+                    <div class="form-group"><label>MOQ</label><input type="number" id="moq"></div>
+                </div>
+                <div style="text-align:right; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">💾 Save Lot</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <span id="toastMessage"></span>
-    </div>
+    <div class="toast" id="toast"></div>
 
     <script>
-        let lots = [];
-        let editingIndex = -1;
-
-        // Authentication credentials (In production, use backend authentication)
-        const VALID_CREDENTIALS = {
-            'admin': 'akbrands2024',
-            'abdul': 'abdul@akbrands'
-        };
-
-        // Check authentication on page load
-        function checkAuth() {
-            const isAuthenticated = sessionStorage.getItem('akBrandsAuth');
-            if (isAuthenticated === 'true') {
-                showMainApp();
-            } else {
-                showLoginScreen();
-            }
-        }
-
-        // Login function
+        // 1. AUTHENTICATION
         function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorMsg = document.getElementById('loginError');
-
-            if (VALID_CREDENTIALS[username] && VALID_CREDENTIALS[username] === password) {
-                sessionStorage.setItem('akBrandsAuth', 'true');
-                sessionStorage.setItem('akBrandsUser', username);
-                errorMsg.classList.remove('show');
-                showMainApp();
-                showToast('✅ Login successful!');
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            if(u === "admin" && p === "akbrands@2024") {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').classList.add('active');
+                renderTable();
             } else {
-                errorMsg.classList.add('show');
+                document.getElementById('loginError').classList.add('show');
             }
         }
 
-        // Logout function
-        function logout() {
-            sessionStorage.removeItem('akBrandsAuth');
-            sessionStorage.removeItem('akBrandsUser');
-            showLoginScreen();
-            showToast('👋 Logged out successfully!');
-        }
-
-        // Show login screen
-        function showLoginScreen() {
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('mainApp').classList.remove('active');
-        }
-
-        // Show main app
-        function showMainApp() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('mainApp').classList.add('active');
-            loadLots();
-            renderTable();
-            updateStats();
-        }
-
-        // Load lots from localStorage
-        function loadLots() {
-            const saved = localStorage.getItem('akBrandsLots');
-            if (saved) {
-                lots = JSON.parse(saved);
-            }
-        }
-
-        // Save lots to localStorage
-        function saveLots() {
-            localStorage.setItem('akBrandsLots', JSON.stringify(lots));
-        }
-
-        // Update Statistics
-        function updateStats() {
-            document.getElementById('totalLots').textContent = lots.length;
-            
-            const uniqueLocations = [...new Set(lots.map(lot => lot.location))].length;
-            document.getElementById('totalLocations').textContent = uniqueLocations;
-        }
-
-        // Open Modal
-        function openModal(index = -1) {
-            editingIndex = index;
-            
-            if (index === -1) {
-                document.getElementById('modalTitle').textContent = 'Add New Lot';
-                document.getElementById('lotForm').reset();
-            } else {
-                document.getElementById('modalTitle').textContent = 'Edit Lot';
-                const lot = lots[index];
-                document.getElementById('lotNumber').value = lot.lotNumber;
-                document.getElementById('category').value = lot.category;
-                document.getElementById('description').value = lot.description;
-                document.getElementById('quantity').value = lot.quantity;
-                document.getElementById('unitType').value = lot.unitType || 'units';
-                document.getElementById('moq').value = lot.moq || '';
-                document.getElementById('rate').value = lot.rate;
-                document.getElementById('location').value = lot.location;
-                document.getElementById('condition').value = lot.condition || '';
-                document.getElementById('courier').value = lot.courier || '';
-                document.getElementById('transportation').value = lot.transportation || '';
-                document.getElementById('notes').value = lot.notes || '';
-            }
-            
-            document.getElementById('lotModal').classList.add('active');
-        }
-
-        // Close Modal
-        function closeModal() {
-            document.getElementById('lotModal').classList.remove('active');
-            document.getElementById('lotForm').reset();
-        }
-
-        // Save Lot
+        // 2. DATA SAVING
         function saveLot() {
-            const lot = {
-                lotNumber: document.getElementById('lotNumber').value.trim(),
-                category: document.getElementById('category').value.trim(),
-                description: document.getElementById('description').value.trim(),
-                quantity: parseInt(document.getElementById('quantity').value),
+            const newLot = {
+                lotNumber: document.getElementById('lotNumber').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                quantity: document.getElementById('quantity').value,
+                rate: document.getElementById('rate').value,
                 unitType: document.getElementById('unitType').value,
-                moq: parseInt(document.getElementById('moq').value) || 0,
-                rate: parseFloat(document.getElementById('rate').value),
-                location: document.getElementById('location').value.trim(),
-                condition: document.getElementById('condition').value.trim(),
-                courier: document.getElementById('courier').value.trim(),
-                transportation: document.getElementById('transportation').value.trim(),
-                notes: document.getElementById('notes').value.trim(),
-                createdAt: editingIndex === -1 ? new Date().toISOString() : lots[editingIndex].createdAt,
-                updatedAt: new Date().toISOString()
+                location: document.getElementById('location').value,
+                condition: document.getElementById('condition').value,
+                moq: document.getElementById('moq').value
             };
 
-            if (editingIndex === -1) {
-                // Check for duplicate lot number
-                if (lots.some(l => l.lotNumber === lot.lotNumber)) {
-                    showToast('❌ Lot number already exists!');
-                    return;
-                }
-                lots.push(lot);
-                showToast('✅ Lot added successfully!');
-            } else {
-                lots[editingIndex] = lot;
-                showToast('✅ Lot updated successfully!');
-            }
-
-            saveLots();
-            renderTable();
-            updateStats();
+            let lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
+            lots.push(newLot);
+            localStorage.setItem('akBrandsLots', JSON.stringify(lots, null, 2));
+            
+            showToast("Saved to browser! Don't forget to download for GitHub.");
             closeModal();
+            renderTable();
         }
 
-        // Delete Lot
-        function deleteLot(index) {
-            if (confirm(`Are you sure you want to delete lot ${lots[index].lotNumber}?`)) {
-                lots.splice(index, 1);
-                saveLots();
-                renderTable();
-                updateStats();
-                showToast('🗑️ Lot deleted successfully!');
-            }
-        }
-
-        // Edit Lot
-        function editLot(index) {
-            openModal(index);
-        }
-
-        // Copy Lot Link - UPDATED: Clean URL params, Trusted Firm first
-        function copyLotLink(lotNumber) {
-            const baseUrl = window.location.origin + window.location.pathname.replace('lot-management.html', '');
-            const link = `${baseUrl}lot-details.html?lot=${lotNumber}`;
-            const lot = lots.find(l => l.lotNumber === lotNumber);
-            const unitType = lot.unitType || 'units';
-            
-            // Create formatted message - Trusted Firm first, then AK Brands Marketing©
-            const message = `📦 Lot Number: ${lot.lotNumber}\n` +
-                `📝 Category: ${lot.category}\n` +
-                `📦 Quantity: ${lot.quantity.toLocaleString()} ${unitType}\n` +
-                `🔢 MOQ: ${lot.moq ? lot.moq.toLocaleString() + ' ' + unitType : 'No minimum'}\n` +
-                `📍 Location: ${lot.location}\n` +
-                `💰 Rate: ?\n` +
-                `Click to check lowest rate 👇\n` +
-                `${link}\n\n` +
-                `Trusted Firm\n` +
-                `AK Brands Marketing© - www.akbrandsmarketing.com\n\n` +
-                `https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq`;
-            
-            navigator.clipboard.writeText(message).then(() => {
-                showToast('📋 Message copied! Paste in WhatsApp - links will be clickable.');
-            }).catch(() => {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = message;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                showToast('📋 Message copied! Paste in WhatsApp - links will be clickable.');
-            });
-        }
-
-        // Share on WhatsApp
-        function shareOnWhatsApp(lotNumber) {
-            const baseUrl = window.location.origin + window.location.pathname.replace('lot-management.html', '');
-            const link = `${baseUrl}lot-details.html?lot=${lotNumber}`;
-            const lot = lots.find(l => l.lotNumber === lotNumber);
-            const unitType = lot.unitType || 'units';
-            
-            const message = encodeURIComponent(
-                `📦 Lot Number: ${lot.lotNumber}\n` +
-                `📝 Category: ${lot.category}\n` +
-                `📦 Quantity: ${lot.quantity.toLocaleString()} ${unitType}\n` +
-                `🔢 MOQ: ${lot.moq ? lot.moq.toLocaleString() + ' ' + unitType : 'No minimum'}\n` +
-                `📍 Location: ${lot.location}\n` +
-                `💰 Rate: ?\n` +
-                `Click to check lowest rate 👇\n` +
-                `${link}\n\n` +
-                `Trusted Firm\n` +
-                `AK Brands Marketing© - www.akbrandsmarketing.com\n\n` +
-                `https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq`
-            );
-            
-            window.open(`https://wa.me/?text=${message}`, '_blank');
-        }
-
-        // Open Lot Details
-        function openLotDetails(lotNumber) {
-            const baseUrl = window.location.origin + window.location.pathname.replace('lot-management.html', '');
-            const link = `${baseUrl}lot-details.html?lot=${lotNumber}`;
-            window.open(link, '_blank');
-        }
-
-        // Search Lots
-        function searchLots() {
-            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
-            const filtered = lots.filter(lot => 
-                lot.lotNumber.toLowerCase().includes(searchTerm) ||
-                lot.description.toLowerCase().includes(searchTerm) ||
-                lot.category.toLowerCase().includes(searchTerm) ||
-                lot.location.toLowerCase().includes(searchTerm)
-            );
-            renderTable(filtered);
-        }
-
-        // Export to Excel
-        function exportToExcel() {
-            const ws_data = [
-                ['Lot Number', 'Category', 'Description', 'Quantity', 'Unit Type', 'MOQ', 'Rate (₹)', 'Location', 'Condition', 'Courier', 'Transportation', 'Notes']
-            ];
-
-            lots.forEach(lot => {
-                ws_data.push([
-                    lot.lotNumber,
-                    lot.category,
-                    lot.description,
-                    lot.quantity,
-                    lot.unitType || 'units',
-                    lot.moq || 0,
-                    lot.rate,
-                    lot.location,
-                    lot.condition || '',
-                    lot.courier || '',
-                    lot.transportation || '',
-                    lot.notes || ''
-                ]);
-            });
-
-            const ws = XLSX.utils.aoa_to_sheet(ws_data);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Lots');
-            XLSX.writeFile(wb, `AK_Brands_Lots_${new Date().toISOString().split('T')[0]}.xlsx`);
-            showToast('📊 Excel file downloaded!');
-        }
-
-        // Export to PDF
-        function exportToPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('l', 'mm', 'a4');
-
-            doc.setFontSize(18);
-            doc.text('AK Brands Marketing - Lot Inventory', 14, 15);
-            doc.setFontSize(11);
-            doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 22);
-
-            const tableData = lots.map(lot => [
-                lot.lotNumber,
-                lot.category,
-                lot.description.substring(0, 40) + '...',
-                lot.quantity,
-                lot.unitType || 'units',
-                lot.moq || 0,
-                `₹${lot.rate}`,
-                lot.location
-            ]);
-
-            doc.autoTable({
-                head: [['Lot #', 'Category', 'Description', 'Qty', 'Unit', 'MOQ', 'Rate', 'Location']],
-                body: tableData,
-                startY: 28,
-                styles: { fontSize: 8 },
-                headStyles: { fillColor: [102, 126, 234] }
-            });
-
-            doc.save(`AK_Brands_Lots_${new Date().toISOString().split('T')[0]}.pdf`);
-            showToast('📄 PDF file downloaded!');
-        }
-
-        // Export to CSV
-        function exportToCSV() {
-            let csv = 'Lot Number,Category,Description,Quantity,Unit Type,MOQ,Rate (₹),Location,Condition,Courier,Transportation,Notes\n';
-
-            lots.forEach(lot => {
-                const row = [
-                    lot.lotNumber,
-                    lot.category,
-                    `"${lot.description.replace(/"/g, '""')}"`,
-                    lot.quantity,
-                    lot.unitType || 'units',
-                    lot.moq || 0,
-                    lot.rate,
-                    lot.location,
-                    lot.condition || '',
-                    lot.courier || '',
-                    lot.transportation || '',
-                    `"${(lot.notes || '').replace(/"/g, '""')}"`
-                ].join(',');
-                csv += row + '\n';
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
+        // 3. GITHUB EXPORT
+        function downloadForGitHub() {
+            const data = localStorage.getItem('akBrandsLots');
+            if(!data || data === "[]") return alert("No data to export!");
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `AK_Brands_Lots_${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = 'lots.json';
             a.click();
-            window.URL.revokeObjectURL(url);
-            showToast('📋 CSV file downloaded!');
         }
 
-        // Render Table
-        function renderTable(data = lots) {
-            const container = document.getElementById('tableContent');
-            
-            if (data.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📦</div>
-                        <h3>No lots found</h3>
-                        <p>Click "Add New Lot" to get started</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Lot #</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Qty</th>
-                            <th>Unit Type</th>
-                            <th>MOQ</th>
-                            <th>Rate</th>
-                            <th>Location</th>
-                            <th>Condition</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            data.forEach((lot, index) => {
-                const unitType = lot.unitType || 'units';
-                html += `
-                    <tr>
-                        <td><a href="javascript:void(0)" class="lot-number" onclick="openLotDetails('${lot.lotNumber}')">${lot.lotNumber}</a></td>
-                        <td>${lot.category}</td>
-                        <td>${lot.description.substring(0, 50)}${lot.description.length > 50 ? '...' : ''}</td>
-                        <td>${lot.quantity}</td>
-                        <td>${unitType}</td>
-                        <td>${lot.moq || '-'}</td>
-                        <td>₹${lot.rate.toLocaleString()}</td>
-                        <td>${lot.location}</td>
-                        <td>${lot.condition || '-'}</td>
-                        <td>
-                            <div class="actions">
-                                <button class="btn btn-copy" onclick="copyLotLink('${lot.lotNumber}')" title="Copy Link">📋</button>
-                                <button class="btn btn-whatsapp" onclick="shareOnWhatsApp('${lot.lotNumber}')" title="Share on WhatsApp">💬</button>
-                                <button class="btn btn-edit" onclick="editLot(${lots.indexOf(lot)})" title="Edit">✏️</button>
-                                <button class="btn btn-danger" onclick="deleteLot(${lots.indexOf(lot)})" title="Delete">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            html += `
-                    </tbody>
-                </table>
-            `;
-
-            container.innerHTML = html;
+        function renderTable() {
+            const lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
+            document.getElementById('totalLots').textContent = lots.length;
         }
 
-        // Show Toast
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            toastMessage.textContent = message;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // Initialize
-        checkAuth();
-    function downloadForGitHub() {
-    // 1. Get the data from browser memory
-    const data = localStorage.getItem('akBrandsLots');
-    
-    if (!data || data === "[]") {
-        alert("No lots found in management tool to export!");
-        return;
-    }
-
-    // 2. Create a downloadable file
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    
-    a.href = url;
-    a.download = 'lots.json'; // This ensures the filename is always correct
-    document.body.appendChild(a);
-    a.click();
-    
-    // 3. Cleanup
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    showToast("File downloaded! Upload this to your GitHub repository.");
-    }
+        function openModal() { document.getElementById('lotModal').classList.add('active'); }
+        function closeModal() { document.getElementById('lotModal').classList.remove('active'); document.getElementById('lotForm').reset(); }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); }
     </script>
 </body>
 </html>
