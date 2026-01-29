@@ -9,22 +9,23 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f5f7fa; color: #333; }
         .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .login-box { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
+        .login-box { background: white; padding: 2rem; border-radius: 15px; width: 100%; max-width: 400px; text-align: center; }
         .main-app { display: none; padding: 20px; }
         .main-app.active { display: block; }
-        .header { background: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .header { background: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; }
         .btn-primary { background: #667eea; color: white; }
         .btn-github { background: #24292e; color: white; }
-        table { width: 100%; background: white; border-radius: 12px; border-collapse: collapse; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .btn-danger { background: #ff4d4d; color: white; margin-top: 10px; }
+        table { width: 100%; background: white; border-radius: 12px; border-collapse: collapse; overflow: hidden; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; font-size: 0.8rem; text-transform: uppercase; color: #666; }
+        th { background: #f8f9fa; color: #666; font-size: 0.8rem; }
+        /* THE BLUE MARK STYLE */
+        .lot-link { color: #007bff; font-weight: bold; text-decoration: underline; cursor: pointer; }
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; }
         .modal.active { display: flex; }
         .modal-content { background: white; padding: 2rem; border-radius: 12px; width: 90%; max-width: 600px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        input, textarea { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%; }
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 10px 20px; border-radius: 8px; display: none; }
+        input, textarea { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -32,7 +33,7 @@
     <div class="login-container" id="loginScreen">
         <div class="login-box">
             <h2>🔐 Admin Login</h2><br>
-            <input type="text" id="username" placeholder="Username"><br><br>
+            <input type="text" id="username" placeholder="Username">
             <input type="password" id="password" placeholder="Password"><br><br>
             <button class="btn btn-primary" onclick="login()">Login</button>
         </div>
@@ -44,6 +45,7 @@
             <div>
                 <button class="btn btn-github" onclick="downloadForGitHub()">📥 Download for GitHub</button>
                 <button class="btn btn-primary" onclick="openModal()">➕ Add Lot</button>
+                <button class="btn" style="background:#eee" onclick="localStorage.removeItem('akBrandsLots'); renderTable();">🧹 Clear Local View</button>
             </div>
         </div>
         <div id="tableContainer"></div>
@@ -52,21 +54,15 @@
     <div class="modal" id="lotModal">
         <div class="modal-content">
             <h3>Add New Lot</h3><br>
-            <div class="form-grid">
-                <input type="text" id="lotNumber" placeholder="Lot Number (e.g. 14381)">
-                <input type="text" id="category" placeholder="Category">
-                <input type="text" id="location" placeholder="Location">
-                <input type="number" id="quantity" placeholder="Quantity">
-                <input type="number" id="rate" placeholder="Rate (₹)">
-                <input type="text" id="condition" placeholder="Condition">
-                <textarea id="description" style="grid-column: span 2" placeholder="Description"></textarea>
-            </div><br>
+            <input type="text" id="lotNumber" placeholder="Lot Number (e.g. 14381)">
+            <input type="text" id="category" placeholder="Category">
+            <input type="text" id="location" placeholder="Location">
+            <input type="number" id="quantity" placeholder="Quantity">
+            <textarea id="description" placeholder="Description"></textarea>
             <button class="btn btn-primary" onclick="saveLot()">Save Lot</button>
             <button class="btn" onclick="closeModal()">Cancel</button>
         </div>
     </div>
-
-    <div class="toast" id="toast">Saved!</div>
 
     <script>
         function login() {
@@ -83,8 +79,6 @@
                 category: document.getElementById('category').value,
                 location: document.getElementById('location').value,
                 quantity: document.getElementById('quantity').value,
-                rate: document.getElementById('rate').value,
-                condition: document.getElementById('condition').value,
                 description: document.getElementById('description').value
             };
             let lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
@@ -92,14 +86,20 @@
             localStorage.setItem('akBrandsLots', JSON.stringify(lots, null, 2));
             closeModal();
             renderTable();
-            showToast();
         }
 
         function renderTable() {
             const lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
-            let html = `<table><tr><th>Lot #</th><th>Category</th><th>Qty</th><th>Location</th></tr>`;
+            let html = `<table><tr><th>Lot # (Click to View)</th><th>Category</th><th>Qty</th><th>Location</th></tr>`;
             lots.forEach(l => {
-                html += `<tr><td><b>${l.lotNumber}</b></td><td>${l.category}</td><td>${l.quantity}</td><td>${l.location}</td></tr>`;
+                // This creates the Blue Link to your live site
+                const liveLink = `https://zaffarsecure-lab.github.io/ak-brands-website/lot-details.html?lot=${l.lotNumber}`;
+                html += `<tr>
+                    <td><a href="${liveLink}" target="_blank" class="lot-link">${l.lotNumber}</a></td>
+                    <td>${l.category}</td>
+                    <td>${l.quantity}</td>
+                    <td>${l.location}</td>
+                </tr>`;
             });
             html += `</table>`;
             document.getElementById('tableContainer').innerHTML = html;
@@ -107,6 +107,7 @@
 
         function downloadForGitHub() {
             const data = localStorage.getItem('akBrandsLots');
+            if(!data) return alert("No data to download");
             const blob = new Blob([data], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -117,7 +118,6 @@
 
         function openModal() { document.getElementById('lotModal').classList.add('active'); }
         function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
-        function showToast() { document.getElementById('toast').style.display='block'; setTimeout(()=>document.getElementById('toast').style.display='none', 2000); }
     </script>
 </body>
 </html>
