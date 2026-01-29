@@ -3,153 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lot Inventory Management - AK Brands</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <title>Lot Management - AK Brands</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f5f7fa; color: #333; }
-        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem; }
-        .login-box { background: white; padding: 3rem; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 400px; width: 100%; }
-        .login-header { text-align: center; margin-bottom: 2rem; }
-        .login-form { display: flex; flex-direction: column; gap: 1.5rem; }
-        .form-group-login { display: flex; flex-direction: column; }
-        .form-group-login label { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .form-group-login input { padding: 0.75rem; border: 1px solid #e0e0e0; border-radius: 8px; }
-        .btn-login { padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .error-message { background: #fee; color: #c33; padding: 0.75rem; border-radius: 8px; font-size: 0.9rem; display: none; margin-bottom: 1rem; }
-        .error-message.show { display: block; }
-        .main-app { display: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f5f7fa; color: #333; }
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .login-box { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
+        .main-app { display: none; padding: 20px; }
         .main-app.active { display: block; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; }
-        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .container { max-width: 1400px; margin: 2rem auto; padding: 0 1rem; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: white; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #667eea; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .stat-value { font-size: 2rem; font-weight: 700; }
-        .table-section { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .table-header { padding: 1.5rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
-        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .header { background: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
         .btn-primary { background: #667eea; color: white; }
-        .btn-secondary { background: #f0f0f0; color: #333; }
         .btn-github { background: #24292e; color: white; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        table { width: 100%; background: white; border-radius: 12px; border-collapse: collapse; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-size: 0.8rem; text-transform: uppercase; color: #666; }
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; }
         .modal.active { display: flex; }
-        .modal-content { background: white; border-radius: 15px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; padding: 2rem; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .full-width { grid-column: 1 / -1; }
-        .form-group { display: flex; flex-direction: column; margin-bottom: 1rem; }
-        .form-group label { font-weight: 600; margin-bottom: 0.5rem; }
-        .form-group input, .form-group textarea, .form-group select { padding: 0.75rem; border: 1px solid #e0e0e0; border-radius: 8px; }
-        .toast { position: fixed; bottom: 2rem; right: 2rem; background: #333; color: white; padding: 1rem 1.5rem; border-radius: 8px; opacity: 0; transition: 0.3s; z-index: 2000; }
-        .toast.show { opacity: 1; }
+        .modal-content { background: white; padding: 2rem; border-radius: 12px; width: 90%; max-width: 600px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input, textarea { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 10px 20px; border-radius: 8px; display: none; }
     </style>
 </head>
 <body>
 
     <div class="login-container" id="loginScreen">
         <div class="login-box">
-            <div class="login-header"><h1>🔐 Admin Login</h1><p>AK Brands Management</p></div>
-            <div class="error-message" id="loginError">Invalid credentials!</div>
-            <form class="login-form" onsubmit="event.preventDefault(); login();">
-                <div class="form-group-login"><label>Username</label><input type="text" id="username" required></div>
-                <div class="form-group-login"><label>Password</label><input type="password" id="password" required></div>
-                <button type="submit" class="btn-login">Login</button>
-            </form>
+            <h2>🔐 Admin Login</h2><br>
+            <input type="text" id="username" placeholder="Username"><br><br>
+            <input type="password" id="password" placeholder="Password"><br><br>
+            <button class="btn btn-primary" onclick="login()">Login</button>
         </div>
     </div>
 
     <div class="main-app" id="mainApp">
         <div class="header">
-            <div class="header-content">
-                <h1>📦 Inventory Manager</h1>
-                <div style="display:flex; gap: 10px;">
-                    <button class="btn btn-github" onclick="downloadForGitHub()">📥 Download for GitHub</button>
-                    <button class="btn btn-primary" onclick="openModal()">➕ Add Lot</button>
-                    <button class="btn btn-secondary" onclick="location.reload()">🚪 Logout</button>
-                </div>
+            <h2>📦 Inventory Manager</h2>
+            <div>
+                <button class="btn btn-github" onclick="downloadForGitHub()">📥 Download for GitHub</button>
+                <button class="btn btn-primary" onclick="openModal()">➕ Add Lot</button>
             </div>
         </div>
-
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-label">Total Lots</div><div class="stat-value" id="totalLots">0</div></div>
-            </div>
-            <div class="table-section">
-                <div class="table-header"><h2>Current Inventory</h2><p>Data is saved in browser memory. Use the Download button to update GitHub.</p></div>
-                <div id="tableContent" style="padding: 20px;">Please add a lot to see the table.</div>
-            </div>
-        </div>
+        <div id="tableContainer"></div>
     </div>
 
     <div class="modal" id="lotModal">
         <div class="modal-content">
-            <h2>Add New Lot</h2><br>
-            <form id="lotForm" onsubmit="event.preventDefault(); saveLot();">
-                <div class="form-grid">
-                    <div class="form-group"><label>Lot Number *</label><input type="text" id="lotNumber" required></div>
-                    <div class="form-group"><label>Category *</label><input type="text" id="category" required></div>
-                    <div class="form-group full-width"><label>Description</label><textarea id="description" required></textarea></div>
-                    <div class="form-group"><label>Quantity</label><input type="number" id="quantity" required></div>
-                    <div class="form-group"><label>Rate (₹)</label><input type="number" id="rate" required></div>
-                    <div class="form-group"><label>Unit Type</label><select id="unitType"><option value="pieces">Pieces</option><option value="units">Units</option></select></div>
-                    <div class="form-group"><label>Location</label><input type="text" id="location" required></div>
-                    <div class="form-group"><label>Condition</label><input type="text" id="condition"></div>
-                    <div class="form-group"><label>MOQ</label><input type="number" id="moq"></div>
-                </div>
-                <div style="text-align:right; margin-top: 20px;">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">💾 Save Lot</button>
-                </div>
-            </form>
+            <h3>Add New Lot</h3><br>
+            <div class="form-grid">
+                <input type="text" id="lotNumber" placeholder="Lot Number (e.g. 14381)">
+                <input type="text" id="category" placeholder="Category">
+                <input type="text" id="location" placeholder="Location">
+                <input type="number" id="quantity" placeholder="Quantity">
+                <input type="number" id="rate" placeholder="Rate (₹)">
+                <input type="text" id="condition" placeholder="Condition">
+                <textarea id="description" style="grid-column: span 2" placeholder="Description"></textarea>
+            </div><br>
+            <button class="btn btn-primary" onclick="saveLot()">Save Lot</button>
+            <button class="btn" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
-    <div class="toast" id="toast"></div>
+    <div class="toast" id="toast">Saved!</div>
 
     <script>
-        // 1. AUTHENTICATION
         function login() {
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            if(u === "admin" && p === "akbrands@2024") {
+            if(document.getElementById('username').value === "admin" && document.getElementById('password').value === "akbrands@2024") {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainApp').classList.add('active');
                 renderTable();
-            } else {
-                document.getElementById('loginError').classList.add('show');
-            }
+            } else { alert("Wrong credentials"); }
         }
 
-        // 2. DATA SAVING
         function saveLot() {
-            const newLot = {
+            const lot = {
                 lotNumber: document.getElementById('lotNumber').value,
                 category: document.getElementById('category').value,
-                description: document.getElementById('description').value,
+                location: document.getElementById('location').value,
                 quantity: document.getElementById('quantity').value,
                 rate: document.getElementById('rate').value,
-                unitType: document.getElementById('unitType').value,
-                location: document.getElementById('location').value,
                 condition: document.getElementById('condition').value,
-                moq: document.getElementById('moq').value
+                description: document.getElementById('description').value
             };
-
             let lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
-            lots.push(newLot);
+            lots.push(lot);
             localStorage.setItem('akBrandsLots', JSON.stringify(lots, null, 2));
-            
-            showToast("Saved to browser! Don't forget to download for GitHub.");
             closeModal();
             renderTable();
+            showToast();
         }
 
-        // 3. GITHUB EXPORT
+        function renderTable() {
+            const lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
+            let html = `<table><tr><th>Lot #</th><th>Category</th><th>Qty</th><th>Location</th></tr>`;
+            lots.forEach(l => {
+                html += `<tr><td><b>${l.lotNumber}</b></td><td>${l.category}</td><td>${l.quantity}</td><td>${l.location}</td></tr>`;
+            });
+            html += `</table>`;
+            document.getElementById('tableContainer').innerHTML = html;
+        }
+
         function downloadForGitHub() {
             const data = localStorage.getItem('akBrandsLots');
-            if(!data || data === "[]") return alert("No data to export!");
             const blob = new Blob([data], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -158,14 +115,9 @@
             a.click();
         }
 
-        function renderTable() {
-            const lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
-            document.getElementById('totalLots').textContent = lots.length;
-        }
-
         function openModal() { document.getElementById('lotModal').classList.add('active'); }
-        function closeModal() { document.getElementById('lotModal').classList.remove('active'); document.getElementById('lotForm').reset(); }
-        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); }
+        function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
+        function showToast() { document.getElementById('toast').style.display='block'; setTimeout(()=>document.getElementById('toast').style.display='none', 2000); }
     </script>
 </body>
 </html>
