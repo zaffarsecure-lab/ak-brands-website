@@ -3,133 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Management - AK Brands</title>
+    <title>Lot Details - AK Brands</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f5f7fa; color: #333; padding-bottom: 50px; }
-        .main-app { padding: 15px; max-width: 1200px; margin: 0 auto; }
-        .header { background: white; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        @media(min-width: 600px) { .header { flex-direction: row; justify-content: space-between; align-items: center; } }
-        .btn { padding: 12px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; }
-        .btn-primary { background: #667eea; color: white; }
-        .btn-github { background: #24292e; color: white; }
-        .btn-whatsapp { background: #25D366; color: white; padding: 5px 10px; font-size: 12px; }
-        .btn-danger { background: #ff4d4d; color: white; padding: 5px 10px; font-size: 12px; }
-        .table-container { background: white; border-radius: 12px; overflow-x: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; font-size: 12px; text-transform: uppercase; color: #666; }
-        .lot-link { color: #007bff !important; text-decoration: underline !important; font-weight: 700; cursor: pointer; }
-        .admin-controls { display: none; gap: 10px; }
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; z-index: 1000; }
-        .modal.active { display: flex; }
-        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 500px; }
-        input, textarea { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%; margin-bottom: 15px; }
-        .mode-toggle { font-size: 12px; color: #888; cursor: pointer; text-align: right; padding: 10px; }
+        body { background: #f5f7fa; color: #333; line-height: 1.6; }
+        .container { max-width: 600px; margin: 20px auto; padding: 15px; }
+        .card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header { border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px; }
+        .lot-tag { background: #667eea; color: white; padding: 4px 10px; border-radius: 5px; font-size: 14px; font-weight: 700; }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .detail-item label { display: block; font-size: 11px; color: #888; text-transform: uppercase; font-weight: 700; }
+        .detail-item p { font-size: 16px; font-weight: 600; color: #444; }
+        .desc-box { margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee; }
+        .btn-whatsapp { display: block; text-align: center; margin-top: 25px; padding: 15px; background: #25D366; color: white; text-decoration: none; border-radius: 10px; font-weight: 700; }
     </style>
 </head>
 <body>
-    <div class="main-app">
-        <div class="mode-toggle" onclick="toggleAdmin()">Admin Settings ⚙️</div>
-        <div class="header">
-            <div><h2>📦 AK Brands Inventory</h2><p style="font-size:12px; color: #888;">Live Stock List</p></div>
-            <div class="admin-controls" id="adminButtons">
-                <button class="btn btn-github" onclick="downloadForGitHub()">📥 Export to GitHub</button>
-                <button class="btn btn-primary" onclick="openModal()">➕ Add New Lot</button>
+    <div class="container" id="mainDisplay">
+        <div class="card">
+            <div class="header">
+                <span class="lot-tag">LOT #<span id="lotID">---</span></span>
+                <h1 id="catTitle" style="margin-top:10px; font-size: 24px;">Loading...</h1>
             </div>
-        </div>
-        <div class="table-container" id="tableContainer"></div>
-    </div>
-
-    <div class="modal" id="lotModal">
-        <div class="modal-content">
-            <h3>Add New Lot</h3><br>
-            <input type="text" id="lotNumber" placeholder="Lot Number">
-            <input type="text" id="category" placeholder="Category">
-            <input type="text" id="location" placeholder="Location">
-            <input type="number" id="quantity" placeholder="Quantity">
-            <textarea id="description" placeholder="Description"></textarea>
-            <button class="btn btn-primary" onclick="saveLot()">Save Lot</button>
-            <button class="btn" onclick="closeModal()">Cancel</button>
+            <div class="detail-grid">
+                <div class="detail-item"><label>Location</label><p id="locText">---</p></div>
+                <div class="detail-item"><label>Quantity</label><p id="qtyText">---</p></div>
+                <div class="detail-item"><label>Condition</label><p>New</p></div>
+                <div class="detail-item"><label>Availability</label><p style="color:green">In Stock</p></div>
+            </div>
+            <div class="desc-box">
+                <label>Description</label>
+                <p id="descText" style="font-weight: 400; color: #666;">---</p>
+            </div>
+            <a href="https://wa.me/918660502217" class="btn-whatsapp">Contact to Buy via WhatsApp</a>
         </div>
     </div>
 
     <script>
-        let isAdmin = false;
-        function toggleAdmin() {
-            isAdmin = !isAdmin;
-            document.getElementById('adminButtons').style.display = isAdmin ? 'flex' : 'none';
-            renderTable();
-        }
+        async function fetchLot() {
+            const p = new URLSearchParams(window.location.search);
+            const lotNum = p.get('lotNumber') || p.get('lot');
 
-        function saveLot() {
-            const lot = {
-                lotNumber: document.getElementById('lotNumber').value,
-                category: document.getElementById('category').value,
-                location: document.getElementById('location').value,
-                quantity: document.getElementById('quantity').value,
-                description: document.getElementById('description').value
-            };
-            let lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
-            lots.push(lot);
-            localStorage.setItem('akBrandsLots', JSON.stringify(lots));
-            closeModal();
-            renderTable();
-        }
+            // 1. Instant View from Link Data
+            if (p.get('category')) {
+                render({
+                    lotNumber: lotNum,
+                    category: p.get('category'),
+                    location: p.get('location'),
+                    quantity: p.get('quantity'),
+                    description: p.get('description')
+                });
+                return;
+            }
 
-        function shareToWhatsApp(lot) {
-            const params = new URLSearchParams(lot).toString();
-            // Use your actual GitHub Pages URL here
-            const baseUrl = "https://zaffarsecure-lab.github.io/ak-brands-website/lot-details.html";
-            const fullLink = `${baseUrl}?${params}`;
-            const message = `Check out this lot from AK Brands!\n\nLot: ${lot.lotNumber}\nCategory: ${lot.category}\nQty: ${lot.quantity}\nLocation: ${lot.location}\n\nView Details: ${fullLink}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-        }
-
-        function deleteLot(idx) {
-            if(confirm("Delete this lot?")) {
-                let lots = JSON.parse(localStorage.getItem('akBrandsLots'));
-                lots.splice(idx, 1);
-                localStorage.setItem('akBrandsLots', JSON.stringify(lots));
-                renderTable();
+            // 2. Fallback to GitHub file
+            try {
+                const res = await fetch('lots.json');
+                const data = await res.json();
+                const found = data.find(l => l.lotNumber == lotNum);
+                if (found) render(found);
+                else document.getElementById('catTitle').innerText = "Lot Not Found";
+            } catch (e) {
+                document.getElementById('catTitle').innerText = "Error Loading Data";
             }
         }
 
-        function renderTable() {
-            const lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
-            let html = `<table><tr><th>Lot #</th><th>Category</th><th>Qty</th><th>Location</th><th>Actions</th></tr>`;
-            lots.forEach((l, i) => {
-                const params = new URLSearchParams(l).toString();
-                const liveLink = `lot-details.html?${params}`;
-                
-                html += `<tr>
-                    <td><a href="${liveLink}" class="lot-link">${l.lotNumber}</a></td>
-                    <td>${l.category}</td>
-                    <td>${l.quantity}</td>
-                    <td>${l.location}</td>
-                    <td>
-                        <div style="display:flex; gap:5px;">
-                            <button class="btn btn-whatsapp" onclick='shareToWhatsApp(${JSON.stringify(l)})'>WhatsApp</button>
-                            ${isAdmin ? `<button class="btn btn-danger" onclick="deleteLot(${i})">Delete</button>` : ''}
-                        </div>
-                    </td>
-                </tr>`;
-            });
-            document.getElementById('tableContainer').innerHTML = html + `</table>`;
+        function render(d) {
+            document.getElementById('lotID').innerText = d.lotNumber;
+            document.getElementById('catTitle').innerText = d.category;
+            document.getElementById('locText').innerText = d.location;
+            document.getElementById('qtyText').innerText = d.quantity;
+            document.getElementById('descText').innerText = d.description || "No description provided.";
+            document.title = "Lot " + d.lotNumber + " Details";
         }
-
-        function downloadForGitHub() {
-            const data = localStorage.getItem('akBrandsLots');
-            const blob = new Blob([data], {type: 'application/json'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'lots.json';
-            a.click();
-        }
-        function openModal() { document.getElementById('lotModal').classList.add('active'); }
-        function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
-        renderTable();
+        fetchLot();
     </script>
 </body>
 </html>
