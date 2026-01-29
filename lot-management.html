@@ -1129,6 +1129,31 @@
 
         // Initialize
         checkAuth();
+    function downloadForGitHub() {
+    // 1. Get the data from browser memory
+    const data = localStorage.getItem('akBrandsLots');
+    
+    if (!data || data === "[]") {
+        alert("No lots found in management tool to export!");
+        return;
+    }
+
+    // 2. Create a downloadable file
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    
+    a.href = url;
+    a.download = 'lots.json'; // This ensures the filename is always correct
+    document.body.appendChild(a);
+    a.click();
+    
+    // 3. Cleanup
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast("File downloaded! Upload this to your GitHub repository.");
+    }
     </script>
 </body>
 </html>
