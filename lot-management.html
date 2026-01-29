@@ -11,61 +11,50 @@
         .main-app { padding: 15px; max-width: 1200px; margin: 0 auto; }
         .header { background: white; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         @media(min-width: 600px) { .header { flex-direction: row; justify-content: space-between; align-items: center; } }
-        .btn { padding: 12px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; font-size: 14px; transition: 0.2s; }
+        .btn { padding: 12px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; font-size: 14px; }
         .btn-primary { background: #667eea; color: white; }
         .btn-github { background: #24292e; color: white; }
-        .btn-danger { background: #ff4d4d; color: white; padding: 5px 10px; font-size: 12px; }
+        .btn-danger { background: #ff4d4d; color: white; padding: 5px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; }
         .table-container { background: white; border-radius: 12px; overflow-x: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
         th { background: #f8f9fa; font-size: 12px; text-transform: uppercase; color: #666; }
         .lot-link { color: #007bff !important; text-decoration: underline !important; font-weight: 700; cursor: pointer; }
-        .admin-controls { display: none; } /* Hidden for customers */
+        .admin-controls { display: none; gap: 10px; }
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; z-index: 1000; }
         .modal.active { display: flex; }
         .modal-content { background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 500px; }
-        input, textarea, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%; margin-bottom: 15px; }
-        .mode-toggle { font-size: 12px; color: #888; cursor: pointer; text-align: right; }
+        input, textarea { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%; margin-bottom: 15px; }
+        .mode-toggle { font-size: 12px; color: #888; cursor: pointer; text-align: right; padding: 10px; }
     </style>
 </head>
 <body>
-
     <div class="main-app">
         <div class="mode-toggle" onclick="toggleAdmin()">Admin Settings ⚙️</div>
-        
         <div class="header">
-            <div>
-                <h2 style="color:#444;">📦 AK Brands Inventory</h2>
-                <p style="font-size:12px; color: #888;">Live Stock List</p>
-            </div>
-            <div class="admin-controls" id="adminButtons" style="gap: 10px;">
+            <div><h2>📦 AK Brands Inventory</h2><p style="font-size:12px; color: #888;">Live Stock List</p></div>
+            <div class="admin-controls" id="adminButtons">
                 <button class="btn btn-github" onclick="downloadForGitHub()">📥 Export to GitHub</button>
                 <button class="btn btn-primary" onclick="openModal()">➕ Add New Lot</button>
             </div>
         </div>
-
-        <div class="table-container" id="tableContainer">
-            </div>
+        <div class="table-container" id="tableContainer"></div>
     </div>
 
     <div class="modal" id="lotModal">
         <div class="modal-content">
-            <h3 style="margin-bottom:15px;">Add New Lot</h3>
-            <input type="text" id="lotNumber" placeholder="Lot Number (e.g. 14382)">
-            <input type="text" id="category" placeholder="Category (e.g. Shoes)">
+            <h3>Add New Lot</h3><br>
+            <input type="text" id="lotNumber" placeholder="Lot Number">
+            <input type="text" id="category" placeholder="Category">
             <input type="text" id="location" placeholder="Location">
             <input type="number" id="quantity" placeholder="Quantity">
-            <textarea id="description" placeholder="Short description..."></textarea>
-            
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-primary" style="flex:1" onclick="saveLot()">Save Lot</button>
-                <button class="btn" style="flex:1; background:#eee;" onclick="closeModal()">Cancel</button>
-            </div>
+            <textarea id="description" placeholder="Description"></textarea>
+            <button class="btn btn-primary" onclick="saveLot()">Save Lot</button>
+            <button class="btn" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
     <script>
-        // Check if user is Admin (You can secretely click "Admin Settings" to show buttons)
         let isAdmin = false;
         function toggleAdmin() {
             isAdmin = !isAdmin;
@@ -73,73 +62,59 @@
             renderTable();
         }
 
-        // Save data to phone memory
         function saveLot() {
             const lot = {
                 lotNumber: document.getElementById('lotNumber').value,
                 category: document.getElementById('category').value,
                 location: document.getElementById('location').value,
                 quantity: document.getElementById('quantity').value,
-                description: document.getElementById('description').value,
-                rate: 0, 
-                unitType: "pcs"
+                description: document.getElementById('description').value
             };
-
             let lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
             lots.push(lot);
-            localStorage.setItem('akBrandsLots', JSON.stringify(lots, null, 2));
-            
+            localStorage.setItem('akBrandsLots', JSON.stringify(lots));
             closeModal();
             renderTable();
         }
 
-        // Delete a lot (Admin only)
-        function deleteLot(index) {
+        function deleteLot(idx) {
             if(confirm("Delete this lot?")) {
-                let lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
-                lots.splice(index, 1);
-                localStorage.setItem('akBrandsLots', JSON.stringify(lots, null, 2));
+                let lots = JSON.parse(localStorage.getItem('akBrandsLots'));
+                lots.splice(idx, 1);
+                localStorage.setItem('akBrandsLots', JSON.stringify(lots));
                 renderTable();
             }
         }
 
         function renderTable() {
             const lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
-            let html = `<table><tr><th>Lot #</th><th>Category</th><th>Qty</th><th>Location</th>`;
-            if(isAdmin) html += `<th>Action</th>`;
-            html += `</tr>`;
-
-            lots.forEach((l, index) => {
-                const liveLink = `lot-details.html?lot=${l.lotNumber}`;
+            let html = `<table><tr><th>Lot #</th><th>Category</th><th>Qty</th><th>Location</th>${isAdmin ? '<th>Action</th>' : ''}</tr>`;
+            lots.forEach((l, i) => {
+                // FIXED LINK: Passing data through the URL so it works instantly
+                const params = new URLSearchParams(l).toString();
+                const liveLink = `lot-details.html?${params}`;
+                
                 html += `<tr>
                     <td><a href="${liveLink}" class="lot-link">${l.lotNumber}</a></td>
                     <td>${l.category}</td>
                     <td>${l.quantity}</td>
-                    <td>${l.location}</td>`;
-                
-                if(isAdmin) {
-                    html += `<td><button class="btn btn-danger" onclick="deleteLot(${index})">Delete</button></td>`;
-                }
-                html += `</tr>`;
+                    <td>${l.location}</td>
+                    ${isAdmin ? `<td><button class="btn btn-danger" onclick="deleteLot(${i})">Delete</button></td>` : ''}
+                </tr>`;
             });
-
-            html += `</table>`;
-            document.getElementById('tableContainer').innerHTML = html;
+            document.getElementById('tableContainer').innerHTML = html + `</table>`;
         }
 
         function downloadForGitHub() {
-            const lots = localStorage.getItem('akBrandsLots');
-            const blob = new Blob([lots], { type: 'application/json' });
+            const data = localStorage.getItem('akBrandsLots');
+            const blob = new Blob([data], {type: 'application/json'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = 'lots.json';
             a.click();
         }
-
         function openModal() { document.getElementById('lotModal').classList.add('active'); }
         function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
-        
-        // Load table on start
         renderTable();
     </script>
 </body>
