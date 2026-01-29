@@ -12,16 +12,22 @@
         .login-box { background: white; padding: 2rem; border-radius: 15px; width: 100%; max-width: 400px; text-align: center; }
         .main-app { display: none; padding: 20px; }
         .main-app.active { display: block; }
-        .header { background: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; }
+        .header { background: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; }
         .btn-primary { background: #667eea; color: white; }
         .btn-github { background: #24292e; color: white; }
-        .btn-danger { background: #ff4d4d; color: white; margin-top: 10px; }
-        table { width: 100%; background: white; border-radius: 12px; border-collapse: collapse; overflow: hidden; }
+        table { width: 100%; background: white; border-radius: 12px; border-collapse: collapse; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; color: #666; font-size: 0.8rem; }
-        /* THE BLUE MARK STYLE */
-        .lot-link { color: #007bff; font-weight: bold; text-decoration: underline; cursor: pointer; }
+        th { background: #f8f9fa; font-size: 0.8rem; text-transform: uppercase; color: #666; }
+        
+        /* THIS IS THE BLUE TICK / LINK FIX */
+        .lot-link { 
+            color: #007bff !important; 
+            text-decoration: underline !important; 
+            font-weight: bold; 
+            cursor: pointer;
+        }
+
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; }
         .modal.active { display: flex; }
         .modal-content { background: white; padding: 2rem; border-radius: 12px; width: 90%; max-width: 600px; }
@@ -45,7 +51,6 @@
             <div>
                 <button class="btn btn-github" onclick="downloadForGitHub()">📥 Download for GitHub</button>
                 <button class="btn btn-primary" onclick="openModal()">➕ Add Lot</button>
-                <button class="btn" style="background:#eee" onclick="localStorage.removeItem('akBrandsLots'); renderTable();">🧹 Clear Local View</button>
             </div>
         </div>
         <div id="tableContainer"></div>
@@ -92,7 +97,7 @@
             const lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
             let html = `<table><tr><th>Lot # (Click to View)</th><th>Category</th><th>Qty</th><th>Location</th></tr>`;
             lots.forEach(l => {
-                // This creates the Blue Link to your live site
+                // THE LINK LOGIC
                 const liveLink = `https://zaffarsecure-lab.github.io/ak-brands-website/lot-details.html?lot=${l.lotNumber}`;
                 html += `<tr>
                     <td><a href="${liveLink}" target="_blank" class="lot-link">${l.lotNumber}</a></td>
