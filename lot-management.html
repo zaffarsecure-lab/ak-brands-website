@@ -3,29 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Manager - AK Brands</title>
+    <title>AK Brands - Inventory Manager</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f5f7fa; color: #333; padding-bottom: 50px; }
+        body { background: #f5f7fa; padding-bottom: 50px; }
         .main-app { padding: 15px; max-width: 1200px; margin: 0 auto; }
         .header { background: white; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         @media(min-width: 600px) { .header { flex-direction: row; justify-content: space-between; align-items: center; } }
-        .btn { padding: 12px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; }
+        .btn { padding: 12px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; }
         .btn-primary { background: #667eea; color: white; }
-        .btn-github { background: #24292e; color: white; }
         .btn-whatsapp { background: #25D366; color: white; padding: 5px 10px; font-size: 12px; }
-        .btn-danger { background: #ff4d4d; color: white; padding: 5px 10px; font-size: 12px; border-radius: 4px; border: none; }
+        .btn-danger { background: #ff4d4d; color: white; padding: 5px 10px; font-size: 12px; border-radius: 4px; }
         .table-container { background: white; border-radius: 12px; overflow-x: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; font-size: 12px; text-transform: uppercase; color: #666; }
-        .lot-link { color: #007bff !important; text-decoration: underline !important; font-weight: 700; cursor: pointer; }
+        .lot-link { color: #007bff; text-decoration: underline; font-weight: 700; cursor: pointer; }
         .admin-controls { display: none; gap: 10px; }
+        /* MODAL STYLING */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; z-index: 1000; }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 500px; }
-        input, textarea { padding: 12px; border: 1px solid #ddd; border-radius: 6px; width: 100%; margin-bottom: 15px; font-size: 16px; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 550px; max-height: 90vh; overflow-y: auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; color: #555; }
+        input, textarea, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%; font-size: 14px; }
+        .highlight-input { border: 2px solid #667eea; background: #f0f4ff; }
         .mode-toggle { font-size: 12px; color: #888; cursor: pointer; text-align: right; padding: 10px; }
     </style>
 </head>
@@ -33,10 +35,10 @@
     <div class="main-app">
         <div class="mode-toggle" onclick="toggleAdmin()">Admin Settings ⚙️</div>
         <div class="header">
-            <div><h2>📦 AK Brands Inventory</h2><p style="font-size:12px; color: #888;">Manage Stock Locally</p></div>
+            <div><h2>📦 AK Brands Inventory</h2></div>
             <div class="admin-controls" id="adminButtons">
-                <button class="btn btn-github" onclick="downloadForGitHub()">📥 Export to GitHub</button>
                 <button class="btn btn-primary" onclick="openModal()">➕ Add New Lot</button>
+                <button class="btn" style="background:#24292e; color:white;" onclick="downloadForGitHub()">📥 Export JSON</button>
             </div>
         </div>
         <div class="table-container" id="tableContainer"></div>
@@ -44,14 +46,30 @@
 
     <div class="modal" id="lotModal">
         <div class="modal-content">
-            <h3>Add New Lot</h3><br>
-            <input type="text" id="lotNumber" placeholder="Lot Number (e.g. 14382)">
-            <input type="text" id="category" placeholder="Category (e.g. Branded Shoes)">
-            <input type="text" id="location" placeholder="Location (e.g. Surat)">
-            <input type="number" id="quantity" placeholder="Quantity">
-            <textarea id="description" placeholder="Short Item Description..."></textarea>
+            <h3 style="margin-bottom:20px;">Add New Inventory Item</h3>
+            <div class="form-group"><label>1. Lot Number</label><input type="text" id="lotNumber"></div>
+            <div class="form-group"><label>2. Category</label><input type="text" id="category"></div>
+            <div class="form-group"><label>3. Total Quantity</label><input type="number" id="quantity"></div>
+            <div class="form-group"><label>4. Minimum Order Quantity (MOQ)</label><input type="number" id="moq"></div>
+            <div class="form-group"><label>5. Lot Rate (₹)</label><input type="number" id="lotRate" class="highlight-input"></div>
+            <div class="form-group"><label>6. AK Offer Rate (₹)</label><input type="number" id="akOffer" class="highlight-input"></div>
+            <div class="form-group">
+                <label>7. Show Customer Offer?</label>
+                <select id="showCustomerOffer" onchange="toggleCustInput()">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            <div id="custOfferDiv" style="display:none;" class="form-group">
+                <label>Enter Customer Offer Details</label>
+                <input type="text" id="customerOfferValue" placeholder="e.g. 10% Extra Discount">
+            </div>
+            <div class="form-group"><label>8. Location</label><input type="text" id="location"></div>
+            <div class="form-group"><label>9. Product Description</label><textarea id="description" rows="3"></textarea></div>
+            <div class="form-group"><label>10. Remarks (Internal)</label><input type="text" id="remarks"></div>
+            
             <div style="display:flex; gap:10px;">
-                <button class="btn btn-primary" style="flex:1" onclick="saveLot()">Save Lot</button>
+                <button class="btn btn-primary" style="flex:2" onclick="saveLot()">Save Inventory</button>
                 <button class="btn" style="flex:1; background:#eee;" onclick="closeModal()">Cancel</button>
             </div>
         </div>
@@ -65,16 +83,25 @@
             renderTable();
         }
 
+        function toggleCustInput() {
+            const val = document.getElementById('showCustomerOffer').value;
+            document.getElementById('custOfferDiv').style.display = (val === 'yes') ? 'block' : 'none';
+        }
+
         function saveLot() {
             const lot = {
                 lotNumber: document.getElementById('lotNumber').value,
                 category: document.getElementById('category').value,
-                location: document.getElementById('location').value,
                 quantity: document.getElementById('quantity').value,
-                description: document.getElementById('description').value
+                moq: document.getElementById('moq').value,
+                lotRate: document.getElementById('lotRate').value,
+                akOffer: document.getElementById('akOffer').value,
+                showCustomerOffer: document.getElementById('showCustomerOffer').value,
+                customerOfferValue: document.getElementById('customerOfferValue').value,
+                location: document.getElementById('location').value,
+                description: document.getElementById('description').value,
+                remarks: document.getElementById('remarks').value
             };
-            if(!lot.lotNumber) return alert("Lot Number is required!");
-            
             let lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
             lots.push(lot);
             localStorage.setItem('akBrandsLots', JSON.stringify(lots));
@@ -82,53 +109,35 @@
             renderTable();
         }
 
-        function deleteLot(idx) {
-            if(confirm("Delete this lot?")) {
-                let lots = JSON.parse(localStorage.getItem('akBrandsLots'));
-                lots.splice(idx, 1);
-                localStorage.setItem('akBrandsLots', JSON.stringify(lots));
-                renderTable();
-            }
-        }
-
-        function shareToWhatsApp(lot) {
-            const params = new URLSearchParams(lot).toString();
-            const baseUrl = "https://zaffarsecure-lab.github.io/ak-brands-website/lot-details.html";
-            const fullLink = `${baseUrl}?${params}`;
-            const message = `📦 *AK Brands Stock Update*\n\n*Lot:* ${lot.lotNumber}\n*Item:* ${lot.category}\n*Qty:* ${lot.quantity}\n*Loc:* ${lot.location}\n\n🔗 *Full Details:* ${fullLink}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-        }
-
         function renderTable() {
             const lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
-            let html = `<table><tr><th>Lot #</th><th>Category</th><th>Qty</th><th>Location</th><th>Actions</th></tr>`;
+            let html = `<table><tr><th>Lot #</th><th>Category</th><th>Qty</th><th>AK Price</th><th>Action</th></tr>`;
             lots.forEach((l, i) => {
                 const params = new URLSearchParams(l).toString();
-                const liveLink = `https://zaffarsecure-lab.github.io/ak-brands-website/lot-details.html?${params}`;
+                const liveLink = `lot-details.html?${params}`;
                 html += `<tr>
                     <td><a href="${liveLink}" target="_blank" class="lot-link">${l.lotNumber}</a></td>
                     <td>${l.category}</td>
                     <td>${l.quantity}</td>
-                    <td>${l.location}</td>
+                    <td style="color:#667eea; font-weight:700;">₹${l.akOffer}</td>
                     <td>
-                        <div style="display:flex; gap:5px;">
-                            <button class="btn btn-whatsapp" onclick='shareToWhatsApp(${JSON.stringify(l)})'>WhatsApp</button>
-                            ${isAdmin ? `<button class="btn btn-danger" onclick="deleteLot(${i})">Delete</button>` : ''}
-                        </div>
+                        <button class="btn btn-whatsapp" onclick='shareWA(${JSON.stringify(l)})'>WA Share</button>
+                        ${isAdmin ? `<button class="btn btn-danger" onclick="deleteLot(${i})">X</button>` : ''}
                     </td>
                 </tr>`;
             });
             document.getElementById('tableContainer').innerHTML = html + `</table>`;
         }
 
-        function downloadForGitHub() {
-            const data = localStorage.getItem('akBrandsLots');
-            const blob = new Blob([data], {type: 'application/json'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'lots.json';
-            a.click();
+        function shareWA(l) {
+            const params = new URLSearchParams(l).toString();
+            const link = `https://zaffarsecure-lab.github.io/ak-brands-website/lot-details.html?${params}`;
+            const msg = `🔥 *AK BRANDS HOT DEAL* 🔥\n\n*Lot:* ${l.lotNumber}\n*Item:* ${l.category}\n*Qty:* ${l.quantity}\n*AK Price:* ₹${l.akOffer}\n\n🔗 *Full Details:* ${link}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
+
+        function deleteLot(i) { if(confirm("Delete?")) { let lots = JSON.parse(localStorage.getItem('akBrandsLots')); lots.splice(i,1); localStorage.setItem('akBrandsLots', JSON.stringify(lots)); renderTable(); } }
+        function downloadForGitHub() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([localStorage.getItem('akBrandsLots')], {type:'application/json'})); a.download='lots.json'; a.click(); }
         function openModal() { document.getElementById('lotModal').classList.add('active'); }
         function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
         renderTable();
