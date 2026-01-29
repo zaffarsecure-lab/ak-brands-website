@@ -4,80 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lot Details - AK Brands</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f5f7fa; color: #333; line-height: 1.6; }
-        .container { max-width: 600px; margin: 20px auto; padding: 15px; }
-        .card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .header { border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px; }
-        .lot-tag { background: #667eea; color: white; padding: 4px 10px; border-radius: 5px; font-size: 14px; font-weight: 700; }
-        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .detail-item label { display: block; font-size: 11px; color: #888; text-transform: uppercase; font-weight: 700; }
-        .detail-item p { font-size: 16px; font-weight: 600; color: #444; }
-        .desc-box { margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee; }
-        .btn-whatsapp { display: block; text-align: center; margin-top: 25px; padding: 15px; background: #25D366; color: white; text-decoration: none; border-radius: 10px; font-weight: 700; }
+        body { background: #f5f7fa; padding: 15px; }
+        .card { background: white; border-radius: 15px; padding: 25px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .price-box { background: #667eea; color: white; padding: 15px; border-radius: 10px; margin: 20px 0; text-align: center; }
+        .old-price { text-decoration: line-through; opacity: 0.8; font-size: 14px; }
+        .new-price { font-size: 28px; font-weight: 700; display: block; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        label { display: block; font-size: 11px; color: #888; text-transform: uppercase; font-weight: 700; }
+        p { font-weight: 600; color: #333; }
+        .offer-banner { background: #fff4e5; border: 1px dashed #ffa94d; color: #d9480f; padding: 10px; border-radius: 8px; text-align: center; font-weight: 700; margin-bottom: 20px; }
+        .btn-wa { display: block; background: #25D366; color: white; text-align: center; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: 700; }
     </style>
 </head>
 <body>
-    <div class="container" id="mainDisplay">
-        <div class="card">
-            <div class="header">
-                <span class="lot-tag">LOT #<span id="lotID">---</span></span>
-                <h1 id="catTitle" style="margin-top:10px; font-size: 24px;">Loading...</h1>
-            </div>
-            <div class="detail-grid">
-                <div class="detail-item"><label>Location</label><p id="locText">---</p></div>
-                <div class="detail-item"><label>Quantity</label><p id="qtyText">---</p></div>
-                <div class="detail-item"><label>Condition</label><p>New</p></div>
-                <div class="detail-item"><label>Availability</label><p style="color:green">In Stock</p></div>
-            </div>
-            <div class="desc-box">
-                <label>Description</label>
-                <p id="descText" style="font-weight: 400; color: #666;">---</p>
-            </div>
-            <a href="https://wa.me/918660502217" class="btn-whatsapp">Contact to Buy via WhatsApp</a>
+    <div class="card">
+        <h2 id="cat">Loading...</h2>
+        <p style="color: #667eea;">Lot #<span id="lnum">---</span></p>
+
+        <div class="price-box">
+            <span class="old-price">Market Rate: ₹<span id="lrate">0</span></span>
+            <span class="new-price">AK OFFER: ₹<span id="akr">0</span></span>
         </div>
+
+        <div id="custOfferBox" class="offer-banner" style="display:none;">
+            🎁 SPECIAL OFFER: <span id="coffer">---</span>
+        </div>
+
+        <div class="grid">
+            <div><label>Total Qty</label><p id="qty">0</p></div>
+            <div><label>MOQ</label><p id="moq">0</p></div>
+            <div><label>Location</label><p id="loc">---</p></div>
+            <div><label>Condition</label><p>Fresh Stock</p></div>
+        </div>
+
+        <div style="border-top: 1px solid #eee; padding-top: 15px;">
+            <label>Description</label>
+            <p id="desc" style="font-weight: 400; color: #666;">---</p>
+        </div>
+
+        <a href="https://wa.me/918660502217" class="btn-wa">BUY NOW VIA WHATSAPP</a>
     </div>
 
     <script>
-        async function fetchLot() {
-            const p = new URLSearchParams(window.location.search);
-            const lotNum = p.get('lotNumber') || p.get('lot');
+        const p = new URLSearchParams(window.location.search);
+        // Map URL data to Page
+        document.getElementById('lnum').innerText = p.get('lotNumber');
+        document.getElementById('cat').innerText = p.get('category');
+        document.getElementById('qty').innerText = p.get('quantity');
+        document.getElementById('moq').innerText = p.get('moq');
+        document.getElementById('lrate').innerText = p.get('lotRate');
+        document.getElementById('akr').innerText = p.get('akOffer');
+        document.getElementById('loc').innerText = p.get('location');
+        document.getElementById('desc').innerText = p.get('description');
 
-            // 1. Instant View from Link Data
-            if (p.get('category')) {
-                render({
-                    lotNumber: lotNum,
-                    category: p.get('category'),
-                    location: p.get('location'),
-                    quantity: p.get('quantity'),
-                    description: p.get('description')
-                });
-                return;
-            }
-
-            // 2. Fallback to GitHub file
-            try {
-                const res = await fetch('lots.json');
-                const data = await res.json();
-                const found = data.find(l => l.lotNumber == lotNum);
-                if (found) render(found);
-                else document.getElementById('catTitle').innerText = "Lot Not Found";
-            } catch (e) {
-                document.getElementById('catTitle').innerText = "Error Loading Data";
-            }
+        // Offer Logic
+        if(p.get('showCustomerOffer') === 'yes') {
+            document.getElementById('custOfferBox').style.display = 'block';
+            document.getElementById('coffer').innerText = p.get('customerOfferValue');
         }
-
-        function render(d) {
-            document.getElementById('lotID').innerText = d.lotNumber;
-            document.getElementById('catTitle').innerText = d.category;
-            document.getElementById('locText').innerText = d.location;
-            document.getElementById('qtyText').innerText = d.quantity;
-            document.getElementById('descText').innerText = d.description || "No description provided.";
-            document.title = "Lot " + d.lotNumber + " Details";
-        }
-        fetchLot();
     </script>
 </body>
 </html>
