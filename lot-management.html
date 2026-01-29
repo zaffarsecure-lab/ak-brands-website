@@ -3,31 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AK Brands - Inventory Manager</title>
+    <title>AK Brands - Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f5f7fa; padding-bottom: 50px; }
         .main-app { padding: 15px; max-width: 1200px; margin: 0 auto; }
-        .header { background: white; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        @media(min-width: 600px) { .header { flex-direction: row; justify-content: space-between; align-items: center; } }
-        .btn { padding: 12px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; }
+        .header { background: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .btn { padding: 12px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; text-decoration: none; }
         .btn-primary { background: #667eea; color: white; }
-        .btn-whatsapp { background: #25D366; color: white; padding: 5px 10px; font-size: 12px; }
-        .btn-danger { background: #ff4d4d; color: white; padding: 5px 10px; font-size: 12px; border-radius: 4px; }
-        .table-container { background: white; border-radius: 12px; overflow-x: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .table-container { background: white; border-radius: 12px; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        .lot-link { color: #007bff; text-decoration: underline; font-weight: 700; cursor: pointer; }
-        .admin-controls { display: none; gap: 10px; }
-        /* MODAL STYLING */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; z-index: 1000; }
         .modal.active { display: flex; }
         .modal-content { background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 550px; max-height: 90vh; overflow-y: auto; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; color: #555; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 11px; font-weight: 700; color: #555; margin-bottom: 4px; }
         input, textarea, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%; font-size: 14px; }
-        .highlight-input { border: 2px solid #667eea; background: #f0f4ff; }
         .mode-toggle { font-size: 12px; color: #888; cursor: pointer; text-align: right; padding: 10px; }
     </style>
 </head>
@@ -35,8 +28,8 @@
     <div class="main-app">
         <div class="mode-toggle" onclick="toggleAdmin()">Admin Settings ⚙️</div>
         <div class="header">
-            <div><h2>📦 AK Brands Inventory</h2></div>
-            <div class="admin-controls" id="adminButtons">
+            <h2>📦 AK Brands Inventory</h2>
+            <div id="adminButtons" style="display:none; gap:10px;">
                 <button class="btn btn-primary" onclick="openModal()">➕ Add New Lot</button>
                 <button class="btn" style="background:#24292e; color:white;" onclick="downloadForGitHub()">📥 Export JSON</button>
             </div>
@@ -46,58 +39,54 @@
 
     <div class="modal" id="lotModal">
         <div class="modal-content">
-            <h3 style="margin-bottom:20px;">Add New Inventory Item</h3>
-            <div class="form-group"><label>1. Lot Number</label><input type="text" id="lotNumber"></div>
-            <div class="form-group"><label>2. Category</label><input type="text" id="category"></div>
-            <div class="form-group"><label>3. Total Quantity</label><input type="number" id="quantity"></div>
-            <div class="form-group"><label>4. Minimum Order Quantity (MOQ)</label><input type="number" id="moq"></div>
-            <div class="form-group"><label>5. Lot Rate (₹)</label><input type="number" id="lotRate" class="highlight-input"></div>
-            <div class="form-group"><label>6. AK Offer Rate (₹)</label><input type="number" id="akOffer" class="highlight-input"></div>
-            <div class="form-group">
-                <label>7. Show Customer Offer?</label>
-                <select id="showCustomerOffer" onchange="toggleCustInput()">
-                    <option value="no">No</option>
-                    <option value="yes">Yes</option>
+            <h3>Add New Inventory Item</h3><br>
+            <div class="form-group"><label>Lot Number</label><input type="text" id="lotNumber"></div>
+            <div class="form-group"><label>Category</label><input type="text" id="category"></div>
+            <div class="form-group"><label>Condition of Stock</label>
+                <select id="condition">
+                    <option value="Fresh">Fresh</option><option value="Return">Return</option>
+                    <option value="Surplus">Surplus</option><option value="Overstock">Overstock</option>
+                    <option value="Shopclosed">Shopclosed</option><option value="Clearance">Clearance</option>
+                    <option value="Damage">Damage</option><option value="Minor">Minor</option>
+                    <option value="Orphen">Orphen</option><option value="Bidding">Bidding</option>
                 </select>
             </div>
-            <div id="custOfferDiv" style="display:none;" class="form-group">
-                <label>Enter Customer Offer Details</label>
-                <input type="text" id="customerOfferValue" placeholder="e.g. 10% Extra Discount">
+            <div class="form-group"><label>Total Quantity</label><input type="number" id="quantity"></div>
+            <div class="form-group"><label>MOQ</label><input type="number" id="moq"></div>
+            <div class="form-group"><label>Lot Rate (₹)</label><input type="number" id="lotRate"></div>
+            <div class="form-group"><label>AK Offer Rate (₹)</label><input type="number" id="akOffer"></div>
+            <div class="form-group"><label>MRP (Optional)</label><input type="number" id="mrp"></div>
+            <div class="form-group"><label>Online Price (Optional)</label><input type="number" id="onlinePrice"></div>
+            <div class="form-group"><label>Show Negotiation Tab?</label>
+                <select id="showCustomerOffer"><option value="no">No</option><option value="yes">Yes</option></select>
             </div>
-            <div class="form-group"><label>8. Location</label><input type="text" id="location"></div>
-            <div class="form-group"><label>9. Product Description</label><textarea id="description" rows="3"></textarea></div>
-            <div class="form-group"><label>10. Remarks (Internal)</label><input type="text" id="remarks"></div>
+            <div class="form-group"><label>Location</label><input type="text" id="location"></div>
+            <div class="form-group"><label>Description</label><textarea id="description"></textarea></div>
+            <div class="form-group"><label>Remarks</label><input type="text" id="remarks"></div>
             
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-primary" style="flex:2" onclick="saveLot()">Save Inventory</button>
-                <button class="btn" style="flex:1; background:#eee;" onclick="closeModal()">Cancel</button>
-            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="saveLot()">Save Inventory</button>
+            <button class="btn" style="width:100%; margin-top:10px;" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
     <script>
         let isAdmin = false;
-        function toggleAdmin() {
-            isAdmin = !isAdmin;
-            document.getElementById('adminButtons').style.display = isAdmin ? 'flex' : 'none';
-            renderTable();
-        }
-
-        function toggleCustInput() {
-            const val = document.getElementById('showCustomerOffer').value;
-            document.getElementById('custOfferDiv').style.display = (val === 'yes') ? 'block' : 'none';
-        }
+        function toggleAdmin() { isAdmin = !isAdmin; document.getElementById('adminButtons').style.display = isAdmin ? 'flex' : 'none'; renderTable(); }
+        function openModal() { document.getElementById('lotModal').classList.add('active'); }
+        function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
 
         function saveLot() {
             const lot = {
                 lotNumber: document.getElementById('lotNumber').value,
                 category: document.getElementById('category').value,
+                condition: document.getElementById('condition').value,
                 quantity: document.getElementById('quantity').value,
                 moq: document.getElementById('moq').value,
                 lotRate: document.getElementById('lotRate').value,
                 akOffer: document.getElementById('akOffer').value,
+                mrp: document.getElementById('mrp').value,
+                onlinePrice: document.getElementById('onlinePrice').value,
                 showCustomerOffer: document.getElementById('showCustomerOffer').value,
-                customerOfferValue: document.getElementById('customerOfferValue').value,
                 location: document.getElementById('location').value,
                 description: document.getElementById('description').value,
                 remarks: document.getElementById('remarks').value
@@ -105,41 +94,34 @@
             let lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
             lots.push(lot);
             localStorage.setItem('akBrandsLots', JSON.stringify(lots));
-            closeModal();
-            renderTable();
+            closeModal(); renderTable();
         }
 
         function renderTable() {
             const lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
-            let html = `<table><tr><th>Lot #</th><th>Category</th><th>Qty</th><th>AK Price</th><th>Action</th></tr>`;
+            let html = `<table><tr><th>Lot #</th><th>Category</th><th>Condition</th><th>Price</th><th>Share</th></tr>`;
             lots.forEach((l, i) => {
                 const params = new URLSearchParams(l).toString();
-                const liveLink = `lot-details.html?${params}`;
+                const link = `lot-details.html?${params}`;
                 html += `<tr>
-                    <td><a href="${liveLink}" target="_blank" class="lot-link">${l.lotNumber}</a></td>
+                    <td><a href="${link}" class="lot-link">${l.lotNumber}</a></td>
                     <td>${l.category}</td>
-                    <td>${l.quantity}</td>
-                    <td style="color:#667eea; font-weight:700;">₹${l.akOffer}</td>
-                    <td>
-                        <button class="btn btn-whatsapp" onclick='shareWA(${JSON.stringify(l)})'>WA Share</button>
-                        ${isAdmin ? `<button class="btn btn-danger" onclick="deleteLot(${i})">X</button>` : ''}
-                    </td>
+                    <td>${l.condition}</td>
+                    <td style="font-weight:700; color:#667eea;">₹${l.akOffer}</td>
+                    <td><button class="btn" style="background:#25D366; color:white; padding:5px 10px;" onclick='share("${JSON.stringify(l)}")'>WA</button></td>
                 </tr>`;
             });
             document.getElementById('tableContainer').innerHTML = html + `</table>`;
         }
 
-        function shareWA(l) {
+        function share(lStr) {
+            const l = JSON.parse(lStr);
             const params = new URLSearchParams(l).toString();
             const link = `https://zaffarsecure-lab.github.io/ak-brands-website/lot-details.html?${params}`;
-            const msg = `🔥 *AK BRANDS HOT DEAL* 🔥\n\n*Lot:* ${l.lotNumber}\n*Item:* ${l.category}\n*Qty:* ${l.quantity}\n*AK Price:* ₹${l.akOffer}\n\n🔗 *Full Details:* ${link}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+            window.open(`https://wa.me/?text=${encodeURIComponent("New Deal: " + l.category + "\n" + link)}`, '_blank');
         }
 
-        function deleteLot(i) { if(confirm("Delete?")) { let lots = JSON.parse(localStorage.getItem('akBrandsLots')); lots.splice(i,1); localStorage.setItem('akBrandsLots', JSON.stringify(lots)); renderTable(); } }
         function downloadForGitHub() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([localStorage.getItem('akBrandsLots')], {type:'application/json'})); a.download='lots.json'; a.click(); }
-        function openModal() { document.getElementById('lotModal').classList.add('active'); }
-        function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
         renderTable();
     </script>
 </body>
