@@ -7,67 +7,93 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f5f7fa; color: #333; }
+        body { background: #f5f7fa; color: #333; padding-bottom: 50px; }
         .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .login-box { background: white; padding: 2rem; border-radius: 15px; width: 100%; max-width: 400px; text-align: center; }
-        .main-app { display: none; padding: 20px; }
+        .login-box { background: white; padding: 2rem; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .main-app { display: none; padding: 15px; }
         .main-app.active { display: block; }
-        .header { background: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; }
+        .header { background: white; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        @media(min-width: 600px) { .header { flex-direction: row; justify-content: space-between; align-items: center; } }
+        .btn { padding: 12px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; font-size: 14px; }
         .btn-primary { background: #667eea; color: white; }
         .btn-github { background: #24292e; color: white; }
-        table { width: 100%; background: white; border-radius: 12px; border-collapse: collapse; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .table-container { background: white; border-radius: 12px; overflow-x: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; font-size: 0.8rem; text-transform: uppercase; color: #666; }
+        th { background: #f8f9fa; font-size: 12px; text-transform: uppercase; color: #666; }
         
-        /* THIS IS THE BLUE TICK / LINK FIX */
+        /* THE BLUE LINK STYLE */
         .lot-link { 
             color: #007bff !important; 
             text-decoration: underline !important; 
-            font-weight: bold; 
+            font-weight: 700; 
             cursor: pointer;
+            display: inline-block;
         }
 
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; }
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; z-index: 1000; }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 2rem; border-radius: 12px; width: 90%; max-width: 600px; }
-        input, textarea { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%; margin-bottom: 10px; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: #555; }
+        input, textarea, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%; margin-bottom: 15px; font-size: 14px; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 12px 20px; border-radius: 8px; display: none; z-index: 2000; }
     </style>
 </head>
 <body>
 
     <div class="login-container" id="loginScreen">
         <div class="login-box">
-            <h2>🔐 Admin Login</h2><br>
+            <h2 style="margin-bottom:20px;">🔐 AK Brands Admin</h2>
             <input type="text" id="username" placeholder="Username">
-            <input type="password" id="password" placeholder="Password"><br><br>
-            <button class="btn btn-primary" onclick="login()">Login</button>
+            <input type="password" id="password" placeholder="Password">
+            <button class="btn btn-primary" style="width:100%" onclick="login()">Login</button>
         </div>
     </div>
 
     <div class="main-app" id="mainApp">
         <div class="header">
-            <h2>📦 Inventory Manager</h2>
             <div>
-                <button class="btn btn-github" onclick="downloadForGitHub()">📥 Download for GitHub</button>
-                <button class="btn btn-primary" onclick="openModal()">➕ Add Lot</button>
+                <h2 style="color:#444;">📦 Inventory Manager</h2>
+                <p style="font-size:12px; color: #888;">Data saved in browser. Upload to GitHub when ready.</p>
+            </div>
+            <div style="display:flex; gap: 10px;">
+                <button class="btn btn-github" onclick="downloadForGitHub()">📥 Download File</button>
+                <button class="btn btn-primary" onclick="openModal()">➕ Add New Lot</button>
             </div>
         </div>
-        <div id="tableContainer"></div>
+        <div class="table-container" id="tableContainer"></div>
     </div>
 
     <div class="modal" id="lotModal">
         <div class="modal-content">
-            <h3>Add New Lot</h3><br>
-            <input type="text" id="lotNumber" placeholder="Lot Number (e.g. 14381)">
-            <input type="text" id="category" placeholder="Category">
-            <input type="text" id="location" placeholder="Location">
-            <input type="number" id="quantity" placeholder="Quantity">
-            <textarea id="description" placeholder="Description"></textarea>
-            <button class="btn btn-primary" onclick="saveLot()">Save Lot</button>
-            <button class="btn" onclick="closeModal()">Cancel</button>
+            <h3 style="margin-bottom:15px;">Add New Lot</h3>
+            <label>Lot Number (e.g., 14381)</label>
+            <input type="text" id="lotNumber" placeholder="Enter Lot Number">
+            <label>Category</label>
+            <input type="text" id="category" placeholder="e.g. Branded Chairs">
+            <label>Location</label>
+            <input type="text" id="location" placeholder="e.g. Bengaluru">
+            <label>Quantity</label>
+            <input type="number" id="quantity" placeholder="2000">
+            <label>Rate (₹)</label>
+            <input type="number" id="rate" placeholder="0">
+            <label>Unit Type</label>
+            <select id="unitType">
+                <option value="pieces">Pieces</option>
+                <option value="units">Units</option>
+                <option value="boxes">Boxes</option>
+            </select>
+            <label>Description</label>
+            <textarea id="description" placeholder="Short description..."></textarea>
+            
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-primary" style="flex:1" onclick="saveLot()">Save Lot</button>
+                <button class="btn" style="flex:1; background:#eee;" onclick="closeModal()">Cancel</button>
+            </div>
         </div>
     </div>
+
+    <div class="toast" id="toast">Changes saved to memory!</div>
 
     <script>
         function login() {
@@ -75,26 +101,41 @@
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainApp').classList.add('active');
                 renderTable();
-            } else { alert("Wrong credentials"); }
+            } else { alert("Incorrect credentials"); }
         }
 
         function saveLot() {
+            const lotNum = document.getElementById('lotNumber').value;
+            if(!lotNum) return alert("Lot number is required!");
+
             const lot = {
-                lotNumber: document.getElementById('lotNumber').value,
+                lotNumber: lotNum,
                 category: document.getElementById('category').value,
                 location: document.getElementById('location').value,
-                quantity: document.getElementById('quantity').value,
-                description: document.getElementById('description').value
+                quantity: parseInt(document.getElementById('quantity').value) || 0,
+                rate: parseInt(document.getElementById('rate').value) || 0,
+                unitType: document.getElementById('unitType').value,
+                description: document.getElementById('description').value,
+                condition: "New", // Default values
+                moq: parseInt(document.getElementById('quantity').value) || 0
             };
+
             let lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
             lots.push(lot);
             localStorage.setItem('akBrandsLots', JSON.stringify(lots, null, 2));
+            
             closeModal();
             renderTable();
+            showToast();
         }
 
         function renderTable() {
             const lots = JSON.parse(localStorage.getItem('akBrandsLots')) || [];
+            if(lots.length === 0) {
+                document.getElementById('tableContainer').innerHTML = "<div style='padding:20px; text-align:center;'>No lots found. Add one to start!</div>";
+                return;
+            }
+
             let html = `<table><tr><th>Lot # (Click to View)</th><th>Category</th><th>Qty</th><th>Location</th></tr>`;
             lots.forEach(l => {
                 // THE LINK LOGIC
@@ -102,7 +143,7 @@
                 html += `<tr>
                     <td><a href="${liveLink}" target="_blank" class="lot-link">${l.lotNumber}</a></td>
                     <td>${l.category}</td>
-                    <td>${l.quantity}</td>
+                    <td>${l.quantity} ${l.unitType}</td>
                     <td>${l.location}</td>
                 </tr>`;
             });
@@ -111,9 +152,10 @@
         }
 
         function downloadForGitHub() {
-            const data = localStorage.getItem('akBrandsLots');
-            if(!data) return alert("No data to download");
-            const blob = new Blob([data], { type: 'application/json' });
+            const lots = localStorage.getItem('akBrandsLots');
+            if(!lots || lots === "[]") return alert("No data to download!");
+            
+            const blob = new Blob([lots], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -122,7 +164,8 @@
         }
 
         function openModal() { document.getElementById('lotModal').classList.add('active'); }
-        function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
+        function closeModal() { document.getElementById('lotModal').classList.remove('active'); document.getElementById('lotForm').reset(); }
+        function showToast() { const t = document.getElementById('toast'); t.style.display='block'; setTimeout(()=>t.style.display='none', 3000); }
     </script>
 </body>
 </html>
