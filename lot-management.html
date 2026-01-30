@@ -31,6 +31,7 @@
         .btn-delete { background: #e53e3e; }
         .btn-toggle { background: #ed8936; }
         #loading { text-align: center; padding: 20px; font-weight: bold; color: #667eea; }
+        .lot-link { color: #667eea; font-weight: bold; text-decoration: underline; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -83,37 +84,38 @@
 </div>
 
 <script>
-    // YOUR UNIQUE FIREBASE DATABASE URL
     const DB_BASE_URL = "https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory";
     const DB_URL = `${DB_BASE_URL}.json`;
 
     let inventory = [];
 
-    // 1. FETCH DATA FROM CLOUD
     async function fetchInventory() {
         document.getElementById('loading').style.display = 'block';
         try {
             const response = await fetch(DB_URL);
             const data = await response.json();
-            // Convert Firebase Object to Array with IDs
             inventory = data ? Object.keys(data).map(key => ({ ...data[key], id: key })) : [];
             renderTable();
         } catch (error) {
             console.error("Cloud Error:", error);
-            alert("Error connecting to database. Check internet.");
         }
         document.getElementById('loading').style.display = 'none';
     }
 
-    // 2. RENDER TABLE
     function renderTable() {
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = "";
         inventory.forEach((l, i) => {
             const row = document.createElement('tr');
             if (l.isSold) row.className = "sold-out";
+            
+            // Generate the link for the clickable Lot Number
+            const lotLink = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${l.lotNumber}`;
+
             row.innerHTML = `
-                <td><b>${l.lotNumber}</b></td>
+                <td>
+                    <a href="${lotLink}" target="_blank" class="lot-link">${l.lotNumber}</a>
+                </td>
                 <td>${l.category}</td>
                 <td>${l.condition}</td>
                 <td>${l.quantity}</td>
@@ -130,7 +132,6 @@
         });
     }
 
-    // 3. SAVE / UPDATE TO CLOUD
     async function saveLot() {
         const index = document.getElementById('editIndex').value;
         const lotData = {
@@ -146,7 +147,7 @@
             isSold: index !== "" ? inventory[index].isSold : false
         };
 
-        if(!lotData.lotNumber || !lotData.category) return alert("Lot Number and Category are required!");
+        if(!lotData.lotNumber) return alert("Lot Number is required!");
 
         try {
             if (index !== "") {
@@ -157,10 +158,9 @@
             }
             closeModal();
             fetchInventory();
-        } catch (e) { alert("Cloud Save Failed"); }
+        } catch (e) { alert("Save Failed"); }
     }
 
-    // 4. TOGGLE SOLD STATUS
     async function toggleSold(index) {
         const lot = inventory[index];
         lot.isSold = !lot.isSold;
@@ -168,16 +168,14 @@
         renderTable();
     }
 
-    // 5. DELETE LOT
     async function deleteLot(index) {
-        if(confirm("Delete this lot from Cloud permanently?")) {
+        if(confirm("Delete permanently?")) {
             const id = inventory[index].id;
             await fetch(`${DB_BASE_URL}/${id}.json`, { method: 'DELETE' });
             fetchInventory();
         }
     }
 
-    // 6. COPY "TRICK" MESSAGE TO CLIPBOARD
     function copyToClipboard(index) {
         const l = inventory[index];
         const fullLink = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${l.lotNumber}`;
@@ -197,7 +195,6 @@
         navigator.clipboard.writeText(msg).then(() => alert("🚀 WhatsApp Message Copied!"));
     }
 
-    // MODAL UTILS
     function openModal(index = null) {
         document.getElementById('lotModal').classList.add('active');
         if (index !== null) {
@@ -212,23 +209,24 @@
             document.getElementById('akOffer').value = lot.akOffer;
             document.getElementById('mrp').value = lot.mrp;
             document.getElementById('onlinePrice').value = lot.onlinePrice;
-            document.getElementById('modalTitle').innerText = "Edit Lot Details";
+            document.getElementById('modalTitle').innerText = "Edit Lot";
         } else {
             document.getElementById('editIndex').value = "";
-            document.getElementById('modalTitle').innerText = "Add New Lot to Cloud";
+            document.getElementById('modalTitle').innerText = "Add New Lot";
             document.querySelectorAll('#lotModal input').forEach(i => i.value = "");
         }
     }
+
     function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
 
-    // EXPORTS
     function exportExcel() {
         const data = inventory.map(({id, isSold, ...rest}) => ({...rest, Status: isSold ? 'Sold' : 'Available'}));
         const ws = XLSX.utils.json_to_sheet(data);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Inventory");
-        XLSX.writeFile(wb, "AK_Brands_Cloud_Inventory.xlsx");
+        XLSX.writeFile(wb, "AK_Inventory.xlsx");
     }
+
     function exportPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -238,7 +236,6 @@
         doc.save("AK_Inventory.pdf");
     }
 
-    // START
     fetchInventory();
 </script>
 
