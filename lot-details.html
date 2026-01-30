@@ -23,7 +23,6 @@
         .desc-title { font-size: 12px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 5px; }
         .desc-text { font-size: 14px; color: #475569; line-height: 1.5; }
 
-        /* Rates Comparison */
         .rate-container { display: flex; gap: 10px; margin-bottom: 20px; }
         .rate-box { flex: 1; padding: 15px 10px; border-radius: 15px; text-align: center; color: white; }
         .lot-rate-box { background: var(--lot-blue); }
@@ -31,9 +30,8 @@
         .rate-label { font-size: 11px; font-weight: 600; text-transform: uppercase; opacity: 0.9; }
         .rate-price { font-size: 24px; font-weight: 900; }
 
-        /* New: Quantity & Calculation Section */
         .calc-box { background: #fdf2f2; border: 1px solid #fee2e2; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        .calc-title { font-size: 13px; font-weight: 700; color: #991b1b; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+        .calc-title { font-size: 13px; font-weight: 700; color: #991b1b; margin-bottom: 10px; }
         .qty-input-wrapper { display: flex; align-items: center; gap: 10px; background: white; padding: 5px 15px; border-radius: 10px; border: 1px solid #e2e8f0; }
         .qty-input { border: none; width: 100%; padding: 10px; font-size: 18px; font-weight: 800; outline: none; }
         .total-display { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #f87171; text-align: center; }
@@ -41,7 +39,6 @@
         .total-amount { font-size: 28px; color: #b91c1c; font-weight: 900; }
         .error-msg { font-size: 11px; color: #dc2626; margin-top: 5px; font-weight: 600; display: none; }
 
-        /* Negotiation Box */
         .neg-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 15px; padding: 15px; margin-bottom: 20px; text-align: center; }
         .neg-input { width: 100%; padding: 10px; border: 2px solid #fcd34d; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 800; outline: none; margin-top: 8px; }
 
@@ -135,7 +132,6 @@
 
             if(currentLot.negotiations === "Yes") document.getElementById('negBox').style.display = 'block';
 
-            // Calculator Logic
             const qtyInp = document.getElementById('orderQty');
             const totalOut = document.getElementById('totalAmt');
             const error = document.getElementById('moqError');
@@ -144,11 +140,7 @@
             qtyInp.addEventListener('input', () => {
                 const val = parseInt(qtyInp.value) || 0;
                 const moq = parseInt(currentLot.moq);
-                
-                // Calculate
                 totalOut.innerText = (val * parseFloat(currentLot.akOffer)).toLocaleString('en-IN');
-
-                // Validate MOQ
                 if(val > 0 && val < moq) {
                     error.style.display = 'block';
                     waBtn.classList.add('disabled');
@@ -159,16 +151,34 @@
             });
 
             waBtn.onclick = (e) => {
+                e.preventDefault();
                 const finalQty = qtyInp.value || 0;
                 const quote = document.getElementById('custQuote').value;
-                if(finalQty < parseInt(currentLot.moq)) {
-                    alert(`Please order at least ${currentLot.moq} ${currentLot.unit}`);
-                    return false;
+                const moqLimit = parseInt(currentLot.moq);
+
+                if(finalQty < moqLimit) {
+                    alert(`Minimum order is ${moqLimit} ${currentLot.unit}`);
+                    return;
                 }
                 
-                let text = `Hi AK Brands, I want to book Lot #${currentLot.lotNumber}.%0A%0A*Order Details*%0A- Qty: ${finalQty} ${currentLot.unit}%0A- Offer Rate: ₹${currentLot.akOffer}`;
-                if(quote) text += `%0A- My Negotiated Rate: ₹${quote}`;
-                text += `%0A- Total Estimate: ₹${totalOut.innerText}`;
+                // Adaptive Message Header
+                let statusHeader = quote ? "*Customer Quoted Their Offer*" : "*Ready to Book*";
+                
+                let text = `${statusHeader}%0A%0A`;
+                text += `*Lot Details*%0A`;
+                text += `• Lot Number: ${currentLot.lotNumber}%0A`;
+                text += `• Category: ${currentLot.category}%0A`;
+                text += `• Total Stock: ${currentLot.quantity} ${currentLot.unit}%0A`;
+                text += `• MOQ: ${currentLot.moq} ${currentLot.unit}%0A`;
+                text += `• Lot Rate: ₹${currentLot.lotRate}%0A`;
+                text += `• AK Offer: ₹${currentLot.akOffer}%0A%0A`;
+                
+                text += `*Customer Request*%0A`;
+                text += `• Desired Qty: ${finalQty} ${currentLot.unit}%0A`;
+                if(quote) {
+                    text += `• Quoted Rate: ₹${quote}/${currentLot.unit.replace(/s$/, '')}%0A`;
+                }
+                text += `• Estimated Total: ₹${totalOut.innerText}`;
                 
                 window.location.href = `https://wa.me/919999999999?text=${text}`;
             };
