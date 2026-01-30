@@ -44,7 +44,7 @@
         /* Buttons */
         .btn { display: block; text-align: center; padding: 18px; border-radius: 15px; text-decoration: none; font-weight: 700; font-size: 18px; transition: 0.3s; margin-top: 15px; cursor: pointer; border: none; width: 100%; }
         .btn-wa { background: #25d366; color: white; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2); }
-        .btn-copy { background: #4a5568; color: white; display: none; font-size: 16px; } /* Hidden by default */
+        .btn-copy { background: #4a5568; color: white; font-size: 16px; box-shadow: 0 4px 12px rgba(74, 85, 104, 0.2); }
         .btn:active { transform: scale(0.98); }
         .btn.disabled { background: #94a3b8 !important; pointer-events: none; opacity: 0.7; }
     </style>
@@ -101,7 +101,7 @@
             </div>
 
             <a href="#" id="waBtn" class="btn btn-wa">📲 Book via WhatsApp</a>
-            <button id="adminCopyBtn" class="btn btn-copy" onclick="copyAdminMsg()">📋 Copy for Marketing</button>
+            <button id="copyBtn" class="btn btn-copy" onclick="copyMarketingMsg()">📋 Copy to Clipboard</button>
         </div>
     </div>
 
@@ -110,18 +110,12 @@
     const PHONE_NUMBER = "919999999999"; 
 
     async function loadData() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const lotNum = urlParams.get('lotNumber');
-        const isAdmin = urlParams.get('admin') === 'true'; // Check if admin is viewing
-
+        const lotNum = new URLSearchParams(window.location.search).get('lotNumber');
         const res = await fetch("https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory.json");
         const data = await res.json();
         currentLot = Object.values(data).find(l => l.lotNumber === lotNum);
 
         if(currentLot) {
-            // Show Admin Button if needed
-            if(isAdmin) document.getElementById('adminCopyBtn').style.display = 'block';
-
             document.getElementById('cat').innerText = currentLot.category;
             document.getElementById('lnum').innerText = currentLot.lotNumber;
             document.getElementById('loc').innerText = currentLot.location || 'Warehouse';
@@ -176,8 +170,8 @@
         }
     }
 
-    function copyAdminMsg() {
-        const lotLink = window.location.href.split('&admin=')[0]; // Remove admin tag from link
+    function copyMarketingMsg() {
+        const lotLink = window.location.href;
         const msg = `*Lot Number: ${currentLot.lotNumber}*
 
 Category: ${currentLot.category}
