@@ -41,7 +41,6 @@
         .neg-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 15px; padding: 15px; margin-bottom: 20px; text-align: center; }
         .neg-input { width: 100%; padding: 10px; border: 2px solid #fcd34d; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 800; outline: none; margin-top: 8px; }
 
-        /* Buttons */
         .btn { display: block; text-align: center; padding: 18px; border-radius: 15px; text-decoration: none; font-weight: 700; font-size: 18px; transition: 0.3s; margin-top: 15px; cursor: pointer; border: none; width: 100%; }
         .btn-wa { background: #25d366; color: white; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2); }
         .btn-copy { background: #4a5568; color: white; font-size: 16px; box-shadow: 0 4px 12px rgba(74, 85, 104, 0.2); }
@@ -101,7 +100,7 @@
             </div>
 
             <a href="#" id="waBtn" class="btn btn-wa">📲 Book via WhatsApp</a>
-            <button id="copyBtn" class="btn btn-copy" onclick="copyMarketingMsg()">📋 Copy to Clipboard</button>
+            <button id="copyBtn" class="btn btn-copy" onclick="copyMarketingMsg()">📋 Copy Marketing Text</button>
         </div>
     </div>
 
@@ -171,7 +170,9 @@
     }
 
     function copyMarketingMsg() {
-        const lotLink = window.location.href;
+        // This removes any admin parameters if present for the shared link
+        const lotLink = window.location.origin + window.location.pathname + "?lotNumber=" + currentLot.lotNumber;
+        
         const msg = `*Lot Number: ${currentLot.lotNumber}*
 
 Category: ${currentLot.category}
@@ -179,8 +180,7 @@ Condition: ${currentLot.condition}
 Quantity: ${currentLot.quantity} ${currentLot.unit}
 MOQ: ${currentLot.moq} ${currentLot.unit}
 
-Lot Rate: ${currentLot.lotRate}
-
+Lot Rate: 
 Please click the below link to check India's Lowest rate & Product Details:
 ${lotLink}
 
@@ -190,7 +190,7 @@ AK Brands Marketing
 www.akbrandsmarketing.com`;
 
         navigator.clipboard.writeText(msg).then(() => {
-            alert("Marketing message copied to clipboard!");
+            alert("✅ Marketing text copied with correct spacing!");
         });
     }
 
