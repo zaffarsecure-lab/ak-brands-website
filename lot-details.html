@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AK Brands - Lot Details</title>
     <style>
-        :root { --primary: #667eea; --ak-green: #10b981; --lot-blue: #3b82f6; --warning: #f59e0b; }
+        :root { --primary: #667eea; --ak-green: #10b981; --lot-blue: #3b82f6; --call-blue: #2563eb; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f3f4f6; padding: 15px; display: flex; justify-content: center; min-height: 100vh; }
         
@@ -35,20 +35,28 @@
         .qty-input-wrapper { display: flex; align-items: center; gap: 10px; background: white; padding: 5px 15px; border-radius: 10px; border: 1px solid #e2e8f0; }
         .qty-input { border: none; width: 100%; padding: 10px; font-size: 18px; font-weight: 800; outline: none; }
         .total-display { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #f87171; text-align: center; }
-        .total-label { font-size: 12px; color: #7f1d1d; font-weight: 600; }
         .total-amount { font-size: 28px; color: #b91c1c; font-weight: 900; }
         .error-msg { font-size: 11px; color: #dc2626; margin-top: 5px; font-weight: 600; display: none; }
 
         .neg-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 15px; padding: 15px; margin-bottom: 20px; text-align: center; }
         .neg-input { width: 100%; padding: 10px; border: 2px solid #fcd34d; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 800; outline: none; margin-top: 8px; }
 
-        .btn-wa { display: block; background: #25d366; color: white; text-align: center; padding: 18px; border-radius: 15px; text-decoration: none; font-weight: 700; font-size: 18px; transition: 0.3s; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2); }
-        .btn-wa.disabled { background: #94a3b8; pointer-events: none; opacity: 0.7; }
+        /* Button Group Styling */
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; border-radius: 15px; text-decoration: none; font-weight: 700; font-size: 16px; transition: 0.3s; color: white; border: none; cursor: pointer; }
+        .btn-wa { background: #25d366; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2); }
+        .btn-call { background: var(--call-blue); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        .btn:active { transform: scale(0.98); }
+        .btn.disabled { background: #94a3b8 !important; pointer-events: none; opacity: 0.7; }
+
+        @media (max-width: 400px) {
+            .btn-group { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="loading" style="padding: 50px; text-align: center;">🔄 Loading details...</div>
+    <div id="loading" style="padding: 50px; text-align: center;">🔄 Syncing Lot Details...</div>
 
     <div class="card" id="mainCard" style="display: none;">
         <div class="header">
@@ -85,10 +93,9 @@
                     <input type="number" id="orderQty" class="qty-input" placeholder="0">
                     <span id="unitText" style="font-weight: bold; color: #64748b;">Pcs</span>
                 </div>
-                <p id="moqError" class="error-msg">⚠️ Minimum order is <span id="moqValError"></span></p>
-                
+                <p id="moqError" class="error-msg">⚠️ Min order: <span id="moqValError"></span></p>
                 <div class="total-display">
-                    <p class="total-label">ESTIMATED TOTAL AMOUNT</p>
+                    <p style="font-size: 11px; color: #7f1d1d; font-weight: 600;">ESTIMATED TOTAL</p>
                     <p class="total-amount">₹<span id="totalAmt">0</span></p>
                 </div>
             </div>
@@ -98,12 +105,16 @@
                 <input type="number" id="custQuote" class="neg-input" placeholder="Your Best Rate?">
             </div>
 
-            <a href="#" id="waBtn" class="btn-wa">📲 Book via WhatsApp</a>
+            <div class="btn-group">
+                <a href="#" id="waBtn" class="btn btn-wa">📲 WhatsApp</a>
+                <a href="tel:+919999999999" class="btn btn-call">📞 Call Now</a>
+            </div>
         </div>
     </div>
 
 <script>
     let currentLot = null;
+    const PHONE_NUMBER = "919999999999"; // Replace with your actual number
 
     async function loadData() {
         const lotNum = new URLSearchParams(window.location.search).get('lotNumber');
@@ -118,7 +129,7 @@
             document.getElementById('cond').innerText = currentLot.condition;
             document.getElementById('qtyStock').innerText = `${currentLot.quantity} ${currentLot.unit}`;
             document.getElementById('moq').innerText = `${currentLot.moq} ${currentLot.unit}`;
-            document.getElementById('desc').innerText = currentLot.description || 'Verified product.';
+            document.getElementById('desc').innerText = currentLot.description || 'Verified stock from AK Brands.';
             document.getElementById('lotRateVal').innerText = `₹${currentLot.lotRate}`;
             document.getElementById('akOfferVal').innerText = `₹${currentLot.akOffer}`;
             document.getElementById('unitText').innerText = currentLot.unit;
@@ -126,10 +137,8 @@
             
             if(currentLot.mrp) document.getElementById('mrp').innerText = `₹${currentLot.mrp}`;
             else document.getElementById('mrpRow').style.display = 'none';
-            
             if(currentLot.onlinePrice) document.getElementById('online').innerText = `₹${currentLot.onlinePrice}`;
             else document.getElementById('onlineRow').style.display = 'none';
-
             if(currentLot.negotiations === "Yes") document.getElementById('negBox').style.display = 'block';
 
             const qtyInp = document.getElementById('orderQty');
@@ -157,30 +166,18 @@
                 const moqLimit = parseInt(currentLot.moq);
 
                 if(finalQty < moqLimit) {
-                    alert(`Minimum order is ${moqLimit} ${currentLot.unit}`);
+                    alert(`Min order is ${moqLimit} ${currentLot.unit}`);
                     return;
                 }
                 
-                // Adaptive Message Header
-                let statusHeader = quote ? "*Customer Quoted Their Offer*" : "*Ready to Book*";
+                let header = quote ? "*Customer Quoted Their Offer*" : "*Ready to Book*";
+                let text = `${header}%0A%0A`;
+                text += `*Lot Details*%0A• Lot: #${currentLot.lotNumber}%0A• Cat: ${currentLot.category}%0A• Stock: ${currentLot.quantity}%0A• MOQ: ${currentLot.moq}%0A• Lot Rate: ₹${currentLot.lotRate}%0A• AK Offer: ₹${currentLot.akOffer}%0A%0A`;
+                text += `*Customer Request*%0A• Qty: ${finalQty} ${currentLot.unit}%0A`;
+                if(quote) text += `• Quoted: ₹${quote}/${currentLot.unit.replace(/s$/, '')}%0A`;
+                text += `• Total Est: ₹${totalOut.innerText}`;
                 
-                let text = `${statusHeader}%0A%0A`;
-                text += `*Lot Details*%0A`;
-                text += `• Lot Number: ${currentLot.lotNumber}%0A`;
-                text += `• Category: ${currentLot.category}%0A`;
-                text += `• Total Stock: ${currentLot.quantity} ${currentLot.unit}%0A`;
-                text += `• MOQ: ${currentLot.moq} ${currentLot.unit}%0A`;
-                text += `• Lot Rate: ₹${currentLot.lotRate}%0A`;
-                text += `• AK Offer: ₹${currentLot.akOffer}%0A%0A`;
-                
-                text += `*Customer Request*%0A`;
-                text += `• Desired Qty: ${finalQty} ${currentLot.unit}%0A`;
-                if(quote) {
-                    text += `• Quoted Rate: ₹${quote}/${currentLot.unit.replace(/s$/, '')}%0A`;
-                }
-                text += `• Estimated Total: ₹${totalOut.innerText}`;
-                
-                window.location.href = `https://wa.me/919999999999?text=${text}`;
+                window.location.href = `https://wa.me/${PHONE_NUMBER}?text=${text}`;
             };
 
             document.getElementById('loading').style.display = 'none';
