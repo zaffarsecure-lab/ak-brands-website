@@ -3,105 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking - AK Brands</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>AK Brands - Lot Details</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f5f7fa; padding: 15px; }
-        .card { background: white; border-radius: 15px; padding: 20px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .sold-banner { background: #ef4444; color: white; text-align: center; padding: 10px; border-radius: 8px; font-weight: 700; margin-bottom: 15px; display: none; }
-        .price-section { display: flex; gap: 10px; margin: 15px 0; }
-        .p-chip { flex: 1; padding: 10px; border-radius: 8px; text-align: center; }
-        .lot-chip { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
-        .ak-chip { background: #667eea; color: white; }
-        .mrp-online { display: flex; gap: 10px; margin-bottom: 15px; font-size: 12px; font-weight: 700; color: #888; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        label { display: block; font-size: 10px; color: #999; text-transform: uppercase; font-weight: 800; }
-        .booking-box { background: #f8fafc; border: 2px solid #e2e8f0; padding: 15px; border-radius: 12px; margin-top: 20px; }
-        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; }
-        .btn-wa { display: block; background: #25D366; color: white; text-align: center; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: 700; margin-top: 15px; opacity: 0.4; pointer-events: none; }
-        .btn-wa.active { opacity: 1; pointer-events: auto; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f8fafc; color: #1e293b; padding: 20px; line-height: 1.6; }
+        .card { max-width: 500px; margin: 0 auto; background: white; border-radius: 20px; overflow: hidden; shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        .header { background: #667eea; color: white; padding: 25px; text-align: center; }
+        .content { padding: 25px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #e2e8f0; }
+        .label { font-weight: 600; color: #64748b; }
+        .value { font-weight: 700; color: #1e293b; }
+        .price-section { background: #f1f5f9; padding: 15px; border-radius: 12px; margin: 20px 0; text-align: center; }
+        .ak-price { font-size: 28px; color: #059669; font-weight: 800; }
+        .mrp { text-decoration: line-through; color: #94a3b8; font-size: 14px; }
+        .btn-book { display: block; background: #25d366; color: white; text-align: center; padding: 18px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 18px; transition: 0.3s; margin-top: 10px; }
+        #loading { text-align: center; padding: 50px; font-weight: bold; color: #667eea; }
+        #error-msg { display: none; text-align: center; color: #e53e3e; padding: 20px; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div id="soldMsg" class="sold-banner">⚠️ THIS LOT IS SOLD OUT</div>
-        <h2 id="cat">Loading...</h2>
-        <p style="color:#667eea; font-weight:700;">Lot #<span id="lnum">---</span> | <span id="cond">---</span></p>
 
-        <div id="extraPrices" class="mrp-online"></div>
+<div id="loading">🔍 Fetching India's Lowest Rate...</div>
+<div id="error-msg">⚠️ Lot not found or link expired.</div>
+
+<div class="card" id="lot-card" style="display: none;">
+    <div class="header">
+        <h2 id="displayCategory">Loading...</h2>
+        <p>Lot Number: <span id="displayLotNumber">---</span></p>
+    </div>
+    
+    <div class="content">
+        <div class="detail-row">
+            <span class="label">🌟 Condition</span>
+            <span class="value" id="displayCondition">---</span>
+        </div>
+        <div class="detail-row">
+            <span class="label">📊 Total Qty</span>
+            <span class="value" id="displayQty">---</span>
+        </div>
+        <div class="detail-row">
+            <span class="label">📦 Minimum Order (MOQ)</span>
+            <span class="value" id="displayMoq">---</span>
+        </div>
 
         <div class="price-section">
-            <div class="p-chip lot-chip"><label>Lot Rate</label><div style="font-size:18px; font-weight:700;">₹<span id="lrate">0</span></div></div>
-            <div class="p-chip ak-chip"><label style="color:#e0e7ff;">AK Offer</label><div style="font-size:18px; font-weight:700;">₹<span id="akr">0</span></div></div>
+            <div class="mrp" id="displayMrp">MRP: --</div>
+            <div class="ak-price" id="displayOffer">₹0</div>
+            <div style="font-size: 12px; color: #64748b;">(India's Lowest Rate Guaranteed)</div>
         </div>
 
-        <div class="grid">
-            <div><label>Total Qty</label><p id="qty">0</p></div>
-            <div><label>Min. Order (MOQ)</label><p id="moq">0</p></div>
-            <div><label>Location</label><p id="loc">---</p></div>
-            <div><label>Description</label><p id="desc" style="font-weight:400; font-size:13px;">---</p></div>
-        </div>
-
-        <div class="booking-box" id="bookForm">
-            <h4 style="margin-bottom:10px;">Stock Booking Form</h4>
-            <div id="negSection" style="display:none; margin-bottom:15px;">
-                <label style="color:#667eea;">Your Target Price (Negotiation)</label>
-                <input type="text" id="custNeg" placeholder="Enter your price">
-            </div>
-            <label>WhatsApp Number (Mandatory) *</label>
-            <input type="number" id="custPhone" oninput="validate()" placeholder="e.g. 98XXXXXXXX">
-            <label style="margin-top:10px;">Quantity (Min <span id="moqCheck">0</span>) *</label>
-            <input type="number" id="orderQty" oninput="validate()" placeholder="Enter quantity">
-            
-            <a href="#" id="waBtn" class="btn-wa" onclick="sendBooking()">BOOK VIA WHATSAPP</a>
-        </div>
+        <a href="#" id="whatsappBtn" class="btn-book">📱 Book via WhatsApp</a>
     </div>
+</div>
 
-    <script>
-        const p = new URLSearchParams(window.location.search);
-        const moq = parseInt(p.get('moq')) || 0;
-        
-        if(p.get('status') === 'Sold Out') {
-            document.getElementById('soldMsg').style.display = 'block';
-            document.getElementById('bookForm').style.display = 'none';
+<script>
+    async function loadLotDetails() {
+        const params = new URLSearchParams(window.location.search);
+        const lotNum = params.get('lotNumber');
+        const DB_URL = "https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory.json";
+
+        if (!lotNum) {
+            showError();
+            return;
         }
 
-        document.getElementById('cat').innerText = p.get('category');
-        document.getElementById('lnum').innerText = p.get('lotNumber');
-        document.getElementById('cond').innerText = p.get('condition');
-        document.getElementById('lrate').innerText = p.get('lotRate');
-        document.getElementById('akr').innerText = p.get('akOffer');
-        document.getElementById('qty').innerText = p.get('quantity');
-        document.getElementById('moq').innerText = moq;
-        document.getElementById('moqCheck').innerText = moq;
-        document.getElementById('loc').innerText = p.get('location');
-        document.getElementById('desc').innerText = p.get('description');
+        try {
+            const response = await fetch(DB_URL);
+            const data = await response.json();
+            
+            // Find the specific lot by Lot Number
+            const lot = Object.values(data).find(item => item.lotNumber === lotNum);
 
-        let ex = '';
-        if(p.get('mrp')) ex += `<span>MRP: ₹${p.get('mrp')}</span>`;
-        if(p.get('onlinePrice')) ex += `<span style="margin-left:10px;">ONLINE: ₹${p.get('onlinePrice')}</span>`;
-        document.getElementById('extraPrices').innerHTML = ex;
+            if (lot) {
+                // Fill the page with Cloud Data
+                document.getElementById('displayLotNumber').innerText = lot.lotNumber;
+                document.getElementById('displayCategory').innerText = lot.category;
+                document.getElementById('displayCondition').innerText = lot.condition;
+                document.getElementById('displayQty').innerText = lot.quantity;
+                document.getElementById('displayMoq').innerText = lot.moq;
+                document.getElementById('displayOffer').innerText = "₹" + lot.akOffer;
+                
+                if(lot.mrp) document.getElementById('displayMrp').innerText = "MRP: ₹" + lot.mrp;
+                else document.getElementById('displayMrp').style.display = 'none';
 
-        if(p.get('showCustomerOffer') === 'yes') document.getElementById('negSection').style.display = 'block';
+                // Setup WhatsApp Booking Link
+                const waMsg = encodeURIComponent(`Hi AK Brands, I want to book:\nLot No: ${lot.lotNumber}\nCategory: ${lot.category}\nRate: ${lot.akOffer}`);
+                document.getElementById('whatsappBtn').href = `https://wa.me/919999999999?text=${waMsg}`; // REPLACE WITH YOUR PHONE
 
-        function validate() {
-            const q = parseInt(document.getElementById('orderQty').value) || 0;
-            const ph = document.getElementById('custPhone').value;
-            const btn = document.getElementById('waBtn');
-            // Check: Qty >= MOQ AND Phone length >= 10
-            if(q >= moq && ph.trim().length >= 10) btn.classList.add('active');
-            else btn.classList.remove('active');
+                // Show Card, Hide Loading
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('lot-card').style.display = 'block';
+            } else {
+                showError();
+            }
+        } catch (error) {
+            showError();
         }
+    }
 
-        function sendBooking() {
-            const qty = document.getElementById('orderQty').value;
-            const ph = document.getElementById('custPhone').value;
-            const neg = document.getElementById('custNeg').value;
-            const status = neg ? `⚠️ NEGOTIATION REQUEST: ₹${neg}` : "✅ DIRECT BOOKING";
-            const msg = `*STOCK BOOKING REQUEST*\n--------------------------\n${status}\n\n*Lot:* ${p.get('lotNumber')}\n*Item:* ${p.get('category')}\n*Qty:* ${qty}\n*Client Phone:* ${ph}\n\n*Prices:*\nLot Rate: ₹${p.get('lotRate')}\nAK Offer: ₹${p.get('akOffer')}`;
-            window.open(`https://wa.me/918660502217?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-    </script>
+    function showError() {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error-msg').style.display = 'block';
+    }
+
+    loadLotDetails();
+</script>
+
 </body>
 </html>
