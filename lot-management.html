@@ -3,81 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AK Brands - Cloud Admin</title>
+    <title>AK Brands - Admin Panel</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: #f0f2f5; padding: 10px; }
-        .container { max-width: 1300px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        
-        /* Header & Controls */
-        .header-section { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
-        h2 { font-size: 1.5rem; color: #1a1a1a; }
-        .controls { display: flex; gap: 10px; flex-wrap: wrap; }
-
-        /* Buttons */
-        .btn { padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.3s; }
-        .btn-add { background: #667eea; color: white; width: auto; }
-        .btn-export { background: #2d3748; color: white; }
-
-        /* Table Responsiveness */
-        .table-wrapper { width: 100%; overflow-x: auto; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        th { background: #f8fafc; padding: 12px; text-align: left; font-size: 13px; color: #64748b; border-bottom: 2px solid #edf2f7; }
-        td { padding: 12px; border-bottom: 1px solid #edf2f7; font-size: 14px; color: #334155; }
-        
-        /* Action Buttons */
-        .action-group { display: flex; gap: 5px; flex-wrap: wrap; }
-        .act-btn { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; color: white; font-weight: bold; }
-        .btn-edit { background: #4a5568; }
-        .btn-copy { background: #38a169; }
-        .btn-delete { background: #e53e3e; }
-        .btn-toggle { background: #ed8936; }
-
-        /* Modal Responsiveness */
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index: 1000; padding: 10px; }
+        :root { --primary: #667eea; --secondary: #2d3748; --success: #38a169; --danger: #e53e3e; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f4f7fe; padding: 15px; color: #333; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 25px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 14px; color: white; }
+        .btn-add { background: var(--primary); }
+        .btn-exp { background: var(--secondary); margin-left: 5px; }
+        .table-container { overflow-x: auto; border-radius: 8px; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th { background: #f8fafc; padding: 15px; text-align: left; font-size: 12px; text-transform: uppercase; color: #64748b; }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .lot-link { color: var(--primary); font-weight: 700; text-decoration: none; border-bottom: 1px solid transparent; }
+        .lot-link:hover { border-bottom: 1px solid var(--primary); }
+        .status-badge { padding: 4px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; }
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; padding: 10px; }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
-        
-        /* Form Layout */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .full-width { grid-column: span 2; }
-        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 10px 0; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 14px; }
-        label { font-size: 12px; font-weight: bold; color: #64748b; }
-
-        @media (max-width: 600px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
-            h2 { font-size: 1.2rem; }
-        }
+        .modal-content { background: white; width: 100%; max-width: 700px; border-radius: 15px; padding: 25px; max-height: 90vh; overflow-y: auto; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full { grid-column: span 2; }
+        label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #64748b; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; font-size: 14px; }
+        .act-group { display: flex; gap: 5px; }
+        .act-btn { padding: 6px 10px; border-radius: 6px; border: none; color: white; font-size: 11px; cursor: pointer; font-weight: bold; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } .full { grid-column: span 1; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-section">
-        <h2>AK Brands Master Inventory</h2>
-        <div class="controls">
-            <button class="btn btn-export" onclick="exportExcel()">Excel</button>
-            <button class="btn btn-export" onclick="exportPDF()">PDF</button>
+    <div class="header">
+        <h2>📦 AK Brands Inventory</h2>
+        <div>
+            <button class="btn btn-exp" onclick="exportData('xlsx')">Excel</button>
+            <button class="btn btn-exp" onclick="exportData('pdf')">PDF</button>
         </div>
     </div>
-    
-    <button class="btn btn-add" style="margin-bottom: 15px;" onclick="openModal()">+ Add New Lot</button>
 
-    <div id="loading" style="text-align:center; padding: 10px; color: #667eea;">🔄 Synchronizing Cloud...</div>
+    <button class="btn btn-add" style="margin-bottom: 20px;" onclick="openModal()">+ Add New Lot</button>
 
-    <div class="table-wrapper">
+    <div class="table-container">
         <table>
             <thead>
                 <tr>
                     <th>Lot #</th>
                     <th>Category</th>
-                    <th>Condition</th>
                     <th>Qty</th>
                     <th>Location</th>
+                    <th>Negotiate</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -89,102 +68,77 @@
 
 <div class="modal" id="lotModal">
     <div class="modal-content">
-        <h3 id="modalTitle" style="margin-bottom:15px;">Manage Lot</h3>
-        <input type="hidden" id="editIndex">
-        
-        <div class="form-grid">
+        <h3 id="modalTitle">Manage Lot Data</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+        <input type="hidden" id="editId">
+        <div class="grid">
             <div><label>Lot Number</label><input type="text" id="lotNumber"></div>
             <div><label>Category</label><input type="text" id="category"></div>
             <div><label>Condition</label><input type="text" id="condition"></div>
             <div>
-                <label>Unit</label>
-                <select id="unit" onchange="updateRateLabels()">
-                    <option value="Pieces">Pieces</option>
-                    <option value="Boxes">Boxes</option>
-                    <option value="Units">Units</option>
-                    <option value="Sets">Sets</option>
-                </select>
+                <label>Unit Type</label>
+                <select id="unit"><option value="Pieces">Pieces</option><option value="Boxes">Boxes</option><option value="Units">Units</option><option value="Sets">Sets</option></select>
             </div>
             <div><label>Total Quantity</label><input type="number" id="quantity"></div>
             <div><label>MOQ</label><input type="number" id="moq"></div>
-            <div class="full-width"><label>Location</label><input type="text" id="location"></div>
-            <div class="full-width"><label>Description</label><textarea id="description" rows="2"></textarea></div>
-            <div><label id="labelLotRate">Lot Rate</label><input type="number" id="lotRate"></div>
-            <div><label id="labelAkOffer">AK Offer</label><input type="number" id="akOffer"></div>
-            <div><label>MRP</label><input type="number" id="mrp"></div>
-            <div><label>Online Price</label><input type="number" id="onlinePrice"></div>
-            <div class="full-width">
+            <div class="full"><label>Location</label><input type="text" id="location"></div>
+            <div class="full"><label>Product Description (Customers see this)</label><textarea id="description" rows="2"></textarea></div>
+            <div><label>Lot Rate</label><input type="number" id="lotRate"></div>
+            <div><label>AK Offer Price</label><input type="number" id="akOffer"></div>
+            <div><label>MRP (Optional)</label><input type="number" id="mrp"></div>
+            <div><label>Online Price (Optional)</label><input type="number" id="onlinePrice"></div>
+            <div>
                 <label>Negotiations</label>
-                <select id="negotiations">
-                    <option value="No">No (Fixed Price)</option>
-                    <option value="Yes">Yes (Customer can quote)</option>
-                </select>
+                <select id="negotiations"><option value="No">No (Fixed)</option><option value="Yes">Yes (Negotiable)</option></select>
             </div>
-            <div class="full-width"><label>Remarks (Internal)</label><input type="text" id="remarks"></div>
+            <div><label>Internal Remarks</label><input type="text" id="remarks" placeholder="e.g. Supplier info"></div>
         </div>
-
-        <button class="btn btn-add" style="width:100%; margin-top:10px;" onclick="saveLot()">Save to Cloud</button>
-        <button class="btn" style="width:100%; margin-top:8px; background:#cbd5e0;" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-add" style="width: 100%; margin-top: 20px;" onclick="saveToCloud()">Save to Cloud</button>
+        <button class="btn" style="width: 100%; margin-top: 10px; background: #cbd5e0; color: #4a5568;" onclick="closeModal()">Cancel</button>
     </div>
 </div>
 
 <script>
-    const DB_BASE_URL = "https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory";
-    const DB_URL = `${DB_BASE_URL}.json`;
+    const API = "https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory";
     let inventory = [];
 
-    function updateRateLabels() {
-        const u = document.getElementById('unit').value.slice(0, -1);
-        document.getElementById('labelLotRate').innerText = `Lot Rate /${u}`;
-        document.getElementById('labelAkOffer').innerText = `AK Offer /${u}`;
+    async function load() {
+        const res = await fetch(`${API}.json`);
+        const data = await res.json();
+        inventory = data ? Object.keys(data).map(k => ({...data[k], id: k})) : [];
+        render();
     }
 
-    async function fetchInventory() {
-        document.getElementById('loading').style.display = 'block';
-        try {
-            const res = await fetch(DB_URL);
-            const data = await res.json();
-            inventory = data ? Object.keys(data).map(k => ({ ...data[k], id: k })) : [];
-            renderTable();
-        } catch (e) { console.error(e); }
-        document.getElementById('loading').style.display = 'none';
-    }
-
-    function renderTable() {
+    function render() {
         const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = "";
-        inventory.forEach((l, i) => {
-            const row = document.createElement('tr');
-            if (l.isSold) row.style.opacity = "0.5";
-            const lotLink = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${encodeURIComponent(l.lotNumber)}`;
-            row.innerHTML = `
-                <td><a href="${lotLink}" target="_blank" style="color:#007bff; font-weight:bold;">${l.lotNumber}</a></td>
+        tbody.innerHTML = inventory.map((l, i) => `
+            <tr style="opacity: ${l.isSold ? '0.6' : '1'}">
+                <td><a href="lot-details.html?lotNumber=${l.lotNumber}" target="_blank" class="lot-link">${l.lotNumber}</a></td>
                 <td>${l.category}</td>
-                <td>${l.condition}</td>
                 <td>${l.quantity} ${l.unit}</td>
                 <td>${l.location || 'N/A'}</td>
-                <td><span style="color:${l.isSold ? 'red' : 'green'}">${l.isSold ? 'Sold' : 'Live'}</span></td>
+                <td><b>${l.negotiations}</b></td>
+                <td><span class="status-badge" style="color: ${l.isSold ? '#e53e3e' : '#38a169'}">${l.isSold ? 'SOLD' : 'AVAILABLE'}</span></td>
                 <td>
-                    <div class="action-group">
-                        <button class="act-btn btn-copy" onclick="copyToClipboard(${i})">Copy</button>
-                        <button class="act-btn btn-edit" onclick="openModal(${i})">Edit</button>
-                        <button class="act-btn btn-toggle" onclick="toggleSold(${i})">Status</button>
-                        <button class="act-btn btn-delete" onclick="deleteLot(${i})">Del</button>
+                    <div class="act-group">
+                        <button class="act-btn" style="background:#38a169" onclick="copyWA(${i})">Copy</button>
+                        <button class="act-btn" style="background:#4a5568" onclick="openModal('${l.id}')">Edit</button>
+                        <button class="act-btn" style="background:#ed8936" onclick="toggleSold('${l.id}', ${l.isSold})">Status</button>
+                        <button class="act-btn" style="background:#e53e3e" onclick="del('${l.id}')">Del</button>
                     </div>
                 </td>
-            `;
-            tbody.appendChild(row);
-        });
+            </tr>
+        `).join('');
     }
 
-    async function saveLot() {
-        const idx = document.getElementById('editIndex').value;
+    async function saveToCloud() {
+        const id = document.getElementById('editId').value;
         const data = {
             lotNumber: document.getElementById('lotNumber').value,
             category: document.getElementById('category').value,
             condition: document.getElementById('condition').value,
-            quantity: document.getElementById('quantity').value,
             unit: document.getElementById('unit').value,
+            quantity: document.getElementById('quantity').value,
             moq: document.getElementById('moq').value,
             location: document.getElementById('location').value,
             description: document.getElementById('description').value,
@@ -194,44 +148,31 @@
             onlinePrice: document.getElementById('onlinePrice').value,
             negotiations: document.getElementById('negotiations').value,
             remarks: document.getElementById('remarks').value,
-            isSold: idx !== "" ? inventory[idx].isSold : false
+            isSold: id ? inventory.find(x => x.id === id).isSold : false
         };
-        const method = idx !== "" ? 'PUT' : 'POST';
-        const url = idx !== "" ? `${DB_BASE_URL}/${inventory[idx].id}.json` : DB_URL;
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${API}/${id}.json` : `${API}.json`;
         await fetch(url, { method, body: JSON.stringify(data) });
-        closeModal(); fetchInventory();
+        closeModal(); load();
     }
 
-    function copyToClipboard(i) {
-        const l = inventory[i];
-        const link = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${encodeURIComponent(l.lotNumber)}`;
-        let msg = `*Lot Number: ${l.lotNumber}*\n🏷️ Category: ${l.category}\n🌟 Condition: ${l.condition}\n📊 Qty: ${l.quantity} ${l.unit}\n📍 Location: ${l.location}\n\n*Click for Lowest Rate:*\n${link}`;
-        navigator.clipboard.writeText(msg).then(() => alert("Copied!"));
+    async function toggleSold(id, current) {
+        await fetch(`${API}/${id}.json`, { method: 'PATCH', body: JSON.stringify({ isSold: !current }) });
+        load();
     }
 
-    async function toggleSold(i) {
-        inventory[i].isSold = !inventory[i].isSold;
-        await fetch(`${DB_BASE_URL}/${inventory[i].id}.json`, { method: 'PATCH', body: JSON.stringify({ isSold: inventory[i].isSold }) });
-        renderTable();
-    }
+    async function del(id) { if(confirm("Delete Lot?")) { await fetch(`${API}/${id}.json`, { method: 'DELETE' }); load(); } }
 
-    async function deleteLot(i) {
-        if(confirm("Delete Lot?")) {
-            await fetch(`${DB_BASE_URL}/${inventory[i].id}.json`, { method: 'DELETE' });
-            fetchInventory();
-        }
-    }
-
-    function openModal(i = null) {
+    function openModal(id = null) {
         document.getElementById('lotModal').classList.add('active');
-        if (i !== null) {
-            const l = inventory[i];
-            document.getElementById('editIndex').value = i;
+        if(id) {
+            const l = inventory.find(x => x.id === id);
+            document.getElementById('editId').value = id;
             document.getElementById('lotNumber').value = l.lotNumber;
             document.getElementById('category').value = l.category;
             document.getElementById('condition').value = l.condition;
+            document.getElementById('unit').value = l.unit;
             document.getElementById('quantity').value = l.quantity;
-            document.getElementById('unit').value = l.unit || 'Pieces';
             document.getElementById('moq').value = l.moq;
             document.getElementById('location').value = l.location || '';
             document.getElementById('description').value = l.description || '';
@@ -239,20 +180,22 @@
             document.getElementById('akOffer').value = l.akOffer;
             document.getElementById('mrp').value = l.mrp || '';
             document.getElementById('onlinePrice').value = l.onlinePrice || '';
-            document.getElementById('negotiations').value = l.negotiations || 'No';
+            document.getElementById('negotiations').value = l.negotiations;
             document.getElementById('remarks').value = l.remarks || '';
-            document.getElementById('modalTitle').innerText = "Edit Lot";
         } else {
-            document.getElementById('editIndex').value = "";
-            document.querySelectorAll('#lotModal input, #lotModal textarea').forEach(inp => inp.value = "");
-            document.getElementById('modalTitle').innerText = "Add New Lot";
+            document.getElementById('editId').value = "";
+            document.querySelectorAll('#lotModal input, #lotModal textarea').forEach(i => i.value = "");
         }
-        updateRateLabels();
     }
+
     function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
-    function exportExcel() { /* Logic remains same */ }
-    function exportPDF() { /* Logic remains same */ }
-    fetchInventory();
+    function copyWA(i) {
+        const l = inventory[i];
+        const link = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${l.lotNumber}`;
+        const msg = `*Lot #${l.lotNumber} - ${l.category}*\nCondition: ${l.condition}\nQty: ${l.quantity} ${l.unit}\nLocation: ${l.location}\n\n*View India's Lowest Rate:* \n${link}`;
+        navigator.clipboard.writeText(msg).then(() => alert("WhatsApp Link Copied!"));
+    }
+    load();
 </script>
 </body>
 </html>
