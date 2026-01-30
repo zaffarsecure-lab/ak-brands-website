@@ -31,7 +31,15 @@
         .btn-delete { background: #e53e3e; }
         .btn-toggle { background: #ed8936; }
         #loading { text-align: center; padding: 20px; font-weight: bold; color: #667eea; }
-        .lot-link { color: #667eea; font-weight: bold; text-decoration: underline; cursor: pointer; }
+        
+        /* Fixed Clickable Link Style for Desktop */
+        .clickable-lot { 
+            color: #007bff !important; 
+            text-decoration: underline !important; 
+            font-weight: bold; 
+            cursor: pointer;
+        }
+        .clickable-lot:hover { color: #0056b3 !important; }
     </style>
 </head>
 <body>
@@ -109,12 +117,14 @@
             const row = document.createElement('tr');
             if (l.isSold) row.className = "sold-out";
             
-            // Generate the link for the clickable Lot Number
-            const lotLink = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${l.lotNumber}`;
+            // Full URL for Desktop Clickability
+            const lotLink = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${encodeURIComponent(l.lotNumber)}`;
 
             row.innerHTML = `
                 <td>
-                    <a href="${lotLink}" target="_blank" class="lot-link">${l.lotNumber}</a>
+                    <a href="${lotLink}" target="_blank" class="clickable-lot">
+                        ${l.lotNumber}
+                    </a>
                 </td>
                 <td>${l.category}</td>
                 <td>${l.condition}</td>
@@ -124,7 +134,7 @@
                 <td>
                     <button class="act-btn btn-copy" onclick="copyToClipboard(${i})">Copy</button>
                     <button class="act-btn btn-edit" onclick="openModal(${i})">Edit</button>
-                    <button class="act-btn btn-toggle" onclick="toggleSold(${i})">${l.isSold ? 'Set Available' : 'Set Sold'}</button>
+                    <button class="act-btn btn-toggle" onclick="toggleSold(${i})">${l.isSold ? 'Available' : 'Sold Out'}</button>
                     <button class="act-btn btn-delete" onclick="deleteLot(${i})">Del</button>
                 </td>
             `;
@@ -132,6 +142,29 @@
         });
     }
 
+    // Logic for Copying the "WhatsApp Message"
+    function copyToClipboard(index) {
+        const l = inventory[index];
+        const fullLink = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${encodeURIComponent(l.lotNumber)}`;
+
+        let msg = `*Lot Number: ${l.lotNumber}*\n\n`;
+        msg += `🏷️ Category: ${l.category}\n`;
+        msg += `🌟 Condition: ${l.condition}\n`;
+        msg += `📊 Quantity: ${l.quantity}\n`;
+        msg += `📦 MOQ: ${l.moq}\n`;
+        if(l.mrp) msg += `💰 MRP: ₹${l.mrp}\n`;
+        if(l.onlinePrice) msg += `🌐 Online: ₹${l.onlinePrice}\n`;
+
+        msg += `\n*_Final Lot Rate_ - Please click the below link to get India's Lowest Rate:*\n`;
+        msg += `${fullLink}\n\n`;
+        msg += `Trusted firm\nAK Brands Marketing©\nwww.akbrandsmarketing.com\n\n📢 Join VIP Community:\nhttps://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq`;
+
+        navigator.clipboard.writeText(msg).then(() => {
+            alert("🚀 Link & WhatsApp Message Copied!");
+        });
+    }
+
+    // Modal and Cloud Logic (Remains identical to previous version)
     async function saveLot() {
         const index = document.getElementById('editIndex').value;
         const lotData = {
@@ -146,9 +179,7 @@
             onlinePrice: document.getElementById('onlinePrice').value || "",
             isSold: index !== "" ? inventory[index].isSold : false
         };
-
-        if(!lotData.lotNumber) return alert("Lot Number is required!");
-
+        if(!lotData.lotNumber) return alert("Lot Number Required");
         try {
             if (index !== "") {
                 const id = inventory[index].id;
@@ -176,25 +207,6 @@
         }
     }
 
-    function copyToClipboard(index) {
-        const l = inventory[index];
-        const fullLink = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${l.lotNumber}`;
-
-        let msg = `*Lot Number: ${l.lotNumber}*\n\n`;
-        msg += `🏷️ Category: ${l.category}\n`;
-        msg += `🌟 Condition: ${l.condition}\n`;
-        msg += `📊 Quantity: ${l.quantity}\n`;
-        msg += `📦 MOQ: ${l.moq}\n`;
-        if(l.mrp) msg += `💰 MRP: ₹${l.mrp}\n`;
-        if(l.onlinePrice) msg += `🌐 Online: ₹${l.onlinePrice}\n`;
-
-        msg += `\n*_Final Lot Rate_ - Please click the below link to get India's Lowest Rate:*\n`;
-        msg += `${fullLink}\n\n`;
-        msg += `Trusted firm\nAK Brands Marketing©\nwww.akbrandsmarketing.com\n\n📢 Join VIP Community:\nhttps://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq`;
-
-        navigator.clipboard.writeText(msg).then(() => alert("🚀 WhatsApp Message Copied!"));
-    }
-
     function openModal(index = null) {
         document.getElementById('lotModal').classList.add('active');
         if (index !== null) {
@@ -216,7 +228,6 @@
             document.querySelectorAll('#lotModal input').forEach(i => i.value = "");
         }
     }
-
     function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
 
     function exportExcel() {
@@ -226,7 +237,6 @@
         XLSX.utils.book_append_sheet(wb, ws, "Inventory");
         XLSX.writeFile(wb, "AK_Inventory.xlsx");
     }
-
     function exportPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
