@@ -45,7 +45,6 @@
         .btn-wa { background: #25d366; color: white; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2); }
         .btn-copy { background: #4a5568; color: white; font-size: 16px; box-shadow: 0 4px 12px rgba(74, 85, 104, 0.2); }
         .btn:active { transform: scale(0.98); }
-        .btn.disabled { background: #94a3b8 !important; pointer-events: none; opacity: 0.7; }
     </style>
 </head>
 <body>
@@ -170,27 +169,27 @@
     }
 
     function copyMarketingMsg() {
-        // This removes any admin parameters if present for the shared link
-        const lotLink = window.location.origin + window.location.pathname + "?lotNumber=" + currentLot.lotNumber;
+        // FIXED: encodeURI handles spaces in Lot Numbers so the link doesn't break
+        const lotLink = window.location.origin + window.location.pathname + "?lotNumber=" + encodeURIComponent(currentLot.lotNumber);
         
         const msg = `*Lot Number: ${currentLot.lotNumber}*
 
-Category: ${currentLot.category}
-Condition: ${currentLot.condition}
-Quantity: ${currentLot.quantity} ${currentLot.unit}
-MOQ: ${currentLot.moq} ${currentLot.unit}
+📂 Category: ${currentLot.category}
+✨ Condition: ${currentLot.condition}
+📊 Quantity: ${currentLot.quantity} ${currentLot.unit}
+📦 MOQ: ${currentLot.moq} ${currentLot.unit}
 
-Lot Rate: 
-Please click the below link to check India's Lowest rate & Product Details:
-${lotLink}
+*Lot Rate:* 🔥 Please click the below link to check India's Lowest rate & Product Details:
+
+👉 ${lotLink}
 
 
-Trusted Firm
-AK Brands Marketing
-www.akbrandsmarketing.com`;
+🌟 *Trusted Firm*
+🏢 *AK Brands Marketing*
+🌐 www.akbrandsmarketing.com`;
 
         navigator.clipboard.writeText(msg).then(() => {
-            alert("✅ Marketing text copied with correct spacing!");
+            alert("✅ Professional Marketing Text Copied!");
         });
     }
 
