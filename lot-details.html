@@ -5,50 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AK Brands - Lot Details</title>
     <style>
-        :root { --primary: #667eea; --ak-green: #10b981; --lot-blue: #3b82f6; }
+        :root { --primary: #667eea; --ak-green: #10b981; --lot-blue: #3b82f6; --warning: #f59e0b; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f3f4f6; padding: 15px; display: flex; justify-content: center; min-height: 100vh; }
         
-        .card { background: white; width: 100%; max-width: 500px; border-radius: 25px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .card { background: white; width: 100%; max-width: 500px; border-radius: 25px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .header { background: var(--primary); color: white; padding: 25px; text-align: center; }
         .header h1 { font-size: 22px; margin-bottom: 5px; }
         .header p { font-size: 13px; opacity: 0.9; }
 
         .content { padding: 20px; }
-        
-        /* Information List */
-        .info-list { margin-bottom: 20px; }
         .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
         .label { color: #64748b; font-weight: 500; }
         .val { font-weight: 700; color: #1e293b; }
 
-        /* Description Box */
-        .desc-box { background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--primary); }
+        .desc-box { background: #f8fafc; padding: 15px; border-radius: 12px; margin: 20px 0; border-left: 4px solid var(--primary); }
         .desc-title { font-size: 12px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 5px; }
         .desc-text { font-size: 14px; color: #475569; line-height: 1.5; }
 
-        /* Side by Side Rate Comparison */
+        /* Rates Comparison */
         .rate-container { display: flex; gap: 10px; margin-bottom: 20px; }
         .rate-box { flex: 1; padding: 15px 10px; border-radius: 15px; text-align: center; color: white; }
         .lot-rate-box { background: var(--lot-blue); }
         .ak-offer-box { background: var(--ak-green); }
-        .rate-label { font-size: 11px; font-weight: 600; text-transform: uppercase; opacity: 0.9; margin-bottom: 5px; }
+        .rate-label { font-size: 11px; font-weight: 600; text-transform: uppercase; opacity: 0.9; }
         .rate-price { font-size: 24px; font-weight: 900; }
-        .rate-unit { font-size: 10px; opacity: 0.8; margin-top: 3px; }
+
+        /* New: Quantity & Calculation Section */
+        .calc-box { background: #fdf2f2; border: 1px solid #fee2e2; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        .calc-title { font-size: 13px; font-weight: 700; color: #991b1b; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+        .qty-input-wrapper { display: flex; align-items: center; gap: 10px; background: white; padding: 5px 15px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .qty-input { border: none; width: 100%; padding: 10px; font-size: 18px; font-weight: 800; outline: none; }
+        .total-display { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #f87171; text-align: center; }
+        .total-label { font-size: 12px; color: #7f1d1d; font-weight: 600; }
+        .total-amount { font-size: 28px; color: #b91c1c; font-weight: 900; }
+        .error-msg { font-size: 11px; color: #dc2626; margin-top: 5px; font-weight: 600; display: none; }
 
         /* Negotiation Box */
         .neg-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 15px; padding: 15px; margin-bottom: 20px; text-align: center; }
-        .neg-title { font-size: 12px; font-weight: 700; color: #b45309; margin-bottom: 8px; }
-        .neg-input { width: 100%; padding: 10px; border: 2px solid #fcd34d; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 800; outline: none; }
+        .neg-input { width: 100%; padding: 10px; border: 2px solid #fcd34d; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 800; outline: none; margin-top: 8px; }
 
-        .btn-wa { display: block; background: #25d366; color: white; text-align: center; padding: 18px; border-radius: 15px; text-decoration: none; font-weight: 700; font-size: 18px; transition: 0.3s; }
-        .btn-wa:hover { filter: brightness(1.1); }
-        #loading { padding: 50px; text-align: center; font-weight: bold; }
+        .btn-wa { display: block; background: #25d366; color: white; text-align: center; padding: 18px; border-radius: 15px; text-decoration: none; font-weight: 700; font-size: 18px; transition: 0.3s; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2); }
+        .btn-wa.disabled { background: #94a3b8; pointer-events: none; opacity: 0.7; }
     </style>
 </head>
 <body>
 
-    <div id="loading">🔍 Loading Lot Details...</div>
+    <div id="loading" style="padding: 50px; text-align: center;">🔄 Loading details...</div>
 
     <div class="card" id="mainCard" style="display: none;">
         <div class="header">
@@ -57,13 +60,11 @@
         </div>
 
         <div class="content">
-            <div class="info-list">
-                <div class="info-row"><span class="label">🌟 Condition</span><span class="val" id="cond"></span></div>
-                <div class="info-row"><span class="label">📊 Total Quantity</span><span class="val" id="qty"></span></div>
-                <div class="info-row"><span class="label">📦 Minimum Quantity</span><span class="val" id="moq"></span></div>
-                <div class="info-row" id="mrpRow"><span class="label">💰 MRP</span><span class="val" id="mrp"></span></div>
-                <div class="info-row" id="onlineRow"><span class="label">🌐 Online Price</span><span class="val" id="online"></span></div>
-            </div>
+            <div class="info-row"><span class="label">🌟 Condition</span><span class="val" id="cond"></span></div>
+            <div class="info-row"><span class="label">📊 Stock Available</span><span class="val" id="qtyStock"></span></div>
+            <div class="info-row"><span class="label">📦 Minimum Quantity (MOQ)</span><span class="val" id="moq"></span></div>
+            <div class="info-row" id="mrpRow"><span class="label">💰 MRP</span><span class="val" id="mrp"></span></div>
+            <div class="info-row" id="onlineRow"><span class="label">🌐 Online Price</span><span class="val" id="online"></span></div>
 
             <div class="desc-box">
                 <p class="desc-title">Product Description</p>
@@ -74,17 +75,29 @@
                 <div class="rate-box lot-rate-box">
                     <p class="rate-label">Lot Rate</p>
                     <p class="rate-price" id="lotRateVal">₹0</p>
-                    <p class="rate-unit">Per <span class="uSingle">Piece</span></p>
                 </div>
                 <div class="rate-box ak-offer-box">
-                    <p class="rate-label">AK Offer Rate</p>
+                    <p class="rate-label">AK Offer</p>
                     <p class="rate-price" id="akOfferVal">₹0</p>
-                    <p class="rate-unit">Per <span class="uSingle">Piece</span></p>
+                </div>
+            </div>
+
+            <div class="calc-box">
+                <p class="calc-title">🔢 Enter Your Quantity</p>
+                <div class="qty-input-wrapper">
+                    <input type="number" id="orderQty" class="qty-input" placeholder="0">
+                    <span id="unitText" style="font-weight: bold; color: #64748b;">Pcs</span>
+                </div>
+                <p id="moqError" class="error-msg">⚠️ Minimum order is <span id="moqValError"></span></p>
+                
+                <div class="total-display">
+                    <p class="total-label">ESTIMATED TOTAL AMOUNT</p>
+                    <p class="total-amount">₹<span id="totalAmt">0</span></p>
                 </div>
             </div>
 
             <div class="neg-box" id="negBox" style="display: none;">
-                <p class="neg-title">💡 Open for Negotiation!</p>
+                <p style="font-size: 12px; font-weight: 700; color: #b45309;">💡 Open for Negotiation!</p>
                 <input type="number" id="custQuote" class="neg-input" placeholder="Your Best Rate?">
             </div>
 
@@ -93,52 +106,78 @@
     </div>
 
 <script>
-    async function loadLot() {
+    let currentLot = null;
+
+    async function loadData() {
         const lotNum = new URLSearchParams(window.location.search).get('lotNumber');
-        try {
-            const res = await fetch("https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory.json");
-            const data = await res.json();
-            const lot = Object.values(data).find(l => l.lotNumber === lotNum);
+        const res = await fetch("https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory.json");
+        const data = await res.json();
+        currentLot = Object.values(data).find(l => l.lotNumber === lotNum);
 
-            if(lot) {
-                document.getElementById('cat').innerText = lot.category;
-                document.getElementById('lnum').innerText = lot.lotNumber;
-                document.getElementById('loc').innerText = lot.location || 'Delhi';
-                document.getElementById('cond').innerText = lot.condition;
-                document.getElementById('qty').innerText = `${lot.quantity} ${lot.unit}`;
-                document.getElementById('moq').innerText = `${lot.moq} ${lot.unit}`;
-                document.getElementById('desc').innerText = lot.description || 'No description provided.';
+        if(currentLot) {
+            document.getElementById('cat').innerText = currentLot.category;
+            document.getElementById('lnum').innerText = currentLot.lotNumber;
+            document.getElementById('loc').innerText = currentLot.location || 'Warehouse';
+            document.getElementById('cond').innerText = currentLot.condition;
+            document.getElementById('qtyStock').innerText = `${currentLot.quantity} ${currentLot.unit}`;
+            document.getElementById('moq').innerText = `${currentLot.moq} ${currentLot.unit}`;
+            document.getElementById('desc').innerText = currentLot.description || 'Verified product.';
+            document.getElementById('lotRateVal').innerText = `₹${currentLot.lotRate}`;
+            document.getElementById('akOfferVal').innerText = `₹${currentLot.akOffer}`;
+            document.getElementById('unitText').innerText = currentLot.unit;
+            document.getElementById('moqValError').innerText = `${currentLot.moq} ${currentLot.unit}`;
+            
+            if(currentLot.mrp) document.getElementById('mrp').innerText = `₹${currentLot.mrp}`;
+            else document.getElementById('mrpRow').style.display = 'none';
+            
+            if(currentLot.onlinePrice) document.getElementById('online').innerText = `₹${currentLot.onlinePrice}`;
+            else document.getElementById('onlineRow').style.display = 'none';
+
+            if(currentLot.negotiations === "Yes") document.getElementById('negBox').style.display = 'block';
+
+            // Calculator Logic
+            const qtyInp = document.getElementById('orderQty');
+            const totalOut = document.getElementById('totalAmt');
+            const error = document.getElementById('moqError');
+            const waBtn = document.getElementById('waBtn');
+
+            qtyInp.addEventListener('input', () => {
+                const val = parseInt(qtyInp.value) || 0;
+                const moq = parseInt(currentLot.moq);
                 
-                // Prices
-                document.getElementById('lotRateVal').innerText = `₹${lot.lotRate}`;
-                document.getElementById('akOfferVal').innerText = `₹${lot.akOffer}`;
+                // Calculate
+                totalOut.innerText = (val * parseFloat(currentLot.akOffer)).toLocaleString('en-IN');
+
+                // Validate MOQ
+                if(val > 0 && val < moq) {
+                    error.style.display = 'block';
+                    waBtn.classList.add('disabled');
+                } else {
+                    error.style.display = 'none';
+                    waBtn.classList.remove('disabled');
+                }
+            });
+
+            waBtn.onclick = (e) => {
+                const finalQty = qtyInp.value || 0;
+                const quote = document.getElementById('custQuote').value;
+                if(finalQty < parseInt(currentLot.moq)) {
+                    alert(`Please order at least ${currentLot.moq} ${currentLot.unit}`);
+                    return false;
+                }
                 
-                const unitSingular = lot.unit ? lot.unit.replace(/s$/, '') : 'Piece';
-                document.querySelectorAll('.uSingle').forEach(el => el.innerText = unitSingular);
+                let text = `Hi AK Brands, I want to book Lot #${currentLot.lotNumber}.%0A%0A*Order Details*%0A- Qty: ${finalQty} ${currentLot.unit}%0A- Offer Rate: ₹${currentLot.akOffer}`;
+                if(quote) text += `%0A- My Negotiated Rate: ₹${quote}`;
+                text += `%0A- Total Estimate: ₹${totalOut.innerText}`;
+                
+                window.location.href = `https://wa.me/919999999999?text=${text}`;
+            };
 
-                // Conditional MRP/Online
-                if(lot.mrp) document.getElementById('mrp').innerText = `₹${lot.mrp}`;
-                else document.getElementById('mrpRow').style.display = 'none';
-
-                if(lot.onlinePrice) document.getElementById('online').innerText = `₹${lot.onlinePrice}`;
-                else document.getElementById('onlineRow').style.display = 'none';
-
-                // Negotiation
-                if(lot.negotiations === "Yes") document.getElementById('negBox').style.display = 'block';
-
-                document.getElementById('waBtn').onclick = () => {
-                    const quote = document.getElementById('custQuote').value;
-                    let msg = `Hi AK Brands, I want to book Lot #${lot.lotNumber}.`;
-                    if(quote) msg += `\nMy Offer: ₹${quote}/${unitSingular}`;
-                    window.location.href = `https://wa.me/919999999999?text=${encodeURIComponent(msg)}`;
-                };
-
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('mainCard').style.display = 'block';
-            }
-        } catch(e) { console.error(e); }
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainCard').style.display = 'block';
+        }
     }
-    loadLot();
+    loadData();
 </script>
 </body>
 </html>
