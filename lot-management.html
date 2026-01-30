@@ -30,7 +30,7 @@
         .btn-copy { background: #38a169; }
         .btn-delete { background: #e53e3e; }
         .btn-toggle { background: #ed8936; }
-        .clickable-lot { color: #007bff; text-decoration: underline; font-weight: bold; }
+        .clickable-lot { color: #007bff; text-decoration: underline; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -44,7 +44,7 @@
             <button class="btn btn-export" onclick="exportPDF()">PDF</button>
         </div>
     </div>
-    <div id="loading" style="text-align:center;">Connecting...</div>
+    <div id="loading" style="text-align:center; padding: 20px; font-weight: bold; color: #667eea;">🔄 Fetching latest cloud data...</div>
     <table id="inventoryTable">
         <thead>
             <tr>
@@ -116,7 +116,7 @@
     let inventory = [];
 
     function updateRateLabels() {
-        const unit = document.getElementById('unit').value.slice(0, -1); // Remove 's' for singular
+        const unit = document.getElementById('unit').value.slice(0, -1);
         document.getElementById('labelLotRate').innerText = `Lot Rate /${unit}`;
         document.getElementById('labelAkOffer').innerText = `AK Offer /${unit}`;
     }
@@ -128,7 +128,7 @@
             const data = await response.json();
             inventory = data ? Object.keys(data).map(key => ({ ...data[key], id: key })) : [];
             renderTable();
-        } catch (error) { console.error(error); }
+        } catch (error) { console.error("Cloud Error:", error); }
         document.getElementById('loading').style.display = 'none';
     }
 
@@ -202,7 +202,7 @@
     }
 
     async function deleteLot(i) {
-        if(confirm("Delete?")) {
+        if(confirm("Delete this from Cloud?")) {
             await fetch(`${DB_BASE_URL}/${inventory[i].id}.json`, { method: 'DELETE' });
             fetchInventory();
         }
