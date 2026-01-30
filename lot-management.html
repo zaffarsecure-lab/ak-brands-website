@@ -10,43 +10,33 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: #f0f2f5; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .container { max-width: 1300px; margin: 0 auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         h2 { margin-bottom: 20px; color: #1a1a1a; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
         .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .btn-add { background: #667eea; color: white; }
         .btn-export { background: #2d3748; color: white; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #f8fafc; padding: 15px; text-align: left; font-size: 14px; color: #64748b; border-bottom: 2px solid #edf2f7; }
-        td { padding: 15px; border-bottom: 1px solid #edf2f7; font-size: 14px; color: #334155; }
+        th { background: #f8fafc; padding: 15px; text-align: left; font-size: 13px; color: #64748b; border-bottom: 2px solid #edf2f7; }
+        td { padding: 12px 15px; border-bottom: 1px solid #edf2f7; font-size: 14px; color: #334155; }
         .sold-out { opacity: 0.5; background: #f1f5f9; text-decoration: line-through; }
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index: 1000; }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 500px; max-height: 90vh; overflow-y: auto; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; }
-        input:focus { border-color: #667eea; }
-        .act-btn { padding: 8px 14px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; margin-right: 5px; color: white; font-weight: bold; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 600px; max-height: 90vh; overflow-y: auto; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 14px; }
+        label { font-size: 12px; font-weight: bold; color: #64748b; }
+        .act-btn { padding: 8px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; margin-right: 5px; color: white; font-weight: bold; }
         .btn-edit { background: #4a5568; }
         .btn-copy { background: #38a169; }
         .btn-delete { background: #e53e3e; }
         .btn-toggle { background: #ed8936; }
-        #loading { text-align: center; padding: 20px; font-weight: bold; color: #667eea; }
-        
-        /* Fixed Clickable Link Style for Desktop */
-        .clickable-lot { 
-            color: #007bff !important; 
-            text-decoration: underline !important; 
-            font-weight: bold; 
-            cursor: pointer;
-        }
-        .clickable-lot:hover { color: #0056b3 !important; }
+        .clickable-lot { color: #007bff; text-decoration: underline; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>AK Brands Master Inventory (Cloud Mode)</h2>
-    
     <div class="controls">
         <button class="btn btn-add" onclick="openModal()">+ Add New Lot</button>
         <div>
@@ -54,9 +44,7 @@
             <button class="btn btn-export" onclick="exportPDF()">PDF</button>
         </div>
     </div>
-
-    <div id="loading">Connecting to Google Cloud...</div>
-
+    <div id="loading" style="text-align:center;">Connecting...</div>
     <table id="inventoryTable">
         <thead>
             <tr>
@@ -64,7 +52,8 @@
                 <th>Category</th>
                 <th>Condition</th>
                 <th>Qty</th>
-                <th>MOQ</th>
+                <th>Location</th>
+                <th>Negotiate</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -75,18 +64,48 @@
 
 <div class="modal" id="lotModal">
     <div class="modal-content">
-        <h3 id="modalTitle">Add New Lot</h3>
+        <h3 id="modalTitle">Manage Lot</h3>
         <input type="hidden" id="editIndex">
-        <input type="text" id="lotNumber" placeholder="Lot Number">
-        <input type="text" id="category" placeholder="Category">
-        <input type="text" id="condition" placeholder="Condition">
-        <input type="number" id="quantity" placeholder="Total Quantity">
-        <input type="number" id="moq" placeholder="Minimum Order Qty (MOQ)">
-        <input type="number" id="lotRate" placeholder="Lot Rate">
-        <input type="number" id="akOffer" placeholder="AK Offer Price">
-        <input type="number" id="mrp" placeholder="MRP (Optional)">
-        <input type="number" id="onlinePrice" placeholder="Online Price (Optional)">
-        <button class="btn btn-add" style="width:100%; margin-top:15px;" onclick="saveLot()">Save to Cloud</button>
+        
+        <label>Lot Number</label><input type="text" id="lotNumber">
+        <label>Category</label><input type="text" id="category">
+        <label>Condition</label><input type="text" id="condition">
+        
+        <div style="display:flex; gap:10px;">
+            <div style="flex:2;"><label>Total Quantity</label><input type="number" id="quantity"></div>
+            <div style="flex:1;"><label>Unit</label>
+                <select id="unit" onchange="updateRateLabels()">
+                    <option value="Pieces">Pieces</option>
+                    <option value="Boxes">Boxes</option>
+                    <option value="Units">Units</option>
+                    <option value="Sets">Sets</option>
+                </select>
+            </div>
+        </div>
+
+        <label>Minimum Order (MOQ)</label><input type="number" id="moq">
+        <label>Location</label><input type="text" id="location">
+        <label>Description</label><textarea id="description" rows="2"></textarea>
+        
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1;"><label id="labelLotRate">Lot Rate /Piece</label><input type="number" id="lotRate"></div>
+            <div style="flex:1;"><label id="labelAkOffer">AK Offer /Piece</label><input type="number" id="akOffer"></div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1;"><label>MRP (Optional)</label><input type="number" id="mrp"></div>
+            <div style="flex:1;"><label>Online Price (Optional)</label><input type="number" id="onlinePrice"></div>
+        </div>
+
+        <label>Negotiations</label>
+        <select id="negotiations">
+            <option value="No">No (Fixed Price)</option>
+            <option value="Yes">Yes (Customer can quote)</option>
+        </select>
+
+        <label>Remarks (Internal Only)</label><input type="text" id="remarks">
+
+        <button class="btn btn-add" style="width:100%; margin-top:10px;" onclick="saveLot()">Save to Cloud</button>
         <button class="btn" style="width:100%; margin-top:8px; background:#cbd5e0;" onclick="closeModal()">Cancel</button>
     </div>
 </div>
@@ -94,8 +113,13 @@
 <script>
     const DB_BASE_URL = "https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory";
     const DB_URL = `${DB_BASE_URL}.json`;
-
     let inventory = [];
+
+    function updateRateLabels() {
+        const unit = document.getElementById('unit').value.slice(0, -1); // Remove 's' for singular
+        document.getElementById('labelLotRate').innerText = `Lot Rate /${unit}`;
+        document.getElementById('labelAkOffer').innerText = `AK Offer /${unit}`;
+    }
 
     async function fetchInventory() {
         document.getElementById('loading').style.display = 'block';
@@ -104,9 +128,7 @@
             const data = await response.json();
             inventory = data ? Object.keys(data).map(key => ({ ...data[key], id: key })) : [];
             renderTable();
-        } catch (error) {
-            console.error("Cloud Error:", error);
-        }
+        } catch (error) { console.error(error); }
         document.getElementById('loading').style.display = 'none';
     }
 
@@ -116,25 +138,19 @@
         inventory.forEach((l, i) => {
             const row = document.createElement('tr');
             if (l.isSold) row.className = "sold-out";
-            
-            // Full URL for Desktop Clickability
             const lotLink = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${encodeURIComponent(l.lotNumber)}`;
-
             row.innerHTML = `
-                <td>
-                    <a href="${lotLink}" target="_blank" class="clickable-lot">
-                        ${l.lotNumber}
-                    </a>
-                </td>
+                <td><a href="${lotLink}" target="_blank" class="clickable-lot">${l.lotNumber}</a></td>
                 <td>${l.category}</td>
                 <td>${l.condition}</td>
-                <td>${l.quantity}</td>
-                <td>${l.moq}</td>
-                <td><span style="color:${l.isSold ? 'red' : 'green'}">${l.isSold ? 'Sold Out' : 'Available'}</span></td>
+                <td>${l.quantity} ${l.unit}</td>
+                <td>${l.location || 'N/A'}</td>
+                <td>${l.negotiations}</td>
+                <td><span style="color:${l.isSold ? 'red' : 'green'}">${l.isSold ? 'Sold' : 'Live'}</span></td>
                 <td>
                     <button class="act-btn btn-copy" onclick="copyToClipboard(${i})">Copy</button>
                     <button class="act-btn btn-edit" onclick="openModal(${i})">Edit</button>
-                    <button class="act-btn btn-toggle" onclick="toggleSold(${i})">${l.isSold ? 'Available' : 'Sold Out'}</button>
+                    <button class="act-btn btn-toggle" onclick="toggleSold(${i})">Status</button>
                     <button class="act-btn btn-delete" onclick="deleteLot(${i})">Del</button>
                 </td>
             `;
@@ -142,29 +158,6 @@
         });
     }
 
-    // Logic for Copying the "WhatsApp Message"
-    function copyToClipboard(index) {
-        const l = inventory[index];
-        const fullLink = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${encodeURIComponent(l.lotNumber)}`;
-
-        let msg = `*Lot Number: ${l.lotNumber}*\n\n`;
-        msg += `🏷️ Category: ${l.category}\n`;
-        msg += `🌟 Condition: ${l.condition}\n`;
-        msg += `📊 Quantity: ${l.quantity}\n`;
-        msg += `📦 MOQ: ${l.moq}\n`;
-        if(l.mrp) msg += `💰 MRP: ₹${l.mrp}\n`;
-        if(l.onlinePrice) msg += `🌐 Online: ₹${l.onlinePrice}\n`;
-
-        msg += `\n*_Final Lot Rate_ - Please click the below link to get India's Lowest Rate:*\n`;
-        msg += `${fullLink}\n\n`;
-        msg += `Trusted firm\nAK Brands Marketing©\nwww.akbrandsmarketing.com\n\n📢 Join VIP Community:\nhttps://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq`;
-
-        navigator.clipboard.writeText(msg).then(() => {
-            alert("🚀 Link & WhatsApp Message Copied!");
-        });
-    }
-
-    // Modal and Cloud Logic (Remains identical to previous version)
     async function saveLot() {
         const index = document.getElementById('editIndex').value;
         const lotData = {
@@ -172,37 +165,45 @@
             category: document.getElementById('category').value,
             condition: document.getElementById('condition').value,
             quantity: document.getElementById('quantity').value,
+            unit: document.getElementById('unit').value,
             moq: document.getElementById('moq').value,
+            location: document.getElementById('location').value,
+            description: document.getElementById('description').value,
             lotRate: document.getElementById('lotRate').value,
             akOffer: document.getElementById('akOffer').value,
-            mrp: document.getElementById('mrp').value || "",
-            onlinePrice: document.getElementById('onlinePrice').value || "",
+            mrp: document.getElementById('mrp').value,
+            onlinePrice: document.getElementById('onlinePrice').value,
+            negotiations: document.getElementById('negotiations').value,
+            remarks: document.getElementById('remarks').value,
             isSold: index !== "" ? inventory[index].isSold : false
         };
-        if(!lotData.lotNumber) return alert("Lot Number Required");
-        try {
-            if (index !== "") {
-                const id = inventory[index].id;
-                await fetch(`${DB_BASE_URL}/${id}.json`, { method: 'PUT', body: JSON.stringify(lotData) });
-            } else {
-                await fetch(DB_URL, { method: 'POST', body: JSON.stringify(lotData) });
-            }
-            closeModal();
-            fetchInventory();
-        } catch (e) { alert("Save Failed"); }
+
+        const method = index !== "" ? 'PUT' : 'POST';
+        const url = index !== "" ? `${DB_BASE_URL}/${inventory[index].id}.json` : DB_URL;
+        await fetch(url, { method: method, body: JSON.stringify(lotData) });
+        closeModal(); fetchInventory();
     }
 
-    async function toggleSold(index) {
-        const lot = inventory[index];
-        lot.isSold = !lot.isSold;
-        await fetch(`${DB_BASE_URL}/${lot.id}.json`, { method: 'PATCH', body: JSON.stringify({ isSold: lot.isSold }) });
+    function copyToClipboard(index) {
+        const l = inventory[index];
+        const link = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${encodeURIComponent(l.lotNumber)}`;
+        const unitSingle = l.unit.slice(0, -1);
+        let msg = `*Lot Number: ${l.lotNumber}*\n\n🏷️ Category: ${l.category}\n🌟 Condition: ${l.condition}\n📊 Quantity: ${l.quantity} ${l.unit}\n📦 MOQ: ${l.moq} ${l.unit}\n📍 Location: ${l.location}\n`;
+        if(l.mrp) msg += `💰 MRP: ₹${l.mrp}/${unitSingle}\n`;
+        if(l.onlinePrice) msg += `🌐 Online: ₹${l.onlinePrice}/${unitSingle}\n`;
+        msg += `\n*_Final Lot Rate_ - Click below to get India's Lowest Rate:*\n${link}\n\nAK Brands Marketing©\nwww.akbrandsmarketing.com`;
+        navigator.clipboard.writeText(msg).then(() => alert("Copied for WhatsApp!"));
+    }
+
+    async function toggleSold(i) {
+        inventory[i].isSold = !inventory[i].isSold;
+        await fetch(`${DB_BASE_URL}/${inventory[i].id}.json`, { method: 'PATCH', body: JSON.stringify({ isSold: inventory[i].isSold }) });
         renderTable();
     }
 
-    async function deleteLot(index) {
-        if(confirm("Delete permanently?")) {
-            const id = inventory[index].id;
-            await fetch(`${DB_BASE_URL}/${id}.json`, { method: 'DELETE' });
+    async function deleteLot(i) {
+        if(confirm("Delete?")) {
+            await fetch(`${DB_BASE_URL}/${inventory[i].id}.json`, { method: 'DELETE' });
             fetchInventory();
         }
     }
@@ -210,44 +211,32 @@
     function openModal(index = null) {
         document.getElementById('lotModal').classList.add('active');
         if (index !== null) {
-            const lot = inventory[index];
+            const l = inventory[index];
             document.getElementById('editIndex').value = index;
-            document.getElementById('lotNumber').value = lot.lotNumber;
-            document.getElementById('category').value = lot.category;
-            document.getElementById('condition').value = lot.condition;
-            document.getElementById('quantity').value = lot.quantity;
-            document.getElementById('moq').value = lot.moq;
-            document.getElementById('lotRate').value = lot.lotRate;
-            document.getElementById('akOffer').value = lot.akOffer;
-            document.getElementById('mrp').value = lot.mrp;
-            document.getElementById('onlinePrice').value = lot.onlinePrice;
+            document.getElementById('lotNumber').value = l.lotNumber;
+            document.getElementById('category').value = l.category;
+            document.getElementById('condition').value = l.condition;
+            document.getElementById('quantity').value = l.quantity;
+            document.getElementById('unit').value = l.unit || 'Pieces';
+            document.getElementById('moq').value = l.moq;
+            document.getElementById('location').value = l.location || '';
+            document.getElementById('description').value = l.description || '';
+            document.getElementById('lotRate').value = l.lotRate;
+            document.getElementById('akOffer').value = l.akOffer;
+            document.getElementById('mrp').value = l.mrp || '';
+            document.getElementById('onlinePrice').value = l.onlinePrice || '';
+            document.getElementById('negotiations').value = l.negotiations || 'No';
+            document.getElementById('remarks').value = l.remarks || '';
             document.getElementById('modalTitle').innerText = "Edit Lot";
         } else {
             document.getElementById('editIndex').value = "";
+            document.querySelectorAll('#lotModal input, #lotModal textarea').forEach(i => i.value = "");
             document.getElementById('modalTitle').innerText = "Add New Lot";
-            document.querySelectorAll('#lotModal input').forEach(i => i.value = "");
         }
+        updateRateLabels();
     }
     function closeModal() { document.getElementById('lotModal').classList.remove('active'); }
-
-    function exportExcel() {
-        const data = inventory.map(({id, isSold, ...rest}) => ({...rest, Status: isSold ? 'Sold' : 'Available'}));
-        const ws = XLSX.utils.json_to_sheet(data);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Inventory");
-        XLSX.writeFile(wb, "AK_Inventory.xlsx");
-    }
-    function exportPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.text("AK Brands Stock Report", 14, 15);
-        const rows = inventory.map(l => [l.lotNumber, l.category, l.condition, l.quantity, l.akOffer, l.isSold ? "Sold" : "Available"]);
-        doc.autoTable({ head: [['Lot#', 'Category', 'Condition', 'Qty', 'Price', 'Status']], body: rows, startY: 20 });
-        doc.save("AK_Inventory.pdf");
-    }
-
     fetchInventory();
 </script>
-
 </body>
 </html>
