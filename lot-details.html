@@ -106,15 +106,18 @@
 
 <script>
     let currentLot = null;
-    const PHONE_NUMBER = "918660502217"; // Updated to your new number
+    const PHONE_NUMBER = "918660502217"; 
 
     async function loadData() {
         const lotNum = new URLSearchParams(window.location.search).get('lotNumber');
         const res = await fetch("https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory.json");
         const data = await res.json();
-        currentLot = Object.values(data).find(l => l.lotNumber === lotNum);
+        
+        // Find the EXACT lot from the database based on URL lotNumber
+        currentLot = Object.values(data).find(l => String(l.lotNumber) === String(lotNum));
 
         if(currentLot) {
+            // Mapping UI elements to the found Lot Data
             document.getElementById('cat').innerText = currentLot.category;
             document.getElementById('lnum').innerText = currentLot.lotNumber;
             document.getElementById('loc').innerText = currentLot.location || 'Warehouse';
@@ -151,16 +154,34 @@
                 }
             });
 
+            // Handle WhatsApp Booking Logic
             waBtn.onclick = (e) => {
                 e.preventDefault();
                 const finalQty = qtyInp.value || 0;
                 const quote = document.getElementById('custQuote').value;
                 if(finalQty < parseInt(currentLot.moq)) { alert("Check MOQ"); return; }
                 
-                let header = quote ? "*Customer Quoted Their Offer*" : "*Ready to Book*";
-                let text = `${header}%0A%0A*Lot Details*%0A• Lot: #${currentLot.lotNumber}%0A• Cat: ${currentLot.category}%0A• Stock: ${currentLot.quantity}%0A• MOQ: ${currentLot.moq}%0A• Lot Rate: ₹${currentLot.lotRate}%0A• AK Offer: ₹${currentLot.akOffer}%0A%0A*Customer Request*%0A• Qty: ${finalQty} ${currentLot.unit}%0A`;
-                if(quote) text += `• Quoted Rate: ₹${quote}/${currentLot.unit.replace(/s$/, '')}%0A`;
-                text += `• Total Estimated: ₹${totalOut.innerText}`;
+                let header = quote ? "*Ready to Negotiate*" : "*Ready to Book*";
+                
+                // MAPPING DATA ACCORDINGLY TO THE SPECIFIC LOT
+                let text = `${header}%0A%0A`;
+                text += `*Lot Number: ${currentLot.lotNumber}*%0A%0A`;
+                text += `📂 Category: ${currentLot.category}%0A`;
+                text += `✨ Condition: ${currentLot.condition}%0A`;
+                text += `📊 Quantity: ${currentLot.quantity} ${currentLot.unit}%0A`;
+                text += `📦 MOQ: ${currentLot.moq} ${currentLot.unit}%0A%0A`;
+                
+                text += `*Customer desired quantity:* ${finalQty} ${currentLot.unit}%0A`;
+                
+                if(quote) {
+                    text += `*Customer Quoted Rate:* ₹${quote}/${currentLot.unit.replace(/s$/, '')}%0A`;
+                }
+                
+                text += `*Total Amount:* ₹${totalOut.innerText}%0A%0A`;
+                text += `Trusted Firm%0A`;
+                text += `AK Brands Marketing%0A`;
+                text += `www.akbrandsmarketing.com`;
+
                 window.location.href = `https://wa.me/${PHONE_NUMBER}?text=${text}`;
             };
 
@@ -171,7 +192,6 @@
 
     function copyMarketingMsg() {
         const lotLink = window.location.origin + window.location.pathname + "?lotNumber=" + encodeURIComponent(currentLot.lotNumber);
-        
         const msg = `*Lot Number: ${currentLot.lotNumber}*
 
 📂 Category: ${currentLot.category}
