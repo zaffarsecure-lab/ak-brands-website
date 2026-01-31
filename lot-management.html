@@ -6,7 +6,7 @@
     <title>AK Brands - Master Admin</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        :root { --primary: #4f46e5; --secondary: #64748b; --success: #10b981; --danger: #ef4444; --ak-dark: #1e293b; --wa-green: #25d366; --warn: #f59e0b; }
+        :root { --primary: #4f46e5; --secondary: #64748b; --success: #10b981; --danger: #ef4444; --ak-dark: #1e293b; --warn: #f59e0b; }
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; margin: 0; padding: 20px; }
         .container { max-width: 1400px; margin: 0 auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         
@@ -18,7 +18,7 @@
         .controls { display: flex; flex-wrap: wrap; gap: 15px; background: #f8fafc; padding: 20px; border-radius: 15px; margin-bottom: 20px; align-items: flex-end; }
         .input-group { display: flex; flex-direction: column; gap: 5px; flex-grow: 1; }
         label { font-size: 11px; font-weight: 800; color: var(--secondary); text-transform: uppercase; }
-        input, select, textarea { padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-family: inherit; }
+        input, select, textarea { padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-family: inherit; font-size: 14px; }
 
         .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; color: white; transition: 0.2s; }
         .btn-add { background: var(--primary); white-space: nowrap; }
@@ -33,16 +33,16 @@
         .status-available { background: #dcfce7; color: #166534; }
         .status-sold { background: #fee2e2; color: #991b1b; }
         
-        .view-section { display: none; }
-        .view-section.active { display: block; }
-
         .action-btn { padding: 6px 12px; border-radius: 6px; border: none; color: white; cursor: pointer; font-size: 12px; font-weight: bold; }
         .btn-copy { background: var(--success); }
         .btn-status { background: var(--warn); }
         .btn-del { background: var(--danger); }
 
+        /* Modal - Large enough for all fields */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 95%; max-width: 600px; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 95%; max-width: 800px; max-height: 90vh; overflow-y: auto; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: span 2; }
     </style>
 </head>
 <body>
@@ -64,115 +64,110 @@
             <label>Search Database</label>
             <input type="text" id="masterSearch" placeholder="Search Lot #, Category, Location..." onkeyup="applyFilters()">
         </div>
-        <button class="btn btn-add" id="actionBtn" onclick="openModal()">+ Add New Lot</button>
+        <button class="btn btn-add" onclick="openModal()">+ Add New Lot</button>
     </div>
 
-    <div id="inventorySection" class="view-section active">
+    <div id="inventorySection">
         <table>
             <thead><tr><th>Lot #</th><th>Category</th><th>Qty</th><th>Location</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="inventoryBody"></tbody>
-        </table>
-    </div>
-
-    <div id="customersSection" class="view-section">
-        <table>
-            <thead><tr><th>Name</th><th>Phone</th><th>Interest</th><th>Follow-up</th><th>Actions</th></tr></thead>
-            <tbody id="customerBody"></tbody>
-        </table>
-    </div>
-
-    <div id="suppliersSection" class="view-section">
-        <table>
-            <thead><tr><th>Company</th><th>Person</th><th>Category</th><th>Phone</th><th>Actions</th></tr></thead>
-            <tbody id="supplierBody"></tbody>
         </table>
     </div>
 </div>
 
 <div id="inventoryModal" class="modal">
     <div class="modal-content">
-        <h3>📦 Add New Inventory Lot</h3>
-        <form onsubmit="saveEntry(event, 'inventory')">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 20px;">
-                <input type="text" name="lotNumber" placeholder="Lot #" required>
-                <input type="text" name="category" placeholder="Category" required>
-                <input type="text" name="quantity" placeholder="Qty (e.g. 500 Pcs)" required>
-                <input type="text" name="location" placeholder="Location" required>
-                <input type="number" name="akOffer" placeholder="Rate" required>
-                <select name="status"><option value="AVAILABLE">AVAILABLE</option><option value="SOLD">SOLD</option></select>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3>📦 Add New Inventory Lot (Full Details)</h3>
+            <button onclick="closeModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+        </div>
+        <form id="lotForm" onsubmit="saveEntry(event)">
+            <div class="form-grid">
+                <div class="input-group"><label>Lot Number</label><input type="text" name="lotNumber" required placeholder="e.g. 14684"></div>
+                <div class="input-group"><label>Category</label><input type="text" name="category" required placeholder="e.g. Men's T-Shirt"></div>
+                
+                <div class="input-group"><label>Condition</label>
+                    <select name="condition"><option value="Fresh Stock">Fresh Stock</option><option value="Surplus">Surplus</option><option value="Stocklot">Stocklot</option></select>
+                </div>
+                <div class="input-group"><label>Location</label><input type="text" name="location" required placeholder="e.g. Surat"></div>
+
+                <div class="input-group"><label>Total Quantity</label><input type="text" name="quantity" required placeholder="e.g. 500 Pieces"></div>
+                <div class="input-group"><label>Minimum Quantity (MOQ)</label><input type="text" name="moq" required placeholder="e.g. 50 Pieces"></div>
+                
+                <div class="input-group"><label>Lot Rate</label><input type="number" name="lotRate" required placeholder="Market Price"></div>
+                <div class="input-group"><label>AK Offer Rate</label><input type="number" name="akOffer" required placeholder="Selling Price"></div>
+
+                <div class="input-group"><label>MRP (Optional)</label><input type="number" name="mrp" placeholder="0"></div>
+                <div class="input-group"><label>Online Price (Optional)</label><input type="number" name="onlinePrice" placeholder="0"></div>
+
+                <div class="input-group"><label>Open for Negotiation?</label>
+                    <select name="negotiations"><option value="No">No</option><option value="Yes">Yes</option></select>
+                </div>
+                <div class="input-group"><label>Status</label>
+                    <select name="status"><option value="AVAILABLE">AVAILABLE</option><option value="SOLD">SOLD</option></select>
+                </div>
+
+                <div class="input-group full-width"><label>Product Description</label><textarea name="description" rows="2" placeholder="Fabric details, sizes, etc."></textarea></div>
+                <div class="input-group full-width"><label>Internal Remarks</label><input type="text" name="remarks" placeholder="Supplier name or internal notes"></div>
             </div>
-            <button type="submit" class="btn btn-add" style="width:100%">Save Lot</button>
+            <br>
+            <button type="submit" class="btn btn-add" style="width: 100%;">Save Lot to Database</button>
         </form>
     </div>
 </div>
 
 <script>
     const DB_URL = "https://ak-brands-marketing-default-rtdb.firebaseio.com";
-    let currentTab = 'inventory';
-    let rawData = { inventory: [], customers: [], suppliers: [] };
+    let rawData = [];
 
     async function loadData() {
-        const [inv, cust, supp] = await Promise.all([
-            fetch(`${DB_URL}/inventory.json`).then(r => r.json()),
-            fetch(`${DB_URL}/customers.json`).then(r => r.json()),
-            fetch(`${DB_URL}/suppliers.json`).then(r => r.json())
-        ]);
-        
-        // SORTING APPLIED HERE: Latest entries (highest Lot #) first
-        rawData.inventory = Object.keys(inv || {})
-            .map(k => ({ id: k, ...inv[k] }))
-            .sort((a, b) => {
-                // Natural sort to handle "14680 KK" vs "14681"
-                return String(b.lotNumber).localeCompare(String(a.lotNumber), undefined, { numeric: true, sensitivity: 'base' });
-            });
+        try {
+            const res = await fetch(`${DB_URL}/inventory.json`);
+            const data = await res.json();
+            
+            // SORTING: Latest entries first
+            rawData = Object.keys(data || {}).map(k => ({ id: k, ...data[k] }))
+                .sort((a, b) => String(b.lotNumber).localeCompare(String(a.lotNumber), undefined, { numeric: true }));
 
-        rawData.customers = Object.keys(cust || {}).map(k => ({ id: k, ...cust[k] }));
-        rawData.suppliers = Object.keys(supp || {}).map(k => ({ id: k, ...supp[k] }));
-        applyFilters();
+            renderTable(rawData);
+        } catch(e) { console.error(e); }
     }
 
-    function switchTab(t) {
-        currentTab = t;
-        document.querySelectorAll('.tab-btn, .view-section').forEach(el => el.classList.remove('active'));
-        document.getElementById('tab-'+t).classList.add('active');
-        document.getElementById(t+'Section').classList.add('active');
-        document.getElementById('actionBtn').innerText = t === 'inventory' ? "+ Add New Lot" : (t === 'customers' ? "+ Add Customer" : "+ Add Supplier");
-        applyFilters();
+    function renderTable(data) {
+        document.getElementById('inventoryBody').innerHTML = data.map(i => `
+            <tr>
+                <td><a class="lot-link" href="lot-details.html?lotNumber=${i.lotNumber}">${i.lotNumber}</a></td>
+                <td>${i.category}</td>
+                <td>${i.quantity}</td>
+                <td>${i.location}</td>
+                <td><span class="badge ${i.status === 'SOLD' ? 'status-sold' : 'status-available'}">${i.status || 'AVAILABLE'}</span></td>
+                <td style="display:flex; gap:5px;">
+                    <button class="action-btn btn-copy" onclick="copyLink('${i.lotNumber}')">Copy</button>
+                    <button class="action-btn btn-status" onclick="toggleStatus('${i.id}', '${i.status}')">Status</button>
+                    <button class="action-btn btn-del" onclick="deleteEntry('${i.id}')">Del</button>
+                </td>
+            </tr>
+        `).join('');
     }
 
     function applyFilters() {
         const q = document.getElementById('masterSearch').value.toLowerCase();
-        const filtered = rawData[currentTab].filter(item => JSON.stringify(item).toLowerCase().includes(q));
+        const filtered = rawData.filter(i => JSON.stringify(i).toLowerCase().includes(q));
         renderTable(filtered);
     }
 
-    function renderTable(data) {
-        const body = document.getElementById(currentTab + 'Body');
-        if(currentTab === 'inventory') {
-            body.innerHTML = data.map(i => `
-                <tr>
-                    <td><a class="lot-link" href="lot-details.html?lotNumber=${i.lotNumber}">${i.lotNumber}</a></td>
-                    <td>${i.category}</td>
-                    <td>${i.quantity}</td>
-                    <td>${i.location}</td>
-                    <td><span class="badge ${i.status === 'SOLD' ? 'status-sold' : 'status-available'}">${i.status || 'AVAILABLE'}</span></td>
-                    <td style="display:flex; gap:5px;">
-                        <button class="action-btn btn-copy" onclick="copyLink('${i.lotNumber}')">Copy</button>
-                        <button class="action-btn btn-status" onclick="toggleStatus('${i.id}', '${i.status}')">Status</button>
-                        <button class="action-btn btn-del" onclick="deleteEntry('${i.id}', 'inventory')">Del</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-    }
-
     function openModal() { document.getElementById('inventoryModal').style.display = 'flex'; }
-    
-    async function saveEntry(e, type) {
+    function closeModal() { document.getElementById('inventoryModal').style.display = 'none'; }
+
+    async function saveEntry(e) {
         e.preventDefault();
-        const data = Object.fromEntries(new FormData(e.target));
-        await fetch(`${DB_URL}/${type}.json`, { method: 'POST', body: JSON.stringify(data) });
-        document.getElementById('inventoryModal').style.display = 'none';
+        const formData = Object.fromEntries(new FormData(e.target));
+        // Ensure unit is extracted from quantity string if needed for your details page
+        formData.unit = formData.quantity.split(' ')[1] || 'Pieces';
+        
+        await fetch(`${DB_URL}/inventory.json`, { method: 'POST', body: JSON.stringify(formData) });
+        e.target.reset();
+        closeModal();
         loadData();
     }
 
@@ -182,19 +177,18 @@
         loadData();
     }
 
-    async function deleteEntry(id, type) {
-        if(confirm("Delete this entry?")) {
-            await fetch(`${DB_URL}/${type}/${id}.json`, { method: 'DELETE' });
+    async function deleteEntry(id) {
+        if(confirm("Delete this lot?")) {
+            await fetch(`${DB_URL}/inventory/${id}.json`, { method: 'DELETE' });
             loadData();
         }
     }
 
     function copyLink(num) {
-        const link = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${num}`;
-        navigator.clipboard.writeText(link).then(() => alert("Link Copied!"));
+        navigator.clipboard.writeText(`https://akbrandsmarketing.com/lot-details.html?lotNumber=${num}`);
+        alert("Link Copied!");
     }
 
-    window.onclick = (e) => { if(e.target.className === 'modal') e.target.style.display = 'none'; };
     loadData();
 </script>
 </body>
