@@ -9,7 +9,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f3f4f6; padding: 15px; display: flex; justify-content: center; min-height: 100vh; }
         
-        .card { background: white; width: 100%; max-width: 500px; border-radius: 25px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .card { background: white; width: 100%; max-width: 500px; border-radius: 25px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; height: fit-content; }
         .header { background: var(--primary); color: white; padding: 25px; text-align: center; }
         .header h1 { font-size: 22px; margin-bottom: 5px; }
         .header p { font-size: 13px; opacity: 0.9; }
@@ -72,7 +72,7 @@
 
             <div class="rate-container">
                 <div class="rate-box lot-rate-box">
-                    <p class="rate-label">Lot Rate</p>
+                    <p class="rate-label">Market Rate</p>
                     <p class="rate-price" id="lotRateVal">₹0</p>
                 </div>
                 <div class="rate-box ak-offer-box">
@@ -107,92 +107,115 @@
 <script>
     let currentLot = null;
     const PHONE_NUMBER = "918660502217"; 
+    const DB_URL = "https://ak-brands-marketing-default-rtdb.firebaseio.com";
 
     async function loadData() {
-        const lotNum = new URLSearchParams(window.location.search).get('lotNumber');
-        const res = await fetch("https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory.json");
-        const data = await res.json();
+        const urlParams = new URLSearchParams(window.location.search);
+        const lotNum = urlParams.get('lotNumber');
         
-        // Find the EXACT lot from the database based on URL lotNumber
-        currentLot = Object.values(data).find(l => String(l.lotNumber) === String(lotNum));
+        if(!lotNum) {
+            document.getElementById('loading').innerText = "❌ No Lot Number found in link.";
+            return;
+        }
 
-        if(currentLot) {
-            // Mapping UI elements to the found Lot Data
-            document.getElementById('cat').innerText = currentLot.category;
-            document.getElementById('lnum').innerText = currentLot.lotNumber;
-            document.getElementById('loc').innerText = currentLot.location || 'Warehouse';
-            document.getElementById('cond').innerText = currentLot.condition;
-            document.getElementById('qtyStock').innerText = `${currentLot.quantity} ${currentLot.unit}`;
-            document.getElementById('moq').innerText = `${currentLot.moq} ${currentLot.unit}`;
-            document.getElementById('desc').innerText = currentLot.description || 'Verified stock from AK Brands.';
-            document.getElementById('lotRateVal').innerText = `₹${currentLot.lotRate}`;
-            document.getElementById('akOfferVal').innerText = `₹${currentLot.akOffer}`;
-            document.getElementById('unitText').innerText = currentLot.unit;
-            document.getElementById('moqValError').innerText = `${currentLot.moq} ${currentLot.unit}`;
+        try {
+            const res = await fetch(`${DB_URL}/inventory.json`);
+            const data = await res.json();
             
-            if(currentLot.mrp) document.getElementById('mrp').innerText = `₹${currentLot.mrp}`;
-            else document.getElementById('mrpRow').style.display = 'none';
-            if(currentLot.onlinePrice) document.getElementById('online').innerText = `₹${currentLot.onlinePrice}`;
-            else document.getElementById('onlineRow').style.display = 'none';
-            if(currentLot.negotiations === "Yes") document.getElementById('negBox').style.display = 'block';
+            // Search through the object for the correct lot number
+            currentLot = Object.values(data).find(l => String(l.lotNumber) === String(lotNum));
 
-            const qtyInp = document.getElementById('orderQty');
-            const totalOut = document.getElementById('totalAmt');
-            const error = document.getElementById('moqError');
-            const waBtn = document.getElementById('waBtn');
-
-            qtyInp.addEventListener('input', () => {
-                const val = parseInt(qtyInp.value) || 0;
-                const moq = parseInt(currentLot.moq);
-                totalOut.innerText = (val * parseFloat(currentLot.akOffer)).toLocaleString('en-IN');
-                if(val > 0 && val < moq) {
-                    error.style.display = 'block';
-                    waBtn.classList.add('disabled');
-                } else {
-                    error.style.display = 'none';
-                    waBtn.classList.remove('disabled');
+            if(currentLot) {
+                // Populate UI
+                document.getElementById('cat').innerText = currentLot.category;
+                document.getElementById('lnum').innerText = currentLot.lotNumber;
+                document.getElementById('loc').innerText = currentLot.location || 'Warehouse';
+                document.getElementById('cond').innerText = currentLot.condition || 'Brand New';
+                
+                const unit = currentLot.unit || 'Pcs';
+                document.getElementById('qtyStock').innerText = `${currentLot.quantity} ${unit}`;
+                document.getElementById('moq').innerText = `${currentLot.moq || 1} ${unit}`;
+                document.getElementById('desc').innerText = currentLot.description || `Verified high-quality stock of ${currentLot.category} available at AK Brands.`;
+                
+                document.getElementById('lotRateVal').innerText = `₹${currentLot.lotRate || 0}`;
+                document.getElementById('akOfferVal').innerText = `₹${currentLot.akOffer || 0}`;
+                document.getElementById('unitText').innerText = unit;
+                document.getElementById('moqValError').innerText = `${currentLot.moq || 1} ${unit}`;
+                
+                if(currentLot.mrp) document.getElementById('mrp').innerText = `₹${currentLot.mrp}`;
+                else document.getElementById('mrpRow').style.display = 'none';
+                
+                if(currentLot.onlinePrice) document.getElementById('online').innerText = `₹${currentLot.onlinePrice}`;
+                else document.getElementById('onlineRow').style.display = 'none';
+                
+                if(currentLot.negotiate === "Yes" || currentLot.negotiations === "Yes") {
+                    document.getElementById('negBox').style.display = 'block';
                 }
-            });
 
-            // Handle WhatsApp Booking Logic
-            waBtn.onclick = (e) => {
-                e.preventDefault();
-                const finalQty = qtyInp.value || 0;
-                const quote = document.getElementById('custQuote').value;
-                if(finalQty < parseInt(currentLot.moq)) { alert("Check MOQ"); return; }
-                
-                let header = quote ? "*Ready to Negotiate*" : "*Ready to Book*";
-                
-                // MAPPING DATA ACCORDINGLY TO THE SPECIFIC LOT
-                let text = `${header}%0A%0A`;
-                text += `*Lot Number: ${currentLot.lotNumber}*%0A%0A`;
-                text += `📂 Category: ${currentLot.category}%0A`;
-                text += `✨ Condition: ${currentLot.condition}%0A`;
-                text += `📊 Quantity: ${currentLot.quantity} ${currentLot.unit}%0A`;
-                text += `📦 MOQ: ${currentLot.moq} ${currentLot.unit}%0A%0A`;
-                
-                text += `*Customer desired quantity:* ${finalQty} ${currentLot.unit}%0A`;
-                
-                if(quote) {
-                    text += `*Customer Quoted Rate:* ₹${quote}/${currentLot.unit.replace(/s$/, '')}%0A`;
-                }
-                
-                text += `*Total Amount:* ₹${totalOut.innerText}%0A%0A`;
-                text += `Trusted Firm%0A`;
-                text += `AK Brands Marketing%0A`;
-                text += `www.akbrandsmarketing.com`;
+                // Calculator Logic
+                const qtyInp = document.getElementById('orderQty');
+                const totalOut = document.getElementById('totalAmt');
+                const error = document.getElementById('moqError');
+                const waBtn = document.getElementById('waBtn');
 
-                window.location.href = `https://wa.me/${PHONE_NUMBER}?text=${text}`;
-            };
+                qtyInp.addEventListener('input', () => {
+                    const val = parseInt(qtyInp.value) || 0;
+                    const moqLimit = parseInt(currentLot.moq) || 1;
+                    const price = parseFloat(currentLot.akOffer) || 0;
+                    
+                    totalOut.innerText = (val * price).toLocaleString('en-IN');
+                    
+                    if(val > 0 && val < moqLimit) {
+                        error.style.display = 'block';
+                        waBtn.classList.add('disabled');
+                    } else {
+                        error.style.display = 'none';
+                        waBtn.classList.remove('disabled');
+                    }
+                });
 
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('mainCard').style.display = 'block';
+                // WhatsApp Logic
+                waBtn.onclick = (e) => {
+                    e.preventDefault();
+                    const finalQty = qtyInp.value || 0;
+                    const quote = document.getElementById('custQuote').value;
+                    const moqLimit = parseInt(currentLot.moq) || 1;
+
+                    if(finalQty < moqLimit) {
+                        alert(`Minimum order quantity is ${moqLimit} ${unit}`);
+                        return;
+                    }
+
+                    let msg = `*ORDER INQUIRY - AK BRANDS*%0A%0A`;
+                    msg += `*Lot Number:* ${currentLot.lotNumber}%0A`;
+                    msg += `*Category:* ${currentLot.category}%0A`;
+                    msg += `*My Quantity:* ${finalQty} ${unit}%0A`;
+                    
+                    if(quote) msg += `*My Quoted Rate:* ₹${quote}/${unit}%0A`;
+                    
+                    msg += `*Estimated Total:* ₹${totalOut.innerText}%0A%0A`;
+                    msg += `Please confirm the availability. Thanks!`;
+
+                    window.open(`https://wa.me/${PHONE_NUMBER}?text=${msg}`, '_blank');
+                };
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('mainCard').style.display = 'block';
+            } else {
+                document.getElementById('loading').innerText = "❌ Lot not found in database.";
+            }
+        } catch (err) {
+            console.error(err);
+            document.getElementById('loading').innerText = "❌ Error loading database.";
         }
     }
 
     function copyMarketingMsg() {
-        const lotLink = window.location.origin + window.location.pathname + "?lotNumber=" + encodeURIComponent(currentLot.lotNumber);
-        const msg = `*Lot Number: ${currentLot.lotNumber}*
+        if(!currentLot) return;
+        const currentUrl = window.location.href;
+        const unit = currentLot.unit || 'Pcs';
+        
+                const msg = `*Lot Number: ${currentLot.lotNumber}*
 
 📂 Category: ${currentLot.category}
 ✨ Condition: ${currentLot.condition}
