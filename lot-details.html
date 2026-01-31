@@ -107,6 +107,7 @@
             gap: 12px; 
             margin-top: 12px; 
             transition: all 0.2s; 
+            text-decoration: none;
         }
         .btn-wa { background: var(--success); color: white; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
         .btn-copy { background: #334155; color: white; }
@@ -187,10 +188,6 @@
             currentLot = Object.values(data).find(item => item.lotNumber == lotNum);
             
             if (currentLot) {
-                // Formatting for display and message
-                currentLot.unit = currentLot.quantity.split(' ')[1] || 'Units';
-                const cleanQty = currentLot.quantity.split(' ')[0] || currentLot.quantity;
-
                 document.getElementById('displayLot').innerText = "Lot #" + currentLot.lotNumber;
                 document.getElementById('displayCategory').innerText = currentLot.category;
                 document.getElementById('val_condition').innerText = currentLot.condition || 'Fresh Stock';
@@ -202,7 +199,7 @@
                 document.getElementById('displayMarketRate').innerText = "₹" + (currentLot.lotRate || 0).toLocaleString('en-IN');
                 document.getElementById('displayAKRate').innerText = "₹" + (currentLot.akOffer || 0).toLocaleString('en-IN');
                 
-                document.getElementById('unitText').innerText = currentLot.unit;
+                document.getElementById('unitText').innerText = currentLot.quantity.split(' ')[1] || 'Units';
                 document.getElementById('userQty').value = parseInt(currentLot.moq) || 1;
                 
                 document.getElementById('loading').style.display = 'none';
@@ -221,21 +218,30 @@
     function calculateTotal() {
         if (!currentLot) return;
         const qty = document.getElementById('userQty').value || 0;
-        const total = qty * currentLot.akOffer;
+        const total = qty * (currentLot.akOffer || 0);
         document.getElementById('displayTotal').innerText = "₹" + total.toLocaleString('en-IN');
     }
 
     function bookWhatsApp() {
+        if (!currentLot) return;
         const qty = document.getElementById('userQty').value;
         const total = document.getElementById('displayTotal').innerText;
-        const message = `Hello AK Brands, I want to book Lot #${currentLot.lotNumber} (${currentLot.category}).\n\nQuantity: ${qty}\nEstimated Total: ${total}\n\nPlease confirm my booking.`;
-        // Business WhatsApp Number
-        window.open(`https://wa.me/91XXXXXXXXXX?text=${encodeURIComponent(message)}`, '_blank');
+        
+        // Clean text message
+        const messageText = `Hello AK Brands, I want to book Lot #${currentLot.lotNumber} (${currentLot.category}).\n\nQuantity: ${qty}\nEstimated Total: ${total}\n\nPlease confirm my booking.`;
+        
+        // Use your business number here (example: 919876543210)
+        const phoneNumber = "918660502217"; 
+        
+        // Reliable WhatsApp URL structure
+        const waUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(messageText)}`;
+        
+        window.open(waUrl, '_blank');
     }
 
     function copyMarketingText() {
+        if (!currentLot) return;
         const lotLink = window.location.href;
-        // Restored Marketing Message Format as requested
         const msg = `*Lot Number: ${currentLot.lotNumber}*
 
 📂 Category: ${currentLot.category}
