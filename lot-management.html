@@ -10,13 +10,11 @@
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; margin: 0; padding: 20px; }
         .container { max-width: 1400px; margin: 0 auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         
-        /* Header & Tabs */
         .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
         .tab-btn { padding: 12px 24px; border-radius: 10px; border: none; background: transparent; cursor: pointer; font-weight: 700; color: var(--secondary); transition: 0.3s; }
         .tab-btn.active { background: var(--primary); color: white; }
 
-        /* Controls - Redesigned to remove Stats */
         .controls { display: flex; flex-wrap: wrap; gap: 15px; background: #f8fafc; padding: 20px; border-radius: 15px; margin-bottom: 20px; align-items: flex-end; }
         .input-group { display: flex; flex-direction: column; gap: 5px; flex-grow: 1; }
         label { font-size: 11px; font-weight: 800; color: var(--secondary); text-transform: uppercase; }
@@ -26,7 +24,6 @@
         .btn-add { background: var(--primary); white-space: nowrap; }
         .btn-excel { background: #166534; }
         
-        /* Table Styling */
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; background: #f8fafc; padding: 15px; font-size: 12px; color: var(--secondary); text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
         td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
@@ -39,7 +36,6 @@
         .view-section { display: none; }
         .view-section.active { display: block; }
 
-        /* Action Buttons */
         .action-btn { padding: 6px 12px; border-radius: 6px; border: none; color: white; cursor: pointer; font-size: 12px; font-weight: bold; }
         .btn-copy { background: var(--success); }
         .btn-status { background: var(--warn); }
@@ -121,7 +117,15 @@
             fetch(`${DB_URL}/customers.json`).then(r => r.json()),
             fetch(`${DB_URL}/suppliers.json`).then(r => r.json())
         ]);
-        rawData.inventory = Object.keys(inv || {}).map(k => ({ id: k, ...inv[k] })).sort((a,b) => b.lotNumber - a.lotNumber);
+        
+        // SORTING APPLIED HERE: Latest entries (highest Lot #) first
+        rawData.inventory = Object.keys(inv || {})
+            .map(k => ({ id: k, ...inv[k] }))
+            .sort((a, b) => {
+                // Natural sort to handle "14680 KK" vs "14681"
+                return String(b.lotNumber).localeCompare(String(a.lotNumber), undefined, { numeric: true, sensitivity: 'base' });
+            });
+
         rawData.customers = Object.keys(cust || {}).map(k => ({ id: k, ...cust[k] }));
         rawData.suppliers = Object.keys(supp || {}).map(k => ({ id: k, ...supp[k] }));
         applyFilters();
@@ -160,16 +164,16 @@
                 </tr>
             `).join('');
         }
-        // ... (Render logic for Customers/Suppliers similarly)
     }
 
-    function openModal() { document.getElementById(currentTab + 'Modal').style.display = 'flex'; }
+    function openModal() { document.getElementById('inventoryModal').style.display = 'flex'; }
     
     async function saveEntry(e, type) {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(e.target));
         await fetch(`${DB_URL}/${type}.json`, { method: 'POST', body: JSON.stringify(data) });
-        location.reload();
+        document.getElementById('inventoryModal').style.display = 'none';
+        loadData();
     }
 
     async function toggleStatus(id, current) {
