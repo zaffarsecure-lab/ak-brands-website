@@ -3,217 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AK Brands - Admin Panel</title>
+    <title>AK Brands - Master Admin</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    
     <style>
-        :root { --primary: #4f46e5; --secondary: #64748b; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; }
-        body { font-family: 'Inter', sans-serif; background: #f8fafc; margin: 0; padding: 20px; }
-        .container { max-width: 1250px; margin: 0 auto; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        :root { --primary: #4f46e5; --secondary: #64748b; --success: #10b981; --danger: #ef4444; --ak-dark: #1e293b; --wa-green: #25d366; --warn: #f59e0b; }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; margin: 0; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
-        .export-btns { display: flex; gap: 10px; }
-        
-        /* Filters Section */
-        .filter-section { display: flex; gap: 15px; flex-wrap: wrap; background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 20px; align-items: flex-end; }
-        .filter-group { display: flex; flex-direction: column; gap: 5px; }
-        .filter-group label { font-size: 11px; font-weight: 700; color: var(--secondary); text-transform: uppercase; }
-        .input-field { padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 14px; }
-        .search-box { flex-grow: 1; min-width: 250px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        .tab-btn { padding: 12px 24px; border-radius: 10px; border: none; background: transparent; cursor: pointer; font-weight: 700; color: var(--secondary); transition: 0.3s; }
+        .tab-btn.active { background: var(--primary); color: white; }
 
-        .btn { padding: 10px 18px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 14px; color: white; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .stat-card { background: white; padding: 20px; border-radius: 15px; border: 1px solid #e2e8f0; text-align: center; }
+        .stat-val { font-size: 24px; font-weight: 900; color: var(--ak-dark); }
+        .stat-label { font-size: 12px; color: var(--secondary); text-transform: uppercase; margin-top: 5px; }
+
+        .controls { display: flex; flex-wrap: wrap; gap: 15px; background: #f8fafc; padding: 20px; border-radius: 15px; margin-bottom: 20px; align-items: flex-end; }
+        .input-group { display: flex; flex-direction: column; gap: 5px; flex-grow: 1; }
+        label { font-size: 11px; font-weight: 800; color: var(--secondary); text-transform: uppercase; }
+        input, select, textarea { padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-family: inherit; }
+
+        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; color: white; transition: 0.2s; }
         .btn-add { background: var(--primary); }
         .btn-excel { background: #166534; }
-        .btn-pdf { background: #1e293b; }
-        .btn-reset { background: #64748b; }
+        .btn-broadcast { background: var(--wa-green); display: none; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; background: #f8fafc; color: var(--secondary); font-size: 12px; text-transform: uppercase; padding: 15px; border-bottom: 2px solid #e2e8f0; }
-        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #1e293b; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; background: #f8fafc; padding: 15px; font-size: 12px; color: var(--secondary); text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
         
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .badge { padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; }
         .status-available { background: #dcfce7; color: #166534; }
         .status-sold { background: #fee2e2; color: #991b1b; }
         
-        .action-btns { display: flex; gap: 5px; }
-        .act-btn { padding: 6px 10px; border-radius: 5px; border: none; font-size: 12px; font-weight: 600; color: white; cursor: pointer; }
-        .copy { background: #10b981; }
-        .status { background: #f59e0b; }
-        .delete { background: #ef4444; }
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+
+        .wa-btn { background: var(--wa-green); color: white; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 18px; display: inline-flex; align-items: center; }
+        .resched-btn { background: var(--warn); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-right: 5px; }
+        .del-btn { background: var(--danger); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+        
+        .follow-alert { color: var(--danger); font-weight: 800; border: 1px solid var(--danger); padding: 4px; border-radius: 4px; background: #fff1f2; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="top-bar">
-        <h2>📦 AK Brands Inventory</h2>
-        <div class="export-btns">
-            <button class="btn btn-excel" onclick="exportFilteredExcel()">Excel Export</button>
-            <button class="btn btn-pdf" onclick="exportToPDF()">PDF Report</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>🚀 AK Brands Management</h2>
+        <div style="display: flex; gap: 10px;">
+            <button id="broadcastBtn" class="btn btn-broadcast" onclick="copyBroadcastList()">📢 Copy Numbers</button>
+            <button class="btn btn-excel" onclick="exportData()">Export Data</button>
         </div>
     </div>
 
-    <button class="btn btn-add" style="margin-bottom: 15px;" onclick="window.location.href='add-lot.html'">+ Add New Lot</button>
-
-    <div class="filter-section">
-        <div class="filter-group search-box">
-            <label>Search Inventory</label>
-            <input type="text" id="searchInput" class="input-field" placeholder="Search Lot #, Category, Location..." onkeyup="applyFilters()">
-        </div>
-        <div class="filter-group">
-            <label>From Date</label>
-            <input type="date" id="fromDate" class="input-field" onchange="applyFilters()">
-        </div>
-        <div class="filter-group">
-            <label>To Date</label>
-            <input type="date" id="toDate" class="input-field" onchange="applyFilters()">
-        </div>
-        <button class="btn btn-reset" onclick="resetFilters()">Reset</button>
+    <div class="tabs">
+        <button id="tab-inventory" class="tab-btn active" onclick="switchTab('inventory')">📦 Inventory</button>
+        <button id="tab-customers" class="tab-btn" onclick="switchTab('customers')">👥 Customers</button>
+        <button id="tab-suppliers" class="tab-btn" onclick="switchTab('suppliers')">🚛 Suppliers</button>
     </div>
 
-    <table id="inventoryTable">
-        <thead>
-            <tr>
-                <th>Lot #</th>
-                <th>Category</th>
-                <th>Qty</th>
-                <th>Location</th>
-                <th>Date Added</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="inventoryBody">
-            </tbody>
-    </table>
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-val" id="totalLots">0</div><div class="stat-label">Inventory</div></div>
+        <div class="stat-card"><div class="stat-val" id="totalStockVal">₹0</div><div class="stat-label">Value</div></div>
+        <div class="stat-card"><div class="stat-val" id="pendingFollowups" style="color:var(--danger)">0</div><div class="stat-label">Today's Follow-ups</div></div>
+        <div class="stat-card"><div class="stat-val" id="visitorCount">0</div><div class="stat-label">Link Views</div></div>
+    </div>
+
+    <div class="controls">
+        <div class="input-group" style="flex-grow: 2;"><label>Search</label><input type="text" id="masterSearch" onkeyup="applyFilters()"></div>
+        <button class="btn btn-add" id="actionBtn" onclick="openModal()">+ Add New</button>
+    </div>
+
+    <div id="inventorySection" class="view-section active">
+        <table>
+            <thead><tr><th>Lot #</th><th>Category</th><th>Qty</th><th>Total Val</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="inventoryBody"></tbody>
+        </table>
+    </div>
+
+    <div id="customersSection" class="view-section">
+        <table>
+            <thead><tr><th>Name</th><th>Phone</th><th>Interest</th><th>Notes</th><th>Follow-up</th><th>Actions</th></tr></thead>
+            <tbody id="customerBody"></tbody>
+        </table>
+    </div>
+
+    <div id="suppliersSection" class="view-section">
+        <table>
+            <thead><tr><th>Company</th><th>Person</th><th>Phone</th><th>Category</th><th>Rating</th><th>Actions</th></tr></thead>
+            <tbody id="supplierBody"></tbody>
+        </table>
+    </div>
 </div>
 
+<div id="customerModal" class="modal">
+    <div class="modal-content">
+        <h3>👥 New Customer</h3>
+        <form onsubmit="saveEntry(event, 'customers')">
+            <input type="text" name="name" placeholder="Full Name" required style="width:100%; margin-bottom:10px;">
+            <input type="tel" name="phone" placeholder="WhatsApp (e.g. 91...)" required style="width:100%; margin-bottom:10px;">
+            <input type="text" name="category" placeholder="Interested In" style="width:100%; margin-bottom:10px;">
+            <textarea name="notes" placeholder="Current Discussion Notes" style="width:100%; margin-bottom:10px; height:60px;"></textarea>
+            <label style="font-size: 11px; font-weight: bold; color: var(--primary);">Next Follow-up Date</label>
+            <input type="date" name="followup" required style="width:100%; margin-bottom:20px;">
+            <button type="submit" class="btn btn-add" style="width:100%;">Save Customer</button>
+        </form>
+    </div>
+</div>
+
+<div id="rescheduleModal" class="modal">
+    <div class="modal-content">
+        <h3>📅 Update Follow-up</h3>
+        <p id="reschedName" style="font-weight: bold; color: var(--primary);"></p>
+        <form onsubmit="updateFollowupDate(event)">
+            <input type="hidden" id="reschedId">
+            <label>New Date</label>
+            <input type="date" id="newFollowupDate" required style="width:100%; margin-bottom:10px;">
+            <label>Update Notes</label>
+            <textarea id="newNotes" style="width:100%; margin-bottom:20px; height:60px;"></textarea>
+            <button type="submit" class="btn btn-add" style="width:100%; background: var(--warn);">Update & Close</button>
+        </form>
+    </div>
+</div>
+
+<div id="supplierModal" class="modal"><div class="modal-content"><h3>🚛 New Supplier</h3><form onsubmit="saveEntry(event, 'suppliers')"><input type="text" name="company" placeholder="Company" required style="width:100%; margin-bottom:10px;"><input type="text" name="person" placeholder="Person" required style="width:100%; margin-bottom:10px;"><input type="tel" name="phone" placeholder="WhatsApp" required style="width:100%; margin-bottom:10px;"><input type="text" name="category" placeholder="Category" style="width:100%; margin-bottom:10px;"><input type="number" name="rating" placeholder="Rating 1-5" style="width:100%; margin-bottom:20px;"><button type="submit" class="btn btn-add" style="width:100%;">Save</button></form></div></div>
+
 <script>
-    const DB_URL = "https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory.json";
-    let fullInventory = []; // Master Data
-    let filteredData = []; // Data currently shown
+    const DB_URL = "https://ak-brands-marketing-default-rtdb.firebaseio.com";
+    let currentTab = 'inventory';
+    let rawData = { inventory: [], customers: [], suppliers: [], logs: [] };
+    let filteredData = { inventory: [], customers: [], suppliers: [] };
 
-    async function loadInventory() {
-        const res = await fetch(DB_URL);
-        const data = await res.json();
-        
-        fullInventory = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-        
-        // Initial Sort: Latest Lot First
-        fullInventory.sort((a, b) => (parseInt(b.lotNumber) || 0) - (parseInt(a.lotNumber) || 0));
-        
-        filteredData = [...fullInventory];
-        renderTable(filteredData);
+    async function loadData() {
+        const [inv, cust, supp, log] = await Promise.all([
+            fetch(`${DB_URL}/inventory.json`).then(r => r.json()),
+            fetch(`${DB_URL}/customers.json`).then(r => r.json()),
+            fetch(`${DB_URL}/suppliers.json`).then(r => r.json()),
+            fetch(`${DB_URL}/visitor_logs.json`).then(r => r.json())
+        ]);
+        rawData.inventory = Object.keys(inv || {}).map(k => ({ id: k, ...inv[k] }));
+        rawData.customers = Object.keys(cust || {}).map(k => ({ id: k, ...cust[k] }));
+        rawData.suppliers = Object.keys(supp || {}).map(k => ({ id: k, ...supp[k] }));
+        rawData.logs = Object.values(log || {});
+        updateStats(); applyFilters();
     }
 
-    function renderTable(dataToRender) {
-        const body = document.getElementById('inventoryBody');
-        body.innerHTML = "";
-
-        dataToRender.forEach(item => {
-            const statusClass = item.status === "SOLD" ? "status-sold" : "status-available";
-            // Formatting date for display (assuming your 'date' field is YYYY-MM-DD)
-            const displayDate = item.date || 'N/A';
-            
-            body.innerHTML += `
-                <tr>
-                    <td style="color: #4f46e5; font-weight: 700;">${item.lotNumber}</td>
-                    <td>${item.category}</td>
-                    <td>${item.quantity} ${item.unit}</td>
-                    <td>${item.location || 'Surat'}</td>
-                    <td>${displayDate}</td>
-                    <td><span class="badge ${statusClass}">${item.status || 'AVAILABLE'}</span></td>
-                    <td class="action-btns">
-                        <button class="act-btn copy" onclick="copyLink('${item.lotNumber}')">Link</button>
-                        <button class="act-btn status" onclick="toggleStatus('${item.id}', '${item.status}')">Status</button>
-                        <button class="act-btn delete" onclick="deleteLot('${item.id}')">Del</button>
-                    </td>
-                </tr>
-            `;
-        });
+    function switchTab(t) {
+        currentTab = t;
+        document.querySelectorAll('.tab-btn, .view-section').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-'+t).classList.add('active');
+        document.getElementById(t+'Section').classList.add('active');
+        document.getElementById('broadcastBtn').style.display = (t === 'customers') ? 'block' : 'none';
+        applyFilters();
     }
 
-    // --- CONSOLIDATED FILTER LOGIC ---
+    function updateStats() {
+        document.getElementById('totalLots').innerText = rawData.inventory.length;
+        const total = rawData.inventory.reduce((acc, c) => acc + (parseFloat(c.quantity) * parseFloat(c.akOffer || 0)), 0);
+        document.getElementById('totalStockVal').innerText = "₹" + total.toLocaleString('en-IN');
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('pendingFollowups').innerText = rawData.customers.filter(c => c.followup && c.followup <= today).length;
+        document.getElementById('visitorCount').innerText = rawData.logs.length;
+    }
+
     function applyFilters() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        const from = document.getElementById('fromDate').value;
-        const to = document.getElementById('toDate').value;
+        const q = document.getElementById('masterSearch').value.toLowerCase();
+        filteredData[currentTab] = rawData[currentTab].filter(item => JSON.stringify(item).toLowerCase().includes(q));
+        renderTable();
+    }
 
-        filteredData = fullInventory.filter(item => {
-            const matchesSearch = item.lotNumber.toString().toLowerCase().includes(query) ||
-                                 item.category.toLowerCase().includes(query) ||
-                                 (item.location && item.location.toLowerCase().includes(query));
-            
-            let matchesDate = true;
-            if (item.date) {
-                if (from && item.date < from) matchesDate = false;
-                if (to && item.date > to) matchesDate = false;
-            } else if (from || to) {
-                matchesDate = false; // Hide items with no date if a date filter is active
-            }
+    function renderTable() {
+        const today = new Date().toISOString().split('T')[0];
+        const bodies = {
+            inventory: () => filteredData.inventory.map(i => `<tr><td>${i.lotNumber}</td><td>${i.category}</td><td>${i.quantity}</td><td>₹${(i.quantity * i.akOffer).toLocaleString('en-IN')}</td><td><span class="badge ${i.status === 'SOLD' ? 'status-sold' : 'status-available'}">${i.status || 'AVAILABLE'}</span></td><td><button onclick="copyLink('${i.lotNumber}')">🔗</button></td></tr>`).join(''),
+            customers: () => filteredData.customers.map(c => `<tr><td>${c.name}</td><td>${c.phone}</td><td>${c.category || ''}</td><td style="font-size:12px; color:var(--secondary)">${c.notes || ''}</td><td class="${c.followup <= today ? 'follow-alert' : ''}">${c.followup || ''}</td><td><button class="resched-btn" onclick="openReschedule('${c.id}', '${c.name}', '${c.followup}', '${c.notes || ''}')">📅</button><a href="https://wa.me/${c.phone.replace(/\D/g,'')}" target="_blank" class="wa-btn">💬</a></td></tr>`).join(''),
+            suppliers: () => filteredData.suppliers.map(s => `<tr><td>${s.company}</td><td>${s.person}</td><td>${s.phone}</td><td>${s.category}</td><td>⭐ ${s.rating}</td><td><a href="https://wa.me/${s.phone.replace(/\D/g,'')}" target="_blank" class="wa-btn">💬</a></td></tr>`).join('')
+        };
+        document.getElementById(currentTab + 'Body').innerHTML = bodies[currentTab]();
+    }
 
-            return matchesSearch && matchesDate;
+    function openModal() {
+        if(currentTab === 'inventory') window.location.href = 'add-lot.html';
+        else document.getElementById(currentTab + 'Modal').style.display = 'flex';
+    }
+
+    function openReschedule(id, name, date, notes) {
+        document.getElementById('reschedId').value = id;
+        document.getElementById('reschedName').innerText = name;
+        document.getElementById('newFollowupDate').value = date;
+        document.getElementById('newNotes').value = notes;
+        document.getElementById('rescheduleModal').style.display = 'flex';
+    }
+
+    async function updateFollowupDate(e) {
+        e.preventDefault();
+        const id = document.getElementById('reschedId').value;
+        const newDate = document.getElementById('newFollowupDate').value;
+        const notes = document.getElementById('newNotes').value;
+        await fetch(`${DB_URL}/customers/${id}.json`, { 
+            method: 'PATCH', 
+            body: JSON.stringify({ followup: newDate, notes: notes }) 
         });
-
-        renderTable(filteredData);
+        document.getElementById('rescheduleModal').style.display = 'none';
+        loadData();
     }
 
-    function resetFilters() {
-        document.getElementById('searchInput').value = "";
-        document.getElementById('fromDate').value = "";
-        document.getElementById('toDate').value = "";
-        filteredData = [...fullInventory];
-        renderTable(filteredData);
+    async function saveEntry(e, type) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target));
+        await fetch(`${DB_URL}/${type}.json`, { method: 'POST', body: JSON.stringify(data) });
+        e.target.reset(); document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        loadData();
     }
 
-    // --- EXCEL EXPORT (Respects Filters) ---
-    function exportFilteredExcel() {
-        // Exporting filtered data so you can get specific month reports
-        const exportSet = filteredData.map(({ id, ...rest }) => rest);
-        const ws = XLSX.utils.json_to_sheet(exportSet);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Inventory_Extract");
-        XLSX.writeFile(wb, `AK_Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    function copyLink(n) { navigator.clipboard.writeText(`https://akbrandsmarketing.com/lot-details.html?lotNumber=${n}`); alert('Copied!'); }
+    function copyBroadcastList() {
+        const nums = filteredData.customers.map(c => c.phone.replace(/\D/g,'')).join(',');
+        navigator.clipboard.writeText(nums).then(() => alert('Numbers Copied!'));
     }
-
-    // --- PDF REPORT ---
-    function exportToPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.text("AK Brands Inventory Status Report", 14, 15);
-        doc.autoTable({
-            html: '#inventoryTable',
-            startY: 25,
-            theme: 'striped',
-            headStyles: { fillColor: [79, 70, 229] }
-        });
-        doc.save("AK_Inventory_Report.pdf");
-    }
-
-    async function toggleStatus(id, currentStatus) {
-        const newStatus = currentStatus === "SOLD" ? "AVAILABLE" : "SOLD";
-        await fetch(`https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory/${id}.json`, {
-            method: 'PATCH',
-            body: JSON.stringify({ status: newStatus })
-        });
-        loadInventory();
-    }
-
-    async function deleteLot(id) {
-        if(confirm("Permanently delete this lot?")) {
-            await fetch(`https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory/${id}.json`, { method: 'DELETE' });
-            loadInventory();
-        }
-    }
-
-    function copyLink(lotNum) {
-        const link = `https://akbrandsmarketing.com/lot-details.html?lotNumber=${encodeURIComponent(lotNum)}`;
-        navigator.clipboard.writeText(link).then(() => alert("✅ Link Copied!"));
-    }
-
-    loadInventory();
+    
+    window.onclick = (e) => { if(e.target.className === 'modal') e.target.style.display = 'none'; };
+    loadData();
 </script>
 </body>
 </html>
