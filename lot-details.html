@@ -32,12 +32,10 @@
         }
         .p-20 { padding: 20px; }
         
-        /* Header Info */
         .lot-header { margin-bottom: 20px; }
         .lot-number { color: var(--primary); font-weight: 900; font-size: 24px; margin: 0; }
         .category { color: #64748b; font-weight: 700; font-size: 16px; margin-top: 4px; }
 
-        /* Data List */
         .info-row { 
             display: flex; 
             justify-content: space-between; 
@@ -48,7 +46,6 @@
         .info-label { color: #64748b; font-weight: 600; }
         .info-value { color: var(--dark); font-weight: 800; }
 
-        /* Product Description Box */
         .desc-box {
             background: #f0f7ff;
             border-radius: 12px;
@@ -59,7 +56,6 @@
         .desc-title { font-size: 11px; font-weight: 900; color: var(--primary); text-transform: uppercase; margin-bottom: 5px; }
         .desc-text { font-size: 14px; color: #334155; line-height: 1.5; font-weight: 600; }
 
-        /* Pricing Section */
         .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
         .price-box { padding: 15px; border-radius: 14px; text-align: center; color: white; }
         .market-rate { background: #3b82f6; }
@@ -67,7 +63,6 @@
         .price-label { font-size: 10px; text-transform: uppercase; font-weight: 900; opacity: 0.9; margin-bottom: 4px; }
         .price-value { font-size: 22px; font-weight: 900; }
 
-        /* Calculator Section */
         .calc-box { 
             background: #fff1f2; 
             border: 1px dashed #fda4af; 
@@ -92,7 +87,6 @@
         .est-label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-top: 15px; letter-spacing: 1px; }
         .est-total { color: var(--danger); font-size: 32px; font-weight: 900; margin-top: 5px; }
 
-        /* Action Buttons */
         .btn { 
             width: 100%; 
             padding: 16px; 
@@ -152,7 +146,7 @@
         <div class="calc-box">
             <div class="calc-header">🔢 Enter Your Quantity</div>
             <div class="qty-input-wrapper">
-                <input type="number" id="userQty" class="qty-input" value="1" oninput="calculateTotal()">
+                <input type="number" id="userQty" class="qty-input" onchange="validateMOQ()" oninput="calculateTotal()">
                 <span class="unit-label" id="unitText">Units</span>
             </div>
             <div class="est-label">Estimated Total</div>
@@ -171,71 +165,81 @@
 <script>
     const DB_URL = "https://ak-brands-marketing-default-rtdb.firebaseio.com";
     let currentLot = null;
+    let minAllowed = 1;
 
     async function loadLotDetails() {
         try {
             const urlParams = new URLSearchParams(window.location.search);
             const lotNum = urlParams.get('lotNumber');
             
-            if (!lotNum) {
-                document.getElementById('loading').innerText = "No Lot Number provided.";
-                return;
-            }
-
             const res = await fetch(`${DB_URL}/inventory.json`);
             const data = await res.json();
             
             currentLot = Object.values(data).find(item => item.lotNumber == lotNum);
             
             if (currentLot) {
+                minAllowed = parseInt(currentLot.moq) || 1;
+                
                 document.getElementById('displayLot').innerText = "Lot #" + currentLot.lotNumber;
                 document.getElementById('displayCategory').innerText = currentLot.category;
                 document.getElementById('val_condition').innerText = currentLot.condition || 'Fresh Stock';
                 document.getElementById('val_qty').innerText = currentLot.quantity;
-                document.getElementById('val_moq').innerText = currentLot.moq || '1 Units';
-                document.getElementById('val_mrp').innerText = "₹" + (currentLot.mrp || '0').toLocaleString('en-IN');
+                document.getElementById('val_moq').innerText = currentLot.moq;
+                document.getElementById('val_mrp').innerText = "₹" + (currentLot.mrp || '0');
                 document.getElementById('val_loc').innerText = currentLot.location;
-                document.getElementById('displayDesc').innerText = currentLot.description || 'Contact for details';
-                document.getElementById('displayMarketRate').innerText = "₹" + (currentLot.lotRate || 0).toLocaleString('en-IN');
-                document.getElementById('displayAKRate').innerText = "₹" + (currentLot.akOffer || 0).toLocaleString('en-IN');
+                document.getElementById('displayDesc').innerText = currentLot.description || '';
+                document.getElementById('displayMarketRate').innerText = "₹" + (currentLot.lotRate || 0);
+                document.getElementById('displayAKRate').innerText = "₹" + (currentLot.akOffer || 0);
                 
                 document.getElementById('unitText').innerText = currentLot.quantity.split(' ')[1] || 'Units';
-                document.getElementById('userQty').value = parseInt(currentLot.moq) || 1;
+                document.getElementById('userQty').value = minAllowed;
                 
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('lotContent').style.display = 'block';
                 
                 calculateTotal();
-            } else {
-                document.getElementById('loading').innerText = "Lot not found.";
             }
-        } catch (error) {
-            console.error(error);
-            document.getElementById('loading').innerText = "Error loading database.";
+        } catch (error) { console.error(error); }
+    }
+
+    function validateMOQ() {
+        const input = document.getElementById('userQty');
+        if (parseInt(input.value) < minAllowed) {
+            alert(`Minimum order quantity for this lot is ${minAllowed}.`);
+            input.value = minAllowed;
+            calculateTotal();
         }
     }
 
     function calculateTotal() {
         if (!currentLot) return;
         const qty = document.getElementById('userQty').value || 0;
-        const total = qty * (currentLot.akOffer || 0);
+        const total = qty * currentLot.akOffer;
         document.getElementById('displayTotal').innerText = "₹" + total.toLocaleString('en-IN');
     }
 
     function bookWhatsApp() {
         if (!currentLot) return;
-        const qty = document.getElementById('userQty').value;
-        const total = document.getElementById('displayTotal').innerText;
+        const customerQty = document.getElementById('userQty').value;
+        const estimatedTotal = document.getElementById('displayTotal').innerText;
         
-        // Clean text message
-        const messageText = `Hello AK Brands, I want to book Lot #${currentLot.lotNumber} (${currentLot.category}).\n\nQuantity: ${qty}\nEstimated Total: ${total}\n\nPlease confirm my booking.`;
-        
-        // Use your business number here (example: 919876543210)
-        const phoneNumber = "918660502217"; 
-        
-        // Reliable WhatsApp URL structure
+        // NEW ORDER ENQUIRY MESSAGE FORMAT
+        const messageText = `*Order Enquiry*
+
+Lot Number: ${currentLot.lotNumber}
+Category: ${currentLot.category}
+Quantity: ${currentLot.quantity}
+MOQ: ${currentLot.moq}
+Lot Rate: ₹${currentLot.lotRate}
+AK Offer Rate: ₹${currentLot.akOffer}
+
+Customer Quantity: ${customerQty}
+Estimated Total: ${estimatedTotal}
+
+*Booking Enquiry via AK Brands Marketing website*`;
+
+        const phoneNumber = "91XXXXXXXXXX"; // REPLACED WITH YOUR BUSINESS NUMBER
         const waUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(messageText)}`;
-        
         window.open(waUrl, '_blank');
     }
 
@@ -258,9 +262,7 @@ Trusted Firm
 AK Brands Marketing
 www.akbrandsmarketing.com`;
 
-        navigator.clipboard.writeText(msg).then(() => {
-            alert("✅ Marketing text copied!");
-        });
+        navigator.clipboard.writeText(msg).then(() => { alert("✅ Marketing text copied!"); });
     }
 
     loadLotDetails();
