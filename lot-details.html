@@ -212,9 +212,10 @@ Estimated Total: ${total}
         const lotLink = window.location.href;
         const msg = `*Lot Number: ${currentLot.lotNumber}*
 
-Category: ${currentLot.category}
-Condition: ${currentLot.condition || 'Fresh'}
-Total Quantity: ${currentLot.quantity}
+${currentLot.category}
+${currentLot.productdescription}
+
+Quantity: ${currentLot.quantity}
 MOQ: ${currentLot.moq}
 
 *Check Lot Rate:* 👉 ${lotLink}
