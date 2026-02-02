@@ -2282,17 +2282,17 @@ footer {
         </div>
     </div>
 </footer>
-    <!-- Buy Modal -->
-   <script>
-    /** * This function replaces your old popup. 
-     * When a user clicks 'Buy', they go straight to your marketplace.
+ <script>
+<script>
+    /** * When a user clicks 'Buy', they go to a new dedicated page.
+     * This keeps your landing page exactly the same.
      */
-    function openBuyModal() {
-        // Change 'products.html' to 'marketplace.html' if that is your filename
-        window.location.href = 'products.html'; 
+    function openBuyModal(lotNumber) {
+        // This opens your new page and carries the Lot Number over
+        window.location.href = 'cart.html?lotNumber=' + lotNumber; 
     }
 
-    // This ensures any old 'close' functions don't cause errors
+    // Prevents errors from old close buttons
     function closeBuyModal() {
         const modal = document.getElementById('buyModal');
         if (modal) modal.style.display = 'none';
@@ -2300,7 +2300,7 @@ footer {
 </script>
 
 <style>
-    /* This hides the old modal if it still exists in your CSS */
+    /* Hides any old popup boxes */
     #buyModal { display: none !important; }
 </style>
 
