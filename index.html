@@ -2283,23 +2283,26 @@ footer {
     </div>
 </footer>
     <!-- Buy Modal -->
-    <div id="buyModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeBuyModal()">&times;</span>
-            <h2 class="modal-title">🛒 Buy Stock Lots</h2>
-            <form class="modal-form" onsubmit="submitBuyForm(event)">
-                <div class="form-group">
-                    <label>Your Name *</label>
-                    <input type="text" id="buyName" required placeholder="Enter your full name">
-                </div>
-                <div class="form-group">
-                    <label>Mobile Number *</label>
-                    <input type="tel" id="buyMobile" required placeholder="+91 98765 43210" pattern="[+]?[0-9]{10,13}">
-                </div>
-                <button type="submit" class="submit-btn">Submit Request</button>
-            </form>
-        </div>
-    </div>
+   <script>
+    /** * This function replaces your old popup. 
+     * When a user clicks 'Buy', they go straight to your marketplace.
+     */
+    function openBuyModal() {
+        // Change 'products.html' to 'marketplace.html' if that is your filename
+        window.location.href = 'products.html'; 
+    }
+
+    // This ensures any old 'close' functions don't cause errors
+    function closeBuyModal() {
+        const modal = document.getElementById('buyModal');
+        if (modal) modal.style.display = 'none';
+    }
+</script>
+
+<style>
+    /* This hides the old modal if it still exists in your CSS */
+    #buyModal { display: none !important; }
+</style>
 
     <!-- Sell Modal -->
     <div id="sellModal" class="modal">
