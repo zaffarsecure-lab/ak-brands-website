@@ -2987,12 +2987,13 @@ footer {
     <script>
     function openBuyModal(lotNumber) {
         if (lotNumber) {
-            // Sends the user to your new Amazon-style page
+            // Sends user to the new media-rich catalog page
             window.location.href = 'checkout.html?lotNumber=' + lotNumber; 
         }
     }
 </script>
 <style>
+    /* Keeps the old modal hidden to maintain landing page design */
     #buyModal { display: none !important; }
 </style>
 </body>
