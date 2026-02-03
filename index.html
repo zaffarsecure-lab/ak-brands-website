@@ -2984,5 +2984,16 @@ footer {
             });
         });
     </script>
+    <script>
+    function openBuyModal(lotNumber) {
+        if (lotNumber) {
+            // Sends the user to your new Amazon-style page
+            window.location.href = 'checkout.html?lotNumber=' + lotNumber; 
+        }
+    }
+</script>
+<style>
+    #buyModal { display: none !important; }
+</style>
 </body>
 </html>
