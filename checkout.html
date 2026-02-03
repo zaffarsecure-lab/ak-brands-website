@@ -3,151 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details | AK Brands</title>
+    <title>Product Catalog | AK Brands</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #4f46e5; --success: #25d366; --dark: #1e293b; --bg: #f8fafc; --danger: #991b1b; }
+        :root { --primary: #4f46e5; --success: #25d366; --dark: #1e293b; --bg: #f1f5f9; --danger: #dc2626; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; justify-content: center; }
-        .product-page { width: 100%; max-width: 600px; background: white; min-height: 100vh; box-shadow: 0 0 50px rgba(0,0,0,0.1); padding-bottom: 100px; }
+        .page-wrapper { width: 100%; max-width: 600px; background: white; min-height: 100vh; position: relative; padding-bottom: 120px; }
         
-        /* Media Gallery (Photos/Videos) */
-        .media-container { width: 100%; height: 400px; background: #000; position: relative; overflow: hidden; }
-        .media-item { width: 100%; height: 100%; object-fit: contain; }
-        
-        .p-20 { padding: 20px; }
-        .lot-badge { background: var(--primary); color: white; padding: 4px 12px; border-radius: 50px; font-weight: 800; font-size: 12px; display: inline-block; margin-bottom: 10px; }
-        .product-title { font-size: 26px; font-weight: 900; color: var(--dark); margin: 0; line-height: 1.2; }
-        
-        /* Pricing Section */
-        .price-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 15px; margin: 20px 0; }
-        .price-box { padding: 15px; border-radius: 16px; text-align: center; color: white; }
-        .market-rate-box { background: #3b82f6; }
-        .ak-offer-box { background: #10b981; }
-        .p-label { font-size: 10px; text-transform: uppercase; font-weight: 900; opacity: 0.9; }
-        .p-main { font-size: 24px; font-weight: 900; }
+        /* Media Section - Flexible for Video or Photo */
+        .media-viewer { width: 100%; aspect-ratio: 1/1; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .media-viewer video, .media-viewer img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Savings Banner */
-        .savings-banner { text-align: center; padding: 15px; background: linear-gradient(135deg, #065f46 0%, #10b981 100%); color: white; border-radius: 16px; font-weight: 800; border: 2px solid #fff; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        .content-padding { padding: 20px; }
+        .lot-tag { background: #e0e7ff; color: var(--primary); padding: 5px 15px; border-radius: 50px; font-weight: 800; font-size: 12px; display: inline-block; }
+        .title { font-size: 28px; font-weight: 900; color: var(--dark); margin: 10px 0; }
 
-        /* Description */
-        .section-title { font-size: 14px; font-weight: 800; color: var(--primary); margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }
-        .desc-text { color: #475569; line-height: 1.6; font-size: 15px; font-weight: 500; margin-top: 8px; }
+        /* Amazon-Style Pricing */
+        .price-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .price-card { padding: 15px; border-radius: 16px; color: white; text-align: center; }
+        .mkt-box { background: #3b82f6; }
+        .ak-box { background: #10b981; }
+        .label { font-size: 10px; font-weight: 800; text-transform: uppercase; opacity: 0.9; }
+        .amt { font-size: 24px; font-weight: 900; }
 
-        /* Specs Table */
-        .specs-list { margin-top: 15px; border-top: 1px solid #f1f5f9; }
-        .spec-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
-        .spec-label { color: #64748b; font-weight: 600; }
-        .spec-val { color: var(--dark); font-weight: 800; }
+        /* Pulsing Savings Banner */
+        .savings-banner { background: linear-gradient(135deg, #065f46, #10b981); color: white; padding: 15px; border-radius: 16px; text-align: center; font-weight: 800; border: 2px solid #fff; animation: pulse 2s infinite; margin-bottom: 25px; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
 
-        /* Bottom Floating Bar (Calculator & WhatsApp) */
-        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; background: white; padding: 15px; border-top: 1px solid #e2e8f0; box-shadow: 0 -10px 25px rgba(0,0,0,0.05); }
-        .calc-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-        .qty-input { width: 40%; padding: 10px; border: 2px solid var(--primary); border-radius: 12px; font-size: 20px; font-weight: 900; text-align: center; }
-        .total-price { font-size: 24px; font-weight: 900; color: var(--danger); }
-        .btn-wa { width: 100%; background: var(--success); color: white; border: none; padding: 16px; border-radius: 14px; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        /* Details */
+        .info-grid { border-top: 1px solid #f1f5f9; }
+        .info-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .info-label { color: #64748b; font-weight: 600; }
+        .info-val { color: var(--dark); font-weight: 800; }
+        .desc-area { margin-top: 20px; color: #475569; line-height: 1.6; font-size: 15px; }
+
+        /* Bottom Floating Order Bar */
+        .order-bar { position: fixed; bottom: 0; width: 100%; max-width: 600px; background: white; padding: 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.1); border-top: 1px solid #e2e8f0; }
+        .calc-flex { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        .qty-box { width: 100px; padding: 12px; border: 2px solid var(--primary); border-radius: 12px; font-size: 20px; font-weight: 900; text-align: center; }
+        .total-price { font-size: 26px; font-weight: 900; color: var(--danger); }
+        .btn-whatsapp { width: 100%; background: var(--success); color: white; border: none; padding: 18px; border-radius: 15px; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
     </style>
 </head>
 <body>
 
-<div class="product-page">
-    <div class="media-container" id="mediaBox">
+<div class="page-wrapper">
+    <div class="media-viewer" id="mainMedia">
         </div>
 
-    <div class="p-20">
-        <div class="lot-badge" id="lotID">Loading...</div>
-        <h1 class="product-title" id="pTitle">Fetching Product Name...</h1>
-        
-        <div class="price-grid">
-            <div class="price-box market-rate-box">
-                <div class="p-label">Market Rate</div>
-                <div class="p-main" id="pMarket">₹0</div>
+    <div class="content-padding">
+        <div class="lot-tag" id="displayLot">Loading...</div>
+        <h1 class="title" id="displayTitle">Product Title</h1>
+
+        <div class="price-row">
+            <div class="price-card mkt-box">
+                <div class="label">Market Rate</div>
+                <div class="amt" id="displayMarket">₹0</div>
             </div>
-            <div class="price-box ak-offer-box">
-                <div class="p-label">AK Special Offer</div>
-                <div class="p-main" id="pAk">₹0</div>
+            <div class="price-card ak-box">
+                <div class="label">AK Special Offer</div>
+                <div class="amt" id="displayAk">₹0</div>
             </div>
         </div>
 
-        <div class="savings-banner" id="pSavings">Deal Loading...</div>
+        <div class="savings-banner" id="displaySavings">Calculating Deal...</div>
 
-        <div class="section-title">📦 Inventory Details</div>
-        <div class="specs-list">
-            <div class="spec-item"><span class="spec-label">Total Stock</span><span class="spec-val" id="specStock">0</span></div>
-            <div class="spec-item"><span class="spec-label">Min. Order (MOQ)</span><span class="spec-val" id="specMoq">0</span></div>
-            <div class="spec-item"><span class="spec-label">Original MRP</span><span class="spec-val" id="specMrp">₹0</span></div>
+        <div class="info-grid">
+            <div class="info-item"><span class="info-label">Total Stock</span><span class="info-val" id="displayStock">0</span></div>
+            <div class="info-item"><span class="info-label">Min. Order (MOQ)</span><span class="info-val" id="displayMoq">0</span></div>
+            <div class="info-item"><span class="info-label">Original MRP</span><span class="info-val" id="displayMrp">₹0</span></div>
         </div>
 
-        <div class="section-title">📝 Description</div>
-        <div class="desc-text" id="pDesc">Please wait while we load the product details...</div>
+        <div style="font-weight: 800; margin-top: 25px; color: var(--primary);">PRODUCT DESCRIPTION</div>
+        <div class="desc-area" id="displayDesc">Loading details...</div>
     </div>
 
-    <div class="bottom-bar">
-        <div class="calc-row">
-            <input type="number" id="userQty" class="qty-input" placeholder="QTY" oninput="updateTotal()" onchange="validateMoq()">
-            <div>
-                <div style="font-size: 10px; font-weight: 800; color: #64748b; text-align: right;">ORDER TOTAL</div>
-                <div class="total-price" id="totalDisplay">₹0</div>
+    <div class="order-bar">
+        <div class="calc-flex">
+            <input type="number" id="inputQty" class="qty-box" placeholder="Qty" oninput="doCalc()" onchange="checkMoq()">
+            <div style="text-align: right;">
+                <div style="font-size: 11px; font-weight: 800; color: #64748b;">ESTIMATED TOTAL</div>
+                <div class="total-price" id="totalOut">₹0</div>
             </div>
         </div>
-        <button class="btn-wa" onclick="sendWhatsApp()">
-            📲 Place Order via WhatsApp
-        </button>
+        <button class="btn-whatsapp" onclick="placeOrder()">📲 Place Order via WhatsApp</button>
     </div>
 </div>
 
 <script>
-    const API = "https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory.json";
+    const FIREBASE_URL = "https://ak-brands-marketing-default-rtdb.firebaseio.com/inventory.json";
     let activeProduct = null;
 
-    async function loadData() {
-        const id = new URLSearchParams(window.location.search).get('lotNumber');
-        const res = await fetch(API);
-        const data = await res.json();
-        activeProduct = Object.values(data).find(p => p.lotNumber == id);
+    async function loadProduct() {
+        const lotID = new URLSearchParams(window.location.search).get('lotNumber');
+        const response = await fetch(FIREBASE_URL);
+        const data = await response.json();
+        activeProduct = Object.values(data).find(item => item.lotNumber == lotID);
 
         if (activeProduct) {
-            document.getElementById('lotID').innerText = "LOT #" + activeProduct.lotNumber;
-            document.getElementById('pTitle').innerText = activeProduct.category;
-            document.getElementById('pMarket').innerText = "₹" + activeProduct.lotRate;
-            document.getElementById('pAk').innerText = "₹" + activeProduct.akOffer;
-            document.getElementById('specStock').innerText = activeProduct.quantity + " Units";
-            document.getElementById('specMoq').innerText = activeProduct.moq + " Units";
-            document.getElementById('specMrp').innerText = "₹" + activeProduct.mrp;
-            document.getElementById('pDesc').innerText = activeProduct.description || "Premium quality product from AK Brands.";
-            
-            // Media Logic (Shows video if available, else image)
-            const mediaBox = document.getElementById('mediaBox');
+            document.getElementById('displayLot').innerText = "LOT #" + activeProduct.lotNumber;
+            document.getElementById('displayTitle').innerText = activeProduct.category;
+            document.getElementById('displayMarket').innerText = "₹" + activeProduct.lotRate;
+            document.getElementById('displayAk').innerText = "₹" + activeProduct.akOffer;
+            document.getElementById('displayStock').innerText = activeProduct.quantity + " Units Available";
+            document.getElementById('displayMoq').innerText = activeProduct.moq + " Units";
+            document.getElementById('displayMrp').innerText = "₹" + activeProduct.mrp;
+            document.getElementById('displayDesc').innerText = activeProduct.description || "High-quality inventory available now.";
+
+            // MEDIA HANDLER: Checks for Video first, then Image
+            const viewer = document.getElementById('mainMedia');
             if (activeProduct.videoUrl) {
-                mediaBox.innerHTML = `<video class="media-item" autoplay muted loop playsinline src="${activeProduct.videoUrl}"></video>`;
+                viewer.innerHTML = `<video autoplay muted loop playsinline><source src="${activeProduct.videoUrl}" type="video/mp4"></video>`;
             } else {
-                mediaBox.innerHTML = `<img class="media-item" src="${activeProduct.imageUrl || 'https://via.placeholder.com/600x400'}" alt="Product">`;
+                viewer.innerHTML = `<img src="${activeProduct.imageUrl || 'https://via.placeholder.com/600'}" alt="Product">`;
             }
 
-            let s = (parseInt(activeProduct.lotRate) || 0) - (parseInt(activeProduct.akOffer) || 0);
-            document.getElementById('pSavings').innerText = `💰 YOU SAVE ₹${s} PER UNIT TODAY!`;
+            let savings = (parseInt(activeProduct.lotRate) || 0) - (parseInt(activeProduct.akOffer) || 0);
+            document.getElementById('displaySavings').innerText = `💰 EXCLUSIVE DEAL: SAVE ₹${savings} PER PIECE!`;
         }
     }
 
-    function updateTotal() {
-        const q = document.getElementById('userQty').value || 0;
-        document.getElementById('totalDisplay').innerText = "₹" + (q * activeProduct.akOffer).toLocaleString('en-IN');
+    function doCalc() {
+        const q = document.getElementById('inputQty').value || 0;
+        document.getElementById('totalOut').innerText = "₹" + (q * activeProduct.akOffer).toLocaleString('en-IN');
     }
 
-    function validateMoq() {
-        const q = parseInt(document.getElementById('userQty').value);
+    function checkMoq() {
+        const q = parseInt(document.getElementById('inputQty').value);
         const min = parseInt(activeProduct.moq);
-        if (q < min) { alert("Minimum order quantity is " + min); document.getElementById('userQty').value = min; updateTotal(); }
+        if (q < min) { alert("Minimum quantity is " + min); document.getElementById('inputQty').value = min; doCalc(); }
     }
 
-    function sendWhatsApp() {
-        const q = document.getElementById('userQty').value;
-        if(!q) { alert("Enter quantity"); return; }
-        const msg = `*NEW ORDER ENQUIRY*\n\nLot: ${activeProduct.lotNumber}\nCategory: ${activeProduct.category}\nOrder Qty: ${q}\nTotal Amount: ${document.getElementById('totalDisplay').innerText}\n\n*Customer Request via AK Brands Marketplace*`;
+    function placeOrder() {
+        const q = document.getElementById('inputQty').value;
+        if(!q) { alert("Please enter quantity"); return; }
+        const msg = `*NEW ORDER ENQUIRY*\n\nLot: ${activeProduct.lotNumber}\nCategory: ${activeProduct.category}\nOrder Qty: ${q}\nTotal: ${document.getElementById('totalOut').innerText}\n\n*Inquiry from AK Brands Website*`;
         window.open(`https://api.whatsapp.com/send?phone=91XXXXXXXXXX&text=${encodeURIComponent(msg)}`);
     }
 
-    loadData();
+    loadProduct();
 </script>
 </body>
 </html>
