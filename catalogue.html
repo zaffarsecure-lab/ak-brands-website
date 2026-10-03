@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Lots Catalogue | AK Brands Marketing</title>
+<meta name="description" content="Browse verified B2B liquidation stock lots with rate, MOQ and quantity. Book directly with AK Brands Marketing on WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f1b2d; --ink-2:#17283f; --gold:#d4af37; --ivory:#f7f5ef; --paper:#ffffff;
+  --line:#e2ddcf; --text:#243247; --muted:#5f6e82; --wa:#12803f; --wa-dark:#0e6a34; --sold:#8a2f2f;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--ivory);color:var(--text);line-height:1.55}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* Header */
+.top{background:var(--ink);color:#fff;border-bottom:2px solid var(--gold)}
+.top-inner{max-width:1200px;margin:0 auto;padding:.9rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{display:flex;align-items:center;gap:.7rem;font-family:'Playfair Display',Georgia,serif;font-size:1.25rem;font-weight:600;text-decoration:none;letter-spacing:.2px}
+.brand img{width:52px;height:52px;object-fit:contain;background:#000;border:1px solid rgba(212,175,55,.55);border-radius:10px;flex:0 0 auto}
+.brand b{color:var(--gold);font-weight:700}
+.back{font-size:.9rem;text-decoration:none;color:#d9e0ea;border:1px solid rgba(255,255,255,.25);padding:.45rem .9rem;border-radius:999px}
+.back:hover{border-color:var(--gold);color:#fff}
+
+/* Intro */
+.intro{background:var(--ink);color:#fff;padding:2.2rem 1.25rem 2.6rem}
+.intro-inner{max-width:1200px;margin:0 auto}
+.intro h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.15;font-weight:600;max-width:20ch}
+.intro p{margin-top:.8rem;max-width:62ch;color:#c9d3e0}
+.count{margin-top:1.1rem;display:inline-block;border:1px solid rgba(212,175,55,.6);color:var(--gold);padding:.3rem .8rem;border-radius:999px;font-size:.9rem;font-weight:600}
+
+/* Tools */
+.tools{position:sticky;top:0;z-index:20;background:var(--ivory);border-bottom:1px solid var(--line)}
+.tools-inner{max-width:1200px;margin:0 auto;padding:.8rem 1.25rem;display:grid;gap:.7rem}
+.search{width:100%;padding:.8rem 1rem;border:1px solid #cfc8b5;border-radius:10px;font:inherit;background:#fff;color:var(--text)}
+.chips{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.2rem;scrollbar-width:thin}
+.chip{flex:0 0 auto;border:1px solid #cfc8b5;background:#fff;color:var(--text);padding:.45rem .95rem;border-radius:999px;font:inherit;font-size:.9rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* Grid */
+main{max-width:1200px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+.grid{display:grid;grid-template-columns:1fr;gap:1.25rem}
+@media(min-width:620px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1180px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:column;overflow:hidden}
+.card.is-sold .card-media img{filter:grayscale(1);opacity:.7}
+.card-media{position:relative;border:0;padding:0;background:#ebe7da;cursor:pointer;display:block;width:100%;aspect-ratio:4/3}
+.card-media img{width:100%;height:100%;object-fit:cover;display:block}
+.ph{height:100%;display:grid;place-items:center;color:var(--muted);font-size:.9rem;padding:1rem;text-align:center}
+.badge{position:absolute;top:.6rem;left:.6rem;background:var(--ink);color:#fff;font-size:.78rem;font-weight:600;padding:.25rem .65rem;border-radius:999px;border:1px solid var(--gold)}
+.badge.sold{background:var(--sold);border-color:var(--sold)}
+.card-body{padding:1rem 1rem 1.1rem;display:flex;flex-direction:column;gap:.7rem;flex:1}
+.meta{font-size:.82rem;color:var(--muted)}
+.meta span+span::before{content:"/";margin:0 .45rem;color:#b9b19b}
+.card h3{font-family:'Playfair Display',Georgia,serif;font-size:1.2rem;line-height:1.3;font-weight:600;color:var(--ink)}
+.specs{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:6px}
+.specs div{padding:.55rem .6rem}
+.specs div+div{border-left:1px solid var(--line)}
+.specs dt{font-size:.74rem;color:var(--muted)}
+.specs dd{font-weight:600;font-size:.92rem;color:var(--ink);overflow-wrap:anywhere}
+.cond{font-size:.9rem}
+.asis{font-size:.8rem;color:var(--muted);border-left:3px solid var(--gold);padding-left:.55rem}
+.actions{margin-top:auto;display:grid;gap:.5rem}
+.btn{display:block;text-align:center;text-decoration:none;font:inherit;font-weight:600;font-size:.95rem;padding:.8rem 1rem;border-radius:8px;border:1px solid transparent;cursor:pointer}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-wa:hover{background:var(--wa-dark)}
+.btn-ghost{background:#fff;color:var(--ink);border-color:#bfb7a2}
+.btn-ghost:hover{border-color:var(--ink)}
+.soldnote{margin-top:auto;text-align:center;color:var(--sold);font-weight:600;font-size:.92rem;padding:.8rem 0}
+
+/* States */
+.state{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--muted)}
+.state strong{display:block;color:var(--ink);font-family:'Playfair Display',Georgia,serif;font-size:1.3rem;margin-bottom:.4rem}
+.state button{margin-top:1rem}
+
+.notice{margin-top:2rem;border-left:3px solid var(--gold);background:#fff;padding:1.1rem 1.2rem;font-size:.92rem;max-width:84ch}
+.notice h2{font-family:'Playfair Display',Georgia,serif;font-size:1.2rem;color:var(--ink);margin-bottom:.6rem}
+.notice p+p{margin-top:.7rem}
+.notice strong{color:var(--ink)}
+
+footer{background:var(--ink);color:#aeb9c9;text-align:center;padding:1.6rem 1.25rem;font-size:.88rem}
+footer a{color:#fff}
+
+/* Detail dialog */
+dialog{border:0;border-radius:8px;max-width:760px;width:calc(100% - 1.5rem);max-height:92vh;padding:0;background:var(--paper);color:var(--text)}
+dialog::backdrop{background:rgba(10,18,30,.7)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;padding:.8rem 1rem;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--paper)}
+.dlg-head span{font-size:.85rem;color:var(--muted)}
+.dlg-close{border:1px solid #bfb7a2;background:#fff;border-radius:8px;padding:.4rem .9rem;font:inherit;cursor:pointer}
+.dlg-body{padding:1rem;display:grid;gap:1rem;overflow-y:auto;max-height:calc(92vh - 3.4rem)}
+.dlg-photos{display:grid;gap:.6rem}
+.dlg-photos img{width:100%;border-radius:6px;display:block;background:#ebe7da}
+.dlg-body h2{font-family:'Playfair Display',Georgia,serif;font-size:1.5rem;color:var(--ink);line-height:1.25}
+.dlg-desc{white-space:pre-line}
+.dlg-note{font-size:.88rem;color:var(--muted);border-top:1px solid var(--line);padding-top:.8rem}
+
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="index.html"><img src="logo.jpg" alt="AK Brands Marketing logo" width="52" height="52"><span><b>AK</b> Brands Marketing</span></a>
+    <a class="back" href="index.html">Back to website</a>
+  </div>
+</header>
+
+<section class="intro">
+  <div class="intro-inner">
+    <h1>Live lots, ready to book</h1>
+    <p>Verified liquidation and surplus stock. Check the rate, MOQ and quantity, then book directly with AK Brands Marketing on WhatsApp. One point of contact from booking to delivery.</p>
+    <span class="count" id="count" aria-live="polite">Loading lots</span>
+  </div>
+</section>
+
+<div class="tools">
+  <div class="tools-inner">
+    <label for="q" style="position:absolute;left:-9999px">Search lots</label>
+    <input id="q" class="search" type="search" placeholder="Search by product, category or lot number" autocomplete="off">
+    <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+  </div>
+</div>
+
+<main>
+  <div class="grid" id="grid">
+    <div class="state"><strong>Loading lots</strong>Please wait a moment.</div>
+  </div>
+
+  <div class="notice">
+    <h2>Please read before booking</h2>
+    <p><strong>Sold as is, where is.</strong> All lots are liquidation or surplus stock, sourced and sold in as-is condition and not 100% fresh. Photos and videos are indicative, and the actual lot may differ slightly. Up to 10% variance (minor damage, dust, mismatch) is standard in this trade and is accepted at booking. Variance beyond 10% is covered by our written Buyer Protection Plan.</p>
+    <p><strong>Not a brand representative.</strong> AK Brands Marketing is an independent liquidation sourcing partner. We do not own, represent, or act on behalf of any brand or manufacturer, and we are not an authorised dealer, distributor or service partner of any brand. Brand names and logos, where mentioned, belong to their owners and are used only to describe the stock on offer. Brand warranty and brand after-sales service do not apply to these lots.</p>
+  </div>
+</main>
+
+<footer>
+  AK Brands Marketing. India's B2B Liquidation Sourcing Partner. <a href="terms.html">Terms</a>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <div class="dlg-head"><span id="dlgLot"></span><button class="dlg-close" id="dlgClose" type="button">Close</button></div>
+  <div class="dlg-body" id="dlgBody"></div>
+</dialog>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyALlIObFvQc6FzIHVO4ifXZVPsCmW4_XlY",
+  authDomain: "ak-brands-marketing.firebaseapp.com",
+  projectId: "ak-brands-marketing",
+  storageBucket: "ak-brands-marketing.firebasestorage.app",
+  messagingSenderId: "458983699429",
+  appId: "1:458983699429:web:c8c95fb9ede6795d2af50c"
+};
+
+const WHATSAPP_NUMBER = "918660502217";
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const wa = (msg) => "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg);
+
+let lots = [];
+let activeCategory = "All";
+let query = "";
+
+function bookLink(l){
+  return wa("Hello AK Brands Marketing, I want to book Lot " + l.lotNo + " (" + l.title + "). I understand lots are sold as is. Please share the next steps.");
+}
+function mediaLink(l){
+  return wa("Hello AK Brands Marketing, please send the full video and photos for Lot " + l.lotNo + " (" + l.title + ").");
+}
+
+function cardHTML(l){
+  const sold = l.status === "sold";
+  const photo = l.photos && l.photos[0]
+    ? '<img src="' + esc(l.photos[0]) + '" alt="' + esc(l.title) + '" loading="lazy">'
+    : '<div class="ph">Photo coming soon. Request photos on WhatsApp.</div>';
+  const actions = sold
+    ? '<p class="soldnote">This lot has been sold</p>'
+    : '<div class="actions">' +
+        '<a class="btn btn-wa" href="' + bookLink(l) + '" target="_blank" rel="noopener">Book on WhatsApp</a>' +
+        '<a class="btn btn-ghost" href="' + mediaLink(l) + '" target="_blank" rel="noopener">Request full video and photos</a>' +
+      '</div>';
+  return '<article class="card' + (sold ? " is-sold" : "") + '">' +
+    '<button class="card-media" type="button" data-open="' + esc(l.id) + '" aria-label="View details for ' + esc(l.title) + '">' +
+      photo + '<span class="badge' + (sold ? " sold" : "") + '">' + (sold ? "Sold" : "Available") + '</span>' +
+    '</button>' +
+    '<div class="card-body">' +
+      '<p class="meta"><span>' + esc(l.category || "Other") + '</span><span>Lot ' + esc(l.lotNo) + '</span></p>' +
+      '<h3>' + esc(l.title) + '</h3>' +
+      '<dl class="specs">' +
+        '<div><dt>Rate</dt><dd>' + esc(l.rate || "On request") + '</dd></div>' +
+        '<div><dt>MOQ</dt><dd>' + esc(l.moq || "On request") + '</dd></div>' +
+        '<div><dt>Available</dt><dd>' + esc(l.qty || "On request") + '</dd></div>' +
+      '</dl>' +
+      (l.condition ? '<p class="cond">' + esc(l.condition) + '</p>' : "") +
+      '<p class="asis">Sold as is, where is</p>' +
+      actions +
+    '</div></article>';
+}
+
+function visibleLots(){
+  const q = query.trim().toLowerCase();
+  return lots.filter((l) => {
+    if (activeCategory !== "All" && (l.category || "Other") !== activeCategory) return false;
+    if (!q) return true;
+    return [l.title, l.category, l.lotNo, l.description, l.condition].join(" ").toLowerCase().includes(q);
+  });
+}
+
+function renderChips(){
+  const cats = Array.from(new Set(lots.map((l) => l.category || "Other"))).sort();
+  const all = ["All"].concat(cats);
+  $("chips").innerHTML = all.map((c) =>
+    '<button class="chip" type="button" data-cat="' + esc(c) + '" aria-pressed="' + (c === activeCategory) + '">' + esc(c) + '</button>'
+  ).join("");
+}
+
+function render(){
+  const list = visibleLots();
+  const avail = lots.filter((l) => l.status !== "sold").length;
+  $("count").textContent = avail + (avail === 1 ? " lot available" : " lots available");
+  if (!list.length){
+    $("grid").innerHTML = lots.length
+      ? '<div class="state"><strong>No lots match your search</strong>Try a different word, or clear the filters.<br><button class="btn btn-ghost" id="clear" type="button">Clear filters</button></div>'
+      : '<div class="state"><strong>New lots are being added</strong>Join our WhatsApp community to see stock the moment it arrives.<br><a class="btn btn-wa" style="display:inline-block;margin-top:1rem" href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" rel="noopener">Browse live lots on WhatsApp</a></div>';
+    const c = $("clear");
+    if (c) c.addEventListener("click", () => { activeCategory = "All"; query = ""; $("q").value = ""; renderChips(); render(); });
+    return;
+  }
+  $("grid").innerHTML = list.map(cardHTML).join("");
+}
+
+function openDetail(id){
+  const l = lots.find((x) => x.id === id);
+  if (!l) return;
+  const sold = l.status === "sold";
+  $("dlgLot").textContent = "Lot " + l.lotNo + " / " + (l.category || "Other");
+  const photos = (l.photos || []).map((u) => '<img src="' + esc(u) + '" alt="' + esc(l.title) + '" loading="lazy">').join("");
+  $("dlgBody").innerHTML =
+    (photos ? '<div class="dlg-photos">' + photos + '</div>' : "") +
+    '<h2 id="dlgTitle">' + esc(l.title) + '</h2>' +
+    '<dl class="specs">' +
+      '<div><dt>Rate</dt><dd>' + esc(l.rate || "On request") + '</dd></div>' +
+      '<div><dt>MOQ</dt><dd>' + esc(l.moq || "On request") + '</dd></div>' +
+      '<div><dt>Available</dt><dd>' + esc(l.qty || "On request") + '</dd></div>' +
+    '</dl>' +
+    (l.condition ? '<p><strong>Condition:</strong> ' + esc(l.condition) + '</p>' : "") +
+    (l.description ? '<p class="dlg-desc">' + esc(l.description) + '</p>' : "") +
+    (sold ? '<p class="soldnote">This lot has been sold</p>' :
+      '<div class="actions">' +
+        '<a class="btn btn-wa" href="' + bookLink(l) + '" target="_blank" rel="noopener">Book on WhatsApp</a>' +
+        '<a class="btn btn-ghost" href="' + mediaLink(l) + '" target="_blank" rel="noopener">Request full video and photos</a>' +
+      '</div>') +
+    '<p class="dlg-note"><strong>Sold as is, where is.</strong> Liquidation stock: up to 10% variance (minor damage, dust, mismatch) is standard and accepted at booking. Beyond 10% is covered by the Buyer Protection Plan. AK Brands Marketing does not own or represent any brand, and brand warranty and brand service do not apply.</p>';
+  $("dlg").showModal();
+}
+
+$("grid").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-open]");
+  if (b) openDetail(b.getAttribute("data-open"));
+});
+$("chips").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-cat]");
+  if (!b) return;
+  activeCategory = b.getAttribute("data-cat");
+  renderChips(); render();
+});
+$("q").addEventListener("input", (e) => { query = e.target.value; render(); });
+$("dlgClose").addEventListener("click", () => $("dlg").close());
+$("dlg").addEventListener("click", (e) => { if (e.target === $("dlg")) $("dlg").close(); });
+
+async function load(){
+  try {
+    const snap = await getDocs(collection(db, "lots"));
+    lots = snap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
+    lots.sort((a, b) => {
+      const sa = a.status === "sold" ? 1 : 0, sb = b.status === "sold" ? 1 : 0;
+      if (sa !== sb) return sa - sb;
+      const ta = a.createdAt && a.createdAt.seconds ? a.createdAt.seconds : 0;
+      const tb = b.createdAt && b.createdAt.seconds ? b.createdAt.seconds : 0;
+      return tb - ta;
+    });
+    renderChips();
+    render();
+  } catch (err) {
+    console.error(err);
+    $("count").textContent = "Lots unavailable";
+    $("grid").innerHTML = '<div class="state"><strong>Could not load the lots</strong>Check your internet connection and refresh the page. You can also see live stock in our WhatsApp community.<br><a class="btn btn-wa" style="display:inline-block;margin-top:1rem" href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" rel="noopener">Browse live lots on WhatsApp</a></div>';
+  }
+}
+load();
+</script>
+</body>
+</html>

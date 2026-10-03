@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Lot manager | AK Brands Marketing</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0f1b2d;--gold:#d4af37;--ivory:#f7f5ef;--line:#e2ddcf;--text:#243247;--muted:#5f6e82;--ok:#12803f;--bad:#8a2f2f}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--ivory);color:var(--text);line-height:1.5}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+header{background:var(--ink);color:#fff;border-bottom:2px solid var(--gold)}
+.bar{max-width:760px;margin:0 auto;padding:.9rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.bar h1{font-family:'Playfair Display',Georgia,serif;font-size:1.2rem;font-weight:600}
+.bar a,.bar button{color:#d9e0ea;font:inherit;font-size:.9rem;background:none;border:1px solid rgba(255,255,255,.3);padding:.4rem .8rem;border-radius:999px;text-decoration:none;cursor:pointer}
+main{max-width:760px;margin:0 auto;padding:1.25rem 1rem 3rem;display:grid;gap:1.25rem}
+.panel{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1.1rem}
+.panel h2{font-family:'Playfair Display',Georgia,serif;font-size:1.3rem;color:var(--ink);margin-bottom:.8rem}
+label{display:block;font-weight:600;font-size:.9rem;margin:.8rem 0 .3rem;color:var(--ink)}
+.hint{font-weight:400;color:var(--muted);font-size:.82rem}
+input,select,textarea{width:100%;padding:.75rem .85rem;border:1px solid #cfc8b5;border-radius:8px;font:inherit;background:#fff;color:var(--text)}
+textarea{min-height:110px;resize:vertical}
+.row{display:grid;gap:.8rem}
+@media(min-width:560px){.row.three{grid-template-columns:repeat(3,1fr)}.row.two{grid-template-columns:1fr 1fr}}
+button.primary{margin-top:1.1rem;width:100%;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.9rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+button.primary[disabled]{opacity:.6;cursor:wait}
+button.link{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer;margin-top:.7rem}
+.msg{margin-top:.9rem;padding:.7rem .9rem;border-radius:8px;font-size:.92rem;display:none}
+.msg.show{display:block}
+.msg.ok{background:#e6f4ec;color:#0c5a2c}
+.msg.err{background:#f8e6e6;color:#7a2020}
+.lot{display:grid;gap:.5rem;border-top:1px solid var(--line);padding:.9rem 0}
+.lot:first-of-type{border-top:0}
+.lot h3{font-size:1rem;color:var(--ink)}
+.lot p{font-size:.85rem;color:var(--muted)}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;padding:.15rem .55rem;border-radius:999px;border:1px solid var(--ok);color:var(--ok);margin-left:.4rem}
+.tag.sold{border-color:var(--bad);color:var(--bad)}
+.btns{display:flex;flex-wrap:wrap;gap:.5rem}
+.btns button{border:1px solid #bfb7a2;background:#fff;border-radius:8px;padding:.45rem .8rem;font:inherit;font-size:.88rem;cursor:pointer}
+.btns button.del{border-color:var(--bad);color:var(--bad)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>Lot manager</h1>
+    <div style="display:flex;gap:.5rem">
+      <a href="catalogue.html">View catalogue</a>
+      <button id="logout" class="hidden" type="button">Log out</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Login -->
+  <section class="panel" id="loginPanel">
+    <h2>Admin login</h2>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button class="primary" type="submit">Log in</button>
+      <div class="msg" id="loginMsg" role="status"></div>
+    </form>
+  </section>
+
+  <!-- Dashboard -->
+  <section class="panel hidden" id="formPanel">
+    <h2 id="formTitle">Add a lot</h2>
+    <form id="lotForm">
+      <div class="row two">
+        <div>
+          <label for="lotNo">Lot number <span class="hint">(leave blank to create one)</span></label>
+          <input id="lotNo" type="text" maxlength="24" placeholder="Example: AK1042">
+        </div>
+        <div>
+          <label for="category">Category</label>
+          <select id="category" required>
+            <option value="">Select a category</option>
+            <option>Textile and Garments</option>
+            <option>FMCG</option>
+            <option>Electronics</option>
+            <option>Home and Kitchen</option>
+            <option>Furniture</option>
+            <option>Mobiles and Accessories</option>
+            <option>Hardware</option>
+            <option>Luggage</option>
+            <option>Footwear</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="title">Product title</label>
+      <input id="title" type="text" maxlength="90" placeholder="Example: Men's cotton T-shirts, branded surplus" required>
+      <p class="hint" style="margin-top:.3rem">A brand name is fine to describe the stock. Do not write that you are an authorised seller or dealer of the brand.</p>
+
+      <div class="row three">
+        <div>
+          <label for="rate">Rate</label>
+          <input id="rate" type="text" maxlength="40" placeholder="Example: Rs 120 per pc" required>
+        </div>
+        <div>
+          <label for="moq">MOQ</label>
+          <input id="moq" type="text" maxlength="40" placeholder="Example: 200 pcs" required>
+        </div>
+        <div>
+          <label for="qty">Quantity available</label>
+          <input id="qty" type="text" maxlength="40" placeholder="Example: 1,500 pcs" required>
+        </div>
+      </div>
+
+      <label for="condition">Condition</label>
+      <input id="condition" type="text" maxlength="120" placeholder="Example: Fresh surplus, up to 10% variance" required>
+
+      <label for="description">Details and conditions <span class="hint">(optional, buyers can read this)</span></label>
+      <textarea id="description" maxlength="1500" placeholder="Sizes, brands, packing, pickup city, payment terms. Do not write your buying cost or supplier names."></textarea>
+
+      <label for="photo1">Photo 1 <span class="hint">(whole lot)</span></label>
+      <input id="photo1" type="file" accept="image/*">
+      <label for="photo2">Photo 2 <span class="hint">(close-up)</span></label>
+      <input id="photo2" type="file" accept="image/*">
+      <p class="hint" style="margin-top:.4rem" id="photoHint">Photos are shrunk on your phone before upload.</p>
+
+      <button class="primary" id="saveBtn" type="submit">Save lot</button>
+      <button class="link hidden" id="cancelEdit" type="button">Cancel editing</button>
+      <div class="msg" id="formMsg" role="status"></div>
+    </form>
+  </section>
+
+  <section class="panel hidden" id="listPanel">
+    <h2>Your lots</h2>
+    <div id="lotList"><p class="hint">Loading lots</p></div>
+  </section>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyALlIObFvQc6FzIHVO4ifXZVPsCmW4_XlY",
+  authDomain: "ak-brands-marketing.firebaseapp.com",
+  projectId: "ak-brands-marketing",
+  storageBucket: "ak-brands-marketing.firebasestorage.app",
+  messagingSenderId: "458983699429",
+  appId: "1:458983699429:web:c8c95fb9ede6795d2af50c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
+let lots = [];
+let editing = null; // { lotNo, photos }
+
+function show(el, text, kind){
+  el.textContent = text;
+  el.className = "msg show " + kind;
+}
+function hideMsg(el){ el.className = "msg"; el.textContent = ""; }
+
+/* ---------- Login ---------- */
+$("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  hideMsg($("loginMsg"));
+  try {
+    await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
+    $("password").value = "";
+  } catch (err) {
+    show($("loginMsg"), "Login failed. Check your email and password and try again.", "err");
+  }
+});
+$("logout").addEventListener("click", () => signOut(auth));
+
+onAuthStateChanged(auth, (user) => {
+  const on = !!user;
+  $("loginPanel").classList.toggle("hidden", on);
+  $("formPanel").classList.toggle("hidden", !on);
+  $("listPanel").classList.toggle("hidden", !on);
+  $("logout").classList.toggle("hidden", !on);
+  if (on) loadLots();
+});
+
+/* ---------- Photos ---------- */
+async function shrink(file){
+  const bmp = await createImageBitmap(file);
+  const max = 1280;
+  const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
+  const w = Math.round(bmp.width * scale), h = Math.round(bmp.height * scale);
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  c.getContext("2d").drawImage(bmp, 0, 0, w, h);
+  return new Promise((res, rej) => c.toBlob((b) => b ? res(b) : rej(new Error("shrink failed")), "image/jpeg", 0.78));
+}
+
+async function uploadPhotos(lotNo){
+  const files = [$("photo1").files[0], $("photo2").files[0]].filter(Boolean);
+  const urls = [];
+  for (let i = 0; i < files.length; i++){
+    const blob = await shrink(files[i]);
+    const r = ref(storage, "lots/" + lotNo + "/" + Date.now() + "-" + (i + 1) + ".jpg");
+    await uploadBytes(r, blob, { contentType: "image/jpeg" });
+    urls.push(await getDownloadURL(r));
+  }
+  return urls;
+}
+
+/* ---------- Save a lot ---------- */
+function autoNo(){
+  return "AK" + Date.now().toString(36).slice(-5).toUpperCase();
+}
+
+$("lotForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  hideMsg($("formMsg"));
+  const btn = $("saveBtn");
+  btn.disabled = true;
+  btn.textContent = "Saving";
+  try {
+    let lotNo = $("lotNo").value.trim().replace(/[^A-Za-z0-9_-]/g, "").toUpperCase();
+    if (!lotNo) lotNo = autoNo();
+    const exists = lots.find((l) => l.id === lotNo);
+    if (exists && !(editing && editing.lotNo === lotNo)){
+      if (!confirm("Lot " + lotNo + " already exists. Replace it?")) throw new Error("cancelled");
+    }
+
+    let photos = editing && editing.lotNo === lotNo ? editing.photos.slice() : [];
+    const picked = [$("photo1").files[0], $("photo2").files[0]].filter(Boolean);
+    if (picked.length){
+      try {
+        photos = await uploadPhotos(lotNo);
+      } catch (err) {
+        console.error(err);
+        throw new Error("Photos could not be uploaded. Photo storage may not be switched on yet. Remove the photos and save again, or tell your helper.");
+      }
+    }
+
+    const data = {
+      lotNo,
+      title: $("title").value.trim(),
+      category: $("category").value,
+      rate: $("rate").value.trim(),
+      moq: $("moq").value.trim(),
+      qty: $("qty").value.trim(),
+      condition: $("condition").value.trim(),
+      description: $("description").value.trim(),
+      photos,
+      status: exists && exists.status ? exists.status : "available"
+    };
+    if (exists && exists.createdAt) data.createdAt = exists.createdAt; else data.createdAt = serverTimestamp();
+
+    await setDoc(doc(db, "lots", lotNo), data);
+    show($("formMsg"), "Saved. Lot " + lotNo + " is now in your catalogue.", "ok");
+    resetForm();
+    await loadLots();
+  } catch (err) {
+    if (err.message !== "cancelled"){
+      console.error(err);
+      show($("formMsg"), err.message && err.message.indexOf("Photos") === 0 ? err.message : "Could not save. Check your connection and make sure you are logged in, then try again.", "err");
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Save lot";
+  }
+});
+
+function resetForm(){
+  $("lotForm").reset();
+  editing = null;
+  $("formTitle").textContent = "Add a lot";
+  $("cancelEdit").classList.add("hidden");
+  $("lotNo").readOnly = false;
+  $("photoHint").textContent = "Photos are shrunk on your phone before upload.";
+}
+$("cancelEdit").addEventListener("click", () => { resetForm(); hideMsg($("formMsg")); });
+
+/* ---------- Lot list ---------- */
+async function loadLots(){
+  try {
+    const snap = await getDocs(collection(db, "lots"));
+    lots = snap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
+    lots.sort((a, b) => ((b.createdAt && b.createdAt.seconds) || 0) - ((a.createdAt && a.createdAt.seconds) || 0));
+    renderList();
+  } catch (err) {
+    console.error(err);
+    $("lotList").innerHTML = '<p class="hint">Could not load your lots. Refresh the page and log in again.</p>';
+  }
+}
+
+function renderList(){
+  if (!lots.length){ $("lotList").innerHTML = '<p class="hint">No lots yet. Add your first lot above.</p>'; return; }
+  $("lotList").innerHTML = lots.map((l) => {
+    const sold = l.status === "sold";
+    return '<div class="lot">' +
+      '<h3>' + esc(l.title) + '<span class="tag' + (sold ? " sold" : "") + '">' + (sold ? "Sold" : "Available") + '</span></h3>' +
+      '<p>Lot ' + esc(l.lotNo) + ' / ' + esc(l.category) + ' / ' + esc(l.rate) + ' / MOQ ' + esc(l.moq) + '</p>' +
+      '<div class="btns">' +
+        '<button type="button" data-act="edit" data-id="' + esc(l.id) + '">Edit</button>' +
+        '<button type="button" data-act="toggle" data-id="' + esc(l.id) + '">' + (sold ? "Mark available" : "Mark sold") + '</button>' +
+        '<button type="button" class="del" data-act="delete" data-id="' + esc(l.id) + '">Delete</button>' +
+      '</div></div>';
+  }).join("");
+}
+
+$("lotList").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-act]");
+  if (!b) return;
+  const id = b.getAttribute("data-id");
+  const l = lots.find((x) => x.id === id);
+  if (!l) return;
+  const act = b.getAttribute("data-act");
+  try {
+    if (act === "toggle"){
+      await updateDoc(doc(db, "lots", id), { status: l.status === "sold" ? "available" : "sold" });
+      await loadLots();
+    } else if (act === "delete"){
+      if (!confirm("Delete lot " + l.lotNo + " permanently?")) return;
+      for (const u of (l.photos || [])){
+        try { await deleteObject(ref(storage, u)); } catch (err) { console.warn("photo not deleted", err); }
+      }
+      await deleteDoc(doc(db, "lots", id));
+      await loadLots();
+    } else if (act === "edit"){
+      editing = { lotNo: l.lotNo, photos: (l.photos || []).slice() };
+      $("formTitle").textContent = "Edit lot " + l.lotNo;
+      $("lotNo").value = l.lotNo; $("lotNo").readOnly = true;
+      $("category").value = l.category || "";
+      $("title").value = l.title || "";
+      $("rate").value = l.rate || "";
+      $("moq").value = l.moq || "";
+      $("qty").value = l.qty || "";
+      $("condition").value = l.condition || "";
+      $("description").value = l.description || "";
+      $("photoHint").textContent = (l.photos && l.photos.length ? "This lot has " + l.photos.length + " photo(s). Choose new photos only if you want to replace them." : "No photos yet.");
+      $("cancelEdit").classList.remove("hidden");
+      hideMsg($("formMsg"));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  } catch (err) {
+    console.error(err);
+    alert("That did not work. Check your connection and try again.");
+  }
+});
+</script>
+</body>
+</html>
