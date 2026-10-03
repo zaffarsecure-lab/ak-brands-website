@@ -1976,7 +1976,9 @@ footer {
     </script>
     <script>
     function openBuyModal(lotNumber) {
+        if (!lotNumber) { window.location.href = 'catalogue.html'; return; }
         if (lotNumber) {
+            
             // Sends user to the new media-rich catalog page
             window.location.href = 'checkout.html?lotNumber=' + lotNumber; 
         }
