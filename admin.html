@@ -85,7 +85,7 @@ button.link{background:none;border:0;color:var(--muted);text-decoration:underlin
 
       <div class="block">
         <h3>2. Product</h3>
-        <label for="title">Product name</label>
+        <label for="title">Product</label>
         <input id="title" type="text" maxlength="90" placeholder="Example: Men's cotton T-shirts" required>
         <p class="hint" style="margin-top:.3rem">A brand name is fine to describe the stock. Do not write that you are an authorised seller or dealer of the brand.</p>
 
@@ -107,7 +107,7 @@ button.link{background:none;border:0;color:var(--muted);text-decoration:underlin
         <label for="condition">Condition</label>
         <input id="condition" type="text" maxlength="120" placeholder="Example: Fresh surplus, up to 10% variance" required>
 
-        <label for="description">Product details <span class="hint">(optional)</span></label>
+        <label for="description">Details <span class="hint">(optional)</span></label>
         <textarea id="description" maxlength="1500" placeholder="Sizes, brands, packing, payment terms. Do not write your buying cost or supplier names."></textarea>
 
         <label for="location">Location <span class="hint">(optional, city only)</span></label>
@@ -201,25 +201,25 @@ const lotUrl = (l) => "https://akbrandsmarketing.com/lot/?" + encodeURIComponent
 function shareText(l){
   const cond = String(l.condition || "As is").replace(/[.\s]+$/, "");
   const lines = [];
-  lines.push("*Lot Number:* " + l.lotNo, "");
-  lines.push("*Product name:* " + l.title);
-  lines.push("*Category:* " + (l.category || "Other"));
-  lines.push("*Condition:* " + cond + ". Sold as is, where is.");
-  if (l.description) lines.push("*Product details:* " + l.description);
-  if (l.location) lines.push("*Location:* " + l.location);
+  lines.push("*Lot Number - " + l.lotNo + "*", "");
+  lines.push("*Product - " + l.title + "*");
+  lines.push("Category - " + (l.category || "Other"));
+  lines.push("Condition - " + cond + ". Sold as is, where is.");
+  if (l.description) lines.push("Details - " + l.description);
+  if (l.location) lines.push("Location - " + l.location);
   lines.push("");
-  lines.push("*Quantity:* " + (l.qty || "On request"));
-  lines.push("*Minimum quantity:* " + (l.moq || "On request"));
+  lines.push("Quantity - " + (l.qty || "On request"));
+  lines.push("Minimum quantity - " + (l.moq || "On request"));
   if (l.mrp || l.onlinePrice) {
     lines.push("");
-    if (l.mrp) lines.push("*MRP:* " + l.mrp);
-    if (l.onlinePrice) lines.push("*Online price:* " + l.onlinePrice);
+    if (l.mrp) lines.push("MRP - " + l.mrp);
+    if (l.onlinePrice) lines.push("Online price - " + l.onlinePrice);
   }
   lines.push("");
-  lines.push("*Lot rate:* *Lowest rate. Click the link:*");
+  lines.push("*Lot rate - Click the link*");
   lines.push(lotUrl(l));
   lines.push("");
-  lines.push("Regards,", "Trusted Firm", "AK Brands Marketing\u00A9");
+  lines.push("Trusted Firm", "AK Brands Marketing\u00A9");
   return lines.join("\n");
 }
 

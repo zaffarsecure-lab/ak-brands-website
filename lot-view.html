@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Live Lots Catalogue | AK Brands Marketing</title>
-<meta name="description" content="Browse verified B2B liquidation stock lots with quantity, minimum quantity and lot rate. Book directly with AK Brands Marketing on WhatsApp.">
+<title>Live lot | AK Brands Marketing</title>
+<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AK Brands Marketing">
+<meta property="og:title" content="Live lot | AK Brands Marketing&copy;">
+<meta property="og:description" content="Tap to see the lowest lot rate, quantity and minimum quantity. Trusted Firm, AK Brands Marketing&copy;.">
+<meta property="og:image" content="https://akbrandsmarketing.com/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -148,77 +153,54 @@ dialog::backdrop{background:rgba(10,18,30,.7)}
 .dlg-note{font-size:.88rem;color:var(--muted);border-top:1px solid var(--line);padding-top:.8rem}
 
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+.lotpage{max-width:680px;margin:0 auto}
+.lotwrap{max-width:680px;margin:0 auto;padding:1.25rem 1.1rem 3rem}
+.allbtn{margin-top:.3rem}
 </style>
 </head>
 <body>
 
 <header class="site-header">
   <div class="hdr">
-    <a class="logo-section" href="index.html">
-      <img class="logo-img" src="logo.jpg" alt="AK Brands Marketing logo" width="55" height="55">
+    <a class="logo-section" href="/index.html">
+      <img class="logo-img" src="/logo.jpg" alt="AK Brands Marketing logo" width="55" height="55">
       <span class="brand-text"><span class="brand-name"><span class="ak">AK</span> Brands Marketing</span><span class="brand-tagline">Trusted Firm</span></span>
     </a>
     <div class="menu-dropdown">
       <button class="menu-button" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menuDropdown">&#9776;</button>
       <nav class="dropdown-content" id="menuDropdown" aria-label="Main menu">
-        <a href="index.html">Home</a>
-        <a href="catalogue.html" aria-current="page">Buy</a>
-        <a href="index.html#about">About</a>
-        <a href="products.html">Products</a>
-        <a href="services.html">Services</a>
-        <a href="index.html#contact">Contact</a>
+        <a href="/index.html">Home</a>
+        <a href="/catalogue.html">Buy</a>
+        <a href="/index.html#about">About</a>
+        <a href="/products.html">Products</a>
+        <a href="/services.html">Services</a>
+        <a href="/index.html#contact">Contact</a>
       </nav>
     </div>
   </div>
 </header>
 
-<section class="intro">
-  <div class="intro-inner">
-    <h1>Live lots, ready to book</h1>
-    <p>Verified liquidation and surplus stock. Check the quantity, minimum quantity and lot rate, then book directly with AK Brands Marketing on WhatsApp. One point of contact from booking to delivery.</p>
-    <span class="count" id="count" aria-live="polite">Loading lots</span>
-    <a class="share-all" id="shareAll" href="#" target="_blank" rel="noopener">Share this catalogue on WhatsApp</a>
-  </div>
-</section>
-
-<div class="tools">
-  <div class="tools-inner">
-    <label for="q" style="position:absolute;left:-9999px">Search lots</label>
-    <input id="q" class="search" type="search" placeholder="Search by product, category, location or lot number" autocomplete="off">
-    <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
-  </div>
-</div>
-
-<main>
-  <div class="grid" id="grid">
-    <div class="state"><strong>Loading lots</strong>Please wait a moment.</div>
-  </div>
-
-  <div class="notice">
-    <h2>Please read before booking</h2>
-    <p><strong>Sold as is, where is.</strong> All lots are liquidation or surplus stock, sourced and sold in as-is condition and not 100% fresh. Photos and videos are indicative, and the actual lot may differ slightly. Up to 10% variance (minor damage, dust, mismatch) is standard in this trade and is accepted at booking. Variance beyond 10% is covered by our written Buyer Protection Plan.</p>
-    <p><strong>Not a brand representative.</strong> AK Brands Marketing is an independent liquidation sourcing partner. We do not own, represent, or act on behalf of any brand or manufacturer, and we are not an authorised dealer, distributor or service partner of any brand. Brand names and logos, where mentioned, belong to their owners and are used only to describe the stock on offer. Brand warranty and brand after-sales service do not apply to these lots.</p>
-  </div>
+<main class="lotwrap">
+  <div id="lotWrap"><div class="state"><strong>Loading lot</strong>Please wait a moment.</div></div>
 </main>
 
 <footer class="site-footer">
   <div class="footer-content">
     <p class="footer-copyright">&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
     <div class="footer-links">
-      <a href="terms.html" class="footer-link">Terms &amp; Conditions</a>
-      <a href="return-refund.html" class="footer-link">Return &amp; Refund Policy</a>
-      <a href="shipping-delivery.html" class="footer-link">Shipping &amp; Delivery Policy</a>
-      <a href="privacy.html" class="footer-link">Privacy Policy</a>
-      <a href="disclaimer.html" class="footer-link">Disclaimer</a>
-      <a href="business-policy.html" class="footer-link">Business Policy</a>
+      <a href="/terms.html" class="footer-link">Terms &amp; Conditions</a>
+      <a href="/return-refund.html" class="footer-link">Return &amp; Refund Policy</a>
+      <a href="/shipping-delivery.html" class="footer-link">Shipping &amp; Delivery Policy</a>
+      <a href="/privacy.html" class="footer-link">Privacy Policy</a>
+      <a href="/disclaimer.html" class="footer-link">Disclaimer</a>
+      <a href="/business-policy.html" class="footer-link">Business Policy</a>
     </div>
   </div>
 </footer>
 
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyALlIObFvQc6FzIHVO4ifXZVPsCmW4_XlY",
@@ -241,9 +223,6 @@ const wa = (msg) => "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURICom
 let lots = [];
 let activeCategory = "All";
 let query = "";
-
-const oldLink = new URLSearchParams(location.search).get("lot");
-if (oldLink) location.replace("/lot/?" + encodeURIComponent(oldLink.toUpperCase()));
 
 /* ---------- WhatsApp messages ---------- */
 function lotUrl(l){ return "https://akbrandsmarketing.com/lot/?" + encodeURIComponent(l.id); }
@@ -340,68 +319,45 @@ function topPanel(l){
   '</div>';
 }
 
-function cardHTML(l){
-  const sold = l.status === "sold";
-  const photo = l.photos && l.photos[0]
-    ? '<button class="card-media" type="button" data-open="' + esc(l.id) + '" aria-label="View details for ' + esc(l.title) + '"><img src="' + esc(l.photos[0]) + '" alt="' + esc(l.title) + '" loading="lazy"></button>'
-    : "";
-  return '<article class="card' + (sold ? " is-sold" : "") + '">' +
+
+function lotView(l){
+  return '<article class="card lotpage">' +
     topPanel(l) +
-    photo +
     '<div class="card-body">' +
-      productBlock(l, false) +
+      productBlock(l, true) +
       quantityBlock(l) +
       priceBlock(l) +
       rateBlock(l) +
       '<p class="asis">Sold as is, where is</p>' +
       actionsHTML(l) +
+      '<a class="btn btn-ghost allbtn" href="/catalogue.html">View all lots</a>' +
+      '<p class="dlg-note"><strong>Sold as is, where is.</strong> Liquidation stock: up to 10% variance (minor damage, dust, mismatch) is standard and accepted at booking. Beyond 10% is covered by the Buyer Protection Plan. AK Brands Marketing does not own or represent any brand, and brand warranty and brand service do not apply.</p>' +
       SIGNOFF +
     '</div></article>';
 }
 
-function visibleLots(){
-  const q = query.trim().toLowerCase();
-  return lots.filter((l) => {
-    if (activeCategory !== "All" && (l.category || "Other") !== activeCategory) return false;
-    if (!q) return true;
-    return [l.title, l.category, l.lotNo, l.description, l.condition, l.location].join(" ").toLowerCase().includes(q);
-  });
+function message(title, text){
+  $("lotWrap").innerHTML = '<div class="state"><strong>' + esc(title) + '</strong>' + esc(text) +
+    '<br><a class="btn btn-wa" style="display:inline-block;margin-top:1rem" href="/catalogue.html">View all lots</a></div>';
 }
 
-function renderChips(){
-  const cats = Array.from(new Set(lots.map((l) => l.category || "Other"))).sort();
-  const all = ["All"].concat(cats);
-  $("chips").innerHTML = all.map((c) =>
-    '<button class="chip" type="button" data-cat="' + esc(c) + '" aria-pressed="' + (c === activeCategory) + '">' + esc(c) + '</button>'
-  ).join("");
-}
-
-function render(){
-  const list = visibleLots();
-  const avail = lots.filter((l) => l.status !== "sold").length;
-  $("count").textContent = avail + (avail === 1 ? " lot available" : " lots available");
-  if (!list.length){
-    $("grid").innerHTML = lots.length
-      ? '<div class="state"><strong>No lots match your search</strong>Try a different word, or clear the filters.<br><button class="btn btn-ghost" id="clear" type="button" style="margin-top:1rem">Clear filters</button></div>'
-      : '<div class="state"><strong>New lots are being added</strong>Join our WhatsApp community to see stock the moment it arrives.<br><a class="btn btn-wa" style="display:inline-block;margin-top:1rem" href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" rel="noopener">Browse live lots on WhatsApp</a></div>';
-    const c = $("clear");
-    if (c) c.addEventListener("click", () => { activeCategory = "All"; query = ""; $("q").value = ""; renderChips(); render(); });
-    return;
+async function load(){
+  const raw = (location.search || "").replace(/^\?(lot=)?/, "").split("&")[0];
+  let id = "";
+  try { id = decodeURIComponent(raw).trim().toUpperCase(); } catch (e) { id = ""; }
+  if (!id){ message("This lot link is incomplete", "Please open the lot from the WhatsApp message again, or see all live lots."); return; }
+  try {
+    const snap = await getDoc(doc(db, "lots", id));
+    if (!snap.exists()){ message("This lot is not available", "It may have been removed. See all live lots instead."); return; }
+    const l = Object.assign({ id: snap.id }, snap.data());
+    document.title = "Lot " + l.lotNo + " | AK Brands Marketing";
+    $("lotWrap").innerHTML = lotView(l);
+  } catch (err) {
+    console.error(err);
+    message("Could not load this lot", "Check your internet connection and refresh the page, or see all live lots.");
   }
-  $("grid").innerHTML = list.map(cardHTML).join("");
 }
 
-$("grid").addEventListener("click", (e) => {
-  const b = e.target.closest("[data-open]");
-  if (b) location.href = "/lot/?" + encodeURIComponent(b.getAttribute("data-open"));
-});
-$("chips").addEventListener("click", (e) => {
-  const b = e.target.closest("[data-cat]");
-  if (!b) return;
-  activeCategory = b.getAttribute("data-cat");
-  renderChips(); render();
-});
-$("shareAll").setAttribute("href", shareAllLink());
 $("menuBtn").addEventListener("click", (e) => {
   e.stopPropagation();
   const open = $("menuDropdown").classList.toggle("show");
@@ -411,27 +367,6 @@ document.addEventListener("click", () => {
   $("menuDropdown").classList.remove("show");
   $("menuBtn").setAttribute("aria-expanded", "false");
 });
-$("q").addEventListener("input", (e) => { query = e.target.value; render(); });
-
-async function load(){
-  try {
-    const snap = await getDocs(collection(db, "lots"));
-    lots = snap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
-    lots.sort((a, b) => {
-      const sa = a.status === "sold" ? 1 : 0, sb = b.status === "sold" ? 1 : 0;
-      if (sa !== sb) return sa - sb;
-      const ta = a.createdAt && a.createdAt.seconds ? a.createdAt.seconds : 0;
-      const tb = b.createdAt && b.createdAt.seconds ? b.createdAt.seconds : 0;
-      return tb - ta;
-    });
-    renderChips();
-    render();
-  } catch (err) {
-    console.error(err);
-    $("count").textContent = "Lots unavailable";
-    $("grid").innerHTML = '<div class="state"><strong>Could not load the lots</strong>Check your internet connection and refresh the page. You can also see live stock in our WhatsApp community.<br><a class="btn btn-wa" style="display:inline-block;margin-top:1rem" href="https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq" target="_blank" rel="noopener">Browse live lots on WhatsApp</a></div>';
-  }
-}
 load();
 </script>
 </body>
