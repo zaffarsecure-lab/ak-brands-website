@@ -12,8 +12,10 @@
 <meta property="og:image" content="https://akbrandsmarketing.com/logo.jpg">
 <script>
 (function () {
-  var id = (location.search || "").replace(/^\?(lot=)?/, "").split("&")[0];
-  location.replace("/lot-view.html" + (id ? "?lot=" + encodeURIComponent(id) : ""));
+  var raw = (location.search || "").replace(/^\?(lot=)?/, "").split("&")[0];
+  var id = "";
+  try { id = decodeURIComponent(raw).replace(/-/g, " ").replace(/\s+/g, " ").trim(); } catch (e) { id = raw; }
+  location.replace("/lot-view.html" + (id ? "?lot=" + encodeURIComponent(id.replace(/ /g, "-")) : ""));
 })();
 </script>
 </head>
