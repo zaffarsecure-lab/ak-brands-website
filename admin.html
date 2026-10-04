@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Lot manager | AK Brands Marketing</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#0f1b2d;--gold:#d4af37;--ivory:#f7f5ef;--line:#e2ddcf;--text:#243247;--muted:#5f6e82;--ok:#12803f;--bad:#8a2f2f}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -13,17 +13,19 @@ body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;backgroun
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 header{background:var(--ink);color:#fff;border-bottom:2px solid var(--gold)}
 .bar{max-width:760px;margin:0 auto;padding:.9rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
-.bar h1{font-family:'Playfair Display',Georgia,serif;font-size:1.2rem;font-weight:600}
+.bar h1{font-size:1.15rem;font-weight:600}
 .bar a,.bar button{color:#d9e0ea;font:inherit;font-size:.9rem;background:none;border:1px solid rgba(255,255,255,.3);padding:.4rem .8rem;border-radius:999px;text-decoration:none;cursor:pointer}
 main{max-width:760px;margin:0 auto;padding:1.25rem 1rem 3rem;display:grid;gap:1.25rem}
 .panel{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1.1rem}
-.panel h2{font-family:'Playfair Display',Georgia,serif;font-size:1.3rem;color:var(--ink);margin-bottom:.8rem}
+.panel h2{font-size:1.15rem;font-weight:600;color:var(--ink);margin-bottom:.8rem}
+.block{margin-top:1.1rem;padding-top:.9rem;border-top:2px solid var(--gold)}
+.block h3{font-size:1rem;color:var(--ink)}
 label{display:block;font-weight:600;font-size:.9rem;margin:.8rem 0 .3rem;color:var(--ink)}
 .hint{font-weight:400;color:var(--muted);font-size:.82rem}
 input,select,textarea{width:100%;padding:.75rem .85rem;border:1px solid #cfc8b5;border-radius:8px;font:inherit;background:#fff;color:var(--text)}
 textarea{min-height:110px;resize:vertical}
 .row{display:grid;gap:.8rem}
-@media(min-width:560px){.row.three{grid-template-columns:repeat(3,1fr)}.row.two{grid-template-columns:1fr 1fr}}
+@media(min-width:560px){.row.two{grid-template-columns:1fr 1fr}}
 button.primary{margin-top:1.1rem;width:100%;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.9rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
 button.primary[disabled]{opacity:.6;cursor:wait}
 button.link{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer;margin-top:.7rem}
@@ -40,6 +42,8 @@ button.link{background:none;border:0;color:var(--muted);text-decoration:underlin
 .btns{display:flex;flex-wrap:wrap;gap:.5rem}
 .btns button{border:1px solid #bfb7a2;background:#fff;border-radius:8px;padding:.45rem .8rem;font:inherit;font-size:.88rem;cursor:pointer}
 .btns button.del{border-color:var(--bad);color:var(--bad)}
+.btns button.wa{border-color:var(--ok);color:var(--ok);font-weight:600}
+.msg a.sharenow{display:inline-block;margin-top:.6rem;padding:.55rem .9rem;border:1px solid var(--ok);border-radius:8px;color:var(--ok);font-weight:600;text-decoration:none;background:#fff}
 .hidden{display:none!important}
 </style>
 </head>
@@ -68,63 +72,90 @@ button.link{background:none;border:0;color:var(--muted);text-decoration:underlin
     </form>
   </section>
 
-  <!-- Dashboard -->
+  <!-- Add / edit a lot -->
   <section class="panel hidden" id="formPanel">
     <h2 id="formTitle">Add a lot</h2>
     <form id="lotForm">
-      <div class="row two">
-        <div>
-          <label for="lotNo">Lot number <span class="hint">(leave blank to create one)</span></label>
-          <input id="lotNo" type="text" maxlength="24" placeholder="Example: AK1042">
-        </div>
-        <div>
-          <label for="category">Category</label>
-          <select id="category" required>
-            <option value="">Select a category</option>
-            <option>Textile and Garments</option>
-            <option>FMCG</option>
-            <option>Electronics</option>
-            <option>Home and Kitchen</option>
-            <option>Furniture</option>
-            <option>Mobiles and Accessories</option>
-            <option>Hardware</option>
-            <option>Luggage</option>
-            <option>Footwear</option>
-            <option>Other</option>
-          </select>
+
+      <div class="block" style="margin-top:0;border-top:0;padding-top:0">
+        <h3>1. Lot number</h3>
+        <label for="lotNo">Lot number <span class="hint">(leave blank and one is created for you)</span></label>
+        <input id="lotNo" type="text" maxlength="24" placeholder="Example: AK1042">
+      </div>
+
+      <div class="block">
+        <h3>2. Product</h3>
+        <label for="title">Product name</label>
+        <input id="title" type="text" maxlength="90" placeholder="Example: Men's cotton T-shirts" required>
+        <p class="hint" style="margin-top:.3rem">A brand name is fine to describe the stock. Do not write that you are an authorised seller or dealer of the brand.</p>
+
+        <label for="category">Category</label>
+        <select id="category" required>
+          <option value="">Select a category</option>
+          <option>Textile and Garments</option>
+          <option>FMCG</option>
+          <option>Electronics</option>
+          <option>Home and Kitchen</option>
+          <option>Furniture</option>
+          <option>Mobiles and Accessories</option>
+          <option>Hardware</option>
+          <option>Luggage</option>
+          <option>Footwear</option>
+          <option>Other</option>
+        </select>
+
+        <label for="condition">Condition</label>
+        <input id="condition" type="text" maxlength="120" placeholder="Example: Fresh surplus, up to 10% variance" required>
+
+        <label for="description">Product details <span class="hint">(optional)</span></label>
+        <textarea id="description" maxlength="1500" placeholder="Sizes, brands, packing, payment terms. Do not write your buying cost or supplier names."></textarea>
+
+        <label for="location">Location <span class="hint">(optional, city only)</span></label>
+        <input id="location" type="text" maxlength="80" placeholder="Example: Bengaluru, Karnataka">
+      </div>
+
+      <div class="block">
+        <h3>3. Quantity</h3>
+        <div class="row two">
+          <div>
+            <label for="qty">Quantity</label>
+            <input id="qty" type="text" maxlength="40" placeholder="Example: 1,500 pcs" required>
+          </div>
+          <div>
+            <label for="moq">Minimum quantity</label>
+            <input id="moq" type="text" maxlength="40" placeholder="Example: 200 pcs" required>
+          </div>
         </div>
       </div>
 
-      <label for="title">Product title</label>
-      <input id="title" type="text" maxlength="90" placeholder="Example: Men's cotton T-shirts, branded surplus" required>
-      <p class="hint" style="margin-top:.3rem">A brand name is fine to describe the stock. Do not write that you are an authorised seller or dealer of the brand.</p>
-
-      <div class="row three">
-        <div>
-          <label for="rate">Rate</label>
-          <input id="rate" type="text" maxlength="40" placeholder="Example: Rs 120 per pc" required>
-        </div>
-        <div>
-          <label for="moq">MOQ</label>
-          <input id="moq" type="text" maxlength="40" placeholder="Example: 200 pcs" required>
-        </div>
-        <div>
-          <label for="qty">Quantity available</label>
-          <input id="qty" type="text" maxlength="40" placeholder="Example: 1,500 pcs" required>
+      <div class="block">
+        <h3>4. Reference prices <span class="hint">(optional)</span></h3>
+        <div class="row two">
+          <div>
+            <label for="mrp">MRP <span class="hint">(if available)</span></label>
+            <input id="mrp" type="text" maxlength="40" placeholder="Example: Rs 799 per pc">
+          </div>
+          <div>
+            <label for="onlinePrice">Online price <span class="hint">(if available)</span></label>
+            <input id="onlinePrice" type="text" maxlength="40" placeholder="Example: Rs 499 per pc">
+          </div>
         </div>
       </div>
 
-      <label for="condition">Condition</label>
-      <input id="condition" type="text" maxlength="120" placeholder="Example: Fresh surplus, up to 10% variance" required>
+      <div class="block">
+        <h3>5. Lot rate</h3>
+        <label for="rate">Lot rate <span class="hint">(your lowest rate; buyers see it when they open the lot link)</span></label>
+        <input id="rate" type="text" maxlength="40" placeholder="Example: Rs 120 per pc" required>
+      </div>
 
-      <label for="description">Details and conditions <span class="hint">(optional, buyers can read this)</span></label>
-      <textarea id="description" maxlength="1500" placeholder="Sizes, brands, packing, pickup city, payment terms. Do not write your buying cost or supplier names."></textarea>
-
-      <label for="photo1">Photo 1 <span class="hint">(whole lot)</span></label>
-      <input id="photo1" type="file" accept="image/*">
-      <label for="photo2">Photo 2 <span class="hint">(close-up)</span></label>
-      <input id="photo2" type="file" accept="image/*">
-      <p class="hint" style="margin-top:.4rem" id="photoHint">Photos are shrunk on your phone before upload.</p>
+      <div class="block hidden" id="photoBlock">
+        <h3>Photos <span class="hint">(optional)</span></h3>
+        <label for="photo1">Photo 1 <span class="hint">(whole lot)</span></label>
+        <input id="photo1" type="file" accept="image/*">
+        <label for="photo2">Photo 2 <span class="hint">(close-up)</span></label>
+        <input id="photo2" type="file" accept="image/*">
+        <p class="hint" style="margin-top:.4rem" id="photoHint">Photos are shrunk on your phone before upload.</p>
+      </div>
 
       <button class="primary" id="saveBtn" type="submit">Save lot</button>
       <button class="link hidden" id="cancelEdit" type="button">Cancel editing</button>
@@ -163,6 +194,34 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<
 
 let lots = [];
 let editing = null; // { lotNo, photos }
+
+const lotUrl = (l) => "https://akbrandsmarketing.com/lot/?" + encodeURIComponent(l.id);
+
+// Same order as the catalogue: 1 Lot number | 2 Product block | 3 Quantity | 4 MRP, online price | 5 Lot rate | 6 Sign-off
+function shareText(l){
+  const cond = String(l.condition || "As is").replace(/[.\s]+$/, "");
+  const lines = [];
+  lines.push("*Lot Number:* " + l.lotNo, "");
+  lines.push("*Product name:* " + l.title);
+  lines.push("*Category:* " + (l.category || "Other"));
+  lines.push("*Condition:* " + cond + ". Sold as is, where is.");
+  if (l.description) lines.push("*Product details:* " + l.description);
+  if (l.location) lines.push("*Location:* " + l.location);
+  lines.push("");
+  lines.push("*Quantity:* " + (l.qty || "On request"));
+  lines.push("*Minimum quantity:* " + (l.moq || "On request"));
+  if (l.mrp || l.onlinePrice) {
+    lines.push("");
+    if (l.mrp) lines.push("*MRP:* " + l.mrp);
+    if (l.onlinePrice) lines.push("*Online price:* " + l.onlinePrice);
+  }
+  lines.push("");
+  lines.push("*Lot rate:* *Lowest rate. Click the link:*");
+  lines.push(lotUrl(l));
+  lines.push("");
+  lines.push("Regards,", "Trusted Firm", "AK Brands Marketing\u00A9");
+  return lines.join("\n");
+}
 
 function show(el, text, kind){
   el.textContent = text;
@@ -250,11 +309,14 @@ $("lotForm").addEventListener("submit", async (e) => {
       lotNo,
       title: $("title").value.trim(),
       category: $("category").value,
-      rate: $("rate").value.trim(),
-      moq: $("moq").value.trim(),
-      qty: $("qty").value.trim(),
       condition: $("condition").value.trim(),
       description: $("description").value.trim(),
+      location: $("location").value.trim(),
+      qty: $("qty").value.trim(),
+      moq: $("moq").value.trim(),
+      mrp: $("mrp").value.trim(),
+      onlinePrice: $("onlinePrice").value.trim(),
+      rate: $("rate").value.trim(),
       photos,
       status: exists && exists.status ? exists.status : "available"
     };
@@ -262,6 +324,14 @@ $("lotForm").addEventListener("submit", async (e) => {
 
     await setDoc(doc(db, "lots", lotNo), data);
     show($("formMsg"), "Saved. Lot " + lotNo + " is now in your catalogue.", "ok");
+    const sharer = document.createElement("a");
+    sharer.className = "sharenow";
+    sharer.href = "https://wa.me/?text=" + encodeURIComponent(shareText(Object.assign({ id: lotNo }, data)));
+    sharer.target = "_blank";
+    sharer.rel = "noopener";
+    sharer.textContent = "Share this lot on WhatsApp";
+    $("formMsg").appendChild(document.createElement("br"));
+    $("formMsg").appendChild(sharer);
     resetForm();
     await loadLots();
   } catch (err) {
@@ -303,9 +373,11 @@ function renderList(){
   $("lotList").innerHTML = lots.map((l) => {
     const sold = l.status === "sold";
     return '<div class="lot">' +
-      '<h3>' + esc(l.title) + '<span class="tag' + (sold ? " sold" : "") + '">' + (sold ? "Sold" : "Available") + '</span></h3>' +
-      '<p>Lot ' + esc(l.lotNo) + ' / ' + esc(l.category) + ' / ' + esc(l.rate) + ' / MOQ ' + esc(l.moq) + '</p>' +
+      '<h3>Lot ' + esc(l.lotNo) + '<span class="tag' + (sold ? " sold" : "") + '">' + (sold ? "Sold" : "Available") + '</span></h3>' +
+      '<p>' + esc(l.title) + ' / ' + esc(l.category) + (l.location ? ' / ' + esc(l.location) : '') + '</p>' +
+      '<p>Quantity ' + esc(l.qty) + ' / Minimum quantity ' + esc(l.moq) + ' / Lot rate ' + esc(l.rate) + '</p>' +
       '<div class="btns">' +
+        '<button type="button" class="wa" data-act="share" data-id="' + esc(l.id) + '">Share on WhatsApp</button>' +
         '<button type="button" data-act="edit" data-id="' + esc(l.id) + '">Edit</button>' +
         '<button type="button" data-act="toggle" data-id="' + esc(l.id) + '">' + (sold ? "Mark available" : "Mark sold") + '</button>' +
         '<button type="button" class="del" data-act="delete" data-id="' + esc(l.id) + '">Delete</button>' +
@@ -321,7 +393,9 @@ $("lotList").addEventListener("click", async (e) => {
   if (!l) return;
   const act = b.getAttribute("data-act");
   try {
-    if (act === "toggle"){
+    if (act === "share"){
+      window.open("https://wa.me/?text=" + encodeURIComponent(shareText(l)), "_blank");
+    } else if (act === "toggle"){
       await updateDoc(doc(db, "lots", id), { status: l.status === "sold" ? "available" : "sold" });
       await loadLots();
     } else if (act === "delete"){
@@ -335,13 +409,16 @@ $("lotList").addEventListener("click", async (e) => {
       editing = { lotNo: l.lotNo, photos: (l.photos || []).slice() };
       $("formTitle").textContent = "Edit lot " + l.lotNo;
       $("lotNo").value = l.lotNo; $("lotNo").readOnly = true;
-      $("category").value = l.category || "";
       $("title").value = l.title || "";
-      $("rate").value = l.rate || "";
-      $("moq").value = l.moq || "";
-      $("qty").value = l.qty || "";
+      $("category").value = l.category || "";
       $("condition").value = l.condition || "";
       $("description").value = l.description || "";
+      $("location").value = l.location || "";
+      $("qty").value = l.qty || "";
+      $("moq").value = l.moq || "";
+      $("mrp").value = l.mrp || "";
+      $("onlinePrice").value = l.onlinePrice || "";
+      $("rate").value = l.rate || "";
       $("photoHint").textContent = (l.photos && l.photos.length ? "This lot has " + l.photos.length + " photo(s). Choose new photos only if you want to replace them." : "No photos yet.");
       $("cancelEdit").classList.remove("hidden");
       hideMsg($("formMsg"));
