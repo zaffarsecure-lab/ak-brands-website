@@ -10,6 +10,13 @@
 <meta property="og:title" content="Live lot | AK Brands Marketing&copy;">
 <meta property="og:description" content="Tap to see the lowest lot rate, quantity and minimum quantity. Trusted Firm, AK Brands Marketing&copy;.">
 <meta property="og:image" content="https://akbrandsmarketing.com/logo.jpg">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SH29FGTV34"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-SH29FGTV34');
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -220,6 +227,16 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 const wa = (msg) => "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg);
 
+/* ---------- Visitor tracking (Google Analytics) ---------- */
+function track(name, params){
+  try { if (window.gtag) window.gtag("event", name, Object.assign({ transport_type: "beacon" }, params || {})); } catch (e) {}
+}
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("[data-track]");
+  if (a) track(a.getAttribute("data-track"), { lot_id: a.getAttribute("data-lotid") || "" });
+});
+
+
 let lots = [];
 let activeCategory = "All";
 let query = "";
@@ -301,10 +318,11 @@ const SIGNOFF = '<p class="signoff">Trusted Firm<br>AK Brands Marketing&copy;</p
 
 function actionsHTML(l){
   if (l.status === "sold") return '<p class="soldnote">This lot has been sold</p>';
+  const id = esc(l.lotNo);
   return '<div class="actions">' +
-    '<a class="btn btn-wa" href="' + bookLink(l) + '" target="_blank" rel="noopener">Book on WhatsApp</a>' +
-    '<a class="btn-share" href="' + shareLink(l) + '" target="_blank" rel="noopener">Share this lot on WhatsApp</a>' +
-    '<a class="btn btn-ghost" href="' + mediaLink(l) + '" target="_blank" rel="noopener">Request full video and photos</a>' +
+    '<a class="btn btn-wa" data-track="book_click" data-lotid="' + id + '" href="' + bookLink(l) + '" target="_blank" rel="noopener">Book on WhatsApp</a>' +
+    '<a class="btn-share" data-track="share_click" data-lotid="' + id + '" href="' + shareLink(l) + '" target="_blank" rel="noopener">Share this lot on WhatsApp</a>' +
+    '<a class="btn btn-ghost" data-track="media_request_click" data-lotid="' + id + '" href="' + mediaLink(l) + '" target="_blank" rel="noopener">Request full video and photos</a>' +
   '</div>';
 }
 
@@ -348,10 +366,11 @@ async function load(){
   if (!id){ message("This lot link is incomplete", "Please open the lot from the WhatsApp message again, or see all live lots."); return; }
   try {
     const snap = await getDoc(doc(db, "lots", id));
-    if (!snap.exists()){ message("This lot is not available", "It may have been removed. See all live lots instead."); return; }
+    if (!snap.exists()){ track("lot_not_found", { lot_id: id }); message("This lot is not available", "It may have been removed. See all live lots instead."); return; }
     const l = Object.assign({ id: snap.id }, snap.data());
     document.title = "Lot " + l.lotNo + " | AK Brands Marketing";
     $("lotWrap").innerHTML = lotView(l);
+    track("lot_view", { lot_id: l.lotNo, lot_title: l.title, lot_category: l.category || "Other", lot_status: l.status || "available" });
   } catch (err) {
     console.error(err);
     message("Could not load this lot", "Check your internet connection and refresh the page, or see all live lots.");
