@@ -18,21 +18,27 @@ header{background:var(--ink);color:#fff;border-bottom:2px solid var(--gold)}
 main{max-width:760px;margin:0 auto;padding:1.25rem 1rem 3rem;display:grid;gap:1.25rem}
 .panel{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1.1rem}
 .panel h2{font-size:1.15rem;font-weight:600;color:var(--ink);margin-bottom:.8rem}
-.block{margin-top:1.1rem;padding-top:.9rem;border-top:2px solid var(--gold)}
-.block h3{font-size:1rem;color:var(--ink)}
-label{display:block;font-weight:600;font-size:.9rem;margin:.8rem 0 .3rem;color:var(--ink)}
+label{display:block;font-weight:600;font-size:.9rem;margin:.9rem 0 .3rem;color:var(--ink)}
 .hint{font-weight:400;color:var(--muted);font-size:.82rem}
 input,select,textarea{width:100%;padding:.75rem .85rem;border:1px solid #cfc8b5;border-radius:8px;font:inherit;background:#fff;color:var(--text)}
 textarea{min-height:110px;resize:vertical}
 .row{display:grid;gap:.8rem}
-@media(min-width:560px){.row.two{grid-template-columns:1fr 1fr}}
+.qrow{display:grid;grid-template-columns:1fr 9rem;gap:.6rem}
+.sep{margin-top:1.1rem;padding-top:.2rem;border-top:2px solid var(--gold)}
+.sep h3{font-size:1rem;color:var(--ink);margin-top:.8rem}
 button.primary{margin-top:1.1rem;width:100%;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.9rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
 button.primary[disabled]{opacity:.6;cursor:wait}
+button.small{margin-top:.7rem;background:#fff;color:var(--ink);border:1px solid var(--ink);padding:.6rem .9rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
 button.link{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer;margin-top:.7rem}
 .msg{margin-top:.9rem;padding:.7rem .9rem;border-radius:8px;font-size:.92rem;display:none}
 .msg.show{display:block}
 .msg.ok{background:#e6f4ec;color:#0c5a2c}
 .msg.err{background:#f8e6e6;color:#7a2020}
+.msg a.sharenow{display:inline-block;margin-top:.6rem;padding:.55rem .9rem;border:1px solid var(--ok);border-radius:8px;color:var(--ok);font-weight:600;text-decoration:none;background:#fff}
+.newnum{margin-top:.7rem;padding:.8rem;border:1px dashed #b9b19b;border-radius:8px;background:#fbfaf6}
+details{margin-top:.8rem}
+summary{cursor:pointer;font-weight:600;font-size:.9rem;color:var(--ink)}
+.trow{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
 .lot{display:grid;gap:.5rem;border-top:1px solid var(--line);padding:.9rem 0}
 .lot:first-of-type{border-top:0}
 .lot h3{font-size:1rem;color:var(--ink)}
@@ -43,7 +49,6 @@ button.link{background:none;border:0;color:var(--muted);text-decoration:underlin
 .btns button{border:1px solid #bfb7a2;background:#fff;border-radius:8px;padding:.45rem .8rem;font:inherit;font-size:.88rem;cursor:pointer}
 .btns button.del{border-color:var(--bad);color:var(--bad)}
 .btns button.wa{border-color:var(--ok);color:var(--ok);font-weight:600}
-.msg a.sharenow{display:inline-block;margin-top:.6rem;padding:.55rem .9rem;border:1px solid var(--ok);border-radius:8px;color:var(--ok);font-weight:600;text-decoration:none;background:#fff}
 .hidden{display:none!important}
 </style>
 </head>
@@ -72,89 +77,105 @@ button.link{background:none;border:0;color:var(--muted);text-decoration:underlin
     </form>
   </section>
 
+  <!-- Sharing settings -->
+  <section class="panel hidden" id="shareCfg">
+    <h2>Sharing to WhatsApp</h2>
+    <label for="rateMode" style="margin-top:0">What to show on the Lot rate line</label>
+    <select id="rateMode">
+      <option value="link">Click the link only</option>
+      <option value="exact">Exact rate only</option>
+      <option value="both">Exact rate and Click the link</option>
+    </select>
+    <p class="hint" style="margin-top:.4rem">This applies to every Share on WhatsApp button on this page. Buyers who share from the catalogue always send the Click the link version.</p>
+  </section>
+
   <!-- Add / edit a lot -->
   <section class="panel hidden" id="formPanel">
     <h2 id="formTitle">Add a lot</h2>
-    <form id="lotForm">
+    <p class="hint" style="margin-top:-.4rem">Every field is optional. Fill in only what you need and leave the rest blank.</p>
+    <form id="lotForm" novalidate>
 
-      <div class="block" style="margin-top:0;border-top:0;padding-top:0">
-        <h3>1. Lot number</h3>
-        <label for="lotNo">Lot number <span class="hint">(leave blank and one is created for you)</span></label>
-        <input id="lotNo" type="text" maxlength="24" placeholder="Example: AK1042">
+      <label for="lotNo">1. Lot number <span class="hint">(1 to 8 digits, then a space, then 1 to 5 letters. Example: 22821 AK. Leave blank to create one)</span></label>
+      <input id="lotNo" type="text" maxlength="14" autocapitalize="characters" autocomplete="off" placeholder="Example: 22821 AK">
+
+      <label for="title">2. Product name</label>
+      <input id="title" type="text" maxlength="90" placeholder="Example: Men's cotton T-shirts">
+      <p class="hint" style="margin-top:.3rem">A brand name is fine to describe the stock. Do not write that you are an authorised seller or dealer of the brand.</p>
+
+      <label for="category">3. Category</label>
+      <select id="category">
+        <option value="">Select a category</option>
+        <option>Textile and Garments</option>
+        <option>FMCG</option>
+        <option>Electronics</option>
+        <option>Home and Kitchen</option>
+        <option>Furniture</option>
+        <option>Mobiles and Accessories</option>
+        <option>Hardware</option>
+        <option>Luggage</option>
+        <option>Footwear</option>
+        <option>Other</option>
+      </select>
+
+      <label for="condition">4. Condition</label>
+      <input id="condition" type="text" maxlength="120" placeholder="Example: Fresh surplus, up to 10% variance">
+
+      <label for="description">5. Details <span class="hint">(optional)</span></label>
+      <textarea id="description" maxlength="1500" placeholder="Sizes, brands, packing, payment terms. Do not write your buying cost or supplier names."></textarea>
+
+      <label for="location">6. Location <span class="hint">(optional, city only)</span></label>
+      <input id="location" type="text" maxlength="80" placeholder="Example: Bengaluru, Karnataka">
+
+      <label for="qtyNum">7. Quantity</label>
+      <div class="qrow">
+        <input id="qtyNum" type="text" inputmode="decimal" maxlength="12" placeholder="Example: 1500">
+        <select id="qtyUnit" aria-label="Quantity unit"></select>
       </div>
+      <input id="qtyOther" class="hidden" type="text" maxlength="20" placeholder="Type the unit" style="margin-top:.5rem">
 
-      <div class="block">
-        <h3>2. Product</h3>
-        <label for="title">Product</label>
-        <input id="title" type="text" maxlength="90" placeholder="Example: Men's cotton T-shirts" required>
-        <p class="hint" style="margin-top:.3rem">A brand name is fine to describe the stock. Do not write that you are an authorised seller or dealer of the brand.</p>
-
-        <label for="category">Category</label>
-        <select id="category" required>
-          <option value="">Select a category</option>
-          <option>Textile and Garments</option>
-          <option>FMCG</option>
-          <option>Electronics</option>
-          <option>Home and Kitchen</option>
-          <option>Furniture</option>
-          <option>Mobiles and Accessories</option>
-          <option>Hardware</option>
-          <option>Luggage</option>
-          <option>Footwear</option>
-          <option>Other</option>
-        </select>
-
-        <label for="condition">Condition</label>
-        <input id="condition" type="text" maxlength="120" placeholder="Example: Fresh surplus, up to 10% variance" required>
-
-        <label for="description">Details <span class="hint">(optional)</span></label>
-        <textarea id="description" maxlength="1500" placeholder="Sizes, brands, packing, payment terms. Do not write your buying cost or supplier names."></textarea>
-
-        <label for="location">Location <span class="hint">(optional, city only)</span></label>
-        <input id="location" type="text" maxlength="80" placeholder="Example: Bengaluru, Karnataka">
+      <label for="moqNum">8. Minimum quantity</label>
+      <div class="qrow">
+        <input id="moqNum" type="text" inputmode="decimal" maxlength="12" placeholder="Example: 200">
+        <select id="moqUnit" aria-label="Minimum quantity unit"></select>
       </div>
+      <input id="moqOther" class="hidden" type="text" maxlength="20" placeholder="Type the unit" style="margin-top:.5rem">
 
-      <div class="block">
-        <h3>3. Quantity</h3>
-        <div class="row two">
-          <div>
-            <label for="qty">Quantity</label>
-            <input id="qty" type="text" maxlength="40" placeholder="Example: 1,500 pcs" required>
-          </div>
-          <div>
-            <label for="moq">Minimum quantity</label>
-            <input id="moq" type="text" maxlength="40" placeholder="Example: 200 pcs" required>
-          </div>
+      <label for="mrp">9. MRP <span class="hint">(if available)</span></label>
+      <input id="mrp" type="text" maxlength="40" placeholder="Example: Rs 799 per pc">
+
+      <label for="onlinePrice">10. Online price <span class="hint">(if available)</span></label>
+      <input id="onlinePrice" type="text" maxlength="40" placeholder="Example: Rs 499 per pc">
+
+      <label for="rate">11. Lot rate <span class="hint">(your lowest rate; buyers see it when they open the lot link)</span></label>
+      <input id="rate" type="text" maxlength="40" placeholder="Example: Rs 120 per pc">
+
+      <div class="sep">
+        <h3>WhatsApp number for buyer queries</h3>
+        <p class="hint">Buyers who tap Book on WhatsApp or Request full video and photos on this lot will message this number. Pick a teammate, or add a new number. New numbers are saved for next time.</p>
+        <label for="waSelect">Who handles this lot</label>
+        <select id="waSelect"></select>
+
+        <div class="newnum hidden" id="newNumBox">
+          <label for="newName" style="margin-top:0">Teammate name</label>
+          <input id="newName" type="text" maxlength="40" placeholder="Example: Ravi, Bengaluru team">
+          <label for="newNumber">WhatsApp number</label>
+          <input id="newNumber" type="tel" inputmode="tel" maxlength="20" placeholder="Example: 98765 43210">
+          <button class="small" id="saveNumberBtn" type="button">Save this number</button>
         </div>
+
+        <details>
+          <summary>Saved numbers</summary>
+          <div id="teamList"><p class="hint" style="margin-top:.5rem">No saved numbers yet.</p></div>
+        </details>
+        <p class="hint" id="teamNote" style="margin-top:.4rem"></p>
       </div>
 
-      <div class="block">
-        <h3>4. Reference prices <span class="hint">(optional)</span></h3>
-        <div class="row two">
-          <div>
-            <label for="mrp">MRP <span class="hint">(if available)</span></label>
-            <input id="mrp" type="text" maxlength="40" placeholder="Example: Rs 799 per pc">
-          </div>
-          <div>
-            <label for="onlinePrice">Online price <span class="hint">(if available)</span></label>
-            <input id="onlinePrice" type="text" maxlength="40" placeholder="Example: Rs 499 per pc">
-          </div>
-        </div>
-      </div>
-
-      <div class="block">
-        <h3>5. Lot rate</h3>
-        <label for="rate">Lot rate <span class="hint">(your lowest rate; buyers see it when they open the lot link)</span></label>
-        <input id="rate" type="text" maxlength="40" placeholder="Example: Rs 120 per pc" required>
-      </div>
-
-      <div class="block hidden" id="photoBlock">
-        <h3>Photos <span class="hint">(optional)</span></h3>
-        <label for="photo1">Photo 1 <span class="hint">(whole lot)</span></label>
+      <div class="hidden" id="photoBlock">
+        <label for="photo1">Photo 1</label>
         <input id="photo1" type="file" accept="image/*">
-        <label for="photo2">Photo 2 <span class="hint">(close-up)</span></label>
+        <label for="photo2">Photo 2</label>
         <input id="photo2" type="file" accept="image/*">
-        <p class="hint" style="margin-top:.4rem" id="photoHint">Photos are shrunk on your phone before upload.</p>
+        <p class="hint" id="photoHint">Photos are shrunk on your phone before upload.</p>
       </div>
 
       <button class="primary" id="saveBtn" type="submit">Save lot</button>
@@ -172,7 +193,7 @@ button.link{background:none;border:0;color:var(--muted);text-decoration:underlin
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
 const firebaseConfig = {
@@ -191,43 +212,193 @@ const storage = getStorage(app);
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+class UserError extends Error { constructor(m, silent){ super(m); this.silent = !!silent; } }
+
+const DEFAULT_NUMBER = "918660502217";
+const DEFAULT_LABEL = "Main business number (+91 86605 02217)";
+const UNITS = ["Pcs", "Units", "Boxes", "Kit", "Others"];
 
 let lots = [];
+let team = [];
 let editing = null; // { lotNo, photos }
 
-const lotUrl = (l) => "https://akbrandsmarketing.com/lot/?" + encodeURIComponent(l.id);
+/* ---------- Lot link and WhatsApp message (same order as the catalogue) ---------- */
+const lotUrl = (l) => "https://akbrandsmarketing.com/lot/?" + encodeURIComponent(String(l.id).replace(/ /g, "-"));
 
-// Same order as the catalogue: 1 Lot number | 2 Product block | 3 Quantity | 4 MRP, online price | 5 Lot rate | 6 Sign-off
-function shareText(l){
-  const cond = String(l.condition || "As is").replace(/[.\s]+$/, "");
+function shareText(l, mode){
+  mode = mode || "link";
   const lines = [];
-  lines.push("*Lot Number - " + l.lotNo + "*", "");
-  lines.push("*Product - " + l.title + "*");
-  lines.push("Category - " + (l.category || "Other"));
-  lines.push("Condition - " + cond + ". Sold as is, where is.");
-  if (l.description) lines.push("Details - " + l.description);
-  if (l.location) lines.push("Location - " + l.location);
-  lines.push("");
-  lines.push("Quantity - " + (l.qty || "On request"));
-  lines.push("Minimum quantity - " + (l.moq || "On request"));
-  if (l.mrp || l.onlinePrice) {
+  lines.push("*Lot - " + l.lotNo + "*", "");
+  if (l.title || l.description) {
+    if (l.title) lines.push("*" + l.title + "*");
+    if (l.description) lines.push("Details - " + l.description);
     lines.push("");
+  }
+  if (l.qty || l.moq) {
+    if (l.qty) lines.push("Quantity - " + l.qty);
+    if (l.moq) lines.push("Minimum quantity - " + l.moq);
+    lines.push("");
+  }
+  if (l.mrp || l.onlinePrice) {
     if (l.mrp) lines.push("MRP - " + l.mrp);
     if (l.onlinePrice) lines.push("Online price - " + l.onlinePrice);
+    lines.push("");
   }
-  lines.push("");
-  lines.push("*Lot rate - Click the link*");
-  lines.push(lotUrl(l));
-  lines.push("");
+  if (mode === "exact") {
+    if (l.rate) lines.push("*Lot rate - " + l.rate + "*", "");
+  } else if (mode === "both") {
+    if (l.rate) lines.push("*Lot rate - " + l.rate + "*");
+    lines.push("*Click the link*", lotUrl(l), "");
+  } else {
+    lines.push("*Lot rate - Click the link*", lotUrl(l), "");
+  }
   lines.push("Trusted Firm", "AK Brands Marketing\u00A9");
   return lines.join("\n");
 }
 
-function show(el, text, kind){
-  el.textContent = text;
-  el.className = "msg show " + kind;
-}
+function show(el, text, kind){ el.textContent = text; el.className = "msg show " + kind; }
 function hideMsg(el){ el.className = "msg"; el.textContent = ""; }
+
+/* ---------- Lot number: 1 to 8 digits, then optionally a space and 1 to 5 letters ---------- */
+const LOT_RE = /^[0-9]{1,8}( [A-Z]{1,5})?$/;
+const cleanLotNo = (raw) => String(raw || "").trim().replace(/\s+/g, " ").toUpperCase();
+const autoNo = () => String(Date.now()).slice(-6) + " AK";
+
+/* ---------- Quantity with unit ---------- */
+function fillUnits(){
+  for (const p of ["qty", "moq"]) {
+    $(p + "Unit").innerHTML = UNITS.map((u) => "<option>" + u + "</option>").join("");
+    $(p + "Unit").addEventListener("change", () => toggleOther(p));
+  }
+}
+function toggleOther(p){
+  $(p + "Other").classList.toggle("hidden", $(p + "Unit").value !== "Others");
+}
+function readQty(p){
+  const num = $(p + "Num").value.trim().replace(/\s+/g, " ");
+  let unit = $(p + "Unit").value;
+  if (unit === "Others") unit = $(p + "Other").value.trim();
+  if (!num) return { num: "", unit: "", text: "" };
+  return { num, unit, text: unit ? num + " " + unit : num };
+}
+function setQty(p, numVal, unitVal, legacyText){
+  let num = numVal, unit = unitVal;
+  if ((num === undefined || num === null || num === "") && legacyText) {
+    const m = String(legacyText).match(/^\s*([0-9][0-9,.]*)\s*(.*)$/);
+    if (m) { num = m[1]; unit = m[2] || "Pcs"; }
+  }
+  $(p + "Num").value = num || "";
+  const known = UNITS.find((u) => u.toLowerCase() === String(unit || "").toLowerCase());
+  if (known && known !== "Others") { $(p + "Unit").value = known; $(p + "Other").value = ""; }
+  else if (unit) { $(p + "Unit").value = "Others"; $(p + "Other").value = unit; }
+  else { $(p + "Unit").value = "Pcs"; $(p + "Other").value = ""; }
+  toggleOther(p);
+}
+
+/* ---------- Team WhatsApp numbers (saved in the database) ---------- */
+function normNumber(raw){
+  let d = String(raw || "").replace(/\D/g, "");
+  if (d.length === 10) d = "91" + d;
+  else if (d.length === 11 && d[0] === "0") d = "91" + d.slice(1);
+  if (d.length < 11 || d.length > 15) return "";
+  return d;
+}
+function pretty(n){
+  return n.length === 12 && n.startsWith("91") ? "+91 " + n.slice(2, 7) + " " + n.slice(7) : "+" + n;
+}
+async function loadTeam(){
+  try {
+    const snap = await getDoc(doc(db, "settings", "team"));
+    team = snap.exists() && Array.isArray(snap.data().members) ? snap.data().members : [];
+    $("teamNote").textContent = "";
+  } catch (err) {
+    console.error(err);
+    team = [];
+    $("teamNote").textContent = "Saved numbers could not be loaded. The database rules may need the update your helper sent.";
+  }
+  renderTeam();
+}
+async function saveTeam(){
+  await setDoc(doc(db, "settings", "team"), { members: team });
+}
+function renderTeam(keep){
+  const sel = $("waSelect");
+  const wanted = keep || sel.value || (function(){ try { return localStorage.getItem("ak_last_wa") || ""; } catch (e) { return ""; } })();
+  sel.innerHTML =
+    '<option value="default">' + esc(DEFAULT_LABEL) + '</option>' +
+    team.map((t) => '<option value="' + esc(t.id) + '">' + esc(t.name) + ' (' + esc(pretty(t.number)) + ')</option>').join("") +
+    '<option value="__new__">Add a new number</option>';
+  sel.value = Array.from(sel.options).some((o) => o.value === wanted) ? wanted : "default";
+  $("newNumBox").classList.toggle("hidden", sel.value !== "__new__");
+  $("teamList").innerHTML = team.length
+    ? team.map((t) => '<div class="trow"><span>' + esc(t.name) + ' &middot; ' + esc(pretty(t.number)) + '</span><button type="button" class="small" style="margin:0" data-remove="' + esc(t.id) + '">Remove</button></div>').join("")
+    : '<p class="hint" style="margin-top:.5rem">No saved numbers yet.</p>';
+}
+async function commitNewNumber(){
+  const name = $("newName").value.trim();
+  const number = normNumber($("newNumber").value);
+  if (!name) throw new UserError("Please type the teammate's name.");
+  if (!number) throw new UserError("That WhatsApp number does not look right. Example: 98765 43210");
+  let member = team.find((t) => t.number === number);
+  if (!member) {
+    member = { id: String(Date.now()), name, number };
+    team.push(member);
+    await saveTeam();
+  }
+  $("newName").value = ""; $("newNumber").value = "";
+  renderTeam(member.id);
+  return member;
+}
+$("waSelect").addEventListener("change", () => {
+  $("newNumBox").classList.toggle("hidden", $("waSelect").value !== "__new__");
+  try { if ($("waSelect").value !== "__new__") localStorage.setItem("ak_last_wa", $("waSelect").value); } catch (e) {}
+});
+$("saveNumberBtn").addEventListener("click", async () => {
+  hideMsg($("formMsg"));
+  try {
+    const m = await commitNewNumber();
+    show($("formMsg"), "Saved " + m.name + " (" + pretty(m.number) + "). You can now choose it for any lot.", "ok");
+    try { localStorage.setItem("ak_last_wa", m.id); } catch (e) {}
+  } catch (err) {
+    show($("formMsg"), err instanceof UserError ? err.message : "Could not save the number. Check your connection and try again.", "err");
+    if (!(err instanceof UserError)) console.error(err);
+  }
+});
+$("teamList").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-remove]");
+  if (!b) return;
+  const t = team.find((x) => x.id === b.getAttribute("data-remove"));
+  if (!t || !confirm("Remove " + t.name + " from your saved numbers? Lots already saved keep their number.")) return;
+  try {
+    team = team.filter((x) => x.id !== t.id);
+    await saveTeam();
+    renderTeam();
+  } catch (err) { console.error(err); alert("That did not work. Check your connection and try again."); await loadTeam(); }
+});
+async function resolveWhatsApp(){
+  const v = $("waSelect").value;
+  if (v === "default") return { number: "", name: "Main business number" };
+  if (v === "__new__") {
+    if (!$("newName").value.trim() && !$("newNumber").value.trim()) return { number: "", name: "Main business number" };
+    const m = await commitNewNumber();
+    return { number: m.number, name: m.name };
+  }
+  if (v.indexOf("custom:") === 0) return { number: v.slice(7), name: "" };
+  const m = team.find((t) => t.id === v);
+  if (!m) throw new UserError("Please choose the WhatsApp number that handles this lot.");
+  return { number: m.number, name: m.name };
+}
+function selectWa(number){
+  renderTeam("default");
+  if (!number) { $("waSelect").value = "default"; return; }
+  const m = team.find((t) => t.number === number);
+  if (m) { $("waSelect").value = m.id; return; }
+  const opt = document.createElement("option");
+  opt.value = "custom:" + number;
+  opt.textContent = "Current number (" + pretty(number) + ")";
+  $("waSelect").insertBefore(opt, $("waSelect").querySelector('option[value="__new__"]'));
+  $("waSelect").value = opt.value;
+}
 
 /* ---------- Login ---------- */
 $("loginForm").addEventListener("submit", async (e) => {
@@ -245,13 +416,14 @@ $("logout").addEventListener("click", () => signOut(auth));
 onAuthStateChanged(auth, (user) => {
   const on = !!user;
   $("loginPanel").classList.toggle("hidden", on);
+  $("shareCfg").classList.toggle("hidden", !on);
   $("formPanel").classList.toggle("hidden", !on);
   $("listPanel").classList.toggle("hidden", !on);
   $("logout").classList.toggle("hidden", !on);
-  if (on) loadLots();
+  if (on) { loadTeam(); loadLots(); }
 });
 
-/* ---------- Photos ---------- */
+/* ---------- Photos (switched off for now, kept for later) ---------- */
 async function shrink(file){
   const bmp = await createImageBitmap(file);
   const max = 1280;
@@ -262,7 +434,6 @@ async function shrink(file){
   c.getContext("2d").drawImage(bmp, 0, 0, w, h);
   return new Promise((res, rej) => c.toBlob((b) => b ? res(b) : rej(new Error("shrink failed")), "image/jpeg", 0.78));
 }
-
 async function uploadPhotos(lotNo){
   const files = [$("photo1").files[0], $("photo2").files[0]].filter(Boolean);
   const urls = [];
@@ -276,8 +447,10 @@ async function uploadPhotos(lotNo){
 }
 
 /* ---------- Save a lot ---------- */
-function autoNo(){
-  return "AK" + Date.now().toString(36).slice(-5).toUpperCase();
+function need(id, label){
+  const v = $(id).value.trim();
+  if (!v) throw new UserError("Please fill in " + label + ".");
+  return v;
 }
 
 $("lotForm").addEventListener("submit", async (e) => {
@@ -287,58 +460,64 @@ $("lotForm").addEventListener("submit", async (e) => {
   btn.disabled = true;
   btn.textContent = "Saving";
   try {
-    let lotNo = $("lotNo").value.trim().replace(/[^A-Za-z0-9_-]/g, "").toUpperCase();
+    let lotNo = cleanLotNo($("lotNo").value);
     if (!lotNo) lotNo = autoNo();
+    if (!LOT_RE.test(lotNo)) throw new UserError("Lot number must be 1 to 8 digits, then a space, then 1 to 5 letters. Example: 22821 AK");
+
+    const title = $("title").value.trim();
+    const category = $("category").value;
+    const condition = $("condition").value.trim();
+    const q = readQty("qty");
+    const m = readQty("moq");
+    const rate = $("rate").value.trim();
+    const waSel = await resolveWhatsApp();
+
     const exists = lots.find((l) => l.id === lotNo);
-    if (exists && !(editing && editing.lotNo === lotNo)){
-      if (!confirm("Lot " + lotNo + " already exists. Replace it?")) throw new Error("cancelled");
+    if (exists && !(editing && editing.lotNo === lotNo)) {
+      if (!confirm("Lot " + lotNo + " already exists. Replace it?")) throw new UserError("", true);
     }
 
     let photos = editing && editing.lotNo === lotNo ? editing.photos.slice() : [];
     const picked = [$("photo1").files[0], $("photo2").files[0]].filter(Boolean);
-    if (picked.length){
-      try {
-        photos = await uploadPhotos(lotNo);
-      } catch (err) {
-        console.error(err);
-        throw new Error("Photos could not be uploaded. Photo storage may not be switched on yet. Remove the photos and save again, or tell your helper.");
-      }
+    if (picked.length) {
+      try { photos = await uploadPhotos(lotNo); }
+      catch (err) { console.error(err); throw new UserError("Photos could not be uploaded. Photo storage is not switched on yet."); }
     }
 
     const data = {
-      lotNo,
-      title: $("title").value.trim(),
-      category: $("category").value,
-      condition: $("condition").value.trim(),
+      lotNo, title, category, condition,
       description: $("description").value.trim(),
       location: $("location").value.trim(),
-      qty: $("qty").value.trim(),
-      moq: $("moq").value.trim(),
+      qty: q.text, qtyNum: q.num, qtyUnit: q.unit,
+      moq: m.text, moqNum: m.num, moqUnit: m.unit,
       mrp: $("mrp").value.trim(),
       onlinePrice: $("onlinePrice").value.trim(),
-      rate: $("rate").value.trim(),
+      rate,
+      waNumber: waSel.number,
+      waName: waSel.name,
       photos,
       status: exists && exists.status ? exists.status : "available"
     };
-    if (exists && exists.createdAt) data.createdAt = exists.createdAt; else data.createdAt = serverTimestamp();
+    data.createdAt = exists && exists.createdAt ? exists.createdAt : serverTimestamp();
 
     await setDoc(doc(db, "lots", lotNo), data);
+    try { if ($("waSelect").value && $("waSelect").value.indexOf("custom:") !== 0) localStorage.setItem("ak_last_wa", $("waSelect").value); } catch (e2) {}
     show($("formMsg"), "Saved. Lot " + lotNo + " is now in your catalogue.", "ok");
     const sharer = document.createElement("a");
     sharer.className = "sharenow";
-    sharer.href = "https://wa.me/?text=" + encodeURIComponent(shareText(Object.assign({ id: lotNo }, data)));
+    sharer.href = "https://wa.me/?text=" + encodeURIComponent(shareText(Object.assign({ id: lotNo }, data), currentMode()));
     sharer.target = "_blank";
     sharer.rel = "noopener";
     sharer.textContent = "Share this lot on WhatsApp";
     $("formMsg").appendChild(document.createElement("br"));
     $("formMsg").appendChild(sharer);
+    const keepWa = $("waSelect").value;
     resetForm();
+    renderTeam(keepWa.indexOf("custom:") === 0 ? "default" : keepWa);
     await loadLots();
   } catch (err) {
-    if (err.message !== "cancelled"){
-      console.error(err);
-      show($("formMsg"), err.message && err.message.indexOf("Photos") === 0 ? err.message : "Could not save. Check your connection and make sure you are logged in, then try again.", "err");
-    }
+    if (err instanceof UserError) { if (!err.silent) show($("formMsg"), err.message, "err"); }
+    else { console.error(err); show($("formMsg"), "Could not save. Check your connection and make sure you are logged in, then try again.", "err"); }
   } finally {
     btn.disabled = false;
     btn.textContent = "Save lot";
@@ -351,9 +530,10 @@ function resetForm(){
   $("formTitle").textContent = "Add a lot";
   $("cancelEdit").classList.add("hidden");
   $("lotNo").readOnly = false;
-  $("photoHint").textContent = "Photos are shrunk on your phone before upload.";
+  toggleOther("qty"); toggleOther("moq");
+  $("newNumBox").classList.add("hidden");
 }
-$("cancelEdit").addEventListener("click", () => { resetForm(); hideMsg($("formMsg")); });
+$("cancelEdit").addEventListener("click", () => { resetForm(); renderTeam(); hideMsg($("formMsg")); });
 
 /* ---------- Lot list ---------- */
 async function loadLots(){
@@ -374,8 +554,9 @@ function renderList(){
     const sold = l.status === "sold";
     return '<div class="lot">' +
       '<h3>Lot ' + esc(l.lotNo) + '<span class="tag' + (sold ? " sold" : "") + '">' + (sold ? "Sold" : "Available") + '</span></h3>' +
-      '<p>' + esc(l.title) + ' / ' + esc(l.category) + (l.location ? ' / ' + esc(l.location) : '') + '</p>' +
+      '<p>' + esc(l.title || "(no product name)") + ' / ' + esc(l.category || "No category") + (l.location ? ' / ' + esc(l.location) : '') + '</p>' +
       '<p>Quantity ' + esc(l.qty) + ' / Minimum quantity ' + esc(l.moq) + ' / Lot rate ' + esc(l.rate) + '</p>' +
+      '<p>Buyer queries go to: ' + esc(l.waNumber ? (l.waName ? l.waName + " " : "") + "(" + pretty(l.waNumber) + ")" : "Main business number") + '</p>' +
       '<div class="btns">' +
         '<button type="button" class="wa" data-act="share" data-id="' + esc(l.id) + '">Share on WhatsApp</button>' +
         '<button type="button" data-act="edit" data-id="' + esc(l.id) + '">Edit</button>' +
@@ -394,7 +575,7 @@ $("lotList").addEventListener("click", async (e) => {
   const act = b.getAttribute("data-act");
   try {
     if (act === "share"){
-      window.open("https://wa.me/?text=" + encodeURIComponent(shareText(l)), "_blank");
+      window.open("https://wa.me/?text=" + encodeURIComponent(shareText(l, currentMode())), "_blank");
     } else if (act === "toggle"){
       await updateDoc(doc(db, "lots", id), { status: l.status === "sold" ? "available" : "sold" });
       await loadLots();
@@ -414,12 +595,12 @@ $("lotList").addEventListener("click", async (e) => {
       $("condition").value = l.condition || "";
       $("description").value = l.description || "";
       $("location").value = l.location || "";
-      $("qty").value = l.qty || "";
-      $("moq").value = l.moq || "";
+      setQty("qty", l.qtyNum, l.qtyUnit, l.qty);
+      setQty("moq", l.moqNum, l.moqUnit, l.moq);
       $("mrp").value = l.mrp || "";
       $("onlinePrice").value = l.onlinePrice || "";
       $("rate").value = l.rate || "";
-      $("photoHint").textContent = (l.photos && l.photos.length ? "This lot has " + l.photos.length + " photo(s). Choose new photos only if you want to replace them." : "No photos yet.");
+      selectWa(l.waNumber || "");
       $("cancelEdit").classList.remove("hidden");
       hideMsg($("formMsg"));
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -429,6 +610,13 @@ $("lotList").addEventListener("click", async (e) => {
     alert("That did not work. Check your connection and try again.");
   }
 });
+
+const currentMode = () => $("rateMode").value;
+try { const saved = localStorage.getItem("ak_rate_mode"); if (saved && ["link", "exact", "both"].indexOf(saved) >= 0) $("rateMode").value = saved; } catch (e) {}
+$("rateMode").addEventListener("change", () => { try { localStorage.setItem("ak_rate_mode", $("rateMode").value); } catch (e) {} });
+
+fillUnits();
+renderTeam();
 </script>
 </body>
 </html>

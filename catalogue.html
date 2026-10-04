@@ -243,7 +243,7 @@ const db = getFirestore(app);
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-const wa = (msg) => "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg);
+const wa = (msg, number) => "https://wa.me/" + (number || WHATSAPP_NUMBER) + "?text=" + encodeURIComponent(msg);
 
 /* ---------- Visitor tracking (Google Analytics) ---------- */
 function track(name, params){
@@ -263,30 +263,36 @@ const oldLink = new URLSearchParams(location.search).get("lot");
 if (oldLink) location.replace("/lot/?" + encodeURIComponent(oldLink.toUpperCase()));
 
 /* ---------- WhatsApp messages ---------- */
-function lotUrl(l){ return "https://akbrandsmarketing.com/lot/?" + encodeURIComponent(l.id); }
+function lotUrl(l){ return "https://akbrandsmarketing.com/lot/?" + encodeURIComponent(String(l.id).replace(/ /g, "-")); }
 
 // Order: 1 Lot number | 2 Product, category, condition, details, location | 3 Quantity, minimum quantity | 4 MRP, online price | 5 Lot rate | 6 Sign-off
-function shareText(l){
-  const cond = String(l.condition || "As is").replace(/[.\s]+$/, "");
+function shareText(l, mode){
+  mode = mode || "link";
   const lines = [];
-  lines.push("*Lot Number - " + l.lotNo + "*", "");
-  lines.push("*Product - " + l.title + "*");
-  lines.push("Category - " + (l.category || "Other"));
-  lines.push("Condition - " + cond + ". Sold as is, where is.");
-  if (l.description) lines.push("Details - " + l.description);
-  if (l.location) lines.push("Location - " + l.location);
-  lines.push("");
-  lines.push("Quantity - " + (l.qty || "On request"));
-  lines.push("Minimum quantity - " + (l.moq || "On request"));
-  if (l.mrp || l.onlinePrice) {
+  lines.push("*Lot - " + l.lotNo + "*", "");
+  if (l.title || l.description) {
+    if (l.title) lines.push("*" + l.title + "*");
+    if (l.description) lines.push("Details - " + l.description);
     lines.push("");
+  }
+  if (l.qty || l.moq) {
+    if (l.qty) lines.push("Quantity - " + l.qty);
+    if (l.moq) lines.push("Minimum quantity - " + l.moq);
+    lines.push("");
+  }
+  if (l.mrp || l.onlinePrice) {
     if (l.mrp) lines.push("MRP - " + l.mrp);
     if (l.onlinePrice) lines.push("Online price - " + l.onlinePrice);
+    lines.push("");
   }
-  lines.push("");
-  lines.push("*Lot rate - Click the link*");
-  lines.push(lotUrl(l));
-  lines.push("");
+  if (mode === "exact") {
+    if (l.rate) lines.push("*Lot rate - " + l.rate + "*", "");
+  } else if (mode === "both") {
+    if (l.rate) lines.push("*Lot rate - " + l.rate + "*");
+    lines.push("*Click the link*", lotUrl(l), "");
+  } else {
+    lines.push("*Lot rate - Click the link*", lotUrl(l), "");
+  }
   lines.push("Trusted Firm", "AK Brands Marketing\u00A9");
   return lines.join("\n");
 }
@@ -296,10 +302,10 @@ function shareAllLink(){
   return "https://wa.me/?text=" + encodeURIComponent(t);
 }
 function bookLink(l){
-  return wa("Hello AK Brands Marketing, I want to book Lot " + l.lotNo + " (" + l.title + "). I understand lots are sold as is. Please share the next steps.");
+  return wa("Hello AK Brands Marketing, I want to book Lot " + l.lotNo + (l.title ? " (" + l.title + ")" : "") + ". I understand lots are sold as is. Please share the next steps.", l.waNumber);
 }
 function mediaLink(l){
-  return wa("Hello AK Brands Marketing, please send the full video and photos for Lot " + l.lotNo + " (" + l.title + ").");
+  return wa("Hello AK Brands Marketing, please send the full video and photos for Lot " + l.lotNo + (l.title ? " (" + l.title + ")" : "") + ".", l.waNumber);
 }
 
 /* ---------- Rendering ---------- */
@@ -308,12 +314,12 @@ function row(label, value, cls){
 }
 // 2nd: product, category, condition, details, location
 function productBlock(l, full){
-  return '<dl class="rows block">' +
-    row("Category", l.category || "Other") +
-    row("Condition", l.condition || "As is") +
+  const rows =
+    (l.category ? row("Category", l.category) : "") +
+    (l.condition ? row("Condition", l.condition) : "") +
     (l.description ? row("Details", l.description, full ? "full" : "clamp") : "") +
-    (l.location ? row("Location", l.location) : "") +
-  '</dl>';
+    (l.location ? row("Location", l.location) : "");
+  return rows ? '<dl class="rows block">' + rows + '</dl>' : "";
 }
 // 3rd: quantity, minimum quantity
 function quantityBlock(l){
@@ -354,7 +360,7 @@ function topPanel(l){
       '<a class="lotno" href="' + esc(lotUrl(l)) + '" data-lot="' + esc(l.id) + '">Lot Number - ' + esc(l.lotNo) + '</a>' +
       '<span class="badge' + (sold ? " sold" : "") + '">' + (sold ? "Sold" : "Available") + '</span>' +
     '</div>' +
-    '<h3 class="tp-name" data-open="' + esc(l.id) + '">' + esc(l.title) + '</h3>' +
+    '<h3 class="tp-name" data-open="' + esc(l.id) + '">' + esc(l.title || "Product details on request") + '</h3>' +
   '</div>';
 }
 
@@ -414,7 +420,7 @@ $("grid").addEventListener("click", (e) => {
   if (b) {
     const lotId = b.getAttribute("data-open");
     track("lot_open_from_list", { lot_id: lotId });
-    setTimeout(() => { location.href = "/lot/?" + encodeURIComponent(lotId); }, 150);
+    setTimeout(() => { location.href = "/lot/?" + encodeURIComponent(String(lotId).replace(/ /g, "-")); }, 150);
   }
 });
 $("chips").addEventListener("click", (e) => {
