@@ -188,12 +188,18 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;color:var(--ink)}
     <h2>Your lots</h2>
     <div id="lotList"><p class="hint">Loading lots</p></div>
   </section>
+
+  <section class="panel hidden" id="leadsPanel">
+    <h2>Leads from the website</h2>
+    <p class="hint" style="margin-top:-.4rem">People who used the Sell or Auction form. Newest first.</p>
+    <div id="leadList"><p class="hint">Loading leads</p></div>
+  </section>
 </main>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
 const firebaseConfig = {
@@ -419,8 +425,9 @@ onAuthStateChanged(auth, (user) => {
   $("shareCfg").classList.toggle("hidden", !on);
   $("formPanel").classList.toggle("hidden", !on);
   $("listPanel").classList.toggle("hidden", !on);
+  $("leadsPanel").classList.toggle("hidden", !on);
   $("logout").classList.toggle("hidden", !on);
-  if (on) { loadTeam(); loadLots(); }
+  if (on) { loadTeam(); loadLots(); loadLeads(); }
 });
 
 /* ---------- Photos (switched off for now, kept for later) ---------- */
@@ -609,6 +616,43 @@ $("lotList").addEventListener("click", async (e) => {
     console.error(err);
     alert("That did not work. Check your connection and try again.");
   }
+});
+
+/* ---------- Leads from the Sell and Auction forms ---------- */
+let leads = [];
+async function loadLeads(){
+  try {
+    const snap = await getDocs(query(collection(db, "leads"), orderBy("createdAt", "desc"), limit(50)));
+    leads = snap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
+    renderLeads();
+  } catch (err) {
+    console.error(err);
+    $("leadList").innerHTML = '<p class="hint">Leads could not be loaded. The database rules may need the update your helper sent.</p>';
+  }
+}
+function renderLeads(){
+  if (!leads.length){ $("leadList").innerHTML = '<p class="hint">No leads yet.</p>'; return; }
+  $("leadList").innerHTML = leads.map((l) => {
+    const when = l.createdAt && l.createdAt.seconds ? new Date(l.createdAt.seconds * 1000).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "";
+    const greet = "Hello " + (l.name || "") + ", this is AK Brands Marketing. Thank you for your " + (l.type === "auction" ? "auction request" : "enquiry to sell your stock") + ". How can we help?";
+    return '<div class="lot">' +
+      '<h3>' + esc(l.name) + '<span class="tag">' + (l.type === "auction" ? "Auction" : "Sell") + '</span></h3>' +
+      '<p>' + esc(l.phone ? pretty(l.phone) : "") + (when ? ' / ' + esc(when) : '') + '</p>' +
+      (l.category || l.quantity || l.city ? '<p>' + esc([l.category, l.quantity, l.city].filter(Boolean).join(" / ")) + '</p>' : '') +
+      (l.details ? '<p>' + esc(l.details) + '</p>' : '') +
+      '<div class="btns">' +
+        '<a href="tel:+' + esc(l.phone) + '"><button type="button">Call</button></a>' +
+        '<a href="https://wa.me/' + esc(l.phone) + '?text=' + encodeURIComponent(greet) + '" target="_blank" rel="noopener"><button type="button" class="wa">WhatsApp</button></a>' +
+        '<button type="button" class="del" data-lead-del="' + esc(l.id) + '">Delete</button>' +
+      '</div></div>';
+  }).join("");
+}
+$("leadList").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-lead-del]");
+  if (!b) return;
+  if (!confirm("Delete this lead permanently?")) return;
+  try { await deleteDoc(doc(db, "leads", b.getAttribute("data-lead-del"))); await loadLeads(); }
+  catch (err) { console.error(err); alert("That did not work. Check your connection and try again."); }
 });
 
 const currentMode = () => $("rateMode").value;

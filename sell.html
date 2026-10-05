@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sell your stock | AK Brands Marketing</title>
+<meta name="robots" content="noindex">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SH29FGTV34"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-SH29FGTV34');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f1b2d; --gold:#d4af37; --bg:#f5f6f8; --paper:#ffffff;
+  --line:#dfe3e8; --text:#2a3647; --muted:#5f6e82; --wa:#12803f; --wa-dark:#0e6a34; --sold:#8a2f2f; --hl:#fff4cc;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* Header */
+.top{background:var(--ink);color:#fff;border-bottom:2px solid var(--gold)}
+.top-inner{max-width:1200px;margin:0 auto;padding:.8rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{display:flex;align-items:center;gap:.7rem;font-size:1.1rem;font-weight:600;text-decoration:none}
+.brand img{width:48px;height:48px;object-fit:contain;background:#000;border:1px solid rgba(212,175,55,.55);border-radius:8px;flex:0 0 auto}
+.brand b{color:var(--gold);font-weight:700}
+.back{font-size:.9rem;text-decoration:none;color:#d9e0ea;border:1px solid rgba(255,255,255,.25);padding:.45rem .9rem;border-radius:999px}
+.back:hover{border-color:var(--gold);color:#fff}
+
+/* Main website header and menu (same look as the homepage) */
+.site-header{background:linear-gradient(135deg,rgba(10,10,10,.95) 0%,rgba(26,26,26,.95) 100%);padding:1rem 0;box-shadow:0 4px 20px rgba(0,0,0,.15);border-bottom:1px solid rgba(26,188,156,.15)}
+.hdr{max-width:1200px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center}
+.logo-section{display:flex;align-items:center;gap:1rem;text-decoration:none}
+.logo-img{width:55px;height:55px;object-fit:contain;filter:drop-shadow(0 3px 10px rgba(26,188,156,.3))}
+.brand-text{display:flex;flex-direction:column;gap:3px}
+.brand-name{font-family:'Playfair Display',Georgia,serif;font-size:1.4rem;font-weight:500;color:#1abc9c;letter-spacing:.5px;line-height:1.2}
+.brand-name .ak{font-weight:600;color:#16a085}
+.brand-tagline{font-family:'Playfair Display',Georgia,serif;font-size:.7rem;color:#95a5a6;font-style:italic;letter-spacing:.5px}
+@media(min-width:769px){.hdr{padding:0 2rem}.logo-img{width:70px;height:70px}.brand-name{font-size:1.75rem}.brand-tagline{font-size:.75rem}}
+.menu-dropdown{position:relative}
+.menu-button{background:none;border:none;color:#ecf0f1;font-size:1.8rem;cursor:pointer;padding:.5rem;line-height:1}
+.menu-button:hover{color:#1abc9c}
+.dropdown-content{display:none;position:absolute;right:0;top:100%;background:rgba(44,62,80,.98);min-width:180px;box-shadow:0 8px 16px rgba(0,0,0,.3);border-radius:8px;margin-top:.5rem;overflow:hidden;z-index:1001;border:1px solid rgba(26,188,156,.3)}
+.dropdown-content.show{display:block}
+.dropdown-content a{color:#ecf0f1;padding:1rem 1.5rem;text-decoration:none;display:block;font-weight:500}
+.dropdown-content a:hover{background:rgba(26,188,156,.2);color:#1abc9c}
+.dropdown-content a[aria-current="page"]{color:#1abc9c;background:rgba(26,188,156,.12)}
+
+/* Main website footer (same as the homepage) */
+.site-footer{background:#1a1a1a;color:#fff;padding:2.5rem 2rem}
+.footer-content{max-width:1200px;margin:0 auto}
+.footer-copyright{text-align:center;margin-bottom:1.5rem;font-size:.95rem;color:#ccc}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1.5rem}
+.footer-link{color:#fff;text-decoration:none;font-size:.9rem;padding:.3rem 0}
+.footer-link:hover{color:#1abc9c;text-decoration:underline}
+@media(max-width:768px){.footer-links{flex-direction:column;align-items:center;gap:.8rem}.footer-link{font-size:.85rem}}
+
+/* Intro */
+.intro{background:var(--ink);color:#fff;padding:1.8rem 1.25rem 2.2rem}
+.intro-inner{max-width:1200px;margin:0 auto}
+.intro h1{font-size:clamp(1.6rem,4.5vw,2.3rem);line-height:1.2;font-weight:600}
+.intro p{margin-top:.7rem;max-width:62ch;color:#c9d3e0}
+.count{margin-top:1rem;display:inline-block;border:1px solid rgba(212,175,55,.6);color:var(--gold);padding:.3rem .8rem;border-radius:999px;font-size:.9rem;font-weight:600}
+.share-all{display:inline-block;margin-top:1rem;margin-left:.6rem;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.4);padding:.3rem .9rem;border-radius:999px;font-size:.9rem}
+.share-all:hover{border-color:var(--gold)}
+
+/* Tools */
+.tools{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.tools-inner{max-width:1200px;margin:0 auto;padding:.8rem 1.25rem;display:grid;gap:.7rem}
+.search{width:100%;padding:.8rem 1rem;border:1px solid #c9ced6;border-radius:8px;font:inherit;background:#fff;color:var(--text)}
+.chips{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.2rem;scrollbar-width:thin}
+.chip{flex:0 0 auto;border:1px solid #c9ced6;background:#fff;color:var(--text);padding:.45rem .95rem;border-radius:999px;font:inherit;font-size:.9rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* Grid */
+main{max-width:1200px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+.grid{display:grid;grid-template-columns:1fr;gap:1.25rem}
+@media(min-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
+
+/* Card: 1 lot number, 2 product, 3 quantity, 4 prices, 5 lot rate, 6 sign-off */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:column;overflow:hidden}
+.card.is-sold .card-media img{filter:grayscale(1);opacity:.7}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.75rem 1rem;border-bottom:1px solid var(--line)}
+.lotno{font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.lotno:hover{color:#000}
+.badge{font-size:.78rem;font-weight:600;padding:.15rem .65rem;border-radius:999px;border:1px solid var(--wa);color:var(--wa);white-space:nowrap}
+.badge.sold{border-color:var(--sold);color:var(--sold)}
+.toppanel{background:var(--ink);color:#fff;padding:.85rem 1rem 1.05rem;border-bottom:2px solid var(--gold)}
+.tp-row{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+.toppanel .lotno{color:var(--gold);font-size:.92rem}
+.toppanel .lotno:hover{color:#fff}
+.toppanel .badge{border-color:var(--gold);color:var(--gold)}
+.toppanel .badge.sold{border-color:#f3b3b3;color:#f3b3b3}
+.tp-name{margin-top:.6rem;font-size:1.28rem;font-weight:700;line-height:1.3;color:#fff;overflow-wrap:anywhere}
+.tp-name[data-open]{cursor:pointer}
+.card-media{border:0;padding:0;background:#e9ecf0;cursor:pointer;display:block;width:100%;aspect-ratio:4/3}
+.card-media img{width:100%;height:100%;object-fit:cover;display:block}
+.ph{height:100%;display:grid;place-items:center;color:var(--muted);font-size:.9rem;padding:1rem;text-align:center}
+.card-body{padding:.6rem 1rem 1.1rem;display:flex;flex-direction:column;gap:.55rem;flex:1}
+
+.rows{display:block}
+.rows>div{display:grid;grid-template-columns:7.2rem 1fr;gap:.6rem;padding:.38rem 0;border-bottom:1px solid var(--line)}
+.rows>div:last-child{border-bottom:0}
+.rows dt{font-size:.82rem;color:var(--muted)}
+.rows dd{font-size:.93rem;overflow-wrap:anywhere}
+.rows .pname dd{font-size:1.08rem;font-weight:700;color:var(--ink);line-height:1.3}
+.rows .clamp dd{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.rows .full dd{white-space:pre-line}
+.block{padding-top:.45rem;border-top:1px solid var(--line)}
+
+.ratebox{background:var(--hl);border:1px solid var(--gold);border-radius:6px;padding:.7rem .9rem;display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+.ratebox .rl{font-size:.85rem;font-weight:600;color:var(--ink)}
+.ratebox .rv{font-size:1.3rem;font-weight:700;color:var(--ink);text-align:right;overflow-wrap:anywhere}
+
+.asis{font-size:.8rem;color:var(--muted)}
+.actions{margin-top:.2rem;display:grid;gap:.5rem}
+.btn{display:block;text-align:center;text-decoration:none;font:inherit;font-weight:600;font-size:.95rem;padding:.8rem 1rem;border-radius:8px;border:1px solid transparent;cursor:pointer}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-wa:hover{background:var(--wa-dark)}
+.btn-ghost{background:#fff;color:var(--ink);border-color:#b9c0ca}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-share{display:block;text-align:center;text-decoration:none;font-weight:600;font-size:.95rem;color:var(--wa);padding:.8rem 1rem;background:#fff;border:1px solid var(--wa);border-radius:8px;font-family:inherit;cursor:pointer}
+.btn-share:hover{background:#eef7f1}
+.soldnote{text-align:center;color:var(--sold);font-weight:600;font-size:.92rem;padding:.8rem 0}
+.signoff{margin-top:auto;padding-top:.7rem;text-align:center;font-size:.9rem;font-weight:500;color:var(--ink);line-height:1.4}
+
+/* States */
+.state{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--muted)}
+.state strong{display:block;color:var(--ink);font-size:1.15rem;margin-bottom:.4rem}
+
+.notice{margin-top:2rem;border-left:3px solid var(--gold);background:#fff;padding:1.1rem 1.2rem;font-size:.92rem;max-width:84ch}
+.notice h2{font-size:1.05rem;color:var(--ink);margin-bottom:.6rem}
+.notice p+p{margin-top:.7rem}
+.notice strong{color:var(--ink)}
+
+footer{background:var(--ink);color:#aeb9c9;text-align:center;padding:1.6rem 1.25rem;font-size:.88rem}
+footer a{color:#fff}
+
+/* Detail dialog */
+dialog{border:0;border-radius:8px;max-width:760px;width:calc(100% - 1.5rem);max-height:92vh;padding:0;background:var(--paper);color:var(--text)}
+dialog::backdrop{background:rgba(10,18,30,.7)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;padding:.8rem 1rem;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0}
+.dlg-close{border:1px solid #b9c0ca;background:#fff;color:var(--ink);border-radius:8px;padding:.4rem .9rem;font:inherit;cursor:pointer}
+.dlg-body{padding:1rem;display:grid;gap:.8rem;overflow-y:auto;max-height:calc(92vh - 4rem)}
+.dlg-photos{display:grid;gap:.6rem}
+.dlg-photos img{width:100%;border-radius:6px;display:block;background:#e9ecf0}
+.dlg-note{font-size:.88rem;color:var(--muted);border-top:1px solid var(--line);padding-top:.8rem}
+
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+.formwrap{max-width:640px;margin:0 auto;padding:1.5rem 1.1rem 3rem}
+.formcard{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.formhead{background:var(--ink);color:#fff;padding:1.1rem 1.2rem;border-bottom:2px solid var(--gold)}
+.formhead h1{font-size:1.4rem;line-height:1.25;font-weight:700}
+.formhead p{margin-top:.4rem;color:#c9d3e0;font-size:.95rem}
+.formbody{padding:1.1rem 1.2rem 1.4rem}
+.formbody label{display:block;font-weight:600;font-size:.9rem;margin:.95rem 0 .3rem;color:var(--ink)}
+.formbody .hint{font-weight:400;color:var(--muted);font-size:.82rem}
+.formbody input,.formbody select,.formbody textarea{width:100%;padding:.8rem .9rem;border:1px solid #c9ced6;border-radius:8px;font:inherit;background:#fff;color:var(--text)}
+.formbody textarea{min-height:100px;resize:vertical}
+.hp{position:absolute;left:-9999px;height:0;width:0;overflow:hidden}
+.submitbtn{margin-top:1.2rem;width:100%;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.95rem;border-radius:8px;font:inherit;font-weight:600;font-size:1rem;cursor:pointer}
+.submitbtn[disabled]{opacity:.6;cursor:wait}
+.consent{margin-top:.9rem;font-size:.82rem;color:var(--muted)}
+.consent a{text-decoration:underline}
+.fmsg{margin-top:.9rem;padding:.7rem .9rem;border-radius:8px;font-size:.92rem;display:none}
+.fmsg.show{display:block}
+.fmsg.err{background:#f8e6e6;color:#7a2020}
+.thanks{text-align:center;padding:1.6rem 1.2rem 1.8rem}
+.thanks h2{font-size:1.3rem;color:var(--ink)}
+.thanks p{margin-top:.5rem;color:var(--muted)}
+.thanks .btn{margin-top:1rem}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="hdr">
+    <a class="logo-section" href="/index.html">
+      <img class="logo-img" src="/logo.jpg" alt="AK Brands Marketing logo" width="55" height="55">
+      <span class="brand-text"><span class="brand-name"><span class="ak">AK</span> Brands Marketing</span><span class="brand-tagline">Trusted Firm</span></span>
+    </a>
+    <div class="menu-dropdown">
+      <button class="menu-button" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menuDropdown">&#9776;</button>
+      <nav class="dropdown-content" id="menuDropdown" aria-label="Main menu">
+        <a href="/index.html">Home</a>
+        <a href="/catalogue.html">Buy</a>
+        <a href="/index.html#about">About</a>
+        <a href="/products.html">Products</a>
+        <a href="/services.html">Services</a>
+        <a href="/index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="formwrap">
+  <div class="formcard">
+    <div class="formhead">
+      <h1 id="pageTitle">Sell your stock to us</h1>
+      <p id="pageIntro">Tell us what surplus stock you have. Our team will call or message you on WhatsApp.</p>
+    </div>
+
+    <div class="formbody" id="formBody">
+      <form id="leadForm" novalidate>
+        <label for="name">Your name</label>
+        <input id="name" type="text" maxlength="60" autocomplete="name" placeholder="Example: Ravi Kumar">
+
+        <label for="phone">Mobile number <span class="hint">(WhatsApp number preferred)</span></label>
+        <input id="phone" type="tel" inputmode="tel" maxlength="20" autocomplete="tel" placeholder="Example: 98765 43210">
+
+        <label for="category">Type of stock <span class="hint">(optional)</span></label>
+        <select id="category">
+          <option value="">Select a category</option>
+          <option>Textile and Garments</option>
+          <option>FMCG</option>
+          <option>Electronics</option>
+          <option>Home and Kitchen</option>
+          <option>Furniture</option>
+          <option>Mobiles and Accessories</option>
+          <option>Hardware</option>
+          <option>Luggage</option>
+          <option>Footwear</option>
+          <option>Other</option>
+        </select>
+
+        <label for="details">Stock details <span class="hint">(optional)</span></label>
+        <textarea id="details" maxlength="500" placeholder="What is the stock, its condition, packing, and anything we should know."></textarea>
+
+        <label for="quantity">Approximate quantity <span class="hint">(optional)</span></label>
+        <input id="quantity" type="text" maxlength="40" placeholder="Example: 1500 pcs">
+
+        <label for="city">City <span class="hint">(optional)</span></label>
+        <input id="city" type="text" maxlength="60" placeholder="Example: Surat">
+
+        <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" type="text" tabindex="-1" autocomplete="off"></div>
+
+        <button class="submitbtn" id="submitBtn" type="submit">Send my details</button>
+        <div class="fmsg" id="fmsg" role="status"></div>
+        <p class="consent">By sending this form you agree that AK Brands Marketing may contact you on this number about your enquiry. See our <a href="/privacy.html">Privacy Policy</a>.</p>
+      </form>
+    </div>
+
+    <div class="thanks" id="thanks" style="display:none"></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-copyright">&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
+    <div class="footer-links">
+      <a href="/terms.html" class="footer-link">Terms &amp; Conditions</a>
+      <a href="/return-refund.html" class="footer-link">Return &amp; Refund Policy</a>
+      <a href="/shipping-delivery.html" class="footer-link">Shipping &amp; Delivery Policy</a>
+      <a href="/privacy.html" class="footer-link">Privacy Policy</a>
+      <a href="/disclaimer.html" class="footer-link">Disclaimer</a>
+      <a href="/business-policy.html" class="footer-link">Business Policy</a>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyALlIObFvQc6FzIHVO4ifXZVPsCmW4_XlY",
+  authDomain: "ak-brands-marketing.firebaseapp.com",
+  projectId: "ak-brands-marketing",
+  storageBucket: "ak-brands-marketing.firebasestorage.app",
+  messagingSenderId: "458983699429",
+  appId: "1:458983699429:web:c8c95fb9ede6795d2af50c"
+};
+const WHATSAPP_NUMBER = "918660502217";
+const COMMUNITY_LINK = "https://chat.whatsapp.com/FnBohcWrSobFcloZwC6Hnq";
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+function track(name, params){
+  try { if (window.gtag) window.gtag("event", name, Object.assign({ transport_type: "beacon" }, params || {})); } catch (e) {}
+}
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("[data-track]");
+  if (a) track(a.getAttribute("data-track"), { lead_type: TYPE });
+});
+
+const TYPE = new URLSearchParams(location.search).get("type") === "auction" ? "auction" : "sell";
+if (TYPE === "auction") {
+  $("pageTitle").textContent = "Request a live auction";
+  $("pageIntro").textContent = "Tell us about the stock you want to put up for auction. Our team will call or message you on WhatsApp.";
+  document.title = "Request a live auction | AK Brands Marketing";
+}
+
+function normNumber(raw){
+  let d = String(raw || "").replace(/\D/g, "");
+  if (d.length === 10) d = "91" + d;
+  else if (d.length === 11 && d[0] === "0") d = "91" + d.slice(1);
+  if (d.length < 11 || d.length > 15) return "";
+  return d;
+}
+function showErr(text){ $("fmsg").textContent = text; $("fmsg").className = "fmsg show err"; }
+
+function waText(lead){
+  const lines = [
+    TYPE === "auction" ? "Hello AK Brands Marketing, I want to request a live auction for my stock." : "Hello AK Brands Marketing, I want to sell my stock.",
+    "",
+    "Name - " + lead.name,
+    "Mobile - " + lead.phone
+  ];
+  if (lead.category) lines.push("Stock - " + lead.category);
+  if (lead.details) lines.push("Details - " + lead.details);
+  if (lead.quantity) lines.push("Quantity - " + lead.quantity);
+  if (lead.city) lines.push("City - " + lead.city);
+  return lines.join("\n");
+}
+
+function thanks(lead, saved){
+  $("formBody").style.display = "none";
+  const link = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waText(lead));
+  $("thanks").style.display = "block";
+  $("thanks").innerHTML =
+    '<h2>' + (saved ? "Thank you, " + esc(lead.name) : "One more step") + '</h2>' +
+    '<p>' + (saved ? "We have your details and our team will contact you shortly. To speed things up, message us on WhatsApp now." : "We could not save your details just now. Please message us on WhatsApp so we do not miss you.") + '</p>' +
+    '<a class="btn btn-wa" data-track="lead_whatsapp_click" href="' + link + '" target="_blank" rel="noopener">Message us on WhatsApp</a>' +
+    '<a class="btn btn-ghost" style="margin-top:.6rem" data-track="lead_community_click" href="' + COMMUNITY_LINK + '" target="_blank" rel="noopener">Join our WhatsApp community</a>';
+}
+
+$("leadForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("fmsg").className = "fmsg";
+  const btn = $("submitBtn");
+
+  if ($("website").value.trim()) { thanks({ name: "friend", phone: "" }, true); return; } // spam trap
+
+  const name = $("name").value.trim().replace(/\s+/g, " ");
+  const phone = normNumber($("phone").value);
+  if (name.length < 2) { showErr("Please type your name."); return; }
+  if (!phone) { showErr("Please type a valid mobile number. Example: 98765 43210"); return; }
+
+  let last = 0;
+  try { last = Number(localStorage.getItem("ak_lead_ts") || 0); } catch (err) {}
+  if (Date.now() - last < 30000) { showErr("Your details were just sent. Please wait a moment."); return; }
+
+  const lead = {
+    name, phone, type: TYPE,
+    category: $("category").value,
+    details: $("details").value.trim().slice(0, 500),
+    quantity: $("quantity").value.trim().slice(0, 40),
+    city: $("city").value.trim().slice(0, 60)
+  };
+
+  btn.disabled = true;
+  btn.textContent = "Sending";
+  let saved = false;
+  try {
+    await addDoc(collection(db, "leads"), Object.assign({}, lead, { createdAt: serverTimestamp() }));
+    saved = true;
+    try { localStorage.setItem("ak_lead_ts", String(Date.now())); } catch (err) {}
+    track("lead_submit", { lead_type: TYPE });
+  } catch (err) {
+    console.error(err);
+  }
+  thanks(lead, saved);
+});
+</script>
+</body>
+</html>
