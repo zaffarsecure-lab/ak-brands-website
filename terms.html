@@ -1,313 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SH29FGTV34"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-SH29FGTV34');
-    </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms & Conditions - AK Brands Marketing</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terms &amp; Conditions | AK Brands Marketing</title>
+<meta name="description" content="The terms on which AK Brands Marketing sells liquidation lots to businesses and works with sellers, including booking, payment, delivery, cancellations and the Buyer Protection Plan.">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SH29FGTV34"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-SH29FGTV34');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f1b2d; --gold:#d4af37; --bg:#f5f6f8; --paper:#ffffff;
+  --line:#dfe3e8; --text:#2a3647; --muted:#5f6e82; --wa:#12803f; --wa-dark:#0e6a34; --sold:#8a2f2f; --hl:#fff4cc;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-        }
+/* Header */
+.top{background:var(--ink);color:#fff;border-bottom:2px solid var(--gold)}
+.top-inner{max-width:1200px;margin:0 auto;padding:.8rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{display:flex;align-items:center;gap:.7rem;font-size:1.1rem;font-weight:600;text-decoration:none}
+.brand img{width:48px;height:48px;object-fit:contain;background:#000;border:1px solid rgba(212,175,55,.55);border-radius:8px;flex:0 0 auto}
+.brand b{color:var(--gold);font-weight:700}
+.back{font-size:.9rem;text-decoration:none;color:#d9e0ea;border:1px solid rgba(255,255,255,.25);padding:.45rem .9rem;border-radius:999px}
+.back:hover{border-color:var(--gold);color:#fff}
 
-        /* Header Styles */
-        header {
-            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
-            padding: 1.5rem 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            border-bottom: 1px solid rgba(26, 188, 156, 0.1);
-        }
+/* Main website header and menu (same look as the homepage) */
+.site-header{background:linear-gradient(135deg,rgba(10,10,10,.95) 0%,rgba(26,26,26,.95) 100%);padding:1rem 0;box-shadow:0 4px 20px rgba(0,0,0,.15);border-bottom:1px solid rgba(26,188,156,.15)}
+.hdr{max-width:1200px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center}
+.logo-section{display:flex;align-items:center;gap:1rem;text-decoration:none}
+.logo-img{width:55px;height:55px;object-fit:contain;filter:drop-shadow(0 3px 10px rgba(26,188,156,.3))}
+.brand-text{display:flex;flex-direction:column;gap:3px}
+.brand-name{font-family:'Playfair Display',Georgia,serif;font-size:1.4rem;font-weight:500;color:#1abc9c;letter-spacing:.5px;line-height:1.2}
+.brand-name .ak{font-weight:600;color:#16a085}
+.brand-tagline{font-family:'Playfair Display',Georgia,serif;font-size:.7rem;color:#95a5a6;font-style:italic;letter-spacing:.5px}
+@media(min-width:769px){.hdr{padding:0 2rem}.logo-img{width:70px;height:70px}.brand-name{font-size:1.75rem}.brand-tagline{font-size:.75rem}}
+.menu-dropdown{position:relative}
+.menu-button{background:none;border:none;color:#ecf0f1;font-size:1.8rem;cursor:pointer;padding:.5rem;line-height:1}
+.menu-button:hover{color:#1abc9c}
+.dropdown-content{display:none;position:absolute;right:0;top:100%;background:rgba(44,62,80,.98);min-width:180px;box-shadow:0 8px 16px rgba(0,0,0,.3);border-radius:8px;margin-top:.5rem;overflow:hidden;z-index:1001;border:1px solid rgba(26,188,156,.3)}
+.dropdown-content.show{display:block}
+.dropdown-content a{color:#ecf0f1;padding:1rem 1.5rem;text-decoration:none;display:block;font-weight:500}
+.dropdown-content a:hover{background:rgba(26,188,156,.2);color:#1abc9c}
+.dropdown-content a[aria-current="page"]{color:#1abc9c;background:rgba(26,188,156,.12)}
 
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+/* Main website footer (same as the homepage) */
+.site-footer{background:#1a1a1a;color:#fff;padding:2.5rem 2rem}
+.footer-content{max-width:1200px;margin:0 auto}
+.footer-copyright{text-align:center;margin-bottom:1.5rem;font-size:.95rem;color:#ccc}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1.5rem}
+.footer-link{color:#fff;text-decoration:none;font-size:.9rem;padding:.3rem 0}
+.footer-link:hover{color:#1abc9c;text-decoration:underline}
+@media(max-width:768px){.footer-links{flex-direction:column;align-items:center;gap:.8rem}.footer-link{font-size:.85rem}}
 
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-        }
+/* Intro */
+.intro{background:var(--ink);color:#fff;padding:1.8rem 1.25rem 2.2rem}
+.intro-inner{max-width:1200px;margin:0 auto}
+.intro h1{font-size:clamp(1.6rem,4.5vw,2.3rem);line-height:1.2;font-weight:600}
+.intro p{margin-top:.7rem;max-width:62ch;color:#c9d3e0}
+.count{margin-top:1rem;display:inline-block;border:1px solid rgba(212,175,55,.6);color:var(--gold);padding:.3rem .8rem;border-radius:999px;font-size:.9rem;font-weight:600}
+.share-all{display:inline-block;margin-top:1rem;margin-left:.6rem;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.4);padding:.3rem .9rem;border-radius:999px;font-size:.9rem}
+.share-all:hover{border-color:var(--gold)}
 
-        .logo-img {
-            width: 60px;
-            height: 60px;
-            object-fit: contain;
-            filter: drop-shadow(0 3px 10px rgba(26, 188, 156, 0.3));
-        }
+/* Tools */
+.tools{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.tools-inner{max-width:1200px;margin:0 auto;padding:.8rem 1.25rem;display:grid;gap:.7rem}
+.search{width:100%;padding:.8rem 1rem;border:1px solid #c9ced6;border-radius:8px;font:inherit;background:#fff;color:var(--text)}
+.chips{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.2rem;scrollbar-width:thin}
+.chip{flex:0 0 auto;border:1px solid #c9ced6;background:#fff;color:var(--text);padding:.45rem .95rem;border-radius:999px;font:inherit;font-size:.9rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
 
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
+/* Grid */
+main{max-width:1200px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+.grid{display:grid;grid-template-columns:1fr;gap:1.25rem}
+@media(min-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
 
-        .brand-name {
-            font-size: 1.5rem;
-            font-weight: 500;
-            font-family: 'Playfair Display', Georgia, serif;
-            color: #1abc9c;
-            letter-spacing: 0.5px;
-        }
+/* Card: 1 lot number, 2 product, 3 quantity, 4 prices, 5 lot rate, 6 sign-off */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:column;overflow:hidden}
+.card.is-sold .card-media img{filter:grayscale(1);opacity:.7}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.75rem 1rem;border-bottom:1px solid var(--line)}
+.lotno{font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.lotno:hover{color:#000}
+.badge{font-size:.78rem;font-weight:600;padding:.15rem .65rem;border-radius:999px;border:1px solid var(--wa);color:var(--wa);white-space:nowrap}
+.badge.sold{border-color:var(--sold);color:var(--sold)}
+.toppanel{background:var(--ink);color:#fff;padding:.85rem 1rem 1.05rem;border-bottom:2px solid var(--gold)}
+.tp-row{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+.toppanel .lotno{color:var(--gold);font-size:.92rem}
+.toppanel .lotno:hover{color:#fff}
+.toppanel .badge{border-color:var(--gold);color:var(--gold)}
+.toppanel .badge.sold{border-color:#f3b3b3;color:#f3b3b3}
+.tp-name{margin-top:.6rem;font-size:1.28rem;font-weight:700;line-height:1.3;color:#fff;overflow-wrap:anywhere}
+.tp-name[data-open]{cursor:pointer}
+.card-media{border:0;padding:0;background:#e9ecf0;cursor:pointer;display:block;width:100%;aspect-ratio:4/3}
+.card-media img{width:100%;height:100%;object-fit:cover;display:block}
+.ph{height:100%;display:grid;place-items:center;color:var(--muted);font-size:.9rem;padding:1rem;text-align:center}
+.card-body{padding:.6rem 1rem 1.1rem;display:flex;flex-direction:column;gap:.55rem;flex:1}
 
-        .brand-name .ak {
-            font-weight: 600;
-            color: #16a085;
-        }
+.rows{display:block}
+.rows>div{display:grid;grid-template-columns:7.2rem 1fr;gap:.6rem;padding:.38rem 0;border-bottom:1px solid var(--line)}
+.rows>div:last-child{border-bottom:0}
+.rows dt{font-size:.82rem;color:var(--muted)}
+.rows dd{font-size:.93rem;overflow-wrap:anywhere}
+.rows .pname dd{font-size:1.08rem;font-weight:700;color:var(--ink);line-height:1.3}
+.rows .clamp dd{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.rows .full dd{white-space:pre-line}
+.block{padding-top:.45rem;border-top:1px solid var(--line)}
 
-        .brand-tagline {
-            font-size: 0.7rem;
-            color: #95a5a6;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            font-family: 'Playfair Display', Georgia, serif;
-            font-style: italic;
-        }
+.ratebox{background:var(--hl);border:1px solid var(--gold);border-radius:6px;padding:.7rem .9rem;display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+.ratebox .rl{font-size:.85rem;font-weight:600;color:var(--ink)}
+.ratebox .rv{font-size:1.3rem;font-weight:700;color:var(--ink);text-align:right;overflow-wrap:anywhere}
 
-        .back-btn {
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(26, 188, 156, 0.3);
-        }
+.asis{font-size:.8rem;color:var(--muted)}
+.actions{margin-top:.2rem;display:grid;gap:.5rem}
+.btn{display:block;text-align:center;text-decoration:none;font:inherit;font-weight:600;font-size:.95rem;padding:.8rem 1rem;border-radius:8px;border:1px solid transparent;cursor:pointer}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-wa:hover{background:var(--wa-dark)}
+.btn-ghost{background:#fff;color:var(--ink);border-color:#b9c0ca}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-share{display:block;text-align:center;text-decoration:none;font-weight:600;font-size:.95rem;color:var(--wa);padding:.8rem 1rem;background:#fff;border:1px solid var(--wa);border-radius:8px;font-family:inherit;cursor:pointer}
+.btn-share:hover{background:#eef7f1}
+.soldnote{text-align:center;color:var(--sold);font-weight:600;font-size:.92rem;padding:.8rem 0}
+.signoff{margin-top:auto;padding-top:.7rem;text-align:center;font-size:.9rem;font-weight:500;color:var(--ink);line-height:1.4}
 
-        .back-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(26, 188, 156, 0.4);
-        }
+/* States */
+.state{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--muted)}
+.state strong{display:block;color:var(--ink);font-size:1.15rem;margin-bottom:.4rem}
 
-        /* Main Content */
-        .container {
-            max-width: 1000px;
-            margin: 3rem auto;
-            padding: 0 2rem;
-        }
+.notice{margin-top:2rem;border-left:3px solid var(--gold);background:#fff;padding:1.1rem 1.2rem;font-size:.92rem;max-width:84ch}
+.notice h2{font-size:1.05rem;color:var(--ink);margin-bottom:.6rem}
+.notice p+p{margin-top:.7rem}
+.notice strong{color:var(--ink)}
 
-        .page-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-family: 'Playfair Display', Georgia, serif;
-            color: #2c3e50;
-            margin-bottom: 1rem;
-        }
+footer{background:var(--ink);color:#aeb9c9;text-align:center;padding:1.6rem 1.25rem;font-size:.88rem}
+footer a{color:#fff}
 
-        .page-subtitle {
-            text-align: center;
-            color: #7f8c8d;
-            margin-bottom: 3rem;
-            font-size: 1.1rem;
-        }
+/* Detail dialog */
+dialog{border:0;border-radius:8px;max-width:760px;width:calc(100% - 1.5rem);max-height:92vh;padding:0;background:var(--paper);color:var(--text)}
+dialog::backdrop{background:rgba(10,18,30,.7)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;padding:.8rem 1rem;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0}
+.dlg-close{border:1px solid #b9c0ca;background:#fff;color:var(--ink);border-radius:8px;padding:.4rem .9rem;font:inherit;cursor:pointer}
+.dlg-body{padding:1rem;display:grid;gap:.8rem;overflow-y:auto;max-height:calc(92vh - 4rem)}
+.dlg-photos{display:grid;gap:.6rem}
+.dlg-photos img{width:100%;border-radius:6px;display:block;background:#e9ecf0}
+.dlg-note{font-size:.88rem;color:var(--muted);border-top:1px solid var(--line);padding-top:.8rem}
 
-        .content-card {
-            background: white;
-            border-radius: 15px;
-            padding: 3rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .section {
-            margin-bottom: 2.5rem;
-        }
-
-        .section h2 {
-            color: #1abc9c;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            font-family: 'Playfair Display', Georgia, serif;
-            border-bottom: 2px solid #1abc9c;
-            padding-bottom: 0.5rem;
-        }
-
-        .section p {
-            color: #555;
-            margin-bottom: 0.8rem;
-            line-height: 1.8;
-        }
-
-        .section strong {
-            color: #2c3e50;
-        }
-
-        .section ul {
-            margin-left: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .section li {
-            color: #555;
-            margin-bottom: 0.5rem;
-        }
-
-        footer {
-            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 4rem;
-        }
-
-        @media (max-width: 768px) {
-            .page-title {
-                font-size: 2rem;
-            }
-
-            .content-card {
-                padding: 2rem 1.5rem;
-            }
-
-            .container {
-                padding: 0 1rem;
-            }
-        }
-    </style>
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+.doc{max-width:780px;margin:0 auto;padding:1.5rem 1.1rem 3rem}
+.doccard{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.dochead{background:var(--ink);color:#fff;padding:1.3rem 1.3rem 1.2rem;border-bottom:2px solid var(--gold)}
+.dochead h1{font-size:1.6rem;line-height:1.2;font-weight:700}
+.dochead .meta{margin-top:.5rem;color:#c9d3e0;font-size:.88rem}
+.docbody{padding:1.2rem 1.3rem 1.6rem}
+.docbody h2{font-size:1.1rem;color:var(--ink);margin:1.5rem 0 .5rem;padding-top:1rem;border-top:1px solid var(--line)}
+.docbody h2:first-of-type{margin-top:.6rem;border-top:0;padding-top:0}
+.docbody h3{font-size:.98rem;color:var(--ink);margin:1rem 0 .3rem}
+.docbody p{margin:.5rem 0;font-size:.97rem}
+.docbody ul{margin:.5rem 0 .5rem 1.2rem}
+.docbody li{margin:.3rem 0;font-size:.97rem}
+.docbody a{color:#0d5ea8;text-decoration:underline}
+.docbody .callout{margin:1rem 0;border-left:3px solid var(--gold);background:#faf6e6;padding:.8rem 1rem;font-size:.95rem}
+.related{margin-top:1.6rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.92rem}
+.related a{display:inline-block;margin:.2rem .9rem .2rem 0}
+</style>
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <div class="logo-section">
-                <img src="https://i.ibb.co/Qb9Lqjz/ak-brands-logo.png" alt="AK Brands Logo" class="logo-img">
-                <div class="brand-text">
-                    <div class="brand-name"><span class="ak">AK</span> Brands Marketing</div>
-                    <div class="brand-tagline">Trusted B2B Liquidation Partner</div>
-                </div>
-            </div>
-            <a href="index.html" class="back-btn">← Back to Home</a>
-        </div>
-    </header>
 
-    <div class="container">
-        <h1 class="page-title">📜 Terms & Conditions</h1>
-        <p class="page-subtitle">Please read these terms carefully before engaging with our services</p>
-
-        <div class="content-card">
-            <div class="section">
-                <h2>📋 1. General Terms</h2>
-                <p><strong>Effective Date:</strong> January 2026</p>
-                <p><strong>Company Name:</strong> AK Brands Marketing</p>
-                <p><strong>Business Type:</strong> B2B Liquidation & Stock Lot Trading Platform</p>
-                <p><strong>Jurisdiction:</strong> India</p>
-                <p>By accessing or using our services, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use our services.</p>
-            </div>
-
-            <div class="section">
-                <h2>🤝 2. Business Relationship</h2>
-                <p><strong>B2B Focus:</strong> Our services are exclusively for business-to-business transactions. Individual consumers are not our target market.</p>
-                <p><strong>Eligibility:</strong> You must be a registered business entity or authorized representative to use our platform.</p>
-                <p><strong>Account Registration:</strong> Accurate business information must be provided during registration. We reserve the right to verify business credentials.</p>
-                <p><strong>Account Security:</strong> You are responsible for maintaining the confidentiality of your account credentials.</p>
-            </div>
-
-            <div class="section">
-                <h2>📦 3. Product Information & Quality</h2>
-                <p><strong>Product Descriptions:</strong> We strive to provide accurate descriptions of all stock lots, including quantity, condition, and specifications.</p>
-                <p><strong>Stock Condition:</strong> Products may include overstock, closeouts, customer returns, or shelf pulls. Condition will be clearly stated in listings.</p>
-                <p><strong>Inspection Rights:</strong> Buyers may request to inspect stock lots before purchase, subject to availability and scheduling.</p>
-                <p><strong>No Warranty:</strong> Unless explicitly stated, products are sold "as-is" without warranties. We are not the manufacturer and cannot provide manufacturer warranties.</p>
-            </div>
-
-            <div class="section">
-                <h2>💰 4. Pricing & Payment Terms</h2>
-                <p><strong>Pricing:</strong> All prices are quoted in Indian Rupees (INR) and are subject to change without notice until order confirmation.</p>
-                <p><strong>Bulk Discounts:</strong> Volume-based pricing may be available for large orders. Contact us for custom quotes.</p>
-                <p><strong>Payment Methods:</strong> We accept bank transfers, UPI, and other agreed-upon payment methods for B2B transactions.</p>
-                <p><strong>Payment Terms:</strong> Payment terms will be specified in each transaction. Standard terms may include advance payment, partial payment, or credit terms for established clients.</p>
-                <p><strong>Late Payments:</strong> Late payments may incur additional charges as per agreed terms.</p>
-            </div>
-
-            <div class="section">
-                <h2>🔄 5. Order Processing & Fulfillment</h2>
-                <p><strong>Order Confirmation:</strong> Orders are confirmed upon receipt of payment or as per agreed credit terms.</p>
-                <p><strong>Processing Time:</strong> We aim to process orders within 2-5 business days, depending on stock availability and order size.</p>
-                <p><strong>Stock Availability:</strong> While we maintain accurate inventory, stock availability is subject to prior sale. We will notify you immediately if ordered items are unavailable.</p>
-                <p><strong>Order Modifications:</strong> Order changes or cancellations must be requested before shipment. Fees may apply.</p>
-            </div>
-
-            <div class="section">
-                <h2>🚚 6. Shipping & Logistics</h2>
-                <p><strong>Shipping Methods:</strong> We work with reliable logistics partners across India for timely delivery.</p>
-                <p><strong>Shipping Costs:</strong> Shipping costs are calculated based on weight, volume, destination, and delivery speed. Costs will be communicated before order confirmation.</p>
-                <p><strong>Delivery Time:</strong> Estimated delivery times will be provided at checkout. Actual delivery may vary based on location and logistics.</p>
-                <p><strong>Risk of Loss:</strong> Risk of loss and title for products pass to the buyer upon delivery to the carrier.</p>
-                <p><strong>Delivery Issues:</strong> Report any delivery issues within 48 hours of receipt.</p>
-            </div>
-
-            <div class="section">
-                <h2>↩️ 7. Returns & Refunds</h2>
-                <p><strong>Return Policy:</strong> Due to the nature of liquidation stock, returns are generally not accepted unless products are significantly different from description or damaged in transit.</p>
-                <p><strong>Damaged Goods:</strong> Claims for damaged goods must be made within 48 hours of delivery with photographic evidence.</p>
-                <p><strong>Return Process:</strong> If a return is approved, return shipping costs are typically the buyer's responsibility unless the error was ours.</p>
-                <p><strong>Refunds:</strong> Approved refunds will be processed within 7-10 business days to the original payment method.</p>
-            </div>
-
-            <div class="section">
-                <h2>©️ 8. Intellectual Property</h2>
-                <p><strong>Platform Content:</strong> All content on our platform, including text, graphics, logos, and images, is our property or licensed to us.</p>
-                <p><strong>Product Trademarks:</strong> Brand names and trademarks mentioned in product listings belong to their respective owners. We are an authorized liquidator/reseller.</p>
-                <p><strong>Usage Restrictions:</strong> You may not reproduce, distribute, or create derivative works from our platform content without permission.</p>
-            </div>
-
-            <div class="section">
-                <h2>⚖️ 9. Limitation of Liability</h2>
-                <p><strong>Service Basis:</strong> Our platform is provided "as-is" and "as available" without warranties of any kind.</p>
-                <p><strong>Liability Cap:</strong> Our total liability for any claim arising from your use of our services shall not exceed the amount you paid for the specific transaction in question.</p>
-                <p><strong>Indirect Damages:</strong> We are not liable for indirect, incidental, special, or consequential damages.</p>
-                <p><strong>Business Decisions:</strong> You are responsible for your own business decisions regarding purchases made through our platform.</p>
-            </div>
-
-            <div class="section">
-                <h2>🔨 10. Dispute Resolution</h2>
-                <p><strong>Good Faith Negotiation:</strong> In the event of any dispute, both parties agree to first attempt resolution through good faith negotiation.</p>
-                <p><strong>Mediation:</strong> If negotiation fails, disputes may be referred to mediation before pursuing legal action.</p>
-                <p><strong>Jurisdiction:</strong> These terms are governed by Indian law. Any legal proceedings shall be conducted in courts of competent jurisdiction in India.</p>
-                <p><strong>Communication:</strong> All dispute-related communications should be directed to abdul@akbrandsmarketing.com</p>
-            </div>
-
-            <div class="section">
-                <h2>📞 11. Contact Information</h2>
-                <p>For questions about these Terms & Conditions, please contact us:</p>
-                <p><strong>Email:</strong> abdul@akbrandsmarketing.com</p>
-                <p><strong>Phone:</strong> +91 8660502217</p>
-                <p><strong>Business Hours:</strong> Monday to Saturday, 9:00 AM - 6:00 PM IST</p>
-                <p><strong>Address:</strong> Bangalore, Karnataka, India</p>
-            </div>
-
-            <div class="section">
-                <p style="text-align: center; color: #7f8c8d; margin-top: 3rem; font-style: italic;">
-                    <strong>Last Updated:</strong> January 2026<br>
-                    These terms may be updated periodically. Continued use of our services constitutes acceptance of updated terms.
-                </p>
-            </div>
-        </div>
+<header class="site-header">
+  <div class="hdr">
+    <a class="logo-section" href="/index.html">
+      <img class="logo-img" src="/logo.jpg" alt="AK Brands Marketing logo" width="55" height="55">
+      <span class="brand-text"><span class="brand-name"><span class="ak">AK</span> Brands Marketing</span><span class="brand-tagline">Trusted Firm</span></span>
+    </a>
+    <div class="menu-dropdown">
+      <button class="menu-button" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menuDropdown">&#9776;</button>
+      <nav class="dropdown-content" id="menuDropdown" aria-label="Main menu">
+        <a href="/index.html">Home</a>
+        <a href="/catalogue.html">Buy</a>
+        <a href="/index.html#about">About</a>
+        <a href="/products.html">Products</a>
+        <a href="/services.html">Services</a>
+        <a href="/index.html#contact">Contact</a>
+      </nav>
     </div>
+  </div>
+</header>
 
-    <footer>
-        <p>&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
-    </footer>
+<main class="doc">
+  <article class="doccard">
+    <div class="dochead">
+      <h1>Terms &amp; Conditions</h1>
+      <p class="meta">AK Brands Marketing&copy; &middot; Version 1.0 &middot; Last updated: 6 October 2026</p>
+    </div>
+    <div class="docbody">
+
+<p>Please read these Terms &amp; Conditions carefully. By using our website, joining our WhatsApp community, or booking a lot with us, you agree to them, together with our <a href="/business-policy.html">Business Policy</a>, <a href="/return-refund.html">Return &amp; Refund Policy</a>, <a href="/shipping-delivery.html">Shipping &amp; Delivery Policy</a>, <a href="/privacy.html">Privacy Policy</a>, <a href="/disclaimer.html">Disclaimer</a> and our written Buyer Protection Plan.</p>
+
+<h2>1. Who we are and our role</h2>
+<p>AK Brands Marketing&copy; (&ldquo;AK Brands Marketing&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) is a business-to-business liquidation sourcing partner, operating since 2016, with its registered office in Davangere and a branch in Bangalore, Karnataka, India. We procure, market and manage surplus inventory transactions from start to finish. We are not a marketplace or a broker. When you book a lot, you deal directly with AK Brands Marketing, with one point of contact from booking to delivery.</p>
+<p>We do not own, represent, or act on behalf of any brand or manufacturer, and we are not an authorised dealer, distributor or service partner of any brand.</p>
+
+<h2>2. Who may buy from us</h2>
+<p>Our lots are sold to businesses and adults aged 18 and above, for commercial purposes such as resale. By booking, you confirm that you are buying for your business and not as a consumer for personal use.</p>
+
+<h2>3. Lots and listings</h2>
+<ul>
+<li>Every lot is liquidation or surplus stock, sold <strong>as is, where is</strong>, and is not 100% fresh.</li>
+<li>Variance of up to <strong>10%</strong> of a lot, such as minor damage, dust or mismatch, is standard in this trade and is accepted by the buyer at booking.</li>
+<li>Lots go through our verification process before listing. Photos, videos and descriptions are indicative, and the actual goods may differ slightly.</li>
+<li>Lots are sold at or above the stated minimum quantity. Quantities, rates and availability can change without notice. If we find an error in a listing, we may correct it or withdraw the lot before it is confirmed.</li>
+</ul>
+
+<h2>4. Booking and when a contract is formed</h2>
+<p>You book a lot by messaging us on WhatsApp with the lot number. A binding contract for the lot is formed only when we confirm your booking and receive the booking amount that we have asked for. From that point we hold the lot for you and take it off sale.</p>
+
+<h2>5. Prices and payment</h2>
+<ul>
+<li>The lot rate is stated per unit, and GST is charged and invoiced as applicable. Freight and other delivery charges are additional unless the lot says otherwise.</li>
+<li>Payment follows the structure in our Buyer Protection Plan: a part payment (30%) to book, and the balance (70%) after the packing-video checkpoint, or as otherwise agreed in writing at booking.</li>
+<li>Pay only to the bank or UPI details that we have confirmed to you in writing, from our official WhatsApp number or email. We will never ask for your card PIN, passwords or one-time passwords.</li>
+<li>If the balance is not paid as agreed, we may release the lot, and the booking amount is treated as set out in section 7.</li>
+</ul>
+
+<h2>6. Delivery</h2>
+<p>Delivery is arranged as described in our <a href="/shipping-delivery.html">Shipping &amp; Delivery Policy</a>. After booking, we share the packing video within 2 to 3 days, hand the goods to the courier or transport company within a further 2 to 3 days, and you get the tracking number or Bilty within 2 to 3 days after that. These are our usual timelines, not guarantees, and can be delayed by weather or climate, festival seasons, heavy workload, strikes, holidays, long holidays, or emergencies.</p>
+
+<h2>7. Cancellation of a booking</h2>
+<p>A booking is a firm commitment. We do not entertain a change of mind after booking. If a buyer cancels after booking, the amount paid at booking is <strong>not refunded</strong>, which is the normal practice in the liquidation lot trade. In certain cases, and at our discretion, we may refund the booking amount within 48 hours. If we are unable to supply a booked lot, the amount you paid is dealt with under our Buyer Protection Plan.</p>
+
+<h2>8. Buyer Protection Plan and claims</h2>
+<p>Our written Buyer Protection Plan covers listing accuracy, the 30% / 70% payment structure with a packing-video checkpoint, a refund within 7 working days for non-delivery, and cover for defects beyond the 10% tolerance, with a verification process and fixed refund timelines.</p>
+<ul>
+<li>A claim for defects above the 10% tolerance must be raised <strong>within 2 days of receiving the stock</strong>.</li>
+<li>A continuous <strong>360-degree unboxing video is mandatory</strong> for any claim above the 10% tolerance. Claims made late, or without the video, cannot be accepted.</li>
+<li>The detailed process is in our <a href="/return-refund.html">Return &amp; Refund Policy</a>. If anything differs from the written plan, the written plan applies to the protections it covers.</li>
+</ul>
+
+<h2>9. Buyer responsibilities</h2>
+<ul>
+<li>Check each lot&rsquo;s details, quantity, minimum quantity, rate and condition before booking.</li>
+<li>Give correct business, delivery and contact details.</li>
+<li>Make sure your resale of any lot is lawful, including any brand or trademark restrictions, labelling and packaging requirements, licensing, and tax rules that apply to you.</li>
+<li>Check the consignment on arrival and record the unboxing, as set out in our Shipping &amp; Delivery Policy.</li>
+</ul>
+
+<h2>10. Conduct</h2>
+<p>We work with serious buyers and sellers only. Do not give false information, make fraudulent payments or claims, or post misleading, abusive or unlawful content on our website or WhatsApp community. We may remove anyone from our community, or decline or cancel a transaction, where these standards are not met, and we may take legal action to protect our business.</p>
+
+<h2>11. Intellectual property</h2>
+<p>The AK Brands Marketing name, logo, tagline and website content belong to us. You may not copy or use them without our written permission. Brand names and logos of other companies that appear in listings belong to their owners and are used only to describe the stock.</p>
+
+<h2>12. Disclaimer and limitation of liability</h2>
+<p>Our <a href="/disclaimer.html">Disclaimer</a> forms part of these terms. To the extent permitted by law, and without affecting the protections in the Buyer Protection Plan, we are not liable for indirect or consequential loss, loss of profit or loss of business. Where we are found liable, our liability for any single claim is limited to the amount you paid for the lot concerned.</p>
+
+<h2>13. Events beyond our control</h2>
+<p>We are not responsible for delay or failure caused by events beyond our reasonable control, including natural events, strikes, holidays, carrier disruptions, government orders, or emergencies. We will tell you as soon as we reasonably can.</p>
+
+<h2>14. Privacy</h2>
+<p>How we handle your information is described in our <a href="/privacy.html">Privacy Policy</a>.</p>
+
+<h2>15. Changes to these terms</h2>
+<p>We may update these terms from time to time. The latest version, with its date, is always on this page. A booking is governed by the version in force on the day of booking.</p>
+
+<h2>16. General</h2>
+<ul>
+<li>If any part of these terms is found invalid, the rest continues to apply.</li>
+<li>We may send notices to you on WhatsApp, by email or by phone, using the details you gave us.</li>
+<li>These terms and the documents named above are our complete agreement with you about your purchase.</li>
+</ul>
+
+<h2>17. Governing law and disputes</h2>
+<p>These terms are governed by the laws of India. We will first try to settle any dispute through good-faith discussion. If that does not work, the dispute is subject to the jurisdiction of the competent courts in Karnataka, India.</p>
+
+<h2>18. Contact</h2>
+<p><strong>AK Brands Marketing&copy;</strong><br>
+Registered Office: Davangere, Karnataka, India<br>
+Branch: Bangalore, Karnataka, India<br>
+Email: <a href="mailto:abdul@akbrandsmarketing.com">abdul@akbrandsmarketing.com</a><br>
+WhatsApp: <a href="https://wa.me/918660502217">+91 86605 02217</a><br>
+Website: <a href="https://akbrandsmarketing.com">akbrandsmarketing.com</a></p>
+      <div class="related"><strong>Related policies:</strong><br><a href="/business-policy.html">Business Policy</a><a href="/return-refund.html">Return &amp; Refund Policy</a><a href="/shipping-delivery.html">Shipping &amp; Delivery Policy</a><a href="/privacy.html">Privacy Policy</a><a href="/disclaimer.html">Disclaimer</a></div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-copyright">&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
+    <div class="footer-links">
+      <a href="/terms.html" class="footer-link">Terms &amp; Conditions</a>
+      <a href="/return-refund.html" class="footer-link">Return &amp; Refund Policy</a>
+      <a href="/shipping-delivery.html" class="footer-link">Shipping &amp; Delivery Policy</a>
+      <a href="/privacy.html" class="footer-link">Privacy Policy</a>
+      <a href="/disclaimer.html" class="footer-link">Disclaimer</a>
+      <a href="/business-policy.html" class="footer-link">Business Policy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.getElementById("menuBtn").addEventListener("click", function (e) {
+  e.stopPropagation();
+  var open = document.getElementById("menuDropdown").classList.toggle("show");
+  this.setAttribute("aria-expanded", String(open));
+});
+document.addEventListener("click", function () {
+  document.getElementById("menuDropdown").classList.remove("show");
+  document.getElementById("menuBtn").setAttribute("aria-expanded", "false");
+});
+</script>
 </body>
 </html>
