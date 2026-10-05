@@ -1978,6 +1978,8 @@ footer {
         });
     </script>
     <script>
+        function openSellModal() { window.location.href = 'sell.html'; }
+function openAuctionModal() { window.location.href = 'sell.html?type=auction'; }
     function openBuyModal(lotNumber) {
         if (!lotNumber) { window.location.href = 'catalogue.html'; return; }
         if (lotNumber) {
