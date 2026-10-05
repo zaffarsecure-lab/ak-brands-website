@@ -452,6 +452,8 @@ async function load(){
       const tb = b.createdAt && b.createdAt.seconds ? b.createdAt.seconds : 0;
       return tb - ta;
     });
+    const wantedCat = new URLSearchParams(location.search).get("cat");
+    if (wantedCat && lots.some((l) => (l.category || "Other") === wantedCat)) activeCategory = wantedCat;
     renderChips();
     render();
     track("catalogue_loaded", { lots_available: lots.filter((l) => l.status !== "sold").length });
