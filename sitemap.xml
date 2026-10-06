@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  
-  <!-- Homepage -->
-  <url>
-    <loc>https://www.akbrandsmarketing.com/</loc>
-    <lastmod>2025-12-06</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-    <image:image>
-      <image:loc>https://nyc3.digitaloceanspaces.com/bhindi-drive/files/e42f16e8-8f96-4b73-9b52-8fe6992865e2/2025-12-04T04-07-02-217Z-cd7a780d-chat-image-1764821222198-0.jpg</image:loc>
-      <image:title>AK Brands Marketing - B2B Liquidation Platform India</image:title>
-      <image:caption>Leading B2B liquidation platform for excess inventory, stock lots, and warehouse clearance</image:caption>
-    </image:image>
-  </url>
-  
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://akbrandsmarketing.com/</loc><lastmod>2026-10-06</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://akbrandsmarketing.com/catalogue.html</loc><lastmod>2026-10-06</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://akbrandsmarketing.com/products.html</loc><lastmod>2026-10-06</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://akbrandsmarketing.com/services.html</loc><lastmod>2026-10-06</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://akbrandsmarketing.com/policies.html</loc><lastmod>2026-10-06</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://akbrandsmarketing.com/terms.html</loc><lastmod>2026-10-06</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://akbrandsmarketing.com/business-policy.html</loc><lastmod>2026-10-06</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://akbrandsmarketing.com/return-refund.html</loc><lastmod>2026-10-06</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://akbrandsmarketing.com/shipping-delivery.html</loc><lastmod>2026-10-06</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://akbrandsmarketing.com/privacy.html</loc><lastmod>2026-10-06</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://akbrandsmarketing.com/disclaimer.html</loc><lastmod>2026-10-06</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
 </urlset>
