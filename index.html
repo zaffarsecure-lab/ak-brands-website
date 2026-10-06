@@ -1981,6 +1981,24 @@ footer {
     </script>
     <script>
         (function () {
+  var s = document.createElement("style");
+  s.textContent =
+    "@media (max-width:600px){" +
+    ".hero{padding-left:1rem!important;padding-right:1rem!important}" +
+    ".action-icons{gap:.6rem!important;padding:0!important;max-width:100%!important;justify-content:space-between!important}" +
+    ".action-icons .action-item{flex:1 1 0;min-width:0}" +
+    ".action-icons .simple-icon{width:58px!important;height:58px!important;margin-bottom:.6rem!important}" +
+    ".action-icons .simple-icon svg{width:26px!important;height:26px!important}" +
+    ".action-icons .action-label{font-size:.88rem!important;white-space:nowrap}" +
+    ".contact{padding-left:1.25rem!important;padding-right:1.25rem!important}" +
+    ".contact-details p{justify-content:flex-start!important;text-align:left!important;font-size:1rem}" +
+    ".contact-details p span:last-child{min-width:0;overflow-wrap:anywhere}" +
+    ".contact-details .ci{flex:0 0 auto}" +
+    ".contact-details .ci svg{width:20px!important;height:20px!important}" +
+    "}";
+  document.head.appendChild(s);
+})();
+        (function () {
   function svg(inner) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + inner + '</svg>'; }
   var I = {
     buy: svg('<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>'),
