@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Orders | AK Brands Marketing</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0f1b2d;--gold:#d4af37;--ivory:#f7f5ef;--line:#e2ddcf;--text:#243247;--muted:#5f6e82;--ok:#12803f;--bad:#8a2f2f;--warn:#8a5a12}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--ivory);color:var(--text);line-height:1.5}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+header{background:var(--ink);color:#fff;border-bottom:2px solid var(--gold)}
+.bar{max-width:760px;margin:0 auto;padding:.9rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.bar h1{font-size:1.15rem;font-weight:600}
+.bar a,.bar button{color:#d9e0ea;font:inherit;font-size:.9rem;background:none;border:1px solid rgba(255,255,255,.3);padding:.4rem .8rem;border-radius:999px;text-decoration:none;cursor:pointer}
+main{max-width:760px;margin:0 auto;padding:1.25rem 1rem 3rem;display:grid;gap:1.25rem}
+.panel{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1.1rem}
+.panel h2{font-size:1.15rem;font-weight:600;color:var(--ink);margin-bottom:.4rem}
+label{display:block;font-weight:600;font-size:.9rem;margin:.9rem 0 .3rem;color:var(--ink)}
+.hint{font-weight:400;color:var(--muted);font-size:.82rem}
+input,select,textarea{width:100%;padding:.75rem .85rem;border:1px solid #cfc8b5;border-radius:8px;font:inherit;background:#fff;color:var(--text)}
+textarea{min-height:90px;resize:vertical}
+button.primary{margin-top:1.1rem;width:100%;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.9rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+button.primary[disabled]{opacity:.6;cursor:wait}
+button.small{margin-top:.7rem;background:#fff;color:var(--ink);border:1px solid var(--ink);padding:.6rem .9rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+button.link{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;font-size:.88rem;cursor:pointer}
+button.danger{margin-top:.9rem;background:#fff;color:var(--bad);border:1px solid var(--bad);padding:.6rem .9rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+a.wabtn{display:block;margin-top:.8rem;text-align:center;padding:.8rem;border:1px solid var(--ok);border-radius:8px;color:var(--ok);font-weight:600;text-decoration:none;background:#fff}
+a.wabtn.off{opacity:.45;pointer-events:none}
+.msg{margin-top:.9rem;padding:.7rem .9rem;border-radius:8px;font-size:.92rem;display:none}
+.msg.show{display:block}
+.msg.ok{background:#e6f4ec;color:#0c5a2c}
+.msg.err{background:#f8e6e6;color:#7a2020}
+.hidden{display:none!important}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.tile{background:#fff;border:1px solid var(--line);border-radius:8px;padding:.8rem}
+.tile small{display:block;color:var(--muted);font-size:.78rem}
+.tile b{display:block;font-size:1.12rem;color:var(--ink);overflow-wrap:anywhere}
+.tile.priv b{color:var(--bad)}
+.ocard{border-top:1px solid var(--line);padding:.9rem 0;cursor:pointer}
+.ocard:first-child{border-top:0}
+.ocard h3{font-size:1rem;color:var(--ink);display:flex;justify-content:space-between;gap:.6rem}
+.ocard p{font-size:.85rem;color:var(--muted);overflow-wrap:anywhere}
+.pill{display:inline-block;font-size:.74rem;font-weight:600;padding:.1rem .55rem;border-radius:999px;border:1px solid var(--muted);color:var(--muted);margin:.25rem .3rem 0 0}
+.pill.ok{border-color:var(--ok);color:var(--ok)}
+.pill.warn{border-color:#b7791f;color:var(--warn)}
+.pill.bad{border-color:var(--bad);color:var(--bad)}
+.chips{display:flex;gap:.45rem;overflow-x:auto;padding:.7rem 0 .2rem;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:0 0 auto;border:1px solid #bfb7a2;background:#fff;border-radius:999px;padding:.4rem .85rem;font:inherit;font-size:.86rem;cursor:pointer;white-space:nowrap;color:var(--ink)}
+.chips button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+details.filters{margin-top:.8rem;border:1px solid var(--line);border-radius:8px;padding:.2rem .8rem .8rem;background:#fcfbf8}
+details.filters summary{cursor:pointer;font-weight:600;color:var(--ink);padding:.6rem 0}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 .6rem}
+.fgrid label{margin:.7rem 0 .25rem}
+.resultbar{margin-top:.9rem;padding:.7rem .85rem;background:#f4f1e8;border-radius:8px;font-size:.88rem;display:grid;gap:.2rem}
+.resultbar b{color:var(--ink)}
+.resultbar .pv{color:var(--bad)}
+.item,.pay{border:1px solid var(--line);border-radius:8px;padding:.8rem;margin-top:.8rem;background:#fcfbf8}
+.head{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.private{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#fdecec;color:#7a2020;border-radius:4px;padding:.05rem .35rem;margin-left:.3rem;vertical-align:middle}
+.sum{display:grid;gap:.3rem;font-size:.92rem;margin-top:.6rem}
+.sum div{display:flex;justify-content:space-between;gap:1rem}
+.sum .sep{border-top:1px solid var(--line);padding-top:.4rem;margin-top:.2rem;font-weight:700;color:var(--ink)}
+.sum .pr span:last-child{color:var(--bad);font-weight:700}
+.savebar{position:sticky;bottom:0;background:#fff;border-top:2px solid var(--gold);padding:.7rem 1rem;display:flex;gap:.8rem;align-items:center;justify-content:space-between;border-radius:8px;box-shadow:0 -4px 14px rgba(0,0,0,.08)}
+.savebar .due{font-size:.82rem;color:var(--muted)}
+.savebar .due b{display:block;font-size:1.05rem;color:var(--ink)}
+.savebar button{width:auto;margin:0;padding:.8rem 1.4rem}
+input[type=checkbox]{width:auto;margin-right:.55rem;vertical-align:middle}
+label.chk{display:flex;align-items:center;font-weight:600;margin:.9rem 0 .3rem}
+.lnk{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.55rem .7rem;margin-top:.5rem;border:1px solid var(--line);border-radius:8px;background:#fcfbf8;font-size:.9rem}
+.lnk span{overflow-wrap:anywhere}
+.lnk button.link{flex:0 0 auto;color:var(--bad)}
+button.docbtn{display:block;width:100%;margin-top:.7rem;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.85rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+button.docbtn.alt{background:#fff;color:var(--ink);border:1px solid var(--ink)}
+button.docbtn[disabled]{opacity:.6;cursor:wait}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>Orders</h1>
+    <div style="display:flex;gap:.5rem">
+      <a href="admin.html">Lots</a>
+      <button id="logout" class="hidden" type="button">Log out</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="panel" id="loginPanel">
+    <h2>Admin login</h2>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button class="primary" type="submit">Log in</button>
+      <div class="msg" id="loginMsg" role="status"></div>
+    </form>
+  </section>
+
+  <!-- ORDER LIST -->
+  <div id="listView" class="hidden" style="display:grid;gap:1.25rem">
+    <div class="tiles" id="tiles"></div>
+    <section class="panel">
+      <details class="filters" id="bizBox" style="margin-top:0">
+        <summary>Business details for invoices</summary>
+        <p class="hint">Fill this once. It prints on your Tax Invoice and URD bill, and is stored privately in your database.</p>
+        <label for="b_name">Business name</label><input id="b_name" type="text">
+        <label for="b_address">Address</label><textarea id="b_address" style="min-height:70px"></textarea>
+        <div class="two"><div><label for="b_city">City</label><input id="b_city" type="text"></div><div><label for="b_pincode">Pincode</label><input id="b_pincode" type="text" inputmode="numeric"></div></div>
+        <div class="two"><div><label for="b_state">State</label><select id="b_state"></select></div><div><label for="b_gstin">GSTIN</label><input id="b_gstin" type="text" autocapitalize="characters"></div></div>
+        <div class="two"><div><label for="b_pan">PAN</label><input id="b_pan" type="text" autocapitalize="characters"></div><div><label for="b_phone">Phone</label><input id="b_phone" type="tel"></div></div>
+        <label for="b_email">Email</label><input id="b_email" type="email">
+        <label for="b_bankHolder">Bank: account holder name</label><input id="b_bankHolder" type="text">
+        <div class="two"><div><label for="b_bankName">Bank name</label><input id="b_bankName" type="text"></div><div><label for="b_bankBranch">Branch</label><input id="b_bankBranch" type="text"></div></div>
+        <div class="two"><div><label for="b_bankAcc">Account number</label><input id="b_bankAcc" type="text" inputmode="numeric"></div><div><label for="b_bankIfsc">IFSC</label><input id="b_bankIfsc" type="text" autocapitalize="characters"></div></div>
+        <label for="b_upi">UPI ID <span class="hint">(optional)</span></label><input id="b_upi" type="text">
+        <div class="two"><div><label for="b_invPrefix">Invoice number letters</label><input id="b_invPrefix" type="text" maxlength="5" autocapitalize="characters"></div><div><label for="b_urdPrefix">URD bill letters</label><input id="b_urdPrefix" type="text" maxlength="5" autocapitalize="characters"></div></div>
+        <p class="hint">Numbers look like AKB/26-27/0001 and restart each April. Keep the letters to 5 or fewer.</p>
+        <label for="b_supCustPhone">Phone number shown to suppliers as the customer's contact</label><input id="b_supCustPhone" type="tel">
+        <label for="b_supFromPhone">Our phone number in the "From" line to suppliers</label><input id="b_supFromPhone" type="tel">
+        <label for="b_payTerms">Usual payment terms</label><input id="b_payTerms" type="text">
+        <label for="b_gstMode">For new orders, rates are usually</label><select id="b_gstMode"></select>
+        <label for="b_terms">Terms and declaration on the invoice</label><textarea id="b_terms"></textarea>
+        <label for="b_signatory">Signature line</label><input id="b_signatory" type="text">
+        <button class="primary" id="bizSave" type="button">Save business details</button>
+        <div class="msg" id="bizMsg" role="status"></div>
+      </details>
+    </section>
+    <section class="panel">
+      <h2>All orders</h2>
+      <p class="hint">Private. Only you can see this page's data. Customers never see supplier price, profit or margin.</p>
+      <button class="primary" id="newBtn" type="button">New order</button>
+      <label for="search">Search everything</label>
+      <input id="search" type="search" placeholder="Order no, customer, supplier, product, city, LR number">
+      <div class="chips" id="quick" aria-label="Quick filters">
+        <button type="button" data-quick="all">All</button>
+        <button type="button" data-quick="owes">Customer owes</button>
+        <button type="button" data-quick="supunpaid">Supplier unpaid</button>
+        <button type="button" data-quick="todispatch">To dispatch</button>
+        <button type="button" data-quick="transit">In transit</button>
+        <button type="button" data-quick="delivered">Delivered</button>
+        <button type="button" data-quick="nourd">No URD bill</button>
+        <button type="button" data-quick="noinv">No invoice</button>
+      </div>
+      <details class="filters" id="filtersBox">
+        <summary>More filters<span id="fCount"></span></summary>
+        <div class="fgrid">
+          <div><label for="fCustomer">Customer</label><input id="fCustomer" type="text" list="dlCustomers" placeholder="Name, firm or phone" autocomplete="off"></div>
+          <div><label for="fSupplier">Supplier</label><input id="fSupplier" type="text" list="dlSuppliers" placeholder="Supplier name" autocomplete="off"></div>
+          <div><label for="statusFilter">Order status</label><select id="statusFilter"></select></div>
+          <div><label for="fCity">City</label><input id="fCity" type="text" list="dlCities" placeholder="Customer city" autocomplete="off"></div>
+          <div><label for="fPay">Customer payment</label><select id="fPay">
+            <option value="">Any</option><option value="due">Balance due</option><option value="unpaid">Unpaid</option><option value="part">Part paid</option><option value="paid">Paid in full</option></select></div>
+          <div><label for="fSup">Supplier payment</label><select id="fSup">
+            <option value="">Any</option><option value="due">Amount due</option><option value="notpaid">Not paid</option><option value="part">Part paid</option><option value="paid">Paid</option></select></div>
+          <div><label for="fShip">Delivery</label><select id="fShip">
+            <option value="">Any</option><option value="todispatch">To dispatch</option><option value="transit">In transit</option><option value="delivered">Delivered</option><option value="nolr">Dispatched, no LR number</option></select></div>
+          <div><label for="fDocs">Invoice and URD link</label><select id="fDocs">
+            <option value="">Any</option><option value="both">Linked</option><option value="inv_no_urd">Invoice not linked to any URD bill</option><option value="urd_no_inv">URD bill not linked to any invoice</option><option value="none">Neither yet</option></select></div>
+          <div><label for="fProduct">Product</label><input id="fProduct" type="text" placeholder="Product name"></div>
+          <div><label for="fFrom">Order date from</label><input id="fFrom" type="date"></div>
+          <div><label for="fTo">Order date to</label><input id="fTo" type="date"></div>
+        </div>
+        <label for="fSort">Sort by</label>
+        <select id="fSort">
+          <option value="new">Newest first</option><option value="old">Oldest first</option>
+          <option value="balance">Highest balance due</option><option value="supdue">Highest supplier due</option>
+          <option value="profit">Highest profit</option><option value="name">Customer name A to Z</option>
+        </select>
+        <button class="small" id="clearBtn" type="button">Clear all filters</button>
+      </details>
+      <datalist id="dlCustomers"></datalist><datalist id="dlSuppliers"></datalist><datalist id="dlCities"></datalist>
+      <div class="resultbar" id="resultBar"></div>
+      <div id="orderList" style="margin-top:.8rem"><p class="hint">Loading orders</p></div>
+      <button class="small" id="csvBtn" type="button">Download all orders (CSV)</button>
+      <button class="small" id="salesRegBtn" type="button">Sales register (invoices, with linked URD bill)</button>
+      <button class="small" id="purRegBtn" type="button">Purchase register (URD bills, with linked invoice)</button>
+      <p class="hint">Registers follow the filters above and include cancelled invoices with their status. Use the date filters to get one month for your CA or Tally.</p>
+      <div class="msg" id="listMsg" role="status"></div>
+    </section>
+  </div>
+
+  <!-- ORDER FORM -->
+  <div id="formView" class="hidden" style="display:grid;gap:1.25rem">
+    <section class="panel">
+      <div class="head"><h2 id="formTitle">New order</h2><button class="link" id="backBtn" type="button">Back to list</button></div>
+      <div class="two">
+        <div><label for="r_orderDate">Order date</label><input id="r_orderDate" type="date" data-sec="root" data-k="orderDate"></div>
+        <div><label for="r_status">Status</label><select id="r_status" data-sec="root" data-k="status"></select></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>1. Customer</h2>
+      <label for="c_phone">WhatsApp number <span class="hint">(required)</span></label>
+      <input id="c_phone" type="tel" inputmode="tel" placeholder="98xxxxxxxx" data-sec="customer" data-k="phone">
+      <p class="hint" id="custFound"></p>
+      <label for="c_name">Name</label>
+      <input id="c_name" type="text" data-sec="customer" data-k="name">
+      <label for="c_firm">Firm / shop name</label>
+      <input id="c_firm" type="text" data-sec="customer" data-k="firm">
+      <div class="two">
+        <div><label for="c_city">City</label><input id="c_city" type="text" data-sec="customer" data-k="city"></div>
+        <div><label for="c_gstin">GSTIN <span class="hint">(optional)</span></label><input id="c_gstin" type="text" autocapitalize="characters" data-sec="customer" data-k="gstin"></div>
+      </div>
+      <label for="c_state">State <span class="hint">(place of supply, needed for the tax invoice)</span></label>
+      <select id="c_state" data-sec="customer" data-k="state"></select>
+      <label for="c_address">Billing address</label>
+      <textarea id="c_address" data-sec="customer" data-k="address"></textarea>
+      <label class="chk"><input type="checkbox" id="c_shipSame" data-sec="customer" data-k="shipSame">Ship to the same address</label>
+      <div id="shipBox" class="hidden">
+        <label for="c_shipName">Ship to: name</label>
+        <input id="c_shipName" type="text" data-sec="customer" data-k="shipName">
+        <label for="c_shipAddress">Ship to: address</label>
+        <textarea id="c_shipAddress" data-sec="customer" data-k="shipAddress"></textarea>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>2. Products</h2>
+      <p class="hint">Customer rate is what the customer pays. Supplier rate is your cost and stays private.</p>
+      <label for="r_gstMode">How are your customer rates quoted?</label>
+      <select id="r_gstMode" data-sec="root" data-k="gstMode"></select>
+      <p class="hint">HSN code and GST % print on the tax invoice. Ask your CA for the right code and rate for each product. Leave GST % empty if no GST applies.</p>
+      <datalist id="dlGst"><option value="0"></option><option value="5"></option><option value="18"></option><option value="40"></option></datalist>
+      <div id="itemsBox"></div>
+      <button class="small" type="button" data-add="items">Add another product</button>
+    </section>
+
+    <section class="panel">
+      <h2>3. Customer payments</h2>
+      <p class="hint">Token amount, part payments and balance. Add one line per payment received.</p>
+      <div id="paymentsBox"></div>
+      <button class="small" type="button" data-add="payments">Add a payment</button>
+      <button class="small" type="button" id="addBalance">Add balance as received</button>
+    </section>
+
+    <section class="panel">
+      <h2>4. Delivery</h2>
+      <label for="d_transporter">Transport company</label>
+      <input id="d_transporter" type="text" data-sec="delivery" data-k="transporter">
+      <label for="d_lr">LR number / tracking number</label>
+      <input id="d_lr" type="text" data-sec="delivery" data-k="lr">
+      <div class="two">
+        <div><label for="d_vehicle">Vehicle number</label><input id="d_vehicle" type="text" autocapitalize="characters" data-sec="delivery" data-k="vehicle"></div>
+        <div><label for="d_eway">E-way bill number</label><input id="d_eway" type="text" inputmode="numeric" data-sec="delivery" data-k="eway"></div>
+      </div>
+      <div class="two">
+        <div><label for="d_dispatchDate">Dispatch date</label><input id="d_dispatchDate" type="date" data-sec="delivery" data-k="dispatchDate"></div>
+        <div><label for="d_deliveredDate">Delivered on</label><input id="d_deliveredDate" type="date" data-sec="delivery" data-k="deliveredDate"></div>
+      </div>
+      <div class="two">
+        <div><label for="f_amount">Freight amount (&#8377;)</label><input id="f_amount" type="text" inputmode="decimal" data-sec="freight" data-k="amount"></div>
+        <div><label for="f_mode">Freight is</label><select id="f_mode" data-sec="freight" data-k="mode"></select></div>
+      </div>
+      <div class="two">
+        <div><label for="f_gst">GST % on freight <span class="hint">(if billed)</span></label><input id="f_gst" type="text" inputmode="decimal" list="dlGst" data-sec="freight" data-k="gst"></div>
+        <div></div>
+      </div>
+      <label for="d_note">Delivery note</label>
+      <input id="d_note" type="text" data-sec="delivery" data-k="note">
+    </section>
+
+    <section class="panel">
+      <h2>5. Supplier <span class="private">Private</span></h2>
+      <label for="s_name">Supplier name</label>
+      <input id="s_name" type="text" data-sec="supplier" data-k="name">
+      <label for="s_phone">Supplier phone <span class="hint">(optional)</span></label>
+      <input id="s_phone" type="tel" inputmode="tel" data-sec="supplier" data-k="phone">
+      <label for="s_address">Supplier address <span class="hint">(printed on the URD bill)</span></label>
+      <textarea id="s_address" style="min-height:70px" data-sec="supplier" data-k="address"></textarea>
+      <label for="s_pan">Supplier PAN or ID <span class="hint">(optional)</span></label>
+      <input id="s_pan" type="text" autocapitalize="characters" data-sec="supplier" data-k="pan">
+      <label>Payments made to the supplier</label>
+      <div id="supPaymentsBox"></div>
+      <button class="small" type="button" data-add="supplierPayments">Add a supplier payment</button>
+      <button class="small" type="button" id="supPaidFull">Mark supplier paid in full</button>
+    </section>
+
+    <section class="panel">
+      <h2>6. Summary</h2>
+      <div class="sum" id="summary"></div>
+      <a class="wabtn off" id="waUpdate" target="_blank" rel="noopener">Send customer update on WhatsApp</a>
+      <p class="hint" style="margin-top:.4rem">The customer message shows products, rates, payments, balance and tracking. It never shows supplier price, supplier payments, profit or margin. Profit is worked out on the value before GST.</p>
+    </section>
+
+    <section class="panel">
+      <h2>7. Order Confirmed on WhatsApp</h2>
+      <p class="hint">Sends the customer an "Order Confirmed" message with lot number, product, quantity, rate, total amount, token and part payments, and a link. The link opens a page with the order details only. It never shows invoices, PDFs, supplier details or profit. You share invoices personally, yourself. The link shows the lot number and invoice number, ends in a long secret code, and <b>never expires</b>. It stays active until you tap Stop sharing. The page updates by itself when you save new payments or tracking.</p>
+      <button class="docbtn" type="button" id="confSend">Send Order Confirmed on WhatsApp</button>
+      <button class="docbtn alt" type="button" id="confCopy">Copy Order Confirmed message</button>
+      <div id="confPreview" class="hidden">
+        <label for="confText">Message</label>
+        <textarea id="confText" readonly style="min-height:230px"></textarea>
+        <a class="wabtn" id="confOpen" target="_blank" rel="noopener">Open in WhatsApp</a>
+      </div>
+      <p class="hint" id="confLink" style="margin-top:.6rem"></p>
+      <button class="small" type="button" id="confStop">Stop sharing this link</button>
+    </section>
+
+    <section class="panel">
+      <h2>8. Delivery details for the supplier</h2>
+      <p class="hint">This is the text for the <b>parcel label</b>. Send it to the supplier to write on the package: lot number, quantity, product, the customer's name and address, your standard phone number, and "From AK Brands Marketing". The customer's real phone number is never included. The invoices and bills you send the supplier never carry customer details.</p>
+      <button class="docbtn" type="button" id="supDelSend">Send delivery details to the supplier on WhatsApp</button>
+      <button class="docbtn alt" type="button" id="supDelCopy">Copy delivery details</button>
+      <div id="supDelPreview" class="hidden">
+        <label for="supDelText">Message</label>
+        <textarea id="supDelText" readonly style="min-height:260px"></textarea>
+        <a class="wabtn" id="supDelOpen" target="_blank" rel="noopener">Open in WhatsApp</a>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>9. Invoice and bills</h2>
+      <div class="two">
+        <div><label for="r_payTerms">Payment terms on invoice</label><input id="r_payTerms" type="text" data-sec="root" data-k="payTerms"></div>
+        <div><label for="r_invoiceDate">Invoice date</label><input id="r_invoiceDate" type="date" data-sec="root" data-k="invoiceDate"></div>
+      </div>
+      <p class="hint" id="docNos" style="margin-top:.6rem"></p>
+      <button class="docbtn" type="button" data-doc="customer">Download Customer copy</button>
+      <p class="hint">Tax invoice for the customer. The sender is AK Brands Marketing. It never shows the supplier.</p>
+      <button class="docbtn alt" type="button" data-doc="transporter">Download Transporter copy</button>
+      <p class="hint">Tax invoice for the transporter. It shows the sender (supplier's pick-up place), the customer, and AK Brands Marketing, with a slip for the transporter to sign.</p>
+      <button class="docbtn alt" type="button" data-doc="supplier">Download Supplier copy</button>
+      <p class="hint">Purchase bill (URD) for the supplier. AK Brands Marketing is the customer. It never shows the real customer.</p>
+      <p class="hint" style="margin-top:.8rem"><b>Privacy rule:</b> the customer never sees the supplier, and the supplier never sees the customer. Only the transporter copy shows both, because the transporter needs them. Tapping a button saves the order first. The customer copy and transporter copy share one invoice number, and the supplier copy has its own URD number.</p>
+    </section>
+
+    <section class="panel">
+      <h2>10. Links: invoices and URD bills</h2>
+      <p class="hint">Link any URD bill to any invoice, even from a different order. For example, one supplier bill can feed several customers' invoices. Pick from a list and it links straight away. Nothing here is printed on the customer, transporter or supplier copies.</p>
+      <div id="linksBox"></div>
+    </section>
+
+    <section class="panel">
+      <h2>11. Private notes</h2>
+      <textarea id="r_notes" data-sec="root" data-k="notes" placeholder="Anything for you and your team. The customer never sees this."></textarea>
+      <div class="msg" id="formMsg" role="status"></div>
+      <button class="danger hidden" id="delBtn" type="button">Delete this order</button>
+      <p class="hint">Orders that have an invoice or URD bill number cannot be deleted. Set the status to Cancelled instead.</p>
+    </section>
+
+    <div class="savebar">
+      <div class="due">Balance due<b id="dueBar">&#8377;0</b></div>
+      <button class="primary" id="saveBtn" type="button">Save order</button>
+    </div>
+  </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, runTransaction, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+import { STATUSES, UNITS, PAY_KINDS, PAY_MODES, FREIGHT_MODES, GST_MODES, STATES, DEFAULT_TERMS, num, r2, inr, plain, normPhone, prettyPhone, todayISO, fmtDate, fyShort, newItem, newOrder, fromDoc, calc, customerMessage, toCSV, buildInvoice, buildUrd, invoiceIssues, salesRegister, purchaseRegister, registerCSV, buildLinkIndex, pairKey, confirmMessage, buildOrderView, makeToken, orderLink, supplierDeliveryMessage, supplierDeliveryIssues, SUP_CUST_PHONE, SUP_FROM_PHONE } from "./ak-core.js";
+import { makeCustomerCopyPdf, makeTransporterCopyPdf, makeSupplierCopyPdf } from "./ak-pdf.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyALlIObFvQc6FzIHVO4ifXZVPsCmW4_XlY",
+  authDomain: "ak-brands-marketing.firebaseapp.com",
+  projectId: "ak-brands-marketing",
+  storageBucket: "ak-brands-marketing.firebasestorage.app",
+  messagingSenderId: "458983699429",
+  appId: "1:458983699429:web:c8c95fb9ede6795d2af50c"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+class UserError extends Error {}
+
+/*LOGIC-START*/
+const opts = (arr, sel) => arr.map((x) => '<option' + (x === sel ? " selected" : "") + '>' + esc(x) + '</option>').join("");
+function itemRowHtml(it, i, lotOpts){
+  const n = i + 1;
+  return '<div class="item"><div class="head"><b>Product ' + n + '</b><button class="link" type="button" data-rm="items:' + i + '">Remove</button></div>' +
+    '<label>Pick from your lots <span class="hint">(optional)</span></label>' +
+    '<select data-pick="' + i + '"><option value="">Choose a lot to fill the details</option>' + lotOpts + '</select>' +
+    '<label>Product name</label><input type="text" data-sec="items" data-i="' + i + '" data-k="name" value="' + esc(it.name) + '">' +
+    '<div class="two"><div><label>Quantity</label><input type="text" inputmode="decimal" data-sec="items" data-i="' + i + '" data-k="qty" value="' + esc(it.qty) + '"></div>' +
+    '<div><label>Unit</label><select data-sec="items" data-i="' + i + '" data-k="unit">' + opts(UNITS, it.unit) + '</select></div></div>' +
+    '<div class="two"><div><label>Customer rate (&#8377; per unit)</label><input type="text" inputmode="decimal" data-sec="items" data-i="' + i + '" data-k="custRate" value="' + esc(it.custRate) + '"></div>' +
+    '<div><label>Supplier rate <span class="private">Private</span></label><input type="text" inputmode="decimal" data-sec="items" data-i="' + i + '" data-k="supRate" value="' + esc(it.supRate) + '"></div></div>' +
+    '<div class="two"><div><label>HSN code</label><input type="text" inputmode="numeric" data-sec="items" data-i="' + i + '" data-k="hsn" value="' + esc(it.hsn) + '"></div>' +
+    '<div><label>GST %</label><input type="text" inputmode="decimal" list="dlGst" data-sec="items" data-i="' + i + '" data-k="gst" value="' + esc(it.gst) + '"></div></div>' +
+    '<p class="hint" id="line' + i + '" style="margin-top:.5rem"></p></div>';
+}
+function payRowHtml(p, i, sec, withKind){
+  return '<div class="pay"><div class="head"><b>' + (sec === "payments" ? "Payment " : "Supplier payment ") + (i + 1) + '</b><button class="link" type="button" data-rm="' + sec + ':' + i + '">Remove</button></div>' +
+    '<div class="two"><div><label>Date</label><input type="date" data-sec="' + sec + '" data-i="' + i + '" data-k="date" value="' + esc(p.date) + '"></div>' +
+    '<div><label>Amount (&#8377;)</label><input type="text" inputmode="decimal" data-sec="' + sec + '" data-i="' + i + '" data-k="amount" value="' + esc(p.amount) + '"></div></div>' +
+    '<div class="two">' + (withKind ? '<div><label>Type</label><select data-sec="' + sec + '" data-i="' + i + '" data-k="kind">' + opts(PAY_KINDS, p.kind) + '</select></div>' : '<div></div>') +
+    '<div><label>Paid by</label><select data-sec="' + sec + '" data-i="' + i + '" data-k="mode">' + opts(PAY_MODES, p.mode) + '</select></div></div>' +
+    '<label>Reference / note</label><input type="text" data-sec="' + sec + '" data-i="' + i + '" data-k="ref" value="' + esc(p.ref) + '"></div>';
+}
+function orderCardHtml(o){
+  const c = calc(o);
+  const items = (o.items || []).filter((x) => x.name).map((x) => plain(x.name));
+  const what = items.length ? items[0] + (items.length > 1 ? " +" + (items.length - 1) + " more" : "") : "No products yet";
+  const payCls = c.payStatus === "Paid in full" ? "ok" : (c.payStatus === "Part paid" ? "warn" : "bad");
+  const supCls = c.supStatus === "Paid" ? "ok" : (c.supStatus === "Part paid" ? "warn" : (c.supStatus === "Not paid" ? "bad" : ""));
+  const stCls = o.status === "Cancelled" || o.status === "Claim open" ? "bad" : (o.status === "Delivered" || o.status === "Closed" ? "ok" : "");
+  return '<div class="ocard" data-open="' + esc(o.orderNo) + '"><h3><span>' + esc(o.orderNo) + ' &middot; ' + esc(o.customer.name || prettyPhone(o.customer.phone) || "No name") + '</span><span>' + (c.payable ? inr(c.payable) : "") + '</span></h3>' +
+    '<p>' + esc(fmtDate(o.orderDate)) + (o.customer.phone ? ' &middot; ' + esc(prettyPhone(o.customer.phone)) : '') + ' &middot; ' + esc(what) + '</p>' +
+    '<div><span class="pill ' + stCls + '">' + esc(o.status) + '</span><span class="pill ' + payCls + '">Customer: ' + esc(c.payStatus) + '</span>' + (supCls ? '<span class="pill ' + supCls + '">Supplier: ' + esc(c.supStatus) + '</span>' : '') + '</div>' +
+    '<p>' + (c.balance > 0 ? 'Balance due ' + inr(c.balance) : 'No balance due') + (c.sup ? ' &middot; Profit ' + inr(c.profit) + ' (' + r2(c.margin) + '%)' : '') + (o.delivery.lr ? ' &middot; LR ' + esc(o.delivery.lr) : '') + '</p>' + linkLineHtml(o) + '</div>';
+}
+function linkLineHtml(o){
+  const j = (set) => set && set.size ? Array.from(set).join(", ") : "";
+  let h = "";
+  if (o.invoiceNo) h += '<p>Invoice <b>' + esc(o.invoiceNo) + '</b> &#8596; URD bill ' + (j(linkIndex.urdsOf.get(o.invoiceNo)) ? '<b>' + esc(j(linkIndex.urdsOf.get(o.invoiceNo))) + '</b>' : 'not linked') + '</p>';
+  if (o.urdNo) h += '<p>URD bill <b>' + esc(o.urdNo) + '</b> &#8596; Invoice ' + (j(linkIndex.invsOf.get(o.urdNo)) ? '<b>' + esc(j(linkIndex.invsOf.get(o.urdNo))) + '</b>' : 'not linked') + '</p>';
+  return h;
+}
+function summaryHtml(c){
+  const row = (a, b, cls) => '<div' + (cls ? ' class="' + cls + '"' : "") + '><span>' + a + '</span><span>' + b + '</span></div>';
+  return row("Goods total", inr(c.goods)) +
+    (c.tax && c.mode === "excl" ? row("GST added", inr(c.tax)) : "") +
+    (c.freightTotal ? row("Freight added to bill", inr(c.freightTotal)) : "") +
+    row("Customer payable", inr(c.payable), "sep") + (c.tax && c.mode === "incl" ? row("of which GST", inr(c.tax)) : "") + row("Received so far", inr(c.received)) +
+    row(c.balance < 0 ? "Overpaid by" : "Balance due", inr(Math.abs(c.balance)), "sep") + row("Customer payment", c.payStatus) +
+    row("Supplier total (private)", inr(c.sup), "sep") + row("Paid to supplier", inr(c.supPaid)) + row("Supplier due", inr(Math.max(0, c.supDue))) + row("Supplier payment", c.supStatus) +
+    (c.freightCost ? row("Freight (our cost)", inr(c.freightCost)) : "") +
+    (c.tax ? row("Sale value before GST", inr(c.taxable)) : "") +
+    row("Profit (private)", inr(c.profit) + " &middot; " + r2(c.margin) + "%", "sep pr");
+}
+function shipState(o){
+  const d = o.delivery || {};
+  if (o.status === "Cancelled") return "cancelled";
+  if (d.deliveredDate || o.status === "Delivered" || o.status === "Closed") return "delivered";
+  if (d.dispatchDate || d.lr || o.status === "Dispatched") return "transit";
+  return "todispatch";
+}
+const QUICK = { all: {}, owes: { pay: "due" }, supunpaid: { sup: "due" }, todispatch: { ship: "todispatch" }, transit: { ship: "transit" }, delivered: { ship: "delivered" }, nourd: { docs: "inv_no_urd" }, noinv: { docs: "urd_no_inv" } };
+const FILTER_KEYS = ["q", "customer", "supplier", "status", "pay", "sup", "ship", "docs", "city", "product", "from", "to"];
+const activeCount = (f) => FILTER_KEYS.filter((k) => f[k]).length;
+function matchQuick(name, f){
+  const want = QUICK[name], keys = Object.keys(want);
+  return activeCount(f) === keys.length && keys.every((k) => f[k] === want[k]);
+}
+function applyFilters(list, f){
+  const has = (s, t) => String(s || "").toLowerCase().indexOf(String(t).toLowerCase()) !== -1;
+  const out = list.filter((o) => {
+    const c = calc(o), items = o.items || [];
+    if (f.status === "__open") { if (o.status === "Closed" || o.status === "Cancelled") return false; }
+    else if (f.status && o.status !== f.status) return false;
+    if (f.customer) {
+      const dg = f.customer.replace(/\D/g, "");
+      if (!(has(o.customer.name, f.customer) || has(o.customer.firm, f.customer) || (dg.length >= 3 && String(o.customer.phone || "").indexOf(dg) !== -1))) return false;
+    }
+    if (f.supplier) {
+      const dg = f.supplier.replace(/\D/g, "");
+      if (!(has(o.supplier.name, f.supplier) || (dg.length >= 3 && String(o.supplier.phone || "").indexOf(dg) !== -1))) return false;
+    }
+    if (f.city && !has(o.customer.city, f.city)) return false;
+    if (f.product && !items.some((x) => has(x.name, f.product) || has(x.lotNo, f.product))) return false;
+    if ((f.pay || f.sup) && o.status === "Cancelled") return false;
+    if (f.pay === "due" && !(c.balance > 0)) return false;
+    if (f.pay === "unpaid" && c.payStatus !== "Unpaid") return false;
+    if (f.pay === "part" && c.payStatus !== "Part paid") return false;
+    if (f.pay === "paid" && c.payStatus !== "Paid in full") return false;
+    if (f.sup === "due" && !(c.supDue > 0)) return false;
+    if (f.sup === "notpaid" && c.supStatus !== "Not paid") return false;
+    if (f.sup === "part" && c.supStatus !== "Part paid") return false;
+    if (f.sup === "paid" && c.supStatus !== "Paid") return false;
+    if (f.ship) {
+      const st = shipState(o);
+      if (f.ship === "nolr") { if (!(st === "transit" && !(o.delivery && o.delivery.lr))) return false; }
+      else if (st !== f.ship) return false;
+    }
+    if (f.docs) {
+      const hi = !!o.invoiceNo, hu = !!o.urdNo;
+      const invLinked = hi && (linkIndex.urdsOf.get(o.invoiceNo) || new Set()).size > 0;
+      const urdLinked = hu && (linkIndex.invsOf.get(o.urdNo) || new Set()).size > 0;
+      if (f.docs === "both" && !(invLinked || urdLinked)) return false;
+      if (f.docs === "inv_no_urd" && !(hi && !invLinked)) return false;
+      if (f.docs === "urd_no_inv" && !(hu && !urdLinked)) return false;
+      if (f.docs === "none" && (hi || hu)) return false;
+    }
+    if (f.from || f.to) {
+      if (!o.orderDate) return false;
+      if (f.from && o.orderDate < f.from) return false;
+      if (f.to && o.orderDate > f.to) return false;
+    }
+    if (f.q) {
+      const hay = [o.orderNo, o.customer.name, o.customer.firm, o.customer.phone, o.customer.city, o.supplier.name, o.supplier.phone, o.delivery.lr, o.delivery.transporter, o.status, o.notes, o.invoiceNo, o.urdNo].concat(items.map((x) => x.name + " " + x.lotNo)).join(" ").toLowerCase();
+      if (hay.indexOf(f.q.toLowerCase()) === -1) return false;
+    }
+    return true;
+  });
+  const sort = f.sort || "new";
+  if (sort === "old") out.reverse();
+  else if (sort === "balance") out.sort((a, b) => calc(b).balance - calc(a).balance);
+  else if (sort === "supdue") out.sort((a, b) => calc(b).supDue - calc(a).supDue);
+  else if (sort === "profit") out.sort((a, b) => calc(b).profit - calc(a).profit);
+  else if (sort === "name") out.sort((a, b) => String(a.customer.name || "~").localeCompare(String(b.customer.name || "~")));
+  return out;
+}
+function resultTotals(list){
+  const t = { n: list.length, payable: 0, received: 0, balance: 0, supDue: 0, profit: 0 };
+  list.filter((o) => o.status !== "Cancelled").forEach((o) => {
+    const c = calc(o);
+    t.payable += c.payable; t.received += c.received; t.balance += Math.max(0, c.balance); t.supDue += Math.max(0, c.supDue); t.profit += c.profit;
+  });
+  return t;
+}
+function resultBarHtml(list){
+  const t = resultTotals(list);
+  if (!t.n) return "<div><b>No orders match.</b></div>";
+  return '<div><b>' + t.n + (t.n === 1 ? " order" : " orders") + '</b> &middot; Order value ' + inr(t.payable) + '</div>' +
+    '<div>Received ' + inr(t.received) + ' &middot; <b>Customers owe ' + inr(t.balance) + '</b></div>' +
+    '<div class="pv">You owe suppliers ' + inr(t.supDue) + ' &middot; Profit ' + inr(t.profit) + ' (private)</div>';
+}
+/*LOGIC-END*/
+
+/* ---------- State ---------- */
+const BIZ_FIELDS = ["name", "address", "city", "pincode", "state", "gstin", "pan", "phone", "email", "bankHolder", "bankName", "bankAcc", "bankIfsc", "bankBranch", "upi", "invPrefix", "urdPrefix", "payTerms", "gstMode", "terms", "signatory", "supCustPhone", "supFromPhone"];
+const defaultBiz = () => ({ name: "AK Brands Marketing", address: "", city: "", pincode: "", state: "Karnataka", gstin: "", pan: "", phone: "+91 86605 02217", email: "abdul@akbrandsmarketing.com", bankHolder: "", bankName: "", bankAcc: "", bankIfsc: "", bankBranch: "", upi: "", invPrefix: "AKB", urdPrefix: "URD", payTerms: "30% advance, 70% balance after packing video", gstMode: "incl", terms: DEFAULT_TERMS, signatory: "Authorised Signatory", supCustPhone: SUP_CUST_PHONE, supFromPhone: SUP_FROM_PHONE });
+let biz = defaultBiz();
+const stateOpts = '<option value="">Choose state</option>' + STATES.map((x) => '<option>' + esc(x[0]) + '</option>').join("");
+const gstOpts = Object.keys(GST_MODES).map((k) => '<option value="' + k + '">' + esc(GST_MODES[k]) + '</option>').join("");
+$("c_state").innerHTML = stateOpts; $("b_state").innerHTML = stateOpts;
+$("r_gstMode").innerHTML = gstOpts; $("b_gstMode").innerHTML = gstOpts;
+let linkPairs = [];
+let linkIndex = buildLinkIndex([], []);
+const rebuildLinks = () => { linkIndex = buildLinkIndex(orders, linkPairs); };
+let state = newOrder();
+let orders = [];
+let lots = [];
+let customers = {};
+
+const show = (el, text, kind) => { el.textContent = text; el.className = "msg show " + (kind || "ok"); };
+const hideMsg = (el) => { el.className = "msg"; el.textContent = ""; };
+const lotOptions = () => lots.map((l) => '<option value="' + esc(l.id) + '">' + esc((l.lotNo || l.id) + " - " + plain(l.title || "")) + '</option>').join("");
+
+/* ---------- Login ---------- */
+$("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault(); hideMsg($("loginMsg"));
+  try { await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value); $("password").value = ""; }
+  catch (err) { show($("loginMsg"), "Login failed. Check your email and password and try again.", "err"); }
+});
+$("logout").addEventListener("click", () => signOut(auth));
+onAuthStateChanged(auth, (user) => {
+  const on = !!user;
+  $("loginPanel").classList.toggle("hidden", on);
+  $("logout").classList.toggle("hidden", !on);
+  if (on) { showList(); loadAll(); loadBiz(); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
+});
+
+/* ---------- Loading ---------- */
+async function loadAll(){
+  try {
+    const [o, c, l, lk] = await Promise.all([
+      getDocs(query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(500))),
+      getDocs(collection(db, "customers")),
+      getDocs(collection(db, "lots")),
+      getDoc(doc(db, "settings", "doclinks"))
+    ]);
+    orders = o.docs.map((d) => fromDoc(d.id, d.data()));
+    customers = {}; c.docs.forEach((d) => { customers[d.id] = d.data(); });
+    lots = l.docs.map((d) => Object.assign({ id: d.id }, d.data()));
+    linkPairs = lk.exists() && Array.isArray(lk.data().pairs) ? lk.data().pairs.slice() : [];
+    rebuildLinks(); fillLists(); renderList();
+  } catch (err) {
+    console.error(err);
+    $("orderList").innerHTML = '<p class="hint">Orders could not be loaded. The database rules may need the update your helper sent.</p>';
+  }
+}
+
+/* ---------- List ---------- */
+$("statusFilter").innerHTML = '<option value="">All statuses</option><option value="__open">Open (not closed or cancelled)</option>' + STATUSES.map((s) => '<option>' + s + '</option>').join("");
+function renderTiles(){
+  const live = orders.filter((o) => o.status !== "Cancelled");
+  const open = live.filter((o) => o.status !== "Closed").length;
+  let bal = 0, sup = 0, profit = 0;
+  live.forEach((o) => { const c = calc(o); bal += Math.max(0, c.balance); sup += Math.max(0, c.supDue); profit += c.profit; });
+  const t = (a, b, cls) => '<div class="tile ' + (cls || "") + '"><small>' + a + '</small><b>' + b + '</b></div>';
+  $("tiles").innerHTML = t("Open orders", open) + t("Customers owe you", inr(bal)) + t("You owe suppliers", inr(sup), "priv") + t("Profit, all orders", inr(profit), "priv");
+}
+const FIELD_IDS = { q: "search", customer: "fCustomer", supplier: "fSupplier", status: "statusFilter", pay: "fPay", sup: "fSup", ship: "fShip", docs: "fDocs", city: "fCity", product: "fProduct", from: "fFrom", to: "fTo", sort: "fSort" };
+function readFilters(){
+  const f = {};
+  Object.keys(FIELD_IDS).forEach((k) => { f[k] = String($(FIELD_IDS[k]).value || "").trim(); });
+  return f;
+}
+function setFilters(obj){
+  Object.keys(FIELD_IDS).forEach((k) => { $(FIELD_IDS[k]).value = obj[k] || (k === "sort" ? "new" : ""); });
+  renderList();
+}
+let shown = [];
+function renderList(){
+  renderTiles();
+  const f = readFilters();
+  shown = applyFilters(orders, f);
+  $("orderList").innerHTML = shown.length ? shown.map(orderCardHtml).join("") : '<p class="hint">' + (orders.length ? "No orders match these filters." : "No orders yet. Tap New order to add your first one.") + '</p>';
+  $("resultBar").innerHTML = orders.length ? resultBarHtml(shown) : "";
+  const n = activeCount(f);
+  $("fCount").textContent = n ? " (" + n + " active)" : "";
+  document.querySelectorAll("#quick button").forEach((b) => b.classList.toggle("on", matchQuick(b.getAttribute("data-quick"), f)));
+  $("csvBtn").textContent = n ? "Download these " + shown.length + " orders (CSV)" : "Download all orders (CSV)";
+}
+function fillLists(){
+  const uniq = (arr) => Array.from(new Set(arr.filter(Boolean))).sort((a, b) => a.localeCompare(b));
+  const dl = (id, arr) => { $(id).innerHTML = arr.map((v) => '<option value="' + esc(v) + '">').join(""); };
+  dl("dlCustomers", uniq([].concat(...orders.map((o) => [o.customer.name, o.customer.firm]))));
+  dl("dlSuppliers", uniq(orders.map((o) => o.supplier.name)));
+  dl("dlCities", uniq(orders.map((o) => o.customer.city)));
+}
+["search", "fCustomer", "fSupplier", "fCity", "fProduct"].forEach((id) => $(id).addEventListener("input", renderList));
+["statusFilter", "fPay", "fSup", "fShip", "fDocs", "fFrom", "fTo", "fSort"].forEach((id) => $(id).addEventListener("change", renderList));
+$("quick").addEventListener("click", (e) => { const b = e.target.closest("[data-quick]"); if (b) setFilters(QUICK[b.getAttribute("data-quick")]); });
+$("clearBtn").addEventListener("click", () => setFilters({}));
+$("orderList").addEventListener("click", (e) => {
+  const c = e.target.closest("[data-open]"); if (!c) return;
+  const o = orders.find((x) => x.orderNo === c.getAttribute("data-open"));
+  if (o) openForm(JSON.parse(JSON.stringify(Object.assign({}, o, { createdAt: null }))), o.createdAt);
+});
+function freshOrder(){ const o = newOrder(); o.gstMode = biz.gstMode || "incl"; o.payTerms = biz.payTerms || ""; return o; }
+$("newBtn").addEventListener("click", () => openForm(freshOrder(), null));
+
+/* ---------- Business details (printed on invoices) ---------- */
+function fillBizForm(){ BIZ_FIELDS.forEach((k) => { $("b_" + k).value = biz[k] == null ? "" : biz[k]; }); }
+async function loadBiz(){
+  try { const snap = await getDoc(doc(db, "settings", "business")); biz = Object.assign(defaultBiz(), snap.exists() ? snap.data() : {}); }
+  catch (err) { console.error(err); biz = defaultBiz(); }
+  fillBizForm();
+}
+$("bizSave").addEventListener("click", async () => {
+  hideMsg($("bizMsg"));
+  const v = {}; BIZ_FIELDS.forEach((k) => { v[k] = String($("b_" + k).value || "").trim(); });
+  try {
+    if (v.gstin && !/^\d{2}[A-Z]{5}\d{4}[A-Z][A-Z\d]Z[A-Z\d]$/.test(v.gstin.toUpperCase())) throw new UserError("That GSTIN does not look right. It has 15 letters and numbers, like 29ABCDE1234F1Z5.");
+    if (!/^[A-Za-z0-9]{1,5}$/.test(v.invPrefix) || !/^[A-Za-z0-9]{1,5}$/.test(v.urdPrefix)) throw new UserError("The invoice and URD letters must be 1 to 5 letters or numbers.");
+    v.gstin = v.gstin.toUpperCase(); v.pan = v.pan.toUpperCase(); v.bankIfsc = v.bankIfsc.toUpperCase(); v.invPrefix = v.invPrefix.toUpperCase(); v.urdPrefix = v.urdPrefix.toUpperCase();
+    await setDoc(doc(db, "settings", "business"), v, { merge: true });
+    biz = Object.assign(defaultBiz(), v); fillBizForm();
+    show($("bizMsg"), "Business details saved.", "ok");
+  } catch (err) {
+    if (!(err instanceof UserError)) console.error(err);
+    show($("bizMsg"), err instanceof UserError ? err.message : "That did not save. Check your connection and try again.", "err");
+  }
+});
+$("csvBtn").addEventListener("click", () => {
+  const blob = new Blob([toCSV(shown)], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "ak-orders-" + todayISO() + ".csv";
+  document.body.appendChild(a); a.click(); a.remove();
+});
+function downloadText(text, filename){
+  const blob = new Blob([text], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+$("salesRegBtn").addEventListener("click", () => {
+  const r = salesRegister(shown, biz, linkIndex);
+  if (!r.rows.length) { show($("listMsg"), "No invoices in this list yet. Download an invoice from an order first, or change the filters.", "err"); return; }
+  hideMsg($("listMsg")); downloadText(registerCSV(r.head, r.rows), "ak-sales-register-" + todayISO() + ".csv");
+});
+$("purRegBtn").addEventListener("click", () => {
+  const r = purchaseRegister(shown, linkIndex);
+  if (!r.rows.length) { show($("listMsg"), "No URD bills in this list yet. Download a supplier copy from an order first, or change the filters.", "err"); return; }
+  hideMsg($("listMsg")); downloadText(registerCSV(r.head, r.rows), "ak-purchase-register-" + todayISO() + ".csv");
+});
+function showList(){ $("formView").classList.add("hidden"); $("listView").classList.remove("hidden"); window.scrollTo(0, 0); }
+
+/* ---------- Form ---------- */
+function openForm(order, createdAt){
+  state = order; state.createdAt = createdAt || null;
+  $("formTitle").textContent = state.orderNo ? "Order " + state.orderNo : "New order";
+  $("delBtn").classList.toggle("hidden", !state.orderNo);
+  hideMsg($("formMsg")); $("custFound").textContent = "";
+  $("r_status").innerHTML = opts(STATUSES, state.status);
+  $("f_mode").innerHTML = Object.keys(FREIGHT_MODES).map((k) => '<option value="' + k + '"' + (k === state.freight.mode ? " selected" : "") + '>' + esc(FREIGHT_MODES[k]) + '</option>').join("");
+  document.querySelectorAll("#formView [data-sec]").forEach((el) => {
+    const sec = el.getAttribute("data-sec"), k = el.getAttribute("data-k");
+    if (el.hasAttribute("data-i")) return;
+    if (el.tagName === "SELECT" && (k === "status" || k === "mode")) return;
+    const val = sec === "root" ? state[k] : (state[sec] && state[sec][k]);
+    if (el.type === "checkbox") el.checked = val !== false; else el.value = val == null ? "" : val;
+  });
+  $("shipBox").classList.toggle("hidden", state.customer.shipSame !== false);
+  renderDynamic(); refresh(); renderLinks(); renderConfirm();
+  $("listView").classList.add("hidden"); $("formView").classList.remove("hidden"); window.scrollTo(0, 0);
+}
+function renderDynamic(){
+  const lo = lotOptions();
+  $("itemsBox").innerHTML = state.items.map((it, i) => itemRowHtml(it, i, lo)).join("");
+  $("paymentsBox").innerHTML = state.payments.length ? state.payments.map((p, i) => payRowHtml(p, i, "payments", true)).join("") : '<p class="hint" style="margin-top:.6rem">No payments recorded yet.</p>';
+  $("supPaymentsBox").innerHTML = state.supplierPayments.length ? state.supplierPayments.map((p, i) => payRowHtml(p, i, "supplierPayments", false)).join("") : '<p class="hint">No supplier payments recorded yet.</p>';
+}
+/* ---------- Order Confirmed (WhatsApp) and the customer-safe page ---------- */
+const viewUrl = () => orderLink(state, state.viewToken);
+function renderConfirm(){
+  $("confPreview").classList.add("hidden");
+  $("confLink").textContent = state.viewToken ? "Customer link (never expires): " + viewUrl() : "No customer link yet. It is created when you tap one of the buttons above.";
+  $("confStop").disabled = !state.viewToken;
+}
+async function prepareConfirm(){
+  await persistOrder();
+  if (!state.viewToken) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; state.viewToken = makeToken(bytes, 24); }
+  await setDoc(doc(db, "orderViews", state.viewToken), Object.assign(buildOrderView(state), { updatedAt: serverTimestamp() }));
+  await setDoc(doc(db, "orders", state.orderNo), { viewToken: state.viewToken }, { merge: true });
+  const text = confirmMessage(state, viewUrl());
+  $("confText").value = text; $("confPreview").classList.remove("hidden");
+  $("confLink").textContent = "Customer link (never expires): " + viewUrl(); $("confStop").disabled = false;
+  return text;
+}
+async function confirmAction(kind){
+  hideMsg($("formMsg"));
+  const b1 = $("confSend"), b2 = $("confCopy"); b1.disabled = true; b2.disabled = true;
+  try {
+    const text = await prepareConfirm();
+    const url = "https://wa.me/" + normPhone(state.customer.phone) + "?text=" + encodeURIComponent(text);
+    $("confOpen").href = url;
+    if (kind === "send") {
+      const w = window.open(url, "_blank");
+      show($("formMsg"), w ? "Order Confirmed message is ready. WhatsApp is opening." : "Order Confirmed message is ready. Tap 'Open in WhatsApp' below the message.", "ok");
+    } else {
+      let ok = false;
+      try { await navigator.clipboard.writeText(text); ok = true; } catch (e) { try { $("confText").select(); ok = document.execCommand("copy"); } catch (e2) { ok = false; } }
+      show($("formMsg"), ok ? "Copied. Paste it into WhatsApp." : "Press and hold the message below, then tap Copy.", ok ? "ok" : "err");
+    }
+    loadAll();
+  } catch (err) {
+    if (!(err instanceof UserError)) console.error(err);
+    show($("formMsg"), err instanceof UserError ? err.message : "That did not work. Check your connection and that the database rules were updated, then try again.", "err");
+  } finally { b1.disabled = false; b2.disabled = false; }
+}
+$("confSend").addEventListener("click", () => confirmAction("send"));
+$("confCopy").addEventListener("click", () => confirmAction("copy"));
+$("confStop").addEventListener("click", async () => {
+  if (!state.viewToken || !state.orderNo) return;
+  if (!confirm("Stop sharing? The customer's link will stop working.")) return;
+  try {
+    await deleteDoc(doc(db, "orderViews", state.viewToken));
+    await setDoc(doc(db, "orders", state.orderNo), { viewToken: "" }, { merge: true });
+    state.viewToken = ""; renderConfirm();
+    show($("formMsg"), "The customer link is switched off. Tapping Send or Copy again makes a new link.", "ok");
+  } catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again.", "err"); }
+});
+
+/* ---------- Delivery details for the supplier (this message DOES include the customer's name and address) ---------- */
+async function supplierDeliveryAction(kind){
+  hideMsg($("formMsg"));
+  const miss = supplierDeliveryIssues(state);
+  if (miss.length) { show($("formMsg"), "Please add " + miss.join(", ") + " first (section 1 and 2).", "err"); return; }
+  const text = supplierDeliveryMessage(state, biz);
+  $("supDelText").value = text; $("supDelPreview").classList.remove("hidden");
+  const sp = normPhone(state.supplier.phone), hasChat = sp.length >= 10 && sp.length <= 15;
+  const url = (hasChat ? "https://wa.me/" + sp : "https://wa.me/") + "?text=" + encodeURIComponent(text);
+  $("supDelOpen").href = url;
+  if (kind === "send") {
+    const w = window.open(url, "_blank");
+    show($("formMsg"), (hasChat ? "" : "No supplier phone is saved, so WhatsApp will ask you to choose the chat. ") + (w ? "WhatsApp is opening." : "Tap 'Open in WhatsApp' below the message."), "ok");
+  } else {
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; } catch (e) { try { $("supDelText").select(); ok = document.execCommand("copy"); } catch (e2) { ok = false; } }
+    show($("formMsg"), ok ? "Copied. Paste it into WhatsApp." : "Press and hold the message below, then tap Copy.", ok ? "ok" : "err");
+  }
+}
+$("supDelSend").addEventListener("click", () => supplierDeliveryAction("send"));
+$("supDelCopy").addEventListener("click", () => supplierDeliveryAction("copy"));
+$("formView").addEventListener("input", () => { $("supDelPreview").classList.add("hidden"); });
+
+/* ---------- Links panel ---------- */
+function indexNow(){ const others = orders.filter((o) => o.orderNo !== state.orderNo); return buildLinkIndex(state.orderNo ? others.concat([state]) : others, linkPairs); }
+const urdLabel = (u, idx) => { const x = idx.urdOrder.get(u); return u + " | " + ((x && x.supplier && x.supplier.name) || "no supplier") + " | " + inr(x ? calc(x).sup : 0) + " | " + (x ? x.orderNo : ""); };
+const invLabel = (i, idx) => { const x = idx.invOrder.get(i); return i + " | " + (x ? (x.customer.firm || x.customer.name || "no name") : "") + " | " + inr(x ? calc(x).payable : 0) + " | " + (x ? x.orderNo : ""); };
+function linkRowHtml(label, auto, key){
+  return '<div class="lnk"><span>' + esc(label) + (auto ? ' <i class="hint">(same order)</i>' : '') + '</span>' + (auto ? '' : '<button class="link" type="button" data-unlink="' + esc(key) + '">Unlink</button>') + '</div>';
+}
+function linksHtml(o, idx){
+  if (!o.invoiceNo && !o.urdNo) return '<p class="hint">Download the Customer copy (invoice) or the Supplier copy (URD bill) first. Then you can link them here.</p>';
+  let h = "";
+  if (o.invoiceNo) {
+    const linked = Array.from(idx.urdsOf.get(o.invoiceNo) || []);
+    h += '<h3 style="font-size:1rem;margin-top:.8rem">Invoice ' + esc(o.invoiceNo) + ' is linked to these URD bills</h3>';
+    h += linked.length ? linked.map((u) => linkRowHtml(urdLabel(u, idx), idx.implicit.has(pairKey(o.invoiceNo, u)), pairKey(o.invoiceNo, u))).join("") : '<p class="hint">None yet.</p>';
+    const free = Array.from(idx.urdOrder.keys()).filter((u) => linked.indexOf(u) === -1);
+    h += '<select data-link-add="urd" style="margin-top:.6rem"><option value="">Link a URD bill to this invoice</option>' + free.map((u) => '<option value="' + esc(u) + '">' + esc(urdLabel(u, idx)) + '</option>').join("") + '</select>';
+  }
+  if (o.urdNo) {
+    const linked = Array.from(idx.invsOf.get(o.urdNo) || []);
+    h += '<h3 style="font-size:1rem;margin-top:1.2rem">URD bill ' + esc(o.urdNo) + ' is linked to these invoices</h3>';
+    h += linked.length ? linked.map((i) => linkRowHtml(invLabel(i, idx), idx.implicit.has(pairKey(i, o.urdNo)), pairKey(i, o.urdNo))).join("") : '<p class="hint">None yet.</p>';
+    const free = Array.from(idx.invOrder.keys()).filter((i) => linked.indexOf(i) === -1);
+    h += '<select data-link-add="inv" style="margin-top:.6rem"><option value="">Link an invoice to this URD bill</option>' + free.map((i) => '<option value="' + esc(i) + '">' + esc(invLabel(i, idx)) + '</option>').join("") + '</select>';
+  }
+  return h;
+}
+function renderLinks(){ $("linksBox").innerHTML = linksHtml(state, indexNow()); }
+async function changeLink(add, key, doneText){
+  hideMsg($("formMsg"));
+  try {
+    await setDoc(doc(db, "settings", "doclinks"), { pairs: add ? arrayUnion(key) : arrayRemove(key) }, { merge: true });
+    if (add) { if (linkPairs.indexOf(key) === -1) linkPairs.push(key); } else linkPairs = linkPairs.filter((k) => k !== key);
+    rebuildLinks(); renderLinks(); renderList();
+    show($("formMsg"), doneText, "ok");
+  } catch (err) { console.error(err); show($("formMsg"), "That did not save. Check your connection and try again.", "err"); }
+}
+$("linksBox").addEventListener("change", (e) => {
+  const t = e.target, kind = t.getAttribute && t.getAttribute("data-link-add");
+  if (!kind || !t.value) return;
+  const inv = kind === "urd" ? state.invoiceNo : t.value, urd = kind === "urd" ? t.value : state.urdNo;
+  changeLink(true, pairKey(inv, urd), "Linked invoice " + inv + " and URD bill " + urd + ".");
+});
+$("linksBox").addEventListener("click", (e) => {
+  const b = e.target.closest && e.target.closest("[data-unlink]"); if (!b) return;
+  const key = b.getAttribute("data-unlink"), parts = key.split("||");
+  changeLink(false, key, "Unlinked invoice " + parts[0] + " and URD bill " + parts[1] + ".");
+});
+function refresh(){
+  const c = calc(state);
+  $("summary").innerHTML = summaryHtml(c);
+  $("dueBar").textContent = inr(Math.max(0, c.balance));
+  c.lines.forEach((ln, i) => {
+    const el = $("line" + i);
+    if (el) el.innerHTML = ln.cust ? "Customer amount " + inr(ln.cust) + (ln.sup ? " &middot; Your cost " + inr(ln.sup) + " &middot; Profit " + inr(ln.profit) : "") : "";
+  });
+  $("docNos").textContent = "Tax invoice no.: " + (state.invoiceNo || "given when you first download it") + "   <->   URD bill no.: " + (state.urdNo || "given when you first download it") + "   (both belong to order " + (state.orderNo || "this order") + ", so they are linked)";
+  const a = $("waUpdate"), ph = normPhone(state.customer.phone);
+  if (ph.length >= 10 && ph.length <= 15) { a.href = "https://wa.me/" + ph + "?text=" + encodeURIComponent(customerMessage(state)); a.classList.remove("off"); }
+  else { a.removeAttribute("href"); a.classList.add("off"); }
+}
+function onEdit(e){
+  const t = e.target, sec = t.getAttribute && t.getAttribute("data-sec");
+  if (!sec) return;
+  const k = t.getAttribute("data-k");
+  const val = t.type === "checkbox" ? t.checked : t.value;
+  if (sec === "root") state[k] = val;
+  else if (t.hasAttribute("data-i")) state[sec][+t.getAttribute("data-i")][k] = val;
+  else state[sec][k] = val;
+  if (t.id === "c_shipSame") $("shipBox").classList.toggle("hidden", t.checked);
+  refresh();
+}
+$("formView").addEventListener("input", onEdit);
+$("formView").addEventListener("change", (e) => {
+  onEdit(e);
+  const t = e.target;
+  if (t.getAttribute("data-pick") !== null && t.hasAttribute("data-pick")) {
+    const i = +t.getAttribute("data-pick"), l = lots.find((x) => x.id === t.value);
+    if (l) {
+      const it = state.items[i];
+      it.lotNo = l.lotNo || l.id; it.name = plain(l.title || "");
+      const w = String(l.qty || "").trim().split(/\s+/).pop();
+      const hit = UNITS.find((u) => u.toLowerCase() === String(w).toLowerCase());
+      if (hit) it.unit = hit;
+      const r = String(l.rate || "").trim();
+      if (/^[\d,]+(\.\d+)?$/.test(r)) it.custRate = r.replace(/,/g, "");
+      renderDynamic(); refresh();
+    }
+  }
+  if (t.id === "c_phone") {
+    const c = customers[normPhone(t.value)];
+    if (c) {
+      ["name", "firm", "city", "state", "gstin", "address"].forEach((k) => { if (!state.customer[k] && c[k]) { state.customer[k] = c[k]; $("c_" + k).value = c[k]; } });
+      $("custFound").textContent = "Saved customer found. Details filled in.";
+    } else { $("custFound").textContent = ""; }
+    refresh();
+  }
+});
+$("formView").addEventListener("click", (e) => {
+  const add = e.target.closest("[data-add]"), rm = e.target.closest("[data-rm]");
+  if (add) {
+    const sec = add.getAttribute("data-add");
+    if (sec === "items") state.items.push(newItem(state.items[state.items.length - 1]));
+    if (sec === "payments") state.payments.push({ date: todayISO(), kind: state.payments.length ? "Part payment" : "Token", mode: "UPI", amount: "", ref: "" });
+    if (sec === "supplierPayments") state.supplierPayments.push({ date: todayISO(), mode: "UPI", amount: "", ref: "" });
+    renderDynamic(); refresh();
+  }
+  if (rm) {
+    const parts = rm.getAttribute("data-rm").split(":"), sec = parts[0], i = +parts[1];
+    if (sec === "items" && state.items.length === 1) state.items[0] = newItem(); else state[sec].splice(i, 1);
+    renderDynamic(); refresh();
+  }
+});
+$("addBalance").addEventListener("click", () => {
+  const c = calc(state);
+  if (c.balance <= 0) { show($("formMsg"), "There is no balance due to add.", "err"); return; }
+  state.payments.push({ date: todayISO(), kind: "Balance", mode: "UPI", amount: String(c.balance), ref: "" });
+  hideMsg($("formMsg")); renderDynamic(); refresh();
+});
+$("supPaidFull").addEventListener("click", () => {
+  const c = calc(state);
+  if (c.supDue <= 0) { show($("formMsg"), "Nothing is due to the supplier.", "err"); return; }
+  state.supplierPayments.push({ date: todayISO(), mode: "UPI", amount: String(c.supDue), ref: "" });
+  hideMsg($("formMsg")); renderDynamic(); refresh();
+});
+$("backBtn").addEventListener("click", () => { if (confirm("Go back to the list? Unsaved changes will be lost.")) showList(); });
+
+/* ---------- Saving ---------- */
+async function nextOrderNo(){
+  const ref = doc(db, "settings", "counters");
+  const n = await runTransaction(db, async (tx) => {
+    const s = await tx.get(ref), cur = s.exists() ? (Number(s.data().order) || 0) : 0;
+    tx.set(ref, { order: cur + 1 }, { merge: true });
+    return cur + 1;
+  });
+  return "AKO-" + String(new Date().getFullYear()).slice(2) + "-" + String(n).padStart(4, "0");
+}
+const clean = (obj) => { const o = {}; Object.keys(obj).forEach((k) => { o[k] = typeof obj[k] === "string" ? obj[k].trim() : obj[k]; }); return o; };
+
+/* Saves the order and the customer. Returns the order number. */
+async function persistOrder(){
+  const phone = normPhone(state.customer.phone);
+  if (phone.length < 10 || phone.length > 15) throw new UserError("Enter the customer's WhatsApp number (10 digits).");
+  const items = state.items.filter((it) => (it.name || "").trim() || it.qty || it.custRate || it.supRate).map(clean);
+  if (!items.length) throw new UserError("Add at least one product.");
+  const isNew = !state.orderNo;
+  const orderNo = isNew ? await nextOrderNo() : state.orderNo;
+  const data = {
+    orderDate: state.orderDate || todayISO(), status: state.status, gstMode: state.gstMode === "excl" ? "excl" : "incl",
+    payTerms: (state.payTerms || "").trim(), viewToken: state.viewToken || "", invoiceNo: state.invoiceNo || "", invoiceDate: state.invoiceDate || "", urdNo: state.urdNo || "", urdDate: state.urdDate || "",
+    customer: Object.assign(clean(state.customer), { phone }),
+    supplier: clean(state.supplier), items,
+    freight: clean(state.freight), delivery: clean(state.delivery),
+    payments: state.payments.filter((p) => num(p.amount) > 0).map(clean),
+    supplierPayments: state.supplierPayments.filter((p) => num(p.amount) > 0).map(clean),
+    notes: (state.notes || "").trim(), updatedAt: serverTimestamp()
+  };
+  if (isNew) data.createdAt = serverTimestamp();
+  await setDoc(doc(db, "orders", orderNo), data, { merge: true });
+  const c = data.customer;
+  const cu = { phone, updatedAt: serverTimestamp() };
+  ["name", "firm", "city", "state", "gstin", "address"].forEach((k) => { if (c[k]) cu[k] = c[k]; }); /* blanks never erase a saved customer */
+  await setDoc(doc(db, "customers", phone), cu, { merge: true });
+  state.orderNo = orderNo;
+  if (state.viewToken) await setDoc(doc(db, "orderViews", state.viewToken), Object.assign(buildOrderView(state), { updatedAt: serverTimestamp() }));
+  $("formTitle").textContent = "Order " + orderNo; $("delBtn").classList.remove("hidden");
+  return orderNo;
+}
+$("saveBtn").addEventListener("click", async () => {
+  hideMsg($("formMsg"));
+  const btn = $("saveBtn"); btn.disabled = true;
+  try {
+    const orderNo = await persistOrder();
+    await loadAll(); showList();
+    show($("listMsg"), "Order " + orderNo + " saved.", "ok");
+  } catch (err) {
+    if (!(err instanceof UserError)) console.error(err);
+    show($("formMsg"), err instanceof UserError ? err.message : "That did not save. Check your connection, and check that the database rules were updated, then try again.", "err");
+  } finally { btn.disabled = false; }
+});
+
+/* Invoice and URD numbers: one running series per financial year, never reused. */
+async function nextDocNo(kind, dateISO){
+  const fy = fyShort(dateISO), key = kind + "_" + fy.replace("-", "_");
+  const ref = doc(db, "settings", "counters");
+  const n = await runTransaction(db, async (tx) => {
+    const sn = await tx.get(ref), cur = sn.exists() ? (Number(sn.data()[key]) || 0) : 0;
+    tx.set(ref, { [key]: cur + 1 }, { merge: true });
+    return cur + 1;
+  });
+  const prefix = kind === "inv" ? (biz.invPrefix || "AKB") : (biz.urdPrefix || "URD");
+  return prefix + "/" + fy + "/" + String(n).padStart(4, "0");
+}
+let logoCache;
+async function loadLogo(){
+  if (logoCache !== undefined) return logoCache;
+  try {
+    const r = await fetch("logo.jpg"); if (!r.ok) throw new Error("no logo");
+    const blob = await r.blob();
+    const data = await new Promise((res, rej) => { const f = new FileReader(); f.onload = () => res(f.result); f.onerror = rej; f.readAsDataURL(blob); });
+    const dim = await new Promise((res) => { const i = new Image(); i.onload = () => res({ w: i.naturalWidth || 1, h: i.naturalHeight || 1 }); i.onerror = () => res({ w: 1, h: 1 }); i.src = data; });
+    logoCache = { data, w: dim.w, h: dim.h, type: "JPEG" };
+  } catch (e) { logoCache = null; }
+  return logoCache;
+}
+const safeName = (s) => String(s || "").replace(/[^A-Za-z0-9._-]+/g, "-");
+async function makeDoc(kind){
+  hideMsg($("formMsg"));
+  const btns = document.querySelectorAll("[data-doc]"); btns.forEach((b) => { b.disabled = true; });
+  try {
+    if (!window.jspdf || !window.jspdf.jsPDF) throw new UserError("The PDF tool did not load. Check your internet connection, reload this page and try again.");
+    if (kind === "supplier") {
+      if (!(state.supplier.name || "").trim()) throw new UserError("Add the supplier's name first (section 5).");
+      if (!state.items.some((it) => num(it.supRate) > 0)) throw new UserError("Add the supplier rate for at least one product (section 2).");
+    } else {
+      const miss = invoiceIssues(state, biz, kind);
+      if (miss.length) throw new UserError("Please add " + miss.join(", ") + " first. Your business details are in the list, under 'Business details for invoices'. The customer's state is in section 1 and the supplier is in section 5.");
+    }
+    await persistOrder();
+    const today = todayISO();
+    if (kind === "supplier") {
+      if (!state.urdNo) { state.urdDate = state.urdDate || today; state.urdNo = await nextDocNo("urd", state.urdDate); await setDoc(doc(db, "orders", state.orderNo), { urdNo: state.urdNo, urdDate: state.urdDate }, { merge: true }); }
+    } else if (!state.invoiceNo) {
+      state.invoiceDate = state.invoiceDate || today; state.invoiceNo = await nextDocNo("inv", state.invoiceDate);
+      await setDoc(doc(db, "orders", state.orderNo), { invoiceNo: state.invoiceNo, invoiceDate: state.invoiceDate }, { merge: true });
+    } else if (state.invoiceDate) {
+      await setDoc(doc(db, "orders", state.orderNo), { invoiceDate: state.invoiceDate }, { merge: true });
+    }
+    const JsPDF = window.jspdf.jsPDF; let pdf, name;
+    if (kind === "supplier") { pdf = makeSupplierCopyPdf(JsPDF, buildUrd(state, biz)); name = "Supplier-Copy-" + safeName(state.urdNo) + ".pdf"; }
+    else {
+      const logo = await loadLogo();
+      if (kind === "transporter") { pdf = makeTransporterCopyPdf(JsPDF, buildInvoice(state, biz, "transporter"), logo); name = "Transporter-Copy-" + safeName(state.invoiceNo) + ".pdf"; }
+      else { pdf = makeCustomerCopyPdf(JsPDF, buildInvoice(state, biz, "customer"), logo); name = "Customer-Copy-" + safeName(state.invoiceNo) + ".pdf"; }
+    }
+    pdf.save(name);
+    refresh(); renderLinks();
+    show($("formMsg"), name + " is downloading. Check your Downloads folder.", "ok");
+    loadAll();
+  } catch (err) {
+    if (!(err instanceof UserError)) console.error(err);
+    show($("formMsg"), err instanceof UserError ? err.message : "That did not work. Check your connection and the database rules, then try again.", "err");
+  } finally { btns.forEach((b) => { b.disabled = false; }); }
+}
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-doc]"); if (b) makeDoc(b.getAttribute("data-doc")); });
+$("delBtn").addEventListener("click", async () => {
+  if (!state.orderNo) return;
+  if (state.invoiceNo || state.urdNo) { show($("formMsg"), "This order has an invoice or URD bill number, so it cannot be deleted. Change its Status to Cancelled instead. That keeps your invoice numbers complete.", "err"); return; }
+  if (!confirm("Delete order " + state.orderNo + " permanently? This cannot be undone.")) return;
+  try { if (state.viewToken) await deleteDoc(doc(db, "orderViews", state.viewToken)); await deleteDoc(doc(db, "orders", state.orderNo)); await loadAll(); showList(); show($("listMsg"), "Order deleted.", "ok"); }
+  catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again.", "err"); }
+});
+</script>
+</body>
+</html>
