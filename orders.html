@@ -344,7 +344,7 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
       <h2>6. Summary</h2>
       <div class="sum" id="summary"></div>
       <button class="docbtn alt" type="button" id="waUpdate">Send customer update on WhatsApp</button>
-      <p class="hint" style="margin-top:.4rem">This is the longer update message: order number and date, lot, product, quantity, lot rate, total amount, token and part payments, balance, transport details, the view link, and Trusted Firm. Use it when money comes in or the goods are dispatched. It never shows supplier price, supplier payments, profit or margin. Profit is worked out on the value before GST.</p>
+      <p class="hint" style="margin-top:.4rem">The same short message as Order Confirmed, without the heading: order number and date, lot, product, quantity, lot rate, the view link and Trusted Firm. The total, payments, balance and transport are on the page behind the link, and that page updates by itself when you save. It never shows supplier price, supplier payments, profit or margin. Profit is worked out on the value before GST.</p>
     </section>
 
     <section class="panel">
@@ -817,8 +817,9 @@ function renderDynamic(){
 /* ---------- Order Confirmed (WhatsApp) and the customer-safe page ---------- */
 const viewUrl = () => orderLink(state, state.viewToken);
 /* Order Confirmed is the SHORT message. Total, payments, balance and tracking are on the page behind the link. */
-function shortConfirmMessage(o, url){
-  const L = ["*Order Confirmed*", "", "Order " + (o.orderNo || "New") + (o.orderDate ? " | " + fmtDate(o.orderDate) : ""), ""];
+function shortConfirmMessage(o, url, withHeading){
+  const L = withHeading === false ? [] : ["*Order Confirmed*", ""];
+  L.push("Order " + (o.orderNo || "New") + (o.orderDate ? " | " + fmtDate(o.orderDate) : ""), "");
   (o.items || []).filter((it) => it.name && it.name.trim()).forEach((it) => {
     const q = num(it.qty), rt = rateText(it, "Rs ");
     if (it.lotNo) L.push("Lot " + it.lotNo);
@@ -841,7 +842,7 @@ async function prepareConfirm(kind){
   if (!state.viewToken) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; state.viewToken = makeToken(bytes, 24); }
   await setDoc(doc(db, "orderViews", state.viewToken), Object.assign(buildOrderView(state), { updatedAt: serverTimestamp() }));
   await setDoc(doc(db, "orders", state.orderNo), { viewToken: state.viewToken }, { merge: true });
-  const text = kind === "update" ? orderSummaryMessage(state, viewUrl(), "update") : shortConfirmMessage(state, viewUrl());
+  const text = shortConfirmMessage(state, viewUrl(), kind !== "update");
   $("confText").value = text; $("confPreview").classList.remove("hidden");
   $("confLink").textContent = "Customer link (never expires): " + viewUrl(); $("confStop").disabled = false;
   return text;
