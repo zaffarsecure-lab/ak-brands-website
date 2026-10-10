@@ -1104,7 +1104,8 @@ async function custAction(kind){
     await publishCustomerView(phone, token);
     customers[phone] = Object.assign(customers[phone] || {}, { viewToken: token });
     const url = SITE_URL + "/my.html?c=" + custSlug() + "-" + token;
-    const text = ["*Your Orders*", "", state.customer.firm || state.customer.name || "", "", "See all your lots, payment status and delivery tracking here:", url, "", "Trusted Firm", "AK Brands Marketing\u00A9"].join("\n").replace("\n\n\nSee", "\n\nSee");
+    const nm = String(state.customer.name || state.customer.firm || "").trim();
+    const text = [(nm ? "*" + nm + ", your lots in one place*" : "*Your lots in one place*"), "", "Every lot you book. Every payment. Every delivery.", "Track it all here:", url, "", "Source The Value.", "Trusted Firm", "AK Brands Marketing\u00A9"].join("\n");
     $("custText").value = text; $("custPreview").classList.remove("hidden");
     const wa = "https://wa.me/" + phone + "?text=" + encodeURIComponent(text); $("custOpen").href = wa;
     $("custLinkState").textContent = "Account link is active (it never expires)."; $("custStop").disabled = false;
