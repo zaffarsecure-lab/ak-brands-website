@@ -74,7 +74,7 @@ export const newOrder = () => ({
   supplier: { name: "", phone: "", address: "", pan: "" },
   items: [newItem()],
   freight: { amount: "", mode: "billed", gst: "" },
-  delivery: { transporter: "", lr: "", vehicle: "", eway: "", dispatchDate: "", deliveredDate: "", note: "" },
+  delivery: { transporter: "", lr: "", vehicle: "", eway: "", dispatchDate: "", expectedDate: "", deliveredDate: "", note: "" },
   payments: [], supplierPayments: [], notes: ""
 });
 export function fromDoc(id, d){
@@ -350,7 +350,7 @@ export function buildOrderView(o){
     items, mode: c.mode, goods: c.goods, gstAdded: c.mode === "excl" ? c.goodsTax : 0, gstIncluded: c.mode === "incl" ? c.tax : 0,
     freight: c.freightTotal, total: c.payable, received: c.received, balance: Math.max(0, c.balance),
     payments: (o.payments || []).filter((p) => num(p.amount) > 0).map((p) => ({ date: p.date || "", kind: p.kind || "Part payment", amount: num(p.amount) })),
-    delivery: { transporter: d.transporter || "", lr: d.lr || "", dispatchDate: d.dispatchDate || "", deliveredDate: d.deliveredDate || "", note: d.note || "" }
+    delivery: { transporter: d.transporter || "", lr: d.lr || "", dispatchDate: d.dispatchDate || "", expectedDate: d.expectedDate || "", deliveredDate: d.deliveredDate || "", note: d.note || "" }
   };
 }
 
@@ -402,4 +402,73 @@ export function supplierDeliveryMessage(o, biz){
   addr.forEach((x) => L.push(x));
   L.push("", "From", "AK Brands Marketing\u00A9", biz.supFromPhone || SUP_FROM_PHONE);
   return L.join("\n");
+}
+
+/* ---------- One layout for both customer messages (Order Confirmed and customer update) ----------
+   1 order number and date | 2 Lot and number | 3 product, quantity, lot rate, TOTAL AMOUNT (bold) | 4 token and part payments
+   5 balance amount | 6 transport | 7 view link | 8 Trusted Firm. kind = "confirmed" adds the heading. */
+export function orderSummaryMessage(o, url, kind){
+  const c = calc(o), L = [];
+  if (kind === "confirmed") L.push("*Order Confirmed*", "");
+  L.push("Order " + (o.orderNo || "New") + (o.orderDate ? " | " + fmtDate(o.orderDate) : ""), "");
+  const items = (o.items || []).filter((it) => it.name && it.name.trim());
+  items.forEach((it) => {
+    const q = num(it.qty), rt = rateText(it, "Rs ");
+    if (it.lotNo) L.push("Lot " + it.lotNo);
+    L.push(plain(it.name));
+    if (q) L.push("Quantity - " + q.toLocaleString("en-IN") + " " + (it.unit || "Pcs"));
+    if (rt) L.push("Lot rate - " + rt);
+    if (items.length > 1 && q && num(it.custRate)) L.push("Amount - " + rs(q * num(it.custRate)));
+    L.push("");
+  });
+  if (c.mode === "excl" && c.goodsTax) L.push("Goods total (before GST) - " + rs(c.goods), "GST - " + rs(c.goodsTax));
+  if (c.freightTotal) L.push("Freight - " + rs(c.freightTotal));
+  if (c.payable) L.push("*Total Amount - " + rs(c.payable) + "*" + (c.mode === "incl" && c.tax ? " (inclusive of GST)" : ""), "");
+  const pays = (o.payments || []).filter((p) => num(p.amount) > 0);
+  pays.forEach((p) => L.push((p.kind === "Token" ? "Token amount" : (p.kind === "Balance" ? "Balance paid" : "Part payment")) + " - " + rs(num(p.amount))));
+  if (pays.length) L.push("");
+  if (c.payable) L.push("Balance amount - " + (c.balance > 0 ? rs(c.balance) : "Nil"), "");
+  const d = o.delivery || {}, dl = [];
+  if (d.transporter) dl.push("Transporter - " + d.transporter);
+  if (d.lr) dl.push("LR / Bilty number - " + d.lr);
+  if (d.dispatchDate) dl.push("Dispatch date - " + fmtDate(d.dispatchDate));
+  if (d.expectedDate) dl.push("Expected delivery date - " + fmtDate(d.expectedDate));
+  if (d.deliveredDate) dl.push("Delivered on - " + fmtDate(d.deliveredDate));
+  if (dl.length) L.push(...dl, "");
+  if (url) L.push("View details - " + url, "");
+  L.push("Trusted Firm", "AK Brands Marketing\u00A9");
+  return L.join("\n");
+}
+
+/* ---------- What is behind each of the four tiles at the top of the Orders list ---------- */
+export function tileDetail(kind, orders){
+  const live = (orders || []).filter((o) => o.status !== "Cancelled");
+  const who = (o) => o.customer.firm || o.customer.name || prettyPhone(o.customer.phone) || "No name";
+  const prod = (o) => { const n = (o.items || []).filter((x) => x.name && x.name.trim()).map((x) => plain(x.name)); return n.length ? n[0] + (n.length > 1 ? " +" + (n.length - 1) + " more" : "") : ""; };
+  const sub = (o) => [fmtDate(o.orderDate), prod(o), o.status].filter(Boolean).join(" \u00B7 ");
+  const map = new Map();
+  const grp = (key, label) => { if (!map.has(key)) map.set(key, { key, label, amount: 0, rows: [] }); return map.get(key); };
+  const row = (g, o, amount, extra) => { g.amount += amount; g.rows.push({ orderNo: o.orderNo, who: who(o), sub: sub(o), amount: r2(amount), amountText: inr(amount), extra: extra || "" }); };
+  let title = "", totalText = "", note = "", sorter = (a, b) => b.amount - a.amount, total = 0, count = 0;
+  if (kind === "open") {
+    title = "Open orders"; note = "Grouped by status. Tap a status to see its orders, then tap an order to open it.";
+    live.filter((o) => o.status !== "Closed").forEach((o) => { const c = calc(o); row(grp(o.status, o.status), o, c.payable, c.balance > 0 ? "Balance " + inr(c.balance) : "Paid in full"); count++; });
+    sorter = (a, b) => STATUSES.indexOf(a.label) - STATUSES.indexOf(b.label);
+    totalText = count + (count === 1 ? " open order" : " open orders");
+  } else if (kind === "owes") {
+    title = "Customers owe you"; note = "Grouped by customer, largest first. Tap a customer, then tap an order to open it.";
+    live.forEach((o) => { const c = calc(o); if (c.balance > 0) { const key = String(o.customer.phone || "") || who(o); row(grp(key, who(o)), o, c.balance, "Customer: " + c.payStatus); total += c.balance; } });
+    totalText = inr(total);
+  } else if (kind === "supdue") {
+    title = "You owe suppliers"; note = "Private. Grouped by supplier, largest first. Tap a supplier, then tap an order to open it.";
+    live.forEach((o) => { const c = calc(o); if (c.supDue > 0) { const nm = (o.supplier && o.supplier.name) || "No supplier name"; row(grp(nm.toLowerCase(), nm), o, c.supDue, "Supplier: " + c.supStatus); total += c.supDue; } });
+    totalText = inr(total);
+  } else {
+    title = "Profit, all orders"; note = "Private. Worked out on the value before GST. Grouped by month, newest first. Tap a month, then tap an order to open it.";
+    live.forEach((o) => { const c = calc(o), mk = String(o.orderDate || "").slice(0, 7) || "0000-00"; const p = mk.split("-").map(Number); const label = p[0] ? new Date(p[0], p[1] - 1, 1).toLocaleDateString("en-IN", { month: "long", year: "numeric" }) : "No date"; row(grp(mk, label), o, c.profit, c.sup ? r2(c.margin) + "% margin" : "No supplier cost"); total += c.profit; });
+    sorter = (a, b) => (a.key < b.key ? 1 : -1);
+    totalText = inr(total);
+  }
+  const groups = Array.from(map.values()).sort(sorter).map((g) => ({ label: g.label, amount: r2(g.amount), amountText: inr(g.amount), count: g.rows.length, rows: g.rows }));
+  return { title, totalText, note, groups };
 }
