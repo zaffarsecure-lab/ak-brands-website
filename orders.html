@@ -383,6 +383,21 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
     </section>
 
     <section class="panel">
+      <h2>7a. Customer account link (all this customer's orders)</h2>
+      <p class="hint">For repeat customers. One link where the customer sees every order under their name: lots, status, payments, balance and delivery tracking. It updates by itself whenever you save any of their orders. It shows only this customer's orders, and never supplier details, profit, invoices or PDFs.</p>
+      <p class="hint" id="acctCount"></p>
+      <button class="docbtn" type="button" id="custSend">Send account link on WhatsApp</button>
+      <button class="docbtn alt" type="button" id="custCopy">Copy account link message</button>
+      <div id="custPreview" class="hidden">
+        <label for="custText">Message</label>
+        <textarea id="custText" readonly style="min-height:160px"></textarea>
+        <a class="wabtn" id="custOpen" target="_blank" rel="noopener">Open in WhatsApp</a>
+      </div>
+      <p class="hint" id="custLinkState" style="margin-top:.6rem"></p>
+      <button class="small" type="button" id="custStop">Stop sharing this customer's account link</button>
+    </section>
+
+    <section class="panel">
       <h2>7b. Payment request (QR and bank details)</h2>
       <p class="hint">When the customer says "book it", send this. The customer gets a message with the amount, your bank details, and a link to a payment page for this order and lot. The page has a <b>Pay with UPI app</b> button (amount and lot number already filled in), your QR picture and your bank details. Nothing confirms a payment automatically: when the money arrives, tap <b>Payment received</b> below.</p>
       <label for="pr_account">Pay to</label>
@@ -504,7 +519,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/fireba
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, runTransaction, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-import { STATUSES, UNITS, PAY_KINDS, PAY_MODES, FREIGHT_MODES, GST_MODES, STATES, DEFAULT_TERMS, num, r2, inr, plain, normPhone, prettyPhone, todayISO, fmtDate, fyShort, newItem, newOrder, fromDoc, calc, customerMessage, toCSV, buildInvoice, buildUrd, invoiceIssues, salesRegister, purchaseRegister, registerCSV, buildLinkIndex, pairKey, confirmMessage, orderSummaryMessage, rateText, rs, tileDetail, buildOrderView, makeToken, orderLink, supplierDeliveryMessage, supplierDeliveryIssues, SUP_CUST_PHONE, SUP_FROM_PHONE } from "./ak-core.js";
+import { STATUSES, UNITS, PAY_KINDS, PAY_MODES, FREIGHT_MODES, GST_MODES, STATES, DEFAULT_TERMS, num, r2, inr, plain, normPhone, prettyPhone, todayISO, fmtDate, fyShort, newItem, newOrder, fromDoc, calc, customerMessage, toCSV, buildInvoice, buildUrd, invoiceIssues, salesRegister, purchaseRegister, registerCSV, buildLinkIndex, pairKey, confirmMessage, orderSummaryMessage, rateText, rs, SITE_URL, tileDetail, buildOrderView, makeToken, orderLink, supplierDeliveryMessage, supplierDeliveryIssues, SUP_CUST_PHONE, SUP_FROM_PHONE } from "./ak-core.js";
 import { makeCustomerCopyPdf, makeTransporterCopyPdf, makeSupplierCopyPdf } from "./ak-pdf.js";
 
 const firebaseConfig = {
@@ -940,7 +955,7 @@ function openForm(order, createdAt){
     if (el.type === "checkbox") el.checked = val !== false; else el.value = val == null ? "" : val;
   });
   $("shipBox").classList.toggle("hidden", state.customer.shipSame !== false);
-  renderDynamic(); refresh(); renderLinks(); renderConfirm(); renderPayState();
+  renderDynamic(); refresh(); renderLinks(); renderConfirm(); renderPayState(); renderCustState();
   $("listView").classList.add("hidden"); $("detailView").classList.add("hidden"); $("formView").classList.remove("hidden"); window.scrollTo(0, 0);
 }
 function renderDynamic(){
@@ -1043,6 +1058,76 @@ $("confStop").addEventListener("click", async () => {
     state.viewToken = ""; renderConfirm();
     show($("formMsg"), "The customer link is switched off. Tapping Send or Copy again makes a new link.", "ok");
   } catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again.", "err"); }
+});
+
+/* ---------- Customer account link: one page with all of this customer's orders ---------- */
+const custKey = () => normPhone(state.customer.phone);
+const custSlug = () => String(state.customer.firm || state.customer.name || "customer").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 30) || "customer";
+function buildCustomerView(phone){
+  const mine = orders.filter((o) => normPhone(o.customer.phone) === phone && o.orderNo !== state.orderNo);
+  if (state.orderNo && normPhone(state.customer.phone) === phone) mine.push(state);
+  mine.sort((a, b) => String(b.orderDate || "").localeCompare(String(a.orderDate || "")) || String(b.orderNo).localeCompare(String(a.orderNo)));
+  const list = mine.map((o) => {
+    const v = buildOrderView(o), pr = o.payRequest || {};
+    v.orderToken = o.viewToken || "";
+    v.payActive = !!(pr.active && num(pr.amount) > 0 && o.viewToken);
+    v.payAmount = v.payActive ? r2(num(pr.amount)) : 0;
+    return v;
+  });
+  const first = mine[0] || state;
+  return { type: "customer", customerName: first.customer.firm || first.customer.name || "", orders: list, updatedAt: serverTimestamp() };
+}
+async function customerToken(phone){
+  try { const s = await getDoc(doc(db, "customers", phone)); return s.exists() ? (s.data().viewToken || "") : ""; } catch (e) { return ""; }
+}
+async function publishCustomerView(phone, token){ await setDoc(doc(db, "orderViews", token), buildCustomerView(phone)); }
+async function refreshCustomerView(phone){
+  const token = await customerToken(phone);
+  if (token) await publishCustomerView(phone, token);
+}
+function renderCustState(){
+  const phone = custKey(), n = orders.filter((o) => normPhone(o.customer.phone) === phone && o.orderNo !== state.orderNo).length + (state.orderNo ? 1 : 0);
+  $("acctCount").textContent = phone.length >= 10 ? "This customer has " + n + (n === 1 ? " order" : " orders") + " on record." : "Add the customer's WhatsApp number first.";
+  const cu = customers[phone];
+  $("custLinkState").textContent = cu && cu.viewToken ? "Account link is active (it never expires)." : "No account link yet. It is created when you tap one of the buttons above.";
+  $("custStop").disabled = !(cu && cu.viewToken);
+  $("custPreview").classList.add("hidden");
+}
+async function custAction(kind){
+  hideMsg($("formMsg"));
+  const b1 = $("custSend"), b2 = $("custCopy"); b1.disabled = true; b2.disabled = true;
+  try {
+    await persistOrder();
+    const phone = custKey();
+    let token = await customerToken(phone);
+    if (!token) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; token = makeToken(bytes, 24); await setDoc(doc(db, "customers", phone), { viewToken: token }, { merge: true }); }
+    await publishCustomerView(phone, token);
+    customers[phone] = Object.assign(customers[phone] || {}, { viewToken: token });
+    const url = SITE_URL + "/my.html?c=" + custSlug() + "-" + token;
+    const text = ["*Your Orders*", "", state.customer.firm || state.customer.name || "", "", "See all your lots, payment status and delivery tracking here:", url, "", "Trusted Firm", "AK Brands Marketing\u00A9"].join("\n").replace("\n\n\nSee", "\n\nSee");
+    $("custText").value = text; $("custPreview").classList.remove("hidden");
+    const wa = "https://wa.me/" + phone + "?text=" + encodeURIComponent(text); $("custOpen").href = wa;
+    $("custLinkState").textContent = "Account link is active (it never expires)."; $("custStop").disabled = false;
+    if (kind === "send") { const w = window.open(wa, "_blank"); show($("formMsg"), w ? "Account link is ready. WhatsApp is opening." : "Account link is ready. Tap 'Open in WhatsApp' below the message.", "ok"); }
+    else {
+      let ok = false;
+      try { await navigator.clipboard.writeText(text); ok = true; } catch (e) { try { $("custText").select(); ok = document.execCommand("copy"); } catch (e2) { ok = false; } }
+      show($("formMsg"), ok ? "Copied. Paste it into WhatsApp." : "Press and hold the message below, then tap Copy.", ok ? "ok" : "err");
+    }
+    loadAll();
+  } catch (err) {
+    if (!(err instanceof UserError)) console.error(err);
+    show($("formMsg"), err instanceof UserError ? err.message : "That did not work. Check your connection and the database rules, then try again.", "err");
+  } finally { b1.disabled = false; b2.disabled = false; }
+}
+$("custSend").addEventListener("click", () => custAction("send"));
+$("custCopy").addEventListener("click", () => custAction("copy"));
+$("custStop").addEventListener("click", async () => {
+  const phone = custKey(), token = await customerToken(phone);
+  if (!token) return;
+  if (!confirm("Stop sharing? This customer's account link will stop working.")) return;
+  try { await deleteDoc(doc(db, "orderViews", token)); await setDoc(doc(db, "customers", phone), { viewToken: "" }, { merge: true }); if (customers[phone]) customers[phone].viewToken = ""; renderCustState(); show($("formMsg"), "The account link is switched off. Tapping Send or Copy again makes a new link.", "ok"); }
+  catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again.", "err"); }
 });
 
 /* ---------- Payment request: message, link, and recording the money when it arrives ---------- */
@@ -1402,6 +1487,7 @@ async function persistOrder(){
   ["name", "firm", "city", "state", "gstin", "address"].forEach((k) => { if (c[k]) cu[k] = c[k]; }); /* blanks never erase a saved customer */
   await setDoc(doc(db, "customers", phone), cu, { merge: true });
   state.orderNo = orderNo;
+  try { await refreshCustomerView(phone); } catch (e) { console.error(e); }
   if (state.viewToken) await setDoc(doc(db, "orderViews", state.viewToken), viewData());
   $("formTitle").textContent = "Order " + orderNo; $("delBtn").classList.remove("hidden");
   return orderNo;

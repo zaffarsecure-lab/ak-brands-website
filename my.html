@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
-<title>Your order | AK Brands Marketing</title>
+<title>Your orders | AK Brands Marketing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <style>
 :root{
@@ -183,6 +183,27 @@ dialog::backdrop{background:rgba(10,18,30,.7)}
 .qr{text-align:center;margin:.8rem 0}
 .qr img{max-width:240px;width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
 .cta{display:block;text-align:center;text-decoration:none;font-weight:700;padding:.85rem 1rem;border-radius:8px;background:var(--wa);color:#0a0a0a}
+
+.tiles3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem}
+.tl{background:#fff;border:1px solid var(--line);border-radius:8px;padding:.7rem .6rem}
+.tl small{display:block;color:var(--muted);font-size:.72rem}
+.tl b{display:block;font-size:.98rem;color:var(--ink);overflow-wrap:anywhere}
+details.oc{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+details.oc>summary{list-style:none;cursor:pointer;padding:.8rem .9rem}
+details.oc>summary::-webkit-details-marker{display:none}
+details.oc[open]>summary{border-bottom:1px solid var(--line)}
+.oc .r1{display:flex;justify-content:space-between;gap:.8rem;font-weight:700;color:var(--ink)}
+.oc .r2{font-size:.84rem;color:var(--muted);overflow-wrap:anywhere;margin-top:.1rem}
+.oc .pills{margin-top:.45rem}
+.oc .inner{padding:.6rem .9rem .9rem}
+.pl{display:inline-block;font-size:.74rem;font-weight:600;padding:.1rem .55rem;border-radius:999px;border:1px solid var(--muted);color:var(--muted);margin:0 .3rem .2rem 0}
+.pl.ok{border-color:#12803f;color:#12803f}
+.pl.warn{border-color:#b7791f;color:#8a5a12}
+.pl.bad{border-color:#8a2f2f;color:#8a2f2f}
+.sec{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#00806c;margin:.9rem 0 .2rem}
+.btnrow{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+.btnrow a{flex:1 1 150px;text-align:center;text-decoration:none;font-weight:700;padding:.7rem;border-radius:8px;border:1px solid var(--ink);color:var(--ink);background:#fff}
+.btnrow a.go{background:var(--wa);border-color:var(--wa);color:#0a0a0a}
 </style>
 </head>
 <body>
@@ -205,7 +226,7 @@ dialog::backdrop{background:rgba(10,18,30,.7)}
     </div>
   </div>
 </header>
-<main class="ovwrap" id="app"><div class="state"><strong>Loading your order</strong>Please wait a moment.</div></main>
+<main class="ovwrap" id="app"><div class="state"><strong>Loading your orders</strong>Please wait a moment.</div></main>
 <footer class="site-footer">
   <div class="footer-content">
     <p class="footer-copyright">&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
@@ -239,82 +260,64 @@ const inr = (n) => "\u20B9" + (Math.round((Number(n) || 0) * 100) / 100).toLocal
 const fmtDate = (iso) => { const p = String(iso || "").split("-").map(Number); return p.length === 3 && p[0] ? new Date(p[0], p[1] - 1, p[2]).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : ""; };
 const WA = "918660502217";
 
-/* menu */
 const mb = $("menuBtn"), md = $("menuDropdown");
-if (mb && md) {
-  mb.addEventListener("click", (e) => { e.stopPropagation(); md.classList.toggle("show"); });
-  document.addEventListener("click", () => md.classList.remove("show"));
-}
+if (mb && md) { mb.addEventListener("click", (e) => { e.stopPropagation(); md.classList.toggle("show"); }); document.addEventListener("click", () => md.classList.remove("show")); }
 
-function message(title, text){ $("app").innerHTML = '<div class="state"><strong>' + esc(title) + '</strong>' + esc(text) + '</div>' + '<a class="cta" href="https://wa.me/' + WA + '">Message us on WhatsApp</a>'; }
+function message(title, text){ $("app").innerHTML = '<div class="state"><strong>' + esc(title) + '</strong>' + esc(text) + '</div><a class="cta" href="https://wa.me/' + WA + '">Message us on WhatsApp</a>'; }
 const row = (a, b, cls) => '<div class="kv ' + (cls || "") + '"><span>' + a + '</span><span>' + b + '</span></div>';
 
-function payCard(v){
-  const p = v.pay;
-  if (!p || !p.active || !(Number(p.amount) > 0)) return "";
-  const amt = Math.round(Number(p.amount) * 100) / 100;
-  const title = p.kind === "Balance" ? "Balance amount to pay" : (p.kind === "Part payment" ? "Part payment to pay" : "Token amount to pay");
-  const upiOk = /^[A-Za-z0-9._\-]{2,}@[A-Za-z0-9]{2,}$/.test(p.upi || "");
-  const upiLink = upiOk ? "upi://pay?pa=" + encodeURIComponent(p.upi) + "&pn=" + encodeURIComponent(p.payee || "AK Brands Marketing") + "&am=" + amt.toFixed(2) + "&cu=INR&tn=" + encodeURIComponent(p.note || "") : "";
-  const qrFile = /^[A-Za-z0-9._\-]{1,60}\.(jpg|jpeg|png)$/i.test(p.qr || "") ? p.qr : "pay-qr.jpg";
-  const cp = (val) => ' <button type="button" class="cp" data-copy="' + esc(val) + '">Copy</button>';
-  let h = '<div class="ov-card paycard" id="payCard"><h2>Pay now</h2><div class="note2" style="margin:0">' + esc(title) + '</div><div class="amt">' + inr(amt) + '</div>' +
-    '<p class="note2">Order ' + esc(v.orderNo) + (v.items && v.items.length ? ' &middot; ' + v.items.map((it) => (it.lotNo ? 'Lot ' + esc(it.lotNo) + ' ' : '') + esc(it.name)).join(", ") : '') + '</p>';
-  if (upiLink) h += '<a class="cta" href="' + upiLink + '">Pay with a UPI app</a>' + '<p class="note2">This opens GPay, PhonePe, Paytm or your bank app with the amount filled in. If your app refuses, scan the QR or use the bank details below.</p>';
-  h += '<div class="qr" id="qrBox"><img src="' + esc(qrFile) + '" alt="Scan to pay with any UPI app" onerror="document.getElementById(\'qrBox\').style.display=\'none\'"><div class="note2">Scan with any UPI app. Type the amount ' + esc(inr(amt)) + '.</div></div>';
-  if (p.upi) h += row("UPI ID", esc(p.upi) + cp(p.upi));
-  if (p.bankHolder) h += row("Account name", esc(p.bankHolder));
-  if (p.bankAcc) h += row("Account number", esc(p.bankAcc) + cp(p.bankAcc));
-  if (p.bankIfsc) h += row("IFSC", esc(p.bankIfsc) + cp(p.bankIfsc));
-  if (p.micr) h += row("MICR", esc(p.micr));
-  if (p.bankName || p.bankBranch) h += row("Bank", esc([p.bankName, p.bankBranch].filter(Boolean).join(", ")));
-  if (p.note) h += '<p class="note2">Please write this in the payment note: <b>' + esc(p.note) + '</b></p>';
-  const msg = "Hello AK Brands Marketing, I have paid " + inr(amt).replace("\u20B9", "Rs ") + " for order " + v.orderNo + ". I am sending the payment screenshot.";
-  h += '<a class="cta alt" href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '">I have paid. Send the screenshot on WhatsApp</a></div>';
-  return h;
+function payPill(o){
+  if (o.status === "Cancelled") return "";
+  if (!(o.total > 0)) return "";
+  if (o.balance <= 0) return '<span class="pl ok">Paid in full</span>';
+  return o.received > 0 ? '<span class="pl warn">Part paid</span>' : '<span class="pl bad">Payment pending</span>';
+}
+function orderCard(o, i){
+  const cancelled = o.status === "Cancelled";
+  const names = (o.items || []).map((it) => (it.lotNo ? "Lot " + esc(it.lotNo) + " " : "") + esc(it.name)).join(", ");
+  const stCls = cancelled ? "bad" : (o.status === "Delivered" || o.status === "Closed" ? "ok" : "");
+  const items = (o.items || []).map((it) => '<div class="it">' + (it.lotNo ? '<div class="lot">Lot ' + esc(it.lotNo) + '</div>' : '') + '<div class="nm">' + esc(it.name) + '</div>' + (it.qty ? row("Quantity", esc(it.qty)) : "") + (!cancelled && it.rate ? row("Lot rate", esc(it.rate)) : "") + (!cancelled && it.amount ? row("Amount", inr(it.amount)) : "") + '</div>').join("");
+  let totals = "";
+  if (o.gstAdded) totals += row("Goods total (before GST)", inr(o.goods)) + row("GST", inr(o.gstAdded));
+  if (o.freight) totals += row("Freight", inr(o.freight));
+  totals += row("Total amount", inr(o.total), "tot");
+  const pays = (o.payments || []).map((p) => row(esc(p.kind) + (p.date ? ' <span style="font-weight:400;color:#5c6869">(' + esc(fmtDate(p.date)) + ')</span>' : ''), inr(p.amount))).join("");
+  const payBlock = '<div class="sec">Payments</div>' + (pays || '<p class="note2" style="margin:0">No payment received yet.</p>') + row("Received so far", inr(o.received)) + row(o.balance > 0 ? "Balance to pay" : "Balance", o.balance > 0 ? inr(o.balance) : "Nil", "tot");
+  const d = o.delivery || {};
+  const hasD = d.transporter || d.lr || d.dispatchDate || d.expectedDate || d.deliveredDate;
+  const del = hasD ? '<div class="sec">Delivery</div>' + (d.transporter ? row("Transport", esc(d.transporter)) : "") + (d.lr ? row("LR / tracking number", esc(d.lr)) : "") + (d.dispatchDate ? row("Dispatched on", esc(fmtDate(d.dispatchDate))) : "") + (d.expectedDate ? row("Expected delivery", esc(fmtDate(d.expectedDate))) : "") + (d.deliveredDate ? row("Delivered on", esc(fmtDate(d.deliveredDate))) : "") : "";
+  const links = [];
+  if (o.payActive && o.orderToken && !cancelled) links.push('<a class="go" href="order.html?o=' + esc(o.orderToken) + '#pay">Pay ' + esc(inr(o.payAmount)) + ' now</a>');
+  if (o.orderToken) links.push('<a href="order.html?o=' + esc(o.orderToken) + '">Open full details</a>');
+  const ask = "Hello AK Brands Marketing, I have a question about my order " + o.orderNo + ".";
+  links.push('<a href="https://wa.me/' + WA + '?text=' + encodeURIComponent(ask) + '">Ask about this order</a>');
+  return '<details class="oc"' + (i === 0 ? " open" : "") + '><summary><div class="r1"><span>' + esc(o.orderNo) + '</span><span>' + (cancelled ? "" : inr(o.total)) + '</span></div>' +
+    '<div class="r2">' + esc(fmtDate(o.orderDate)) + (names ? " &middot; " + names : "") + '</div>' +
+    '<div class="pills"><span class="pl ' + stCls + '">' + esc(o.status) + '</span>' + payPill(o) + (!cancelled && o.balance > 0 ? '<span class="r2"> Balance ' + inr(o.balance) + '</span>' : "") + '</div></summary>' +
+    '<div class="inner">' + '<div class="sec">Your lots</div>' + items + (cancelled ? '<p class="note2">This order was cancelled.</p>' : totals + payBlock + del) + '<div class="btnrow">' + links.join("") + '</div></div></details>';
 }
 function render(v){
-  const items = (v.items || []).map((it) =>
-    '<div class="it">' + (it.lotNo ? '<div class="lot">Lot ' + esc(it.lotNo) + '</div>' : '') +
-    '<div class="nm">' + esc(it.name) + '</div>' +
-    (it.qty ? row("Quantity", esc(it.qty)) : "") + (it.rate ? row("Rate", esc(it.rate)) : "") + (it.amount ? row("Amount", inr(it.amount)) : "") + '</div>').join("");
-  let totals = "";
-  if (v.gstAdded) totals += row("Goods total (before GST)", inr(v.goods)) + row("GST", inr(v.gstAdded));
-  if (v.freight) totals += row("Freight", inr(v.freight));
-  totals += row("Total amount", inr(v.total), "tot") + (v.gstIncluded ? '<p class="note2">The total includes GST of ' + inr(v.gstIncluded) + '.</p>' : '');
-  const pays = (v.payments || []).map((p) => row(esc(p.kind) + (p.date ? ' <span style="font-weight:400;color:#5c6869">(' + esc(fmtDate(p.date)) + ')</span>' : ''), inr(p.amount))).join("");
-  const pay = '<div class="ov-card"><h2>Payments</h2>' + (pays || '<p class="note2" style="margin-top:0">No payment received yet.</p>') +
-    row("Received so far", inr(v.received), "tot") + row(v.balance > 0 ? "Balance to pay" : "Balance", v.balance > 0 ? inr(v.balance) : "Nil", "due") + '</div>';
-  const d = v.delivery || {};
-  const hasD = d.transporter || d.lr || d.dispatchDate || d.expectedDate || d.deliveredDate || d.note;
-  const del = hasD ? '<div class="ov-card"><h2>Delivery</h2>' + (d.transporter ? row("Transport", esc(d.transporter)) : "") + (d.lr ? row("LR / tracking number", esc(d.lr)) : "") +
-    (d.dispatchDate ? row("Dispatched on", esc(fmtDate(d.dispatchDate))) : "") + (d.expectedDate ? row("Expected delivery", esc(fmtDate(d.expectedDate))) : "") + (d.deliveredDate ? row("Delivered on", esc(fmtDate(d.deliveredDate))) : "") + (d.note ? '<p class="note2">' + esc(d.note) + '</p>' : '') + '</div>' : '';
-  const msg = "Hello AK Brands Marketing, I have a question about my order " + v.orderNo + ".";
+  const list = v.orders || [], live = list.filter((o) => o.status !== "Cancelled");
+  const total = live.reduce((a, o) => a + (Number(o.total) || 0), 0), paid = live.reduce((a, o) => a + (Number(o.received) || 0), 0), due = live.reduce((a, o) => a + (Number(o.balance) || 0), 0);
   $("app").innerHTML =
-    '<div class="ov-top"><div class="small">Order Confirmed</div><h1>' + esc(v.orderNo) + '</h1><div class="meta">' + (v.orderDate ? '<span>' + esc(fmtDate(v.orderDate)) + '</span>' : '') + (v.customerName ? '<span>For ' + esc(v.customerName) + '</span>' : '') + '</div><span class="pillst">' + esc(v.status) + '</span></div>' +
-    payCard(v) + '<div class="ov-card"><h2>Your order</h2>' + items + totals + '</div>' + pay + del +
-    '<p class="note2">Your tax invoice and other documents are shared with you personally by AK Brands Marketing.</p>' +
-    '<a class="cta" href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '">Questions? Message us on WhatsApp</a>';
-  document.title = "Order " + v.orderNo + " | AK Brands Marketing";
-  if (location.hash === "#pay" && $("payCard")) $("payCard").scrollIntoView();
+    '<div class="ov-top"><div class="small">Your account</div><h1>Your orders</h1><div class="meta"><span>' + esc(v.customerName || "") + '</span><span>' + list.length + (list.length === 1 ? " order" : " orders") + '</span></div></div>' +
+    '<div class="tiles3"><div class="tl"><small>Total ordered</small><b>' + inr(total) + '</b></div><div class="tl"><small>Paid so far</small><b>' + inr(paid) + '</b></div><div class="tl"><small>Balance to pay</small><b>' + inr(due) + '</b></div></div>' +
+    (list.length ? list.map(orderCard).join("") : '<div class="state"><strong>No orders yet</strong>Your orders will appear here.</div>') +
+    '<p class="note2">Tax invoices and other documents are shared with you personally by AK Brands Marketing. This page updates by itself.</p>' +
+    '<a class="cta" href="https://wa.me/' + WA + '?text=' + encodeURIComponent("Hello AK Brands Marketing, I have a question about my orders.") + '">Questions? Message us on WhatsApp</a>';
+  document.title = "Your orders | AK Brands Marketing";
 }
 
-$("app").addEventListener("click", (e) => {
-  const b = e.target.closest && e.target.closest("[data-copy]"); if (!b) return;
-  const val = b.getAttribute("data-copy"), done = (ok) => { b.textContent = ok ? "Copied" : "Press and hold the text to copy"; };
-  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(val).then(() => done(true), () => done(false)); else done(false);
-});
-/* Only the last 24 characters (the secret code) are used. The lot and invoice numbers in front are just labels. */
+/* Only the last 24 characters (the secret code) are used. The name in front is just a label. */
 const mm = String(location.search || "").replace(/^\?/, "").match(/(?:^|[-_=])([A-Za-z0-9]{24})$/);
 const t = mm ? mm[1] : "";
 if (!t) {
   message("This link is not valid", "Please use the link we sent you, or message us on WhatsApp.");
 } else {
   getDoc(doc(db, "orderViews", t)).then((snap) => {
-    if (snap.exists() && snap.data().type === "customer") { location.replace("my.html" + location.search); return; }
-    if (!snap.exists()) message("This link is no longer active", "Please message us on WhatsApp and we will help you.");
+    if (!snap.exists() || snap.data().type !== "customer") message("This link is no longer active", "Please message us on WhatsApp and we will help you.");
     else render(snap.data());
-  }).catch((err) => { console.error(err); message("We could not load your order", "Please try again in a moment, or message us on WhatsApp."); });
+  }).catch((err) => { console.error(err); message("We could not load your orders", "Please try again in a moment, or message us on WhatsApp."); });
 }
 </script>
 </body>
