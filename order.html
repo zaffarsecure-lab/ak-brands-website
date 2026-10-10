@@ -256,9 +256,9 @@ function render(v){
   const pay = '<div class="ov-card"><h2>Payments</h2>' + (pays || '<p class="note2" style="margin-top:0">No payment received yet.</p>') +
     row("Received so far", inr(v.received), "tot") + row(v.balance > 0 ? "Balance to pay" : "Balance", v.balance > 0 ? inr(v.balance) : "Nil", "due") + '</div>';
   const d = v.delivery || {};
-  const hasD = d.transporter || d.lr || d.dispatchDate || d.deliveredDate || d.note;
+  const hasD = d.transporter || d.lr || d.dispatchDate || d.expectedDate || d.deliveredDate || d.note;
   const del = hasD ? '<div class="ov-card"><h2>Delivery</h2>' + (d.transporter ? row("Transport", esc(d.transporter)) : "") + (d.lr ? row("LR / tracking number", esc(d.lr)) : "") +
-    (d.dispatchDate ? row("Dispatched on", esc(fmtDate(d.dispatchDate))) : "") + (d.deliveredDate ? row("Delivered on", esc(fmtDate(d.deliveredDate))) : "") + (d.note ? '<p class="note2">' + esc(d.note) + '</p>' : '') + '</div>' : '';
+    (d.dispatchDate ? row("Dispatched on", esc(fmtDate(d.dispatchDate))) : "") + (d.expectedDate ? row("Expected delivery", esc(fmtDate(d.expectedDate))) : "") + (d.deliveredDate ? row("Delivered on", esc(fmtDate(d.deliveredDate))) : "") + (d.note ? '<p class="note2">' + esc(d.note) + '</p>' : '') + '</div>' : '';
   const msg = "Hello AK Brands Marketing, I have a question about my order " + v.orderNo + ".";
   $("app").innerHTML =
     '<div class="ov-top"><div class="small">Order Confirmed</div><h1>' + esc(v.orderNo) + '</h1><div class="meta">' + (v.orderDate ? '<span>' + esc(fmtDate(v.orderDate)) + '</span>' : '') + (v.customerName ? '<span>For ' + esc(v.customerName) + '</span>' : '') + '</div><span class="pillst">' + esc(v.status) + '</span></div>' +

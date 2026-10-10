@@ -75,6 +75,34 @@ label.chk{display:flex;align-items:center;font-weight:600;margin:.9rem 0 .3rem}
 .lnk{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.55rem .7rem;margin-top:.5rem;border:1px solid var(--line);border-radius:8px;background:#fcfbf8;font-size:.9rem}
 .lnk span{overflow-wrap:anywhere}
 .lnk button.link{flex:0 0 auto;color:var(--bad)}
+/* the list page was wider than the phone screen: let every block shrink to fit */
+main{grid-template-columns:minmax(0,1fr)}
+#listView,#formView,#detailView{grid-template-columns:minmax(0,1fr)}
+main>*,#listView>*,#formView>*,#detailView>*{min-width:0}
+.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+.two,.fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+button.tile{display:block;width:100%;text-align:left;font:inherit;cursor:pointer;color:inherit}
+button.tile:active{background:#f4f1e8}
+.tile .go{display:block;font-size:.72rem;color:var(--muted);margin-top:.2rem}
+.grp{border:1px solid var(--line);border-radius:8px;background:#fff;margin-top:.6rem;overflow:hidden}
+.grp>summary{list-style:none;cursor:pointer;padding:.75rem .9rem;display:flex;justify-content:space-between;gap:.8rem;font-weight:600;color:var(--ink)}
+.grp>summary::-webkit-details-marker{display:none}
+.grp>summary span:first-child{overflow-wrap:anywhere}
+.grp>summary span:last-child{text-align:right}
+.drow{display:block;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:#fcfbf8;padding:.7rem .9rem;font:inherit;cursor:pointer;color:inherit}
+.drow:active{background:#f4f1e8}
+.drow .r1{display:flex;justify-content:space-between;gap:.8rem;font-weight:600;color:var(--ink)}
+.drow .r2{display:block;font-size:.82rem;color:var(--muted);overflow-wrap:anywhere}
+.bigtot{font-size:1.9rem;font-weight:700;color:var(--ink);margin:.2rem 0}
+.iconbtn{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;padding:0}
+.iconbtn svg{width:18px;height:18px}
+.lblrow{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+.lblrow h2{margin:0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:60}
+.modalbox{background:#fff;width:100%;max-width:600px;max-height:88vh;overflow:auto;border-radius:12px 12px 0 0;padding:1rem 1rem 1.4rem}
+.lotrow{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:8px;background:#fcfbf8;padding:.65rem .8rem;margin-top:.5rem;font:inherit;cursor:pointer;color:inherit}
+.lotrow .r1{display:flex;justify-content:space-between;gap:.8rem;font-weight:600;color:var(--ink)}
+.lotrow .r2{display:block;font-size:.84rem;color:var(--muted);overflow-wrap:anywhere}
 button.docbtn{display:block;width:100%;margin-top:.7rem;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.85rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
 button.docbtn.alt{background:#fff;color:var(--ink);border:1px solid var(--ink)}
 button.docbtn[disabled]{opacity:.6;cursor:wait}
@@ -188,6 +216,14 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
     </section>
   </div>
 
+  <!-- WHAT IS BEHIND A TILE -->
+  <div id="detailView" class="hidden" style="display:grid;gap:1.25rem">
+    <section class="panel">
+      <div class="head"><span></span><button class="link" id="detailBack" type="button">Back to orders</button></div>
+      <div id="detailBody"></div>
+    </section>
+  </div>
+
   <!-- ORDER FORM -->
   <div id="formView" class="hidden" style="display:grid;gap:1.25rem">
     <section class="panel">
@@ -225,7 +261,7 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
     </section>
 
     <section class="panel">
-      <h2>2. Products</h2>
+      <div class="lblrow"><h2>2. Products</h2><button class="iconbtn" type="button" data-add="items" aria-label="Add another product" title="Add another product"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div>
       <p class="hint">Customer rate is what the customer pays. Supplier rate is your cost and stays private.</p>
       <label for="r_gstMode">How are your customer rates quoted?</label>
       <select id="r_gstMode" data-sec="root" data-k="gstMode"></select>
@@ -258,6 +294,10 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
         <div><label for="d_deliveredDate">Delivered on</label><input id="d_deliveredDate" type="date" data-sec="delivery" data-k="deliveredDate"></div>
       </div>
       <div class="two">
+        <div><label for="d_expectedDate">Expected delivery date</label><input id="d_expectedDate" type="date" data-sec="delivery" data-k="expectedDate"></div>
+        <div></div>
+      </div>
+      <div class="two">
         <div><label for="f_amount">Freight amount (&#8377;)</label><input id="f_amount" type="text" inputmode="decimal" data-sec="freight" data-k="amount"></div>
         <div><label for="f_mode">Freight is</label><select id="f_mode" data-sec="freight" data-k="mode"></select></div>
       </div>
@@ -288,8 +328,8 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
     <section class="panel">
       <h2>6. Summary</h2>
       <div class="sum" id="summary"></div>
-      <a class="wabtn off" id="waUpdate" target="_blank" rel="noopener">Send customer update on WhatsApp</a>
-      <p class="hint" style="margin-top:.4rem">The customer message shows products, rates, payments, balance and tracking. It never shows supplier price, supplier payments, profit or margin. Profit is worked out on the value before GST.</p>
+      <button class="docbtn alt" type="button" id="waUpdate">Send customer update on WhatsApp</button>
+      <p class="hint" style="margin-top:.4rem">The message uses the same layout as Order Confirmed: order number and date, lot, product, quantity, lot rate, total amount, token and part payments, balance, transport details, the view link, and Trusted Firm. It never shows supplier price, supplier payments, profit or margin. Profit is worked out on the value before GST.</p>
     </section>
 
     <section class="panel">
@@ -355,12 +395,20 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
   </div>
 </main>
 
+<div id="lotPicker" class="modal hidden" role="dialog" aria-modal="true" aria-label="Pick a lot">
+  <div class="modalbox">
+    <div class="head"><h2 style="margin:0">Pick a lot</h2><button class="link" id="lotClose" type="button">Close</button></div>
+    <input id="lotSearch" type="search" placeholder="Search lot number or product" style="margin-top:.7rem" autocomplete="off">
+    <div id="lotList"></div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, runTransaction, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-import { STATUSES, UNITS, PAY_KINDS, PAY_MODES, FREIGHT_MODES, GST_MODES, STATES, DEFAULT_TERMS, num, r2, inr, plain, normPhone, prettyPhone, todayISO, fmtDate, fyShort, newItem, newOrder, fromDoc, calc, customerMessage, toCSV, buildInvoice, buildUrd, invoiceIssues, salesRegister, purchaseRegister, registerCSV, buildLinkIndex, pairKey, confirmMessage, buildOrderView, makeToken, orderLink, supplierDeliveryMessage, supplierDeliveryIssues, SUP_CUST_PHONE, SUP_FROM_PHONE } from "./ak-core.js";
+import { STATUSES, UNITS, PAY_KINDS, PAY_MODES, FREIGHT_MODES, GST_MODES, STATES, DEFAULT_TERMS, num, r2, inr, plain, normPhone, prettyPhone, todayISO, fmtDate, fyShort, newItem, newOrder, fromDoc, calc, customerMessage, toCSV, buildInvoice, buildUrd, invoiceIssues, salesRegister, purchaseRegister, registerCSV, buildLinkIndex, pairKey, confirmMessage, orderSummaryMessage, tileDetail, buildOrderView, makeToken, orderLink, supplierDeliveryMessage, supplierDeliveryIssues, SUP_CUST_PHONE, SUP_FROM_PHONE } from "./ak-core.js";
 import { makeCustomerCopyPdf, makeTransporterCopyPdf, makeSupplierCopyPdf } from "./ak-pdf.js";
 
 const firebaseConfig = {
@@ -384,9 +432,8 @@ const opts = (arr, sel) => arr.map((x) => '<option' + (x === sel ? " selected" :
 function itemRowHtml(it, i, lotOpts){
   const n = i + 1;
   return '<div class="item"><div class="head"><b>Product ' + n + '</b><button class="link" type="button" data-rm="items:' + i + '">Remove</button></div>' +
-    '<label>Pick from your lots <span class="hint">(optional)</span></label>' +
-    '<select data-pick="' + i + '"><option value="">Choose a lot to fill the details</option>' + lotOpts + '</select>' +
-    '<label>Product name</label><input type="text" data-sec="items" data-i="' + i + '" data-k="name" value="' + esc(it.name) + '">' +
+    '<div class="lblrow"><label>Product name</label><button class="iconbtn" type="button" data-picklot="' + i + '" aria-label="Pick from your lots" title="Pick from your lots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></button></div>' +
+    '<input type="text" data-sec="items" data-i="' + i + '" data-k="name" value="' + esc(it.name) + '">' +
     '<div class="two"><div><label>Quantity</label><input type="text" inputmode="decimal" data-sec="items" data-i="' + i + '" data-k="qty" value="' + esc(it.qty) + '"></div>' +
     '<div><label>Unit</label><select data-sec="items" data-i="' + i + '" data-k="unit">' + opts(UNITS, it.unit) + '</select></div></div>' +
     '<div class="two"><div><label>Customer rate (&#8377; per unit)</label><input type="text" inputmode="decimal" data-sec="items" data-i="' + i + '" data-k="custRate" value="' + esc(it.custRate) + '"></div>' +
@@ -418,6 +465,8 @@ function orderCardHtml(o){
 function linkLineHtml(o){
   const j = (set) => set && set.size ? Array.from(set).join(", ") : "";
   let h = "";
+  const iu = o.invoiceNo ? linkIndex.urdsOf.get(o.invoiceNo) : null, ui = o.urdNo ? linkIndex.invsOf.get(o.urdNo) : null;
+  if (o.invoiceNo && o.urdNo && iu && ui && iu.size === 1 && ui.size === 1 && iu.has(o.urdNo) && ui.has(o.invoiceNo)) return '<p>Invoice <b>' + esc(o.invoiceNo) + '</b> &#8596; URD bill <b>' + esc(o.urdNo) + '</b></p>';
   if (o.invoiceNo) h += '<p>Invoice <b>' + esc(o.invoiceNo) + '</b> &#8596; URD bill ' + (j(linkIndex.urdsOf.get(o.invoiceNo)) ? '<b>' + esc(j(linkIndex.urdsOf.get(o.invoiceNo))) + '</b>' : 'not linked') + '</p>';
   if (o.urdNo) h += '<p>URD bill <b>' + esc(o.urdNo) + '</b> &#8596; Invoice ' + (j(linkIndex.invsOf.get(o.urdNo)) ? '<b>' + esc(j(linkIndex.invsOf.get(o.urdNo))) + '</b>' : 'not linked') + '</p>';
   return h;
@@ -541,7 +590,6 @@ let customers = {};
 
 const show = (el, text, kind) => { el.textContent = text; el.className = "msg show " + (kind || "ok"); };
 const hideMsg = (el) => { el.className = "msg"; el.textContent = ""; };
-const lotOptions = () => lots.map((l) => '<option value="' + esc(l.id) + '">' + esc((l.lotNo || l.id) + " - " + plain(l.title || "")) + '</option>').join("");
 
 /* ---------- Login ---------- */
 $("loginForm").addEventListener("submit", async (e) => {
@@ -584,9 +632,27 @@ function renderTiles(){
   const open = live.filter((o) => o.status !== "Closed").length;
   let bal = 0, sup = 0, profit = 0;
   live.forEach((o) => { const c = calc(o); bal += Math.max(0, c.balance); sup += Math.max(0, c.supDue); profit += c.profit; });
-  const t = (a, b, cls) => '<div class="tile ' + (cls || "") + '"><small>' + a + '</small><b>' + b + '</b></div>';
-  $("tiles").innerHTML = t("Open orders", open) + t("Customers owe you", inr(bal)) + t("You owe suppliers", inr(sup), "priv") + t("Profit, all orders", inr(profit), "priv");
+  const t = (kind, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-tile="' + kind + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
+  $("tiles").innerHTML = t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
 }
+/* tap a tile: groups, then orders, then the order itself */
+let lastDetail = "";
+function detailHtml(d){
+  const rows = (g) => g.rows.map((r) => '<button type="button" class="drow" data-open="' + esc(r.orderNo) + '"><span class="r1"><span>' + esc(r.orderNo) + ' &middot; ' + esc(r.who) + '</span><span>' + esc(r.amountText) + '</span></span><span class="r2">' + esc(r.sub) + (r.extra ? ' &middot; ' + esc(r.extra) : '') + '</span></button>').join("");
+  const groups = d.groups.length
+    ? d.groups.map((g) => '<details class="grp"' + (d.groups.length === 1 ? " open" : "") + '><summary><span>' + esc(g.label) + '</span><span>' + esc(g.amountText) + ' &middot; ' + g.count + (g.count === 1 ? " order" : " orders") + '</span></summary>' + rows(g) + '</details>').join("")
+    : '<p class="hint">Nothing here right now.</p>';
+  return '<h2>' + esc(d.title) + '</h2><div class="bigtot">' + esc(d.totalText) + '</div><p class="hint">' + esc(d.note) + '</p>' + groups;
+}
+function showDetail(kind){
+  lastDetail = kind;
+  $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
+  $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); $("detailView").classList.remove("hidden");
+  window.scrollTo(0, 0);
+}
+$("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) showDetail(b.getAttribute("data-tile")); });
+$("detailBack").addEventListener("click", () => showList());
+$("detailBody").addEventListener("click", (e) => { const r = e.target.closest("[data-open]"); if (r) openOrderByNo(r.getAttribute("data-open")); });
 const FIELD_IDS = { q: "search", customer: "fCustomer", supplier: "fSupplier", status: "statusFilter", pay: "fPay", sup: "fSup", ship: "fShip", docs: "fDocs", city: "fCity", product: "fProduct", from: "fFrom", to: "fTo", sort: "fSort" };
 function readFilters(){
   const f = {};
@@ -620,11 +686,11 @@ function fillLists(){
 ["statusFilter", "fPay", "fSup", "fShip", "fDocs", "fFrom", "fTo", "fSort"].forEach((id) => $(id).addEventListener("change", renderList));
 $("quick").addEventListener("click", (e) => { const b = e.target.closest("[data-quick]"); if (b) setFilters(QUICK[b.getAttribute("data-quick")]); });
 $("clearBtn").addEventListener("click", () => setFilters({}));
-$("orderList").addEventListener("click", (e) => {
-  const c = e.target.closest("[data-open]"); if (!c) return;
-  const o = orders.find((x) => x.orderNo === c.getAttribute("data-open"));
+function openOrderByNo(no){
+  const o = orders.find((x) => x.orderNo === no);
   if (o) openForm(JSON.parse(JSON.stringify(Object.assign({}, o, { createdAt: null }))), o.createdAt);
-});
+}
+$("orderList").addEventListener("click", (e) => { const c = e.target.closest("[data-open]"); if (c) openOrderByNo(c.getAttribute("data-open")); });
 function freshOrder(){ const o = newOrder(); o.gstMode = biz.gstMode || "incl"; o.payTerms = biz.payTerms || ""; return o; }
 $("newBtn").addEventListener("click", () => openForm(freshOrder(), null));
 
@@ -672,7 +738,7 @@ $("purRegBtn").addEventListener("click", () => {
   if (!r.rows.length) { show($("listMsg"), "No URD bills in this list yet. Download a supplier copy from an order first, or change the filters.", "err"); return; }
   hideMsg($("listMsg")); downloadText(registerCSV(r.head, r.rows), "ak-purchase-register-" + todayISO() + ".csv");
 });
-function showList(){ $("formView").classList.add("hidden"); $("listView").classList.remove("hidden"); window.scrollTo(0, 0); }
+function showList(){ lastDetail = ""; $("formView").classList.add("hidden"); $("detailView").classList.add("hidden"); $("listView").classList.remove("hidden"); window.scrollTo(0, 0); }
 
 /* ---------- Form ---------- */
 function openForm(order, createdAt){
@@ -691,11 +757,10 @@ function openForm(order, createdAt){
   });
   $("shipBox").classList.toggle("hidden", state.customer.shipSame !== false);
   renderDynamic(); refresh(); renderLinks(); renderConfirm();
-  $("listView").classList.add("hidden"); $("formView").classList.remove("hidden"); window.scrollTo(0, 0);
+  $("listView").classList.add("hidden"); $("detailView").classList.add("hidden"); $("formView").classList.remove("hidden"); window.scrollTo(0, 0);
 }
 function renderDynamic(){
-  const lo = lotOptions();
-  $("itemsBox").innerHTML = state.items.map((it, i) => itemRowHtml(it, i, lo)).join("");
+  $("itemsBox").innerHTML = state.items.map((it, i) => itemRowHtml(it, i)).join("");
   $("paymentsBox").innerHTML = state.payments.length ? state.payments.map((p, i) => payRowHtml(p, i, "payments", true)).join("") : '<p class="hint" style="margin-top:.6rem">No payments recorded yet.</p>';
   $("supPaymentsBox").innerHTML = state.supplierPayments.length ? state.supplierPayments.map((p, i) => payRowHtml(p, i, "supplierPayments", false)).join("") : '<p class="hint">No supplier payments recorded yet.</p>';
 }
@@ -706,12 +771,12 @@ function renderConfirm(){
   $("confLink").textContent = state.viewToken ? "Customer link (never expires): " + viewUrl() : "No customer link yet. It is created when you tap one of the buttons above.";
   $("confStop").disabled = !state.viewToken;
 }
-async function prepareConfirm(){
+async function prepareConfirm(kind){
   await persistOrder();
   if (!state.viewToken) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; state.viewToken = makeToken(bytes, 24); }
   await setDoc(doc(db, "orderViews", state.viewToken), Object.assign(buildOrderView(state), { updatedAt: serverTimestamp() }));
   await setDoc(doc(db, "orders", state.orderNo), { viewToken: state.viewToken }, { merge: true });
-  const text = confirmMessage(state, viewUrl());
+  const text = orderSummaryMessage(state, viewUrl(), kind || "confirmed");
   $("confText").value = text; $("confPreview").classList.remove("hidden");
   $("confLink").textContent = "Customer link (never expires): " + viewUrl(); $("confStop").disabled = false;
   return text;
@@ -720,7 +785,7 @@ async function confirmAction(kind){
   hideMsg($("formMsg"));
   const b1 = $("confSend"), b2 = $("confCopy"); b1.disabled = true; b2.disabled = true;
   try {
-    const text = await prepareConfirm();
+    const text = await prepareConfirm("confirmed");
     const url = "https://wa.me/" + normPhone(state.customer.phone) + "?text=" + encodeURIComponent(text);
     $("confOpen").href = url;
     if (kind === "send") {
@@ -737,6 +802,20 @@ async function confirmAction(kind){
     show($("formMsg"), err instanceof UserError ? err.message : "That did not work. Check your connection and that the database rules were updated, then try again.", "err");
   } finally { b1.disabled = false; b2.disabled = false; }
 }
+$("waUpdate").addEventListener("click", async () => {
+  hideMsg($("formMsg")); const b = $("waUpdate"); b.disabled = true;
+  try {
+    const text = await prepareConfirm("update");
+    const url = "https://wa.me/" + normPhone(state.customer.phone) + "?text=" + encodeURIComponent(text);
+    $("confOpen").href = url;
+    const w = window.open(url, "_blank");
+    show($("formMsg"), w ? "Customer update is ready. WhatsApp is opening." : "Customer update is ready. Tap 'Open in WhatsApp' in section 7, under the message.", "ok");
+    loadAll();
+  } catch (err) {
+    if (!(err instanceof UserError)) console.error(err);
+    show($("formMsg"), err instanceof UserError ? err.message : "That did not work. Check your connection and the database rules, then try again.", "err");
+  } finally { b.disabled = false; }
+});
 $("confSend").addEventListener("click", () => confirmAction("send"));
 $("confCopy").addEventListener("click", () => confirmAction("copy"));
 $("confStop").addEventListener("click", async () => {
@@ -772,6 +851,35 @@ async function supplierDeliveryAction(kind){
 $("supDelSend").addEventListener("click", () => supplierDeliveryAction("send"));
 $("supDelCopy").addEventListener("click", () => supplierDeliveryAction("copy"));
 $("formView").addEventListener("input", () => { $("supDelPreview").classList.add("hidden"); });
+
+/* ---------- Pick a lot (small icon beside Product name) ---------- */
+let pickIndex = -1;
+function applyLot(i, l){
+  const it = state.items[i]; if (!it) return;
+  it.lotNo = l.lotNo || l.id; it.name = plain(l.title || "");
+  const w = String(l.qty || "").trim().split(/\s+/).pop();
+  const hit = UNITS.find((u) => u.toLowerCase() === String(w).toLowerCase());
+  if (hit) it.unit = hit;
+  const r = String(l.rate || "").trim();
+  if (/^[\d,]+(\.\d+)?$/.test(r)) it.custRate = r.replace(/,/g, "");
+  renderDynamic(); refresh();
+}
+function renderLotList(){
+  const q = $("lotSearch").value.trim().toLowerCase();
+  const list = lots.filter((l) => l.status !== "sold").filter((l) => !q || (String(l.lotNo || l.id) + " " + plain(l.title || "") + " " + (l.category || "")).toLowerCase().indexOf(q) !== -1);
+  $("lotList").innerHTML = list.length ? list.map((l) => '<button type="button" class="lotrow" data-lotid="' + esc(l.id) + '"><span class="r1"><span>' + esc(l.lotNo || l.id) + '</span><span>' + esc(l.rate || "") + '</span></span><span class="r2">' + esc(plain(l.title || "")) + (l.qty ? ' &middot; ' + esc(l.qty) : '') + '</span></button>').join("") : '<p class="hint">' + (lots.length ? "No lots match." : "No lots yet. Add lots in the Lots page, or type the product name.") + '</p>';
+}
+function openPicker(i){ pickIndex = i; $("lotSearch").value = ""; renderLotList(); $("lotPicker").classList.remove("hidden"); }
+function closePicker(){ $("lotPicker").classList.add("hidden"); pickIndex = -1; }
+$("lotSearch").addEventListener("input", renderLotList);
+$("lotClose").addEventListener("click", closePicker);
+$("lotPicker").addEventListener("click", (e) => {
+  if (e.target === $("lotPicker")) { closePicker(); return; }
+  const b = e.target.closest && e.target.closest("[data-lotid]"); if (!b) return;
+  const l = lots.find((x) => x.id === b.getAttribute("data-lotid"));
+  if (l && pickIndex >= 0) applyLot(pickIndex, l);
+  closePicker();
+});
 
 /* ---------- Links panel ---------- */
 function indexNow(){ const others = orders.filter((o) => o.orderNo !== state.orderNo); return buildLinkIndex(state.orderNo ? others.concat([state]) : others, linkPairs); }
@@ -829,9 +937,6 @@ function refresh(){
     if (el) el.innerHTML = ln.cust ? "Customer amount " + inr(ln.cust) + (ln.sup ? " &middot; Your cost " + inr(ln.sup) + " &middot; Profit " + inr(ln.profit) : "") : "";
   });
   $("docNos").textContent = "Tax invoice no.: " + (state.invoiceNo || "given when you first download it") + "   <->   URD bill no.: " + (state.urdNo || "given when you first download it") + "   (both belong to order " + (state.orderNo || "this order") + ", so they are linked)";
-  const a = $("waUpdate"), ph = normPhone(state.customer.phone);
-  if (ph.length >= 10 && ph.length <= 15) { a.href = "https://wa.me/" + ph + "?text=" + encodeURIComponent(customerMessage(state)); a.classList.remove("off"); }
-  else { a.removeAttribute("href"); a.classList.add("off"); }
 }
 function onEdit(e){
   const t = e.target, sec = t.getAttribute && t.getAttribute("data-sec");
@@ -848,19 +953,6 @@ $("formView").addEventListener("input", onEdit);
 $("formView").addEventListener("change", (e) => {
   onEdit(e);
   const t = e.target;
-  if (t.getAttribute("data-pick") !== null && t.hasAttribute("data-pick")) {
-    const i = +t.getAttribute("data-pick"), l = lots.find((x) => x.id === t.value);
-    if (l) {
-      const it = state.items[i];
-      it.lotNo = l.lotNo || l.id; it.name = plain(l.title || "");
-      const w = String(l.qty || "").trim().split(/\s+/).pop();
-      const hit = UNITS.find((u) => u.toLowerCase() === String(w).toLowerCase());
-      if (hit) it.unit = hit;
-      const r = String(l.rate || "").trim();
-      if (/^[\d,]+(\.\d+)?$/.test(r)) it.custRate = r.replace(/,/g, "");
-      renderDynamic(); refresh();
-    }
-  }
   if (t.id === "c_phone") {
     const c = customers[normPhone(t.value)];
     if (c) {
@@ -871,6 +963,7 @@ $("formView").addEventListener("change", (e) => {
   }
 });
 $("formView").addEventListener("click", (e) => {
+  const pk = e.target.closest("[data-picklot]"); if (pk) { openPicker(+pk.getAttribute("data-picklot")); return; }
   const add = e.target.closest("[data-add]"), rm = e.target.closest("[data-rm]");
   if (add) {
     const sec = add.getAttribute("data-add");
@@ -897,7 +990,7 @@ $("supPaidFull").addEventListener("click", () => {
   state.supplierPayments.push({ date: todayISO(), mode: "UPI", amount: String(c.supDue), ref: "" });
   hideMsg($("formMsg")); renderDynamic(); refresh();
 });
-$("backBtn").addEventListener("click", () => { if (confirm("Go back to the list? Unsaved changes will be lost.")) showList(); });
+$("backBtn").addEventListener("click", () => { if (confirm("Go back? Unsaved changes will be lost.")) { if (lastDetail) showDetail(lastDetail); else showList(); } });
 
 /* ---------- Saving ---------- */
 async function nextOrderNo(){
