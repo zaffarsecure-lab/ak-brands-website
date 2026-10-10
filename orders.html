@@ -110,6 +110,21 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+<div id="bootError" style="display:none;background:#f8e6e6;color:#7a2020;padding:.9rem 1rem;font:15px/1.45 system-ui,-apple-system,Arial,sans-serif;border-bottom:3px solid #8a2f2f"></div>
+<script>
+/* Safety net: if the page cannot start (a file is missing or damaged), say so on screen instead of staying silent. */
+(function(){
+  var box = document.getElementById("bootError"), shown = false;
+  function show(msg){
+    if (shown || window.__ordersReady) return; shown = true;
+    box.style.display = "block";
+    box.innerHTML = "<b>The Orders page could not start.</b><br>One of the files may be missing, damaged or still the old version. Please take a screenshot of this red box and send it to Claude.<br><small>Details: " + String(msg || "unknown problem").replace(/[<>&]/g, "") + "</small>";
+  }
+  window.addEventListener("error", function(e){ show((e && e.message) || "script error"); });
+  window.addEventListener("unhandledrejection", function(e){ show((e && e.reason && e.reason.message) || "problem"); });
+  setTimeout(function(){ if (!window.__ordersReady) show("The page did not finish starting. Check ak-core.js and ak-pdf.js."); }, 6000);
+})();
+</script>
 <header>
   <div class="bar">
     <h1>Orders</h1>
@@ -329,12 +344,12 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
       <h2>6. Summary</h2>
       <div class="sum" id="summary"></div>
       <button class="docbtn alt" type="button" id="waUpdate">Send customer update on WhatsApp</button>
-      <p class="hint" style="margin-top:.4rem">The message uses the same layout as Order Confirmed: order number and date, lot, product, quantity, lot rate, total amount, token and part payments, balance, transport details, the view link, and Trusted Firm. It never shows supplier price, supplier payments, profit or margin. Profit is worked out on the value before GST.</p>
+      <p class="hint" style="margin-top:.4rem">This is the longer update message: order number and date, lot, product, quantity, lot rate, total amount, token and part payments, balance, transport details, the view link, and Trusted Firm. Use it when money comes in or the goods are dispatched. It never shows supplier price, supplier payments, profit or margin. Profit is worked out on the value before GST.</p>
     </section>
 
     <section class="panel">
       <h2>7. Order Confirmed on WhatsApp</h2>
-      <p class="hint">Sends the customer an "Order Confirmed" message with lot number, product, quantity, rate, total amount, token and part payments, and a link. The link opens a page with the order details only. It never shows invoices, PDFs, supplier details or profit. You share invoices personally, yourself. The link shows the lot number and invoice number, ends in a long secret code, and <b>never expires</b>. It stays active until you tap Stop sharing. The page updates by itself when you save new payments or tracking.</p>
+      <p class="hint">Sends the customer a short "Order Confirmed" message: order number and date, lot, product, quantity, lot rate and a link. The link opens a page with everything else: total amount, token and part payments, balance and transport. It never shows invoices, PDFs, supplier details or profit. You share invoices personally, yourself. The link shows the lot number and invoice number, ends in a long secret code, and <b>never expires</b>. It stays active until you tap Stop sharing. The page updates by itself when you save new payments or tracking.</p>
       <button class="docbtn" type="button" id="confSend">Send Order Confirmed on WhatsApp</button>
       <button class="docbtn alt" type="button" id="confCopy">Copy Order Confirmed message</button>
       <div id="confPreview" class="hidden">
@@ -395,11 +410,46 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
   </div>
 </main>
 
-<div id="lotPicker" class="modal hidden" role="dialog" aria-modal="true" aria-label="Pick a lot">
+<div id="lotPicker" class="modal hidden" role="dialog" aria-modal="true" aria-label="Pick or create a lot">
   <div class="modalbox">
-    <div class="head"><h2 style="margin:0">Pick a lot</h2><button class="link" id="lotClose" type="button">Close</button></div>
-    <input id="lotSearch" type="search" placeholder="Search lot number or product" style="margin-top:.7rem" autocomplete="off">
-    <div id="lotList"></div>
+    <div id="lotPickView">
+      <div class="head"><h2 style="margin:0">Pick a lot</h2><button class="link" id="lotClose" type="button">Close</button></div>
+      <button class="docbtn" type="button" id="lotNewBtn">Create a new lot</button>
+      <input id="lotSearch" type="search" placeholder="Or search lot number or product" style="margin-top:.8rem" autocomplete="off">
+      <div id="lotList"></div>
+    </div>
+    <div id="lotNewView" class="hidden">
+      <div class="head"><h2 style="margin:0">New lot</h2><button class="link" id="lotNewBack" type="button">Back to the list</button></div>
+      <p class="hint">Creates the lot in your catalogue, exactly like the Lots page, and adds it to this order. Everything except the product name is optional.</p>
+      <label for="nl_lotNo">Lot number <span class="hint">(like 22821 AK. Leave blank to create one)</span></label>
+      <input id="nl_lotNo" type="text" maxlength="14" autocapitalize="characters" autocomplete="off" placeholder="Example: 22821 AK">
+      <label for="nl_title">Product name</label>
+      <input id="nl_title" type="text" maxlength="90" placeholder="Example: Men's cotton T-shirts">
+      <label for="nl_category">Category</label>
+      <select id="nl_category"></select>
+      <label for="nl_condition">Condition</label>
+      <input id="nl_condition" type="text" maxlength="120" placeholder="Example: Fresh surplus, up to 10% variance">
+      <label for="nl_description">Details</label>
+      <textarea id="nl_description" maxlength="1500" style="min-height:80px" placeholder="Sizes, brands, packing. Do not write your buying cost or supplier names."></textarea>
+      <label for="nl_location">Location <span class="hint">(city only)</span></label>
+      <input id="nl_location" type="text" maxlength="80" placeholder="Example: Bengaluru, Karnataka">
+      <label for="nl_qtyNum">Quantity in the lot</label>
+      <div class="two"><input id="nl_qtyNum" type="text" inputmode="decimal" maxlength="12" placeholder="Example: 1500"><select id="nl_qtyUnit" aria-label="Quantity unit"></select></div>
+      <input id="nl_qtyOther" class="hidden" type="text" maxlength="20" placeholder="Type the unit" style="margin-top:.5rem">
+      <label for="nl_moqNum">Minimum quantity</label>
+      <div class="two"><input id="nl_moqNum" type="text" inputmode="decimal" maxlength="12" placeholder="Example: 200"><select id="nl_moqUnit" aria-label="Minimum quantity unit"></select></div>
+      <input id="nl_moqOther" class="hidden" type="text" maxlength="20" placeholder="Type the unit" style="margin-top:.5rem">
+      <label for="nl_mrp">MRP <span class="hint">(if available)</span></label>
+      <input id="nl_mrp" type="text" maxlength="40" placeholder="Example: Rs 799 per pc">
+      <label for="nl_onlinePrice">Online price <span class="hint">(if available)</span></label>
+      <input id="nl_onlinePrice" type="text" maxlength="40" placeholder="Example: Rs 499 per pc">
+      <label for="nl_rate">Lot rate <span class="hint">(buyers see it when they open the lot link)</span></label>
+      <input id="nl_rate" type="text" maxlength="40" placeholder="Example: Rs 120 per pc">
+      <label for="nl_wa">WhatsApp number for buyer queries</label>
+      <select id="nl_wa"></select>
+      <div class="msg" id="lotNewMsg" role="status"></div>
+      <button class="docbtn" type="button" id="lotNewSave">Save lot and add it to this order</button>
+    </div>
   </div>
 </div>
 
@@ -408,7 +458,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/fireba
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, runTransaction, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-import { STATUSES, UNITS, PAY_KINDS, PAY_MODES, FREIGHT_MODES, GST_MODES, STATES, DEFAULT_TERMS, num, r2, inr, plain, normPhone, prettyPhone, todayISO, fmtDate, fyShort, newItem, newOrder, fromDoc, calc, customerMessage, toCSV, buildInvoice, buildUrd, invoiceIssues, salesRegister, purchaseRegister, registerCSV, buildLinkIndex, pairKey, confirmMessage, orderSummaryMessage, tileDetail, buildOrderView, makeToken, orderLink, supplierDeliveryMessage, supplierDeliveryIssues, SUP_CUST_PHONE, SUP_FROM_PHONE } from "./ak-core.js";
+import { STATUSES, UNITS, PAY_KINDS, PAY_MODES, FREIGHT_MODES, GST_MODES, STATES, DEFAULT_TERMS, num, r2, inr, plain, normPhone, prettyPhone, todayISO, fmtDate, fyShort, newItem, newOrder, fromDoc, calc, customerMessage, toCSV, buildInvoice, buildUrd, invoiceIssues, salesRegister, purchaseRegister, registerCSV, buildLinkIndex, pairKey, confirmMessage, orderSummaryMessage, rateText, tileDetail, buildOrderView, makeToken, orderLink, supplierDeliveryMessage, supplierDeliveryIssues, SUP_CUST_PHONE, SUP_FROM_PHONE } from "./ak-core.js";
 import { makeCustomerCopyPdf, makeTransporterCopyPdf, makeSupplierCopyPdf } from "./ak-pdf.js";
 
 const firebaseConfig = {
@@ -432,7 +482,7 @@ const opts = (arr, sel) => arr.map((x) => '<option' + (x === sel ? " selected" :
 function itemRowHtml(it, i, lotOpts){
   const n = i + 1;
   return '<div class="item"><div class="head"><b>Product ' + n + '</b><button class="link" type="button" data-rm="items:' + i + '">Remove</button></div>' +
-    '<div class="lblrow"><label>Product name</label><button class="iconbtn" type="button" data-picklot="' + i + '" aria-label="Pick from your lots" title="Pick from your lots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></button></div>' +
+    '<div class="lblrow"><label>Product name</label><button class="iconbtn" type="button" data-picklot="' + i + '" aria-label="Pick a lot or create a new one" title="Pick a lot or create a new one"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></button></div>' +
     '<input type="text" data-sec="items" data-i="' + i + '" data-k="name" value="' + esc(it.name) + '">' +
     '<div class="two"><div><label>Quantity</label><input type="text" inputmode="decimal" data-sec="items" data-i="' + i + '" data-k="qty" value="' + esc(it.qty) + '"></div>' +
     '<div><label>Unit</label><select data-sec="items" data-i="' + i + '" data-k="unit">' + opts(UNITS, it.unit) + '</select></div></div>' +
@@ -602,7 +652,7 @@ onAuthStateChanged(auth, (user) => {
   const on = !!user;
   $("loginPanel").classList.toggle("hidden", on);
   $("logout").classList.toggle("hidden", !on);
-  if (on) { showList(); loadAll(); loadBiz(); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
+  if (on) { showList(); loadAll(); loadBiz(); loadTeam(); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
 });
 
 /* ---------- Loading ---------- */
@@ -766,6 +816,21 @@ function renderDynamic(){
 }
 /* ---------- Order Confirmed (WhatsApp) and the customer-safe page ---------- */
 const viewUrl = () => orderLink(state, state.viewToken);
+/* Order Confirmed is the SHORT message. Total, payments, balance and tracking are on the page behind the link. */
+function shortConfirmMessage(o, url){
+  const L = ["*Order Confirmed*", "", "Order " + (o.orderNo || "New") + (o.orderDate ? " | " + fmtDate(o.orderDate) : ""), ""];
+  (o.items || []).filter((it) => it.name && it.name.trim()).forEach((it) => {
+    const q = num(it.qty), rt = rateText(it, "Rs ");
+    if (it.lotNo) L.push("Lot " + it.lotNo);
+    L.push(plain(it.name));
+    if (q) L.push("Quantity - " + q.toLocaleString("en-IN") + " " + (it.unit || "Pcs"));
+    if (rt) L.push("Lot rate - " + rt);
+    L.push("");
+  });
+  if (url) L.push("View details - " + url, "");
+  L.push("Trusted Firm", "AK Brands Marketing\u00A9");
+  return L.join("\n");
+}
 function renderConfirm(){
   $("confPreview").classList.add("hidden");
   $("confLink").textContent = state.viewToken ? "Customer link (never expires): " + viewUrl() : "No customer link yet. It is created when you tap one of the buttons above.";
@@ -776,7 +841,7 @@ async function prepareConfirm(kind){
   if (!state.viewToken) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; state.viewToken = makeToken(bytes, 24); }
   await setDoc(doc(db, "orderViews", state.viewToken), Object.assign(buildOrderView(state), { updatedAt: serverTimestamp() }));
   await setDoc(doc(db, "orders", state.orderNo), { viewToken: state.viewToken }, { merge: true });
-  const text = orderSummaryMessage(state, viewUrl(), kind || "confirmed");
+  const text = kind === "update" ? orderSummaryMessage(state, viewUrl(), "update") : shortConfirmMessage(state, viewUrl());
   $("confText").value = text; $("confPreview").classList.remove("hidden");
   $("confLink").textContent = "Customer link (never expires): " + viewUrl(); $("confStop").disabled = false;
   return text;
@@ -860,8 +925,8 @@ function applyLot(i, l){
   const w = String(l.qty || "").trim().split(/\s+/).pop();
   const hit = UNITS.find((u) => u.toLowerCase() === String(w).toLowerCase());
   if (hit) it.unit = hit;
-  const r = String(l.rate || "").trim();
-  if (/^[\d,]+(\.\d+)?$/.test(r)) it.custRate = r.replace(/,/g, "");
+  const r = String(l.rate || "").trim(), rm = r.match(/^(?:rs\.?|inr|\u20B9)?\s*([\d,]+(?:\.\d+)?)\s*(?:per\s*\w+|\/\s*\w+)?$/i);
+  if (rm) it.custRate = rm[1].replace(/,/g, "");
   renderDynamic(); refresh();
 }
 function renderLotList(){
@@ -869,8 +934,8 @@ function renderLotList(){
   const list = lots.filter((l) => l.status !== "sold").filter((l) => !q || (String(l.lotNo || l.id) + " " + plain(l.title || "") + " " + (l.category || "")).toLowerCase().indexOf(q) !== -1);
   $("lotList").innerHTML = list.length ? list.map((l) => '<button type="button" class="lotrow" data-lotid="' + esc(l.id) + '"><span class="r1"><span>' + esc(l.lotNo || l.id) + '</span><span>' + esc(l.rate || "") + '</span></span><span class="r2">' + esc(plain(l.title || "")) + (l.qty ? ' &middot; ' + esc(l.qty) : '') + '</span></button>').join("") : '<p class="hint">' + (lots.length ? "No lots match." : "No lots yet. Add lots in the Lots page, or type the product name.") + '</p>';
 }
-function openPicker(i){ pickIndex = i; $("lotSearch").value = ""; renderLotList(); $("lotPicker").classList.remove("hidden"); }
-function closePicker(){ $("lotPicker").classList.add("hidden"); pickIndex = -1; }
+function openPicker(i){ pickIndex = i; $("lotSearch").value = ""; $("lotNewView").classList.add("hidden"); $("lotPickView").classList.remove("hidden"); renderLotList(); $("lotPicker").classList.remove("hidden"); }
+function closePicker(){ $("lotPicker").classList.add("hidden"); $("lotNewView").classList.add("hidden"); $("lotPickView").classList.remove("hidden"); pickIndex = -1; }
 $("lotSearch").addEventListener("input", renderLotList);
 $("lotClose").addEventListener("click", closePicker);
 $("lotPicker").addEventListener("click", (e) => {
@@ -879,6 +944,77 @@ $("lotPicker").addEventListener("click", (e) => {
   const l = lots.find((x) => x.id === b.getAttribute("data-lotid"));
   if (l && pickIndex >= 0) applyLot(pickIndex, l);
   closePicker();
+});
+
+/* ---------- Create a brand-new lot from here (same fields and same saving as the Lots page) ---------- */
+const CATEGORIES = ["Textile and Garments", "FMCG", "Electronics", "Home and Kitchen", "Furniture", "Mobiles and Accessories", "Hardware", "Luggage", "Footwear", "Other"];
+const LOT_RE = /^[0-9]{1,8}( [A-Z]{1,5})?$/;
+const cleanLotNo = (raw) => String(raw || "").trim().replace(/\s+/g, " ").toUpperCase();
+let team = [];
+$("nl_category").innerHTML = '<option value="">Select a category</option>' + CATEGORIES.map((c) => '<option>' + esc(c) + '</option>').join("");
+["qty", "moq"].forEach((p) => {
+  $("nl_" + p + "Unit").innerHTML = UNITS.map((u) => "<option>" + u + "</option>").join("");
+  $("nl_" + p + "Unit").addEventListener("change", () => $("nl_" + p + "Other").classList.toggle("hidden", $("nl_" + p + "Unit").value !== "Others"));
+});
+function fillWaSelect(){
+  const wanted = (function(){ try { return localStorage.getItem("ak_last_wa") || ""; } catch (e) { return ""; } })();
+  $("nl_wa").innerHTML = '<option value="default">Main business number (+91 86605 02217)</option>' + team.map((t) => '<option value="' + esc(t.id) + '">' + esc(t.name) + ' (' + esc(prettyPhone(normPhone(t.number))) + ')</option>').join("");
+  $("nl_wa").value = Array.from($("nl_wa").options).some((o) => o.value === wanted) ? wanted : "default";
+}
+async function loadTeam(){
+  try { const s = await getDoc(doc(db, "settings", "team")); team = s.exists() && Array.isArray(s.data().members) ? s.data().members : []; }
+  catch (err) { console.error(err); team = []; }
+  fillWaSelect();
+}
+function readNewQty(p){
+  const n = $("nl_" + p + "Num").value.trim().replace(/\s+/g, " ");
+  let unit = $("nl_" + p + "Unit").value; if (unit === "Others") unit = $("nl_" + p + "Other").value.trim();
+  return n ? { num: n, unit, text: unit ? n + " " + unit : n } : { num: "", unit: "", text: "" };
+}
+$("lotNewBtn").addEventListener("click", () => {
+  const typed = $("lotSearch").value.trim(), cur = state.items[pickIndex] ? state.items[pickIndex].name : "";
+  ["lotNo", "title", "condition", "description", "location", "qtyNum", "qtyOther", "moqNum", "moqOther", "mrp", "onlinePrice", "rate"].forEach((k) => { $("nl_" + k).value = ""; });
+  $("nl_category").value = ""; $("nl_qtyUnit").value = "Pcs"; $("nl_moqUnit").value = "Pcs";
+  $("nl_qtyOther").classList.add("hidden"); $("nl_moqOther").classList.add("hidden");
+  $("nl_title").value = (cur || typed || "").trim();
+  fillWaSelect(); hideMsg($("lotNewMsg"));
+  $("lotPickView").classList.add("hidden"); $("lotNewView").classList.remove("hidden");
+  $("lotPicker").querySelector(".modalbox").scrollTop = 0;
+});
+$("lotNewBack").addEventListener("click", () => { $("lotNewView").classList.add("hidden"); $("lotPickView").classList.remove("hidden"); });
+$("lotNewSave").addEventListener("click", async () => {
+  hideMsg($("lotNewMsg")); const btn = $("lotNewSave"); btn.disabled = true;
+  try {
+    let lotNo = cleanLotNo($("nl_lotNo").value);
+    if (!lotNo) lotNo = String(Date.now()).slice(-6) + " AK";
+    if (!LOT_RE.test(lotNo)) throw new UserError("Lot number must be 1 to 8 digits, then a space, then 1 to 5 letters. Example: 22821 AK");
+    const title = $("nl_title").value.trim();
+    if (!title) throw new UserError("Please type the product name.");
+    const q = readNewQty("qty"), m = readNewQty("moq");
+    const wv = $("nl_wa").value, mem = wv === "default" ? null : team.find((t) => t.id === wv);
+    const exists = lots.find((l) => l.id === lotNo);
+    if (exists && !confirm("Lot " + lotNo + " already exists. Replace it?")) throw new UserError("");
+    const data = {
+      lotNo, title, category: $("nl_category").value, condition: $("nl_condition").value.trim(),
+      description: $("nl_description").value.trim(), location: $("nl_location").value.trim(),
+      qty: q.text, qtyNum: q.num, qtyUnit: q.unit, moq: m.text, moqNum: m.num, moqUnit: m.unit,
+      mrp: $("nl_mrp").value.trim(), onlinePrice: $("nl_onlinePrice").value.trim(), rate: $("nl_rate").value.trim(),
+      waNumber: mem ? mem.number : "", waName: mem ? mem.name : "Main business number",
+      photos: exists && exists.photos ? exists.photos : [], status: exists && exists.status ? exists.status : "available"
+    };
+    data.createdAt = exists && exists.createdAt ? exists.createdAt : serverTimestamp();
+    await setDoc(doc(db, "lots", lotNo), data);
+    try { localStorage.setItem("ak_last_wa", wv); } catch (e2) {}
+    const saved = Object.assign({ id: lotNo }, data, { createdAt: exists && exists.createdAt ? exists.createdAt : { seconds: Math.floor(Date.now() / 1000) } });
+    lots = lots.filter((l) => l.id !== lotNo).concat([saved]);
+    if (pickIndex >= 0) applyLot(pickIndex, saved);
+    closePicker();
+    show($("formMsg"), "Lot " + lotNo + " is created in your catalogue and added to this order. Now type the quantity for this customer.", "ok");
+  } catch (err) {
+    if (!(err instanceof UserError)) console.error(err);
+    if (err instanceof UserError && !err.message) return;
+    show($("lotNewMsg"), err instanceof UserError ? err.message : "The lot did not save. Check your connection and the database rules, then try again.", "err");
+  } finally { btn.disabled = false; }
 });
 
 /* ---------- Links panel ---------- */
@@ -1117,6 +1253,7 @@ $("delBtn").addEventListener("click", async () => {
   try { if (state.viewToken) await deleteDoc(doc(db, "orderViews", state.viewToken)); await deleteDoc(doc(db, "orders", state.orderNo)); await loadAll(); showList(); show($("listMsg"), "Order deleted.", "ok"); }
   catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again.", "err"); }
 });
+window.__ordersReady = true;
 </script>
 </body>
 </html>
