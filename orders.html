@@ -161,10 +161,31 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
         <div class="two"><div><label for="b_state">State</label><select id="b_state"></select></div><div><label for="b_gstin">GSTIN</label><input id="b_gstin" type="text" autocapitalize="characters"></div></div>
         <div class="two"><div><label for="b_pan">PAN</label><input id="b_pan" type="text" autocapitalize="characters"></div><div><label for="b_phone">Phone</label><input id="b_phone" type="tel"></div></div>
         <label for="b_email">Email</label><input id="b_email" type="email">
+        <label for="b_paste">Paste your bank details <span class="hint">(optional, as your bank sent them)</span></label>
+        <textarea id="b_paste" style="min-height:90px" placeholder="Customer name: ...&#10;Account Number: ...&#10;IFSC: ...&#10;Branch name: ...&#10;MICR: ..."></textarea>
+        <button class="small" type="button" id="b_pasteBtn">Fill the boxes from the pasted text</button>
         <label for="b_bankHolder">Bank: account holder name</label><input id="b_bankHolder" type="text">
         <div class="two"><div><label for="b_bankName">Bank name</label><input id="b_bankName" type="text"></div><div><label for="b_bankBranch">Branch</label><input id="b_bankBranch" type="text"></div></div>
         <div class="two"><div><label for="b_bankAcc">Account number</label><input id="b_bankAcc" type="text" inputmode="numeric"></div><div><label for="b_bankIfsc">IFSC</label><input id="b_bankIfsc" type="text" autocapitalize="characters"></div></div>
         <label for="b_upi">UPI ID <span class="hint">(optional)</span></label><input id="b_upi" type="text">
+        <div class="two"><div><label for="b_bankMicr">MICR <span class="hint">(optional)</span></label><input id="b_bankMicr" type="text" inputmode="numeric"></div><div><label for="b_qrFile">QR picture file</label><input id="b_qrFile" type="text" placeholder="pay-qr.jpg"></div></div>
+        <h3 style="font-size:1rem;margin-top:1.2rem">Other payment accounts</h3>
+        <p class="hint">The account above is your main account. It prints on invoices and is the usual choice for payments. Add more bank accounts or QR codes here. When you request a payment, you choose which account to use.</p>
+        <div id="acctList"></div>
+        <button class="small" type="button" id="acctAdd">Add another payment account</button>
+        <div id="acctForm" class="hidden" style="margin-top:.8rem;border:1px solid var(--line);border-radius:8px;padding:.8rem;background:#fcfbf8">
+          <label for="a_paste">Paste bank details <span class="hint">(optional)</span></label>
+          <textarea id="a_paste" style="min-height:80px"></textarea>
+          <button class="small" type="button" id="a_pasteBtn">Fill the boxes from the pasted text</button>
+          <label for="a_label">Name for this account <span class="hint">(like HDFC current account)</span></label><input id="a_label" type="text">
+          <label for="a_holder">Account holder name</label><input id="a_holder" type="text">
+          <div class="two"><div><label for="a_bank">Bank</label><input id="a_bank" type="text"></div><div><label for="a_branch">Branch</label><input id="a_branch" type="text"></div></div>
+          <div class="two"><div><label for="a_acc">Account number</label><input id="a_acc" type="text" inputmode="numeric"></div><div><label for="a_ifsc">IFSC</label><input id="a_ifsc" type="text" autocapitalize="characters"></div></div>
+          <div class="two"><div><label for="a_micr">MICR</label><input id="a_micr" type="text" inputmode="numeric"></div><div><label for="a_upi">UPI ID</label><input id="a_upi" type="text"></div></div>
+          <label for="a_qr">QR picture file <span class="hint">(like pay-qr-2.jpg, optional)</span></label><input id="a_qr" type="text">
+          <div class="msg" id="a_msg" role="status"></div>
+          <div class="two"><button class="docbtn" type="button" id="acctSave" style="margin-top:.8rem">Save account</button><button class="docbtn alt" type="button" id="acctCancel" style="margin-top:.8rem">Cancel</button></div>
+        </div>
         <div class="two"><div><label for="b_invPrefix">Invoice number letters</label><input id="b_invPrefix" type="text" maxlength="5" autocapitalize="characters"></div><div><label for="b_urdPrefix">URD bill letters</label><input id="b_urdPrefix" type="text" maxlength="5" autocapitalize="characters"></div></div>
         <p class="hint">Numbers look like AKB/26-27/0001 and restart each April. Keep the letters to 5 or fewer.</p>
         <label for="b_supCustPhone">Phone number shown to suppliers as the customer's contact</label><input id="b_supCustPhone" type="tel">
@@ -362,6 +383,31 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
     </section>
 
     <section class="panel">
+      <h2>7b. Payment request (QR and bank details)</h2>
+      <p class="hint">When the customer says "book it", send this. The customer gets a message with the amount, your bank details, and a link to a payment page for this order and lot. The page has a <b>Pay with UPI app</b> button (amount and lot number already filled in), your QR picture and your bank details. Nothing confirms a payment automatically: when the money arrives, tap <b>Payment received</b> below.</p>
+      <label for="pr_account">Pay to</label>
+      <select id="pr_account" data-sec="payRequest" data-k="accountId"></select>
+      <div class="two">
+        <div><label for="pr_amount">Amount to request (&#8377;)</label><input id="pr_amount" type="text" inputmode="decimal" data-sec="payRequest" data-k="amount"></div>
+        <div><label for="pr_kind">This is a</label><select id="pr_kind" data-sec="payRequest" data-k="kind"></select></div>
+      </div>
+      <div class="two">
+        <button class="small" type="button" id="payFill30">Fill 30% token</button>
+        <button class="small" type="button" id="payFillBal">Fill balance due</button>
+      </div>
+      <button class="docbtn" type="button" id="paySend">Send payment details on WhatsApp</button>
+      <button class="docbtn alt" type="button" id="payCopy">Copy payment message</button>
+      <button class="docbtn alt" type="button" id="payRecv">Payment received: add it to this order</button>
+      <div id="payPreview" class="hidden">
+        <label for="payText">Message</label>
+        <textarea id="payText" readonly style="min-height:260px"></textarea>
+        <a class="wabtn" id="payOpen" target="_blank" rel="noopener">Open in WhatsApp</a>
+      </div>
+      <p class="hint" id="payState" style="margin-top:.6rem"></p>
+      <button class="small" type="button" id="payHide">Hide payment details from the customer's page</button>
+    </section>
+
+    <section class="panel">
       <h2>8. Delivery details for the supplier</h2>
       <p class="hint">This is the text for the <b>parcel label</b>. Send it to the supplier to write on the package: lot number, quantity, product, the customer's name and address, your standard phone number, and "From AK Brands Marketing". The customer's real phone number is never included. The invoices and bills you send the supplier never carry customer details.</p>
       <button class="docbtn" type="button" id="supDelSend">Send delivery details to the supplier on WhatsApp</button>
@@ -458,7 +504,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/fireba
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, runTransaction, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-import { STATUSES, UNITS, PAY_KINDS, PAY_MODES, FREIGHT_MODES, GST_MODES, STATES, DEFAULT_TERMS, num, r2, inr, plain, normPhone, prettyPhone, todayISO, fmtDate, fyShort, newItem, newOrder, fromDoc, calc, customerMessage, toCSV, buildInvoice, buildUrd, invoiceIssues, salesRegister, purchaseRegister, registerCSV, buildLinkIndex, pairKey, confirmMessage, orderSummaryMessage, rateText, tileDetail, buildOrderView, makeToken, orderLink, supplierDeliveryMessage, supplierDeliveryIssues, SUP_CUST_PHONE, SUP_FROM_PHONE } from "./ak-core.js";
+import { STATUSES, UNITS, PAY_KINDS, PAY_MODES, FREIGHT_MODES, GST_MODES, STATES, DEFAULT_TERMS, num, r2, inr, plain, normPhone, prettyPhone, todayISO, fmtDate, fyShort, newItem, newOrder, fromDoc, calc, customerMessage, toCSV, buildInvoice, buildUrd, invoiceIssues, salesRegister, purchaseRegister, registerCSV, buildLinkIndex, pairKey, confirmMessage, orderSummaryMessage, rateText, rs, tileDetail, buildOrderView, makeToken, orderLink, supplierDeliveryMessage, supplierDeliveryIssues, SUP_CUST_PHONE, SUP_FROM_PHONE } from "./ak-core.js";
 import { makeCustomerCopyPdf, makeTransporterCopyPdf, makeSupplierCopyPdf } from "./ak-pdf.js";
 
 const firebaseConfig = {
@@ -623,8 +669,8 @@ function resultBarHtml(list){
 /*LOGIC-END*/
 
 /* ---------- State ---------- */
-const BIZ_FIELDS = ["name", "address", "city", "pincode", "state", "gstin", "pan", "phone", "email", "bankHolder", "bankName", "bankAcc", "bankIfsc", "bankBranch", "upi", "invPrefix", "urdPrefix", "payTerms", "gstMode", "terms", "signatory", "supCustPhone", "supFromPhone"];
-const defaultBiz = () => ({ name: "AK Brands Marketing", address: "", city: "", pincode: "", state: "Karnataka", gstin: "", pan: "", phone: "+91 86605 02217", email: "abdul@akbrandsmarketing.com", bankHolder: "", bankName: "", bankAcc: "", bankIfsc: "", bankBranch: "", upi: "", invPrefix: "AKB", urdPrefix: "URD", payTerms: "30% advance, 70% balance after packing video", gstMode: "incl", terms: DEFAULT_TERMS, signatory: "Authorised Signatory", supCustPhone: SUP_CUST_PHONE, supFromPhone: SUP_FROM_PHONE });
+const BIZ_FIELDS = ["name", "address", "city", "pincode", "state", "gstin", "pan", "phone", "email", "bankHolder", "bankName", "bankAcc", "bankIfsc", "bankBranch", "upi", "invPrefix", "urdPrefix", "payTerms", "gstMode", "terms", "signatory", "supCustPhone", "supFromPhone", "bankMicr", "qrFile"];
+const defaultBiz = () => ({ name: "AK Brands Marketing", address: "", city: "", pincode: "", state: "Karnataka", gstin: "", pan: "", phone: "+91 86605 02217", email: "abdul@akbrandsmarketing.com", bankHolder: "", bankName: "", bankAcc: "", bankIfsc: "", bankBranch: "", upi: "", invPrefix: "AKB", urdPrefix: "URD", payTerms: "30% advance, 70% balance after packing video", gstMode: "incl", terms: DEFAULT_TERMS, signatory: "Authorised Signatory", supCustPhone: SUP_CUST_PHONE, supFromPhone: SUP_FROM_PHONE, bankMicr: "", qrFile: "pay-qr.jpg", accounts: [] });
 let biz = defaultBiz();
 const stateOpts = '<option value="">Choose state</option>' + STATES.map((x) => '<option>' + esc(x[0]) + '</option>').join("");
 const gstOpts = Object.keys(GST_MODES).map((k) => '<option value="' + k + '">' + esc(GST_MODES[k]) + '</option>').join("");
@@ -633,7 +679,8 @@ $("r_gstMode").innerHTML = gstOpts; $("b_gstMode").innerHTML = gstOpts;
 let linkPairs = [];
 let linkIndex = buildLinkIndex([], []);
 const rebuildLinks = () => { linkIndex = buildLinkIndex(orders, linkPairs); };
-let state = newOrder();
+function withPay(o){ o.payRequest = Object.assign({ amount: "", kind: "Token", active: false, accountId: "main" }, o.payRequest || {}); return o; }
+let state = withPay(newOrder());
 let orders = [];
 let lots = [];
 let customers = {};
@@ -664,7 +711,7 @@ async function loadAll(){
       getDocs(collection(db, "lots")),
       getDoc(doc(db, "settings", "doclinks"))
     ]);
-    orders = o.docs.map((d) => fromDoc(d.id, d.data()));
+    orders = o.docs.map((d) => { const x = fromDoc(d.id, d.data()); x.payRequest = d.data().payRequest || null; return withPay(x); });
     customers = {}; c.docs.forEach((d) => { customers[d.id] = d.data(); });
     lots = l.docs.map((d) => Object.assign({ id: d.id }, d.data()));
     linkPairs = lk.exists() && Array.isArray(lk.data().pairs) ? lk.data().pairs.slice() : [];
@@ -741,11 +788,95 @@ function openOrderByNo(no){
   if (o) openForm(JSON.parse(JSON.stringify(Object.assign({}, o, { createdAt: null }))), o.createdAt);
 }
 $("orderList").addEventListener("click", (e) => { const c = e.target.closest("[data-open]"); if (c) openOrderByNo(c.getAttribute("data-open")); });
-function freshOrder(){ const o = newOrder(); o.gstMode = biz.gstMode || "incl"; o.payTerms = biz.payTerms || ""; return o; }
+function freshOrder(){ const o = withPay(newOrder()); o.gstMode = biz.gstMode || "incl"; o.payTerms = biz.payTerms || ""; return o; }
 $("newBtn").addEventListener("click", () => openForm(freshOrder(), null));
 
 /* ---------- Business details (printed on invoices) ---------- */
-function fillBizForm(){ BIZ_FIELDS.forEach((k) => { $("b_" + k).value = biz[k] == null ? "" : biz[k]; }); }
+/* ---------- Bank details: paste, check, and keep more than one account ---------- */
+const okIfsc = (v) => /^[A-Z]{4}0[A-Z0-9]{6}$/.test(v);
+const okUpi = (v) => /^[A-Za-z0-9._\-]{2,}@[A-Za-z0-9]{2,}$/.test(v);
+const last4 = (s) => (s ? "(..." + String(s).slice(-4) + ")" : "");
+function parseBankText(t){
+  const out = {};
+  String(t || "").split(/\r?\n/).forEach((line) => {
+    const m = line.match(/^\s*([^:=]+?)\s*[:=]\s*(.+?)\s*$/); if (!m) return;
+    const k = m[1].toLowerCase().replace(/[^a-z]/g, ""), v = m[2].trim();
+    if (/^(customername|accountname|accountholder|holdername|beneficiary|beneficiaryname|name)/.test(k)) out.holder = v;
+    else if (/^(accountnumber|accountno|acno|acnumber|accno)/.test(k)) out.acc = v.replace(/\s+/g, "");
+    else if (/^(ifsc|ifsccode)/.test(k)) out.ifsc = v.toUpperCase().replace(/\s+/g, "");
+    else if (/^(branchname|branch)/.test(k)) out.branch = v;
+    else if (/^micr/.test(k)) out.micr = v.replace(/\s+/g, "");
+    else if (/^(bankname|bank)$/.test(k)) out.bank = v;
+    else if (/^(upiid|upi|vpa)/.test(k)) out.upi = v.replace(/\s+/g, "");
+  });
+  return out;
+}
+$("b_pasteBtn").addEventListener("click", () => {
+  const r = parseBankText($("b_paste").value), map = { holder: "b_bankHolder", acc: "b_bankAcc", ifsc: "b_bankIfsc", branch: "b_bankBranch", micr: "b_bankMicr", bank: "b_bankName", upi: "b_upi" };
+  let n = 0; Object.keys(map).forEach((k) => { if (r[k]) { $(map[k]).value = r[k]; n++; } });
+  show($("bizMsg"), n ? "Filled " + n + " boxes. Check them, add anything missing (for example the bank name and UPI ID), then tap Save business details." : "Nothing could be read from that text. Each line should look like 'Account Number: 123456'.", n ? "ok" : "err");
+});
+$("a_pasteBtn").addEventListener("click", () => {
+  const r = parseBankText($("a_paste").value); let n = 0;
+  ["holder", "acc", "ifsc", "branch", "micr", "bank", "upi"].forEach((k) => { if (r[k]) { $("a_" + k).value = r[k]; n++; } });
+  show($("a_msg"), n ? "Filled " + n + " boxes. Check them, then tap Save account." : "Nothing could be read from that text.", n ? "ok" : "err");
+});
+function renderAccounts(){
+  const a = biz.accounts || [];
+  $("acctList").innerHTML = a.length
+    ? a.map((x) => '<div class="lnk"><span><b>' + esc(x.label || "Account") + '</b> &middot; ' + esc(x.bank || "") + ' ' + esc(last4(x.acc)) + '</span><span><button class="link" type="button" data-acct-edit="' + esc(x.id) + '">Edit</button> <button class="link" type="button" data-acct-del="' + esc(x.id) + '">Remove</button></span></div>').join("")
+    : '<p class="hint">No other accounts yet.</p>';
+}
+function fillPayAccounts(){
+  const main = "Main: " + (biz.bankName || biz.bankHolder || "bank account") + " " + last4(biz.bankAcc);
+  $("pr_account").innerHTML = '<option value="main">' + esc(main.trim()) + '</option>' + (biz.accounts || []).map((a) => '<option value="' + esc(a.id) + '">' + esc((a.label || a.bank || "Account") + " " + last4(a.acc)) + '</option>').join("");
+}
+let acctEditing = "";
+const ACCT_KEYS = ["label", "holder", "bank", "branch", "acc", "ifsc", "micr", "upi", "qr"];
+function openAcctForm(a){
+  acctEditing = a ? a.id : "";
+  ACCT_KEYS.forEach((k) => { $("a_" + k).value = a ? (a[k] || "") : ""; });
+  $("a_paste").value = ""; hideMsg($("a_msg")); $("acctForm").classList.remove("hidden");
+}
+$("acctAdd").addEventListener("click", () => openAcctForm(null));
+$("acctCancel").addEventListener("click", () => $("acctForm").classList.add("hidden"));
+$("acctList").addEventListener("click", async (e) => {
+  const ed = e.target.closest("[data-acct-edit]"), del = e.target.closest("[data-acct-del]");
+  if (ed) { const a = (biz.accounts || []).find((x) => x.id === ed.getAttribute("data-acct-edit")); if (a) openAcctForm(a); }
+  if (del) {
+    const id = del.getAttribute("data-acct-del"), a = (biz.accounts || []).find((x) => x.id === id);
+    if (!a || !confirm("Remove " + (a.label || "this account") + "? Orders that used it will use your main account.")) return;
+    try { biz.accounts = biz.accounts.filter((x) => x.id !== id); await setDoc(doc(db, "settings", "business"), { accounts: biz.accounts }, { merge: true }); renderAccounts(); fillPayAccounts(); show($("bizMsg"), "Account removed.", "ok"); }
+    catch (err) { console.error(err); show($("bizMsg"), "That did not save. Check your connection and try again.", "err"); }
+  }
+});
+$("acctSave").addEventListener("click", async () => {
+  hideMsg($("a_msg"));
+  try {
+    const a = { id: acctEditing || ("a" + Date.now().toString(36)) };
+    ACCT_KEYS.forEach((k) => { a[k] = String($("a_" + k).value || "").trim(); });
+    a.ifsc = a.ifsc.toUpperCase();
+    if (!a.acc && !a.upi) throw new UserError("Add an account number or a UPI ID.");
+    if (a.ifsc && !okIfsc(a.ifsc)) throw new UserError("That IFSC does not look right. It has 11 characters, like KARB0000214.");
+    if (a.upi && !okUpi(a.upi)) throw new UserError("That UPI ID does not look right. It looks like name@bank.");
+    if (a.qr && !/^[A-Za-z0-9._\-]{1,60}\.(jpg|jpeg|png)$/i.test(a.qr)) throw new UserError("The QR picture file name should end in .jpg or .png, like pay-qr-2.jpg.");
+    if (!a.label) a.label = a.bank || "Account";
+    const list = (biz.accounts || []).filter((x) => x.id !== a.id).concat([a]);
+    await setDoc(doc(db, "settings", "business"), { accounts: list }, { merge: true });
+    biz.accounts = list; renderAccounts(); fillPayAccounts(); $("acctForm").classList.add("hidden");
+    show($("bizMsg"), "Account saved: " + a.label + ".", "ok");
+  } catch (err) {
+    if (!(err instanceof UserError)) console.error(err);
+    show($("a_msg"), err instanceof UserError ? err.message : "That did not save. Check your connection and try again.", "err");
+  }
+});
+function chosenAccount(){
+  const id = (state.payRequest || {}).accountId || "main";
+  const a = id !== "main" ? (biz.accounts || []).find((x) => x.id === id) : null;
+  if (a) return { label: a.label, holder: a.holder, bank: a.bank, branch: a.branch, acc: a.acc, ifsc: a.ifsc, micr: a.micr, upi: a.upi, qr: a.qr || "" };
+  return { label: "Main account", holder: biz.bankHolder, bank: biz.bankName, branch: biz.bankBranch, acc: biz.bankAcc, ifsc: biz.bankIfsc, micr: biz.bankMicr, upi: biz.upi, qr: biz.qrFile || "pay-qr.jpg" };
+}
+function fillBizForm(){ BIZ_FIELDS.forEach((k) => { $("b_" + k).value = biz[k] == null ? "" : biz[k]; }); renderAccounts(); fillPayAccounts(); }
 async function loadBiz(){
   try { const snap = await getDoc(doc(db, "settings", "business")); biz = Object.assign(defaultBiz(), snap.exists() ? snap.data() : {}); }
   catch (err) { console.error(err); biz = defaultBiz(); }
@@ -757,9 +888,11 @@ $("bizSave").addEventListener("click", async () => {
   try {
     if (v.gstin && !/^\d{2}[A-Z]{5}\d{4}[A-Z][A-Z\d]Z[A-Z\d]$/.test(v.gstin.toUpperCase())) throw new UserError("That GSTIN does not look right. It has 15 letters and numbers, like 29ABCDE1234F1Z5.");
     if (!/^[A-Za-z0-9]{1,5}$/.test(v.invPrefix) || !/^[A-Za-z0-9]{1,5}$/.test(v.urdPrefix)) throw new UserError("The invoice and URD letters must be 1 to 5 letters or numbers.");
+    if (v.bankIfsc && !okIfsc(v.bankIfsc.toUpperCase())) throw new UserError("That IFSC does not look right. It has 11 characters, like KARB0000214.");
+    if (v.upi && !okUpi(v.upi)) throw new UserError("That UPI ID does not look right. It looks like name@bank.");
     v.gstin = v.gstin.toUpperCase(); v.pan = v.pan.toUpperCase(); v.bankIfsc = v.bankIfsc.toUpperCase(); v.invPrefix = v.invPrefix.toUpperCase(); v.urdPrefix = v.urdPrefix.toUpperCase();
     await setDoc(doc(db, "settings", "business"), v, { merge: true });
-    biz = Object.assign(defaultBiz(), v); fillBizForm();
+    biz = Object.assign(defaultBiz(), { accounts: biz.accounts || [] }, v); fillBizForm();
     show($("bizMsg"), "Business details saved.", "ok");
   } catch (err) {
     if (!(err instanceof UserError)) console.error(err);
@@ -792,11 +925,12 @@ function showList(){ lastDetail = ""; $("formView").classList.add("hidden"); $("
 
 /* ---------- Form ---------- */
 function openForm(order, createdAt){
-  state = order; state.createdAt = createdAt || null;
+  state = withPay(order); state.createdAt = createdAt || null;
   $("formTitle").textContent = state.orderNo ? "Order " + state.orderNo : "New order";
   $("delBtn").classList.toggle("hidden", !state.orderNo);
   hideMsg($("formMsg")); $("custFound").textContent = "";
   $("r_status").innerHTML = opts(STATUSES, state.status);
+  $("pr_kind").innerHTML = opts(PAY_KINDS, state.payRequest.kind); fillPayAccounts();
   $("f_mode").innerHTML = Object.keys(FREIGHT_MODES).map((k) => '<option value="' + k + '"' + (k === state.freight.mode ? " selected" : "") + '>' + esc(FREIGHT_MODES[k]) + '</option>').join("");
   document.querySelectorAll("#formView [data-sec]").forEach((el) => {
     const sec = el.getAttribute("data-sec"), k = el.getAttribute("data-k");
@@ -806,7 +940,7 @@ function openForm(order, createdAt){
     if (el.type === "checkbox") el.checked = val !== false; else el.value = val == null ? "" : val;
   });
   $("shipBox").classList.toggle("hidden", state.customer.shipSame !== false);
-  renderDynamic(); refresh(); renderLinks(); renderConfirm();
+  renderDynamic(); refresh(); renderLinks(); renderConfirm(); renderPayState();
   $("listView").classList.add("hidden"); $("detailView").classList.add("hidden"); $("formView").classList.remove("hidden"); window.scrollTo(0, 0);
 }
 function renderDynamic(){
@@ -816,6 +950,24 @@ function renderDynamic(){
 }
 /* ---------- Order Confirmed (WhatsApp) and the customer-safe page ---------- */
 const viewUrl = () => orderLink(state, state.viewToken);
+/* What the customer's page may show. Bank and UPI details appear ONLY while a payment request is switched on. */
+function payData(){
+  const pr = state.payRequest || {};
+  if (!pr.active || !(num(pr.amount) > 0)) return null;
+  const lot = ((state.items || []).find((it) => it.lotNo) || {}).lotNo || "", acct = chosenAccount();
+  return {
+    active: true, amount: r2(num(pr.amount)), kind: pr.kind || "Token",
+    upi: String(acct.upi || "").trim(), payee: String(acct.holder || biz.name || "").trim(),
+    bankHolder: acct.holder || "", bankName: acct.bank || "", bankAcc: acct.acc || "", bankIfsc: acct.ifsc || "", bankBranch: acct.branch || "", micr: acct.micr || "", qr: acct.qr || "",
+    note: [state.orderNo, lot].filter(Boolean).join(" ").slice(0, 40)
+  };
+}
+const viewData = () => Object.assign(buildOrderView(state), { pay: payData(), updatedAt: serverTimestamp() });
+async function publishNow(){
+  if (!state.viewToken) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; state.viewToken = makeToken(bytes, 24); }
+  await setDoc(doc(db, "orderViews", state.viewToken), viewData());
+  await setDoc(doc(db, "orders", state.orderNo), { viewToken: state.viewToken }, { merge: true });
+}
 /* Order Confirmed is the SHORT message. Total, payments, balance and tracking are on the page behind the link. */
 function shortConfirmMessage(o, url, withHeading){
   const L = withHeading === false ? [] : ["*Order Confirmed*", ""];
@@ -839,9 +991,7 @@ function renderConfirm(){
 }
 async function prepareConfirm(kind){
   await persistOrder();
-  if (!state.viewToken) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; state.viewToken = makeToken(bytes, 24); }
-  await setDoc(doc(db, "orderViews", state.viewToken), Object.assign(buildOrderView(state), { updatedAt: serverTimestamp() }));
-  await setDoc(doc(db, "orders", state.orderNo), { viewToken: state.viewToken }, { merge: true });
+  await publishNow();
   const text = shortConfirmMessage(state, viewUrl(), kind !== "update");
   $("confText").value = text; $("confPreview").classList.remove("hidden");
   $("confLink").textContent = "Customer link (never expires): " + viewUrl(); $("confStop").disabled = false;
@@ -893,6 +1043,92 @@ $("confStop").addEventListener("click", async () => {
     state.viewToken = ""; renderConfirm();
     show($("formMsg"), "The customer link is switched off. Tapping Send or Copy again makes a new link.", "ok");
   } catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again.", "err"); }
+});
+
+/* ---------- Payment request: message, link, and recording the money when it arrives ---------- */
+const qrChecked = {};
+async function qrExists(file){
+  if (!file) return false;
+  if (qrChecked[file] !== undefined) return qrChecked[file];
+  try { const r = await fetch(file, { method: "HEAD", cache: "no-store" }); qrChecked[file] = !!r.ok; } catch (e) { qrChecked[file] = false; }
+  return qrChecked[file];
+}
+function paymentMessage(o, url, hasQr){
+  const pr = o.payRequest || {}, amt = num(pr.amount), acct = chosenAccount();
+  const label = pr.kind === "Balance" ? "Balance amount" : (pr.kind === "Part payment" ? "Part payment" : "Token amount");
+  const L = ["*Payment Details*", "", "Order " + (o.orderNo || "New") + (o.orderDate ? " | " + fmtDate(o.orderDate) : ""), ""];
+  (o.items || []).filter((it) => it.name && it.name.trim()).forEach((it) => {
+    const q = num(it.qty);
+    L.push((it.lotNo ? "Lot " + it.lotNo + " | " : "") + plain(it.name) + (q ? " | " + q.toLocaleString("en-IN") + " " + (it.unit || "Pcs") : ""));
+  });
+  L.push("", "*" + label + " to pay - " + rs(amt) + "*", "");
+  if (String(acct.upi || "").trim()) L.push("UPI ID - " + String(acct.upi).trim());
+  const bank = [];
+  if (acct.holder) bank.push("A/c name - " + acct.holder);
+  if (acct.acc) bank.push("A/c no - " + acct.acc);
+  if (acct.ifsc) bank.push("IFSC - " + acct.ifsc);
+  if (acct.bank || acct.branch) bank.push("Bank - " + [acct.bank, acct.branch].filter(Boolean).join(", "));
+  if (bank.length) L.push(...bank);
+  L.push("", hasQr ? "Pay online or scan the QR here:" : "Pay online here:", url + "#pay", "", "After paying, please send the screenshot here.", "", "Trusted Firm", "AK Brands Marketing\u00A9");
+  return L.join("\n");
+}
+function renderPayState(){
+  const pr = state.payRequest || {};
+  $("payState").textContent = pr.active && state.viewToken ? "Payment details are showing on the customer's page: " + rs(num(pr.amount)) + " (" + pr.kind + ")." : "Payment details are not showing on the customer's page.";
+  $("payHide").disabled = !(pr.active && state.viewToken);
+  $("payPreview").classList.add("hidden");
+}
+async function preparePay(){
+  const pr = state.payRequest;
+  const ac = chosenAccount();
+  if (!(String(ac.upi || "").trim() || String(ac.acc || "").trim())) throw new UserError("Add your UPI ID or bank account first, in 'Business details for invoices' near the top of the list.");
+  if (!(num(pr.amount) > 0)) throw new UserError("Type the amount to request, or tap Fill 30% token.");
+  pr.active = true;
+  await persistOrder();
+  await publishNow();
+  const text = paymentMessage(state, viewUrl(), await qrExists(chosenAccount().qr));
+  $("payText").value = text; $("payPreview").classList.remove("hidden");
+  renderConfirm(); $("confPreview").classList.add("hidden");
+  $("payState").textContent = "Payment details are showing on the customer's page: " + rs(num(pr.amount)) + " (" + pr.kind + ").";
+  $("payHide").disabled = false;
+  return text;
+}
+async function payAction(kind){
+  hideMsg($("formMsg"));
+  const b1 = $("paySend"), b2 = $("payCopy"); b1.disabled = true; b2.disabled = true;
+  try {
+    const text = await preparePay();
+    const url = "https://wa.me/" + normPhone(state.customer.phone) + "?text=" + encodeURIComponent(text);
+    $("payOpen").href = url;
+    if (kind === "send") {
+      const w = window.open(url, "_blank");
+      show($("formMsg"), w ? "Payment details are ready. WhatsApp is opening." : "Payment details are ready. Tap 'Open in WhatsApp' below the message.", "ok");
+    } else {
+      let ok = false;
+      try { await navigator.clipboard.writeText(text); ok = true; } catch (e) { try { $("payText").select(); ok = document.execCommand("copy"); } catch (e2) { ok = false; } }
+      show($("formMsg"), ok ? "Copied. Paste it into WhatsApp." : "Press and hold the message below, then tap Copy.", ok ? "ok" : "err");
+    }
+    loadAll();
+  } catch (err) {
+    if (!(err instanceof UserError)) console.error(err);
+    show($("formMsg"), err instanceof UserError ? err.message : "That did not work. Check your connection and the database rules, then try again.", "err");
+  } finally { b1.disabled = false; b2.disabled = false; }
+}
+$("paySend").addEventListener("click", () => payAction("send"));
+$("payCopy").addEventListener("click", () => payAction("copy"));
+$("payFill30").addEventListener("click", () => { const c = calc(state); state.payRequest.amount = String(Math.round(c.payable * 0.3)); state.payRequest.kind = "Token"; $("pr_amount").value = state.payRequest.amount; $("pr_kind").value = "Token"; });
+$("payFillBal").addEventListener("click", () => { const c = calc(state); state.payRequest.amount = String(Math.max(0, c.balance)); state.payRequest.kind = c.received > 0 ? "Balance" : "Token"; $("pr_amount").value = state.payRequest.amount; $("pr_kind").value = state.payRequest.kind; });
+$("payRecv").addEventListener("click", () => {
+  const pr = state.payRequest, a = num(pr.amount);
+  if (!(a > 0)) { show($("formMsg"), "Type the amount that arrived in 'Amount to request' first.", "err"); return; }
+  state.payments.push({ date: todayISO(), kind: pr.kind || "Token", mode: "UPI", amount: String(a), ref: "" });
+  renderDynamic(); refresh(); hideMsg($("formMsg"));
+  show($("formMsg"), rs(a) + " is added under Customer payments (section 3). Tap Save order to keep it.", "ok");
+});
+$("payHide").addEventListener("click", async () => {
+  if (!state.viewToken || !state.orderNo) return;
+  try { state.payRequest.active = false; await persistOrder(); renderPayState(); show($("formMsg"), "Payment details are hidden from the customer's page.", "ok"); loadAll(); }
+  catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again.", "err"); }
 });
 
 /* ---------- Delivery details for the supplier (this message DOES include the customer's name and address) ---------- */
@@ -1151,7 +1387,7 @@ async function persistOrder(){
   const orderNo = isNew ? await nextOrderNo() : state.orderNo;
   const data = {
     orderDate: state.orderDate || todayISO(), status: state.status, gstMode: state.gstMode === "excl" ? "excl" : "incl",
-    payTerms: (state.payTerms || "").trim(), viewToken: state.viewToken || "", invoiceNo: state.invoiceNo || "", invoiceDate: state.invoiceDate || "", urdNo: state.urdNo || "", urdDate: state.urdDate || "",
+    payTerms: (state.payTerms || "").trim(), viewToken: state.viewToken || "", payRequest: state.payRequest, invoiceNo: state.invoiceNo || "", invoiceDate: state.invoiceDate || "", urdNo: state.urdNo || "", urdDate: state.urdDate || "",
     customer: Object.assign(clean(state.customer), { phone }),
     supplier: clean(state.supplier), items,
     freight: clean(state.freight), delivery: clean(state.delivery),
@@ -1166,7 +1402,7 @@ async function persistOrder(){
   ["name", "firm", "city", "state", "gstin", "address"].forEach((k) => { if (c[k]) cu[k] = c[k]; }); /* blanks never erase a saved customer */
   await setDoc(doc(db, "customers", phone), cu, { merge: true });
   state.orderNo = orderNo;
-  if (state.viewToken) await setDoc(doc(db, "orderViews", state.viewToken), Object.assign(buildOrderView(state), { updatedAt: serverTimestamp() }));
+  if (state.viewToken) await setDoc(doc(db, "orderViews", state.viewToken), viewData());
   $("formTitle").textContent = "Order " + orderNo; $("delBtn").classList.remove("hidden");
   return orderNo;
 }

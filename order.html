@@ -176,6 +176,12 @@ dialog::backdrop{background:rgba(10,18,30,.7)}
 .kv.tot{border-top:1px solid var(--line);margin-top:.3rem;padding-top:.5rem;font-size:1.05rem}
 .kv.due span:last-child{font-size:1.2rem}
 .note2{font-size:.85rem;color:var(--muted);margin-top:.6rem}
+.paycard{border:2px solid var(--gold)}
+.paycard .amt{font-size:1.8rem;font-weight:700;color:var(--ink)}
+.cta.alt{background:#fff;color:var(--ink);border:1px solid var(--ink);margin-top:.6rem}
+.cp{flex:0 0 auto;font:inherit;font-size:.8rem;font-weight:600;padding:.25rem .7rem;border-radius:999px;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;margin-left:.5rem}
+.qr{text-align:center;margin:.8rem 0}
+.qr img{max-width:240px;width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
 .cta{display:block;text-align:center;text-decoration:none;font-weight:700;padding:.85rem 1rem;border-radius:8px;background:var(--wa);color:#0a0a0a}
 </style>
 </head>
@@ -243,6 +249,30 @@ if (mb && md) {
 function message(title, text){ $("app").innerHTML = '<div class="state"><strong>' + esc(title) + '</strong>' + esc(text) + '</div>' + '<a class="cta" href="https://wa.me/' + WA + '">Message us on WhatsApp</a>'; }
 const row = (a, b, cls) => '<div class="kv ' + (cls || "") + '"><span>' + a + '</span><span>' + b + '</span></div>';
 
+function payCard(v){
+  const p = v.pay;
+  if (!p || !p.active || !(Number(p.amount) > 0)) return "";
+  const amt = Math.round(Number(p.amount) * 100) / 100;
+  const title = p.kind === "Balance" ? "Balance amount to pay" : (p.kind === "Part payment" ? "Part payment to pay" : "Token amount to pay");
+  const upiOk = /^[A-Za-z0-9._\-]{2,}@[A-Za-z0-9]{2,}$/.test(p.upi || "");
+  const upiLink = upiOk ? "upi://pay?pa=" + encodeURIComponent(p.upi) + "&pn=" + encodeURIComponent(p.payee || "AK Brands Marketing") + "&am=" + amt.toFixed(2) + "&cu=INR&tn=" + encodeURIComponent(p.note || "") : "";
+  const qrFile = /^[A-Za-z0-9._\-]{1,60}\.(jpg|jpeg|png)$/i.test(p.qr || "") ? p.qr : "pay-qr.jpg";
+  const cp = (val) => ' <button type="button" class="cp" data-copy="' + esc(val) + '">Copy</button>';
+  let h = '<div class="ov-card paycard" id="payCard"><h2>Pay now</h2><div class="note2" style="margin:0">' + esc(title) + '</div><div class="amt">' + inr(amt) + '</div>' +
+    '<p class="note2">Order ' + esc(v.orderNo) + (v.items && v.items.length ? ' &middot; ' + v.items.map((it) => (it.lotNo ? 'Lot ' + esc(it.lotNo) + ' ' : '') + esc(it.name)).join(", ") : '') + '</p>';
+  if (upiLink) h += '<a class="cta" href="' + upiLink + '">Pay with a UPI app</a>' + '<p class="note2">This opens GPay, PhonePe, Paytm or your bank app with the amount filled in. If your app refuses, scan the QR or use the bank details below.</p>';
+  h += '<div class="qr" id="qrBox"><img src="' + esc(qrFile) + '" alt="Scan to pay with any UPI app" onerror="document.getElementById(\'qrBox\').style.display=\'none\'"><div class="note2">Scan with any UPI app. Type the amount ' + esc(inr(amt)) + '.</div></div>';
+  if (p.upi) h += row("UPI ID", esc(p.upi) + cp(p.upi));
+  if (p.bankHolder) h += row("Account name", esc(p.bankHolder));
+  if (p.bankAcc) h += row("Account number", esc(p.bankAcc) + cp(p.bankAcc));
+  if (p.bankIfsc) h += row("IFSC", esc(p.bankIfsc) + cp(p.bankIfsc));
+  if (p.micr) h += row("MICR", esc(p.micr));
+  if (p.bankName || p.bankBranch) h += row("Bank", esc([p.bankName, p.bankBranch].filter(Boolean).join(", ")));
+  if (p.note) h += '<p class="note2">Please write this in the payment note: <b>' + esc(p.note) + '</b></p>';
+  const msg = "Hello AK Brands Marketing, I have paid " + inr(amt).replace("\u20B9", "Rs ") + " for order " + v.orderNo + ". I am sending the payment screenshot.";
+  h += '<a class="cta alt" href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '">I have paid. Send the screenshot on WhatsApp</a></div>';
+  return h;
+}
 function render(v){
   const items = (v.items || []).map((it) =>
     '<div class="it">' + (it.lotNo ? '<div class="lot">Lot ' + esc(it.lotNo) + '</div>' : '') +
@@ -262,12 +292,18 @@ function render(v){
   const msg = "Hello AK Brands Marketing, I have a question about my order " + v.orderNo + ".";
   $("app").innerHTML =
     '<div class="ov-top"><div class="small">Order Confirmed</div><h1>' + esc(v.orderNo) + '</h1><div class="meta">' + (v.orderDate ? '<span>' + esc(fmtDate(v.orderDate)) + '</span>' : '') + (v.customerName ? '<span>For ' + esc(v.customerName) + '</span>' : '') + '</div><span class="pillst">' + esc(v.status) + '</span></div>' +
-    '<div class="ov-card"><h2>Your order</h2>' + items + totals + '</div>' + pay + del +
+    payCard(v) + '<div class="ov-card"><h2>Your order</h2>' + items + totals + '</div>' + pay + del +
     '<p class="note2">Your tax invoice and other documents are shared with you personally by AK Brands Marketing.</p>' +
     '<a class="cta" href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '">Questions? Message us on WhatsApp</a>';
   document.title = "Order " + v.orderNo + " | AK Brands Marketing";
+  if (location.hash === "#pay" && $("payCard")) $("payCard").scrollIntoView();
 }
 
+$("app").addEventListener("click", (e) => {
+  const b = e.target.closest && e.target.closest("[data-copy]"); if (!b) return;
+  const val = b.getAttribute("data-copy"), done = (ok) => { b.textContent = ok ? "Copied" : "Press and hold the text to copy"; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(val).then(() => done(true), () => done(false)); else done(false);
+});
 /* Only the last 24 characters (the secret code) are used. The lot and invoice numbers in front are just labels. */
 const mm = String(location.search || "").replace(/^\?/, "").match(/(?:^|[-_=])([A-Za-z0-9]{24})$/);
 const t = mm ? mm[1] : "";
