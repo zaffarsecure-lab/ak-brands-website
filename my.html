@@ -287,7 +287,7 @@ function lotCard(o, it){
     if (o.gstAdded) totals += row("Goods total (before GST)", inr(o.goods)) + row("GST", inr(o.gstAdded));
     if (o.freight) totals += row("Freight", inr(o.freight));
     totals += row("Order total", inr(o.total), "tot");
-    const pays = (o.payments || []).map((p) => row(esc(p.kind) + (p.date ? ' <span style="font-weight:400;color:#5c6869">(' + esc(fmtDate(p.date)) + ')</span>' : ''), inr(p.amount))).join("");
+    const pays = (o.payments || []).map((p) => row(esc(p.kind) + (p.mode ? ' &middot; ' + esc(p.mode) : '') + (p.date ? ' <span style="font-weight:400;color:#5c6869">(' + esc(fmtDate(p.date)) + ')</span>' : ''), inr(p.amount))).join("");
     const payBlock = '<div class="sec">Payments on this order</div>' + (pays || '<p class="note2" style="margin:0">No payment received yet.</p>') + row("Received so far", inr(o.received)) + row(o.balance > 0 ? "Balance to pay" : "Balance", o.balance > 0 ? inr(o.balance) : "Nil", "tot");
     const d = o.delivery || {};
     const hasD = d.transporter || d.lr || d.dispatchDate || d.expectedDate || d.deliveredDate;
@@ -295,7 +295,7 @@ function lotCard(o, it){
     more = totals + payBlock + del;
   }
   const links = [];
-  if (o.payActive && o.orderToken && !cancelled) links.push('<a class="go" href="order.html?o=' + esc(o.orderToken) + '#pay">Pay ' + esc(inr(o.payAmount)) + ' now</a>');
+  if (o.payActive && o.orderToken && !cancelled) links.push('<a class="go" href="order.html?o=' + esc(o.orderToken) + '#pay">Make a payment</a>');
   if (o.orderToken) links.push('<a href="order.html?o=' + esc(o.orderToken) + '">Open full order</a>');
   const ask = "Hello AK Brands Marketing, I have a question about " + (it.lotNo ? "Lot " + it.lotNo + ", " : "") + "order " + o.orderNo + ".";
   links.push('<a href="https://wa.me/' + WA + '?text=' + encodeURIComponent(ask) + '">Ask about this lot</a>');

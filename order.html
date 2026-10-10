@@ -182,6 +182,11 @@ dialog::backdrop{background:rgba(10,18,30,.7)}
 .cp{flex:0 0 auto;font:inherit;font-size:.8rem;font-weight:600;padding:.25rem .7rem;border-radius:999px;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;margin-left:.5rem}
 .qr{text-align:center;margin:.8rem 0}
 .qr img{max-width:240px;width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0}
+.chip{flex:1 1 40%;font:inherit;font-weight:600;padding:.65rem .5rem;border-radius:10px;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--ink);color:#fff}
+.cta.off{opacity:.45;pointer-events:none}
+#payOther{width:100%;font:inherit;padding:.7rem;border:1px solid var(--ink);border-radius:8px;margin-bottom:.3rem}
 .cta{display:block;text-align:center;text-decoration:none;font-weight:700;padding:.85rem 1rem;border-radius:8px;background:var(--wa);color:#0a0a0a}
 </style>
 </head>
@@ -249,19 +254,63 @@ if (mb && md) {
 function message(title, text){ $("app").innerHTML = '<div class="state"><strong>' + esc(title) + '</strong>' + esc(text) + '</div>' + '<a class="cta" href="https://wa.me/' + WA + '">Message us on WhatsApp</a>'; }
 const row = (a, b, cls) => '<div class="kv ' + (cls || "") + '"><span>' + a + '</span><span>' + b + '</span></div>';
 
+/* ---------- Pay now: the customer chooses how much (suggested, full balance, or any amount) ---------- */
+const money2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
+export function payChoices(p){
+  const bal = money2(p.balance != null ? p.balance : p.amount), sug = Math.min(money2(p.amount), bal), flex = p.flex !== false;
+  const kind = p.kind === "Balance" ? "Balance" : (p.kind === "Part payment" ? "Part payment" : "Token");
+  const chips = [];
+  if (flex) {
+    if (sug > 0 && sug < bal) chips.push({ id: "s", label: kind + " " + inr(sug), amt: sug });
+    chips.push({ id: "f", label: "Full balance " + inr(bal), amt: bal });
+    chips.push({ id: "o", label: "Other amount", amt: 0 });
+  }
+  const first = chips.length ? chips[0] : null;
+  return { bal, flex, chips, startId: first ? first.id : "", startAmt: first ? first.amt : (sug > 0 ? sug : bal) };
+}
+export function parseAmount(text, bal){
+  const raw = String(text == null ? "" : text).replace(/[\u20B9,\s]|rs\.?/gi, "");
+  if (!raw) return { amt: 0, err: "" };
+  if (!/^\d+(\.\d{1,2})?$/.test(raw)) return { amt: 0, err: "Please type numbers only, like 2500." };
+  const amt = money2(raw);
+  if (amt < 1) return { amt: 0, err: "Please enter at least " + inr(1) + "." };
+  if (amt > bal + 0.001) return { amt: 0, err: "Your balance is " + inr(bal) + ". Please enter that or less." };
+  return { amt, err: "" };
+}
+export function upiHref(p, amt){
+  if (!/^[A-Za-z0-9._\-]{2,}@[A-Za-z0-9]{2,}$/.test(p.upi || "")) return "";
+  return "upi://pay?pa=" + encodeURIComponent(p.upi) + "&pn=" + encodeURIComponent(p.payee || "AK Brands Marketing") + "&am=" + money2(amt).toFixed(2) + "&cu=INR&tn=" + encodeURIComponent(p.note || "");
+}
+export function paidMessage(v, amt){
+  const lots = (v.items || []).map((it) => it.lotNo).filter(Boolean).map((l) => "Lot " + l).join(", ");
+  return "Hello AK Brands Marketing, I have paid Rs " + money2(amt).toLocaleString("en-IN", { maximumFractionDigits: 2 }) + " for order " + v.orderNo + (lots ? " (" + lots + ")" : "") + ". I am sending the payment screenshot.";
+}
+let PAY = null;
+function applyPay(){
+  if (!PAY) return;
+  const a = PAY.amt, ok = a >= 1 && a <= PAY.ch.bal + 0.001, href = ok ? upiHref(PAY.p, a) : "";
+  if ($("payAmt")) $("payAmt").textContent = ok ? inr(a) : "Enter an amount";
+  const ub = $("upiBtn"); if (ub) { if (href) { ub.setAttribute("href", href); ub.classList.remove("off"); } else { ub.removeAttribute("href"); ub.classList.add("off"); } }
+  const pb = $("paidBtn"); if (pb) { if (ok) { pb.setAttribute("href", "https://wa.me/" + WA + "?text=" + encodeURIComponent(paidMessage(PAY.v, a))); pb.classList.remove("off"); } else { pb.removeAttribute("href"); pb.classList.add("off"); } }
+  if ($("qrAmt")) $("qrAmt").textContent = ok ? inr(a) : "your amount";
+}
 function payCard(v){
   const p = v.pay;
-  if (!p || !p.active || !(Number(p.amount) > 0)) return "";
-  const amt = Math.round(Number(p.amount) * 100) / 100;
-  const title = p.kind === "Balance" ? "Balance amount to pay" : (p.kind === "Part payment" ? "Part payment to pay" : "Token amount to pay");
-  const upiOk = /^[A-Za-z0-9._\-]{2,}@[A-Za-z0-9]{2,}$/.test(p.upi || "");
-  const upiLink = upiOk ? "upi://pay?pa=" + encodeURIComponent(p.upi) + "&pn=" + encodeURIComponent(p.payee || "AK Brands Marketing") + "&am=" + amt.toFixed(2) + "&cu=INR&tn=" + encodeURIComponent(p.note || "") : "";
+  if (!p || !p.active) { PAY = null; return ""; }
+  const ch = payChoices(p);
+  if (!(ch.bal > 0)) { PAY = null; return ""; }
+  PAY = { p, v, ch, amt: ch.startAmt, sel: ch.startId };
   const qrFile = /^[A-Za-z0-9._\-]{1,60}\.(jpg|jpeg|png)$/i.test(p.qr || "") ? p.qr : "pay-qr.jpg";
   const cp = (val) => ' <button type="button" class="cp" data-copy="' + esc(val) + '">Copy</button>';
-  let h = '<div class="ov-card paycard" id="payCard"><h2>Pay now</h2><div class="note2" style="margin:0">' + esc(title) + '</div><div class="amt">' + inr(amt) + '</div>' +
+  let h = '<div class="ov-card paycard" id="payCard"><h2>Pay now</h2><p class="note2" style="margin-top:0">Balance to pay: <b>' + inr(ch.bal) + '</b>' + (ch.flex ? '. Choose how much you want to pay now.' : '.') + '</p>';
+  if (ch.flex) {
+    h += '<div class="chips">' + ch.chips.map((c) => '<button type="button" class="chip' + (c.id === ch.startId ? ' on' : '') + '" data-amt="' + c.id + '" data-v="' + c.amt + '">' + esc(c.label) + '</button>').join("") + '</div>' +
+      '<div id="otherBox" class="hidden"><input id="payOther" type="text" inputmode="decimal" placeholder="Type the amount in rupees" autocomplete="off"><div id="payErr" class="note2" style="color:#8a2f2f"></div></div>';
+  }
+  h += '<div class="amt" id="payAmt">' + inr(ch.startAmt) + '</div>' +
     '<p class="note2">Order ' + esc(v.orderNo) + (v.items && v.items.length ? ' &middot; ' + v.items.map((it) => (it.lotNo ? 'Lot ' + esc(it.lotNo) + ' ' : '') + esc(it.name)).join(", ") : '') + '</p>';
-  if (upiLink) h += '<a class="cta" href="' + upiLink + '">Pay with a UPI app</a>' + '<p class="note2">This opens GPay, PhonePe, Paytm or your bank app with the amount filled in. If your app refuses, scan the QR or use the bank details below.</p>';
-  h += '<div class="qr" id="qrBox"><img src="' + esc(qrFile) + '" alt="Scan to pay with any UPI app" onerror="document.getElementById(\'qrBox\').style.display=\'none\'"><div class="note2">Scan with any UPI app. Type the amount ' + esc(inr(amt)) + '.</div></div>';
+  if (upiHref(p, ch.startAmt)) h += '<a class="cta" id="upiBtn" href="' + esc(upiHref(p, ch.startAmt)) + '">Pay with a UPI app</a><p class="note2">This opens GPay, PhonePe, Paytm or your bank app with the amount filled in. If your app refuses, scan the QR or use the bank details below.</p>';
+  h += '<div class="qr" id="qrBox"><img src="' + esc(qrFile) + '" alt="Scan to pay with any UPI app" onerror="document.getElementById(\'qrBox\').style.display=\'none\'"><div class="note2">Scan with any UPI app. Type the amount <b id="qrAmt">' + esc(inr(ch.startAmt)) + '</b>.</div></div>';
   if (p.upi) h += row("UPI ID", esc(p.upi) + cp(p.upi));
   if (p.bankHolder) h += row("Account name", esc(p.bankHolder));
   if (p.bankAcc) h += row("Account number", esc(p.bankAcc) + cp(p.bankAcc));
@@ -269,10 +318,23 @@ function payCard(v){
   if (p.micr) h += row("MICR", esc(p.micr));
   if (p.bankName || p.bankBranch) h += row("Bank", esc([p.bankName, p.bankBranch].filter(Boolean).join(", ")));
   if (p.note) h += '<p class="note2">Please write this in the payment note: <b>' + esc(p.note) + '</b></p>';
-  const msg = "Hello AK Brands Marketing, I have paid " + inr(amt).replace("\u20B9", "Rs ") + " for order " + v.orderNo + ". I am sending the payment screenshot.";
-  h += '<a class="cta alt" href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '">I have paid. Send the screenshot on WhatsApp</a></div>';
+  h += '<a class="cta alt" id="paidBtn" href="https://wa.me/' + WA + '?text=' + encodeURIComponent(paidMessage(v, ch.startAmt)) + '">I have paid. Send the screenshot on WhatsApp</a></div>';
   return h;
 }
+$("app").addEventListener("click", (e) => {
+  const c = e.target.closest && e.target.closest("[data-amt]"); if (!c || !PAY) return;
+  PAY.sel = c.getAttribute("data-amt");
+  Array.prototype.forEach.call($("app").querySelectorAll("[data-amt]"), (b) => b.classList.toggle("on", b === c));
+  const other = PAY.sel === "o";
+  if ($("otherBox")) $("otherBox").classList.toggle("hidden", !other);
+  if (other) { const r = parseAmount($("payOther") ? $("payOther").value : "", PAY.ch.bal); PAY.amt = r.amt; if ($("payErr")) $("payErr").textContent = r.err; if ($("payOther")) $("payOther").focus(); }
+  else { PAY.amt = Number(c.getAttribute("data-v")) || 0; if ($("payErr")) $("payErr").textContent = ""; }
+  applyPay();
+});
+$("app").addEventListener("input", (e) => {
+  if (!PAY || !e.target || e.target.id !== "payOther") return;
+  const r = parseAmount(e.target.value, PAY.ch.bal); PAY.amt = r.amt; if ($("payErr")) $("payErr").textContent = r.err; applyPay();
+});
 function render(v){
   const items = (v.items || []).map((it) =>
     '<div class="it">' + (it.lotNo ? '<div class="lot">Lot ' + esc(it.lotNo) + '</div>' : '') +
@@ -282,7 +344,7 @@ function render(v){
   if (v.gstAdded) totals += row("Goods total (before GST)", inr(v.goods)) + row("GST", inr(v.gstAdded));
   if (v.freight) totals += row("Freight", inr(v.freight));
   totals += row("Total amount", inr(v.total), "tot") + (v.gstIncluded ? '<p class="note2">The total includes GST of ' + inr(v.gstIncluded) + '.</p>' : '');
-  const pays = (v.payments || []).map((p) => row(esc(p.kind) + (p.date ? ' <span style="font-weight:400;color:#5c6869">(' + esc(fmtDate(p.date)) + ')</span>' : ''), inr(p.amount))).join("");
+  const pays = (v.payments || []).map((p) => row(esc(p.kind) + (p.mode ? ' &middot; ' + esc(p.mode) : '') + (p.date ? ' <span style="font-weight:400;color:#5c6869">(' + esc(fmtDate(p.date)) + ')</span>' : ''), inr(p.amount))).join("");
   const pay = '<div class="ov-card"><h2>Payments</h2>' + (pays || '<p class="note2" style="margin-top:0">No payment received yet.</p>') +
     row("Received so far", inr(v.received), "tot") + row(v.balance > 0 ? "Balance to pay" : "Balance", v.balance > 0 ? inr(v.balance) : "Nil", "due") + '</div>';
   const d = v.delivery || {};
