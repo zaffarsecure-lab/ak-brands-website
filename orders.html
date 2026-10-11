@@ -386,6 +386,7 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
       <h2>7a. Customer account link (all this customer's orders)</h2>
       <p class="hint">For repeat customers. One link where the customer sees every order under their name: lots, status, payments, balance and delivery tracking. It updates by itself whenever you save any of their orders. It shows only this customer's orders, and never supplier details, profit, invoices or PDFs.</p>
       <p class="hint" id="acctCount"></p>
+      <label class="chk"><input type="checkbox" id="custPayOn">Show a Pay now button on this customer's account page for every lot that has a balance (uses your main account, or the account chosen on that order)</label>
       <button class="docbtn" type="button" id="custSend">Send account link on WhatsApp</button>
       <button class="docbtn alt" type="button" id="custCopy">Copy account link message</button>
       <div id="custPreview" class="hidden">
@@ -900,8 +901,9 @@ $("acctSave").addEventListener("click", async () => {
     show($("a_msg"), err instanceof UserError ? err.message : "That did not save. Check your connection and try again.", "err");
   }
 });
-function chosenAccount(){
-  const id = (state.payRequest || {}).accountId || "main";
+const chosenAccount = () => chosenAccountFor(state);
+function chosenAccountFor(o){
+  const id = (o.payRequest || {}).accountId || "main";
   const a = id !== "main" ? (biz.accounts || []).find((x) => x.id === id) : null;
   if (a) return { label: a.label, holder: a.holder, bank: a.bank, branch: a.branch, acc: a.acc, ifsc: a.ifsc, micr: a.micr, upi: a.upi, qr: a.qr || "" };
   return { label: "Main account", holder: biz.bankHolder, bank: biz.bankName, branch: biz.bankBranch, acc: biz.bankAcc, ifsc: biz.bankIfsc, micr: biz.bankMicr, upi: biz.upi, qr: biz.qrFile || "pay-qr.jpg" };
@@ -981,19 +983,21 @@ function renderDynamic(){
 /* ---------- Order Confirmed (WhatsApp) and the customer-safe page ---------- */
 const viewUrl = () => orderLink(state, state.viewToken);
 /* What the customer's page may show. Bank and UPI details appear ONLY while a payment request is switched on. */
-function payData(){
-  const pr = state.payRequest || {};
-  if (!pr.active || !(num(pr.amount) > 0)) return null;
-  const balNow = r2(Math.max(0, calc(state).balance));
+function payDataFor(o, force){
+  const pr = o.payRequest || {}, on = !!(pr.active && num(pr.amount) > 0);
+  if (!on && !force) return null;
+  const balNow = r2(Math.max(0, calc(o).balance));
   if (!(balNow > 0)) return null;
-  const lot = ((state.items || []).find((it) => it.lotNo) || {}).lotNo || "", acct = chosenAccount();
+  const lot = ((o.items || []).find((it) => it.lotNo) || {}).lotNo || "", acct = chosenAccountFor(o);
+  if (!(String(acct.upi || "").trim() || String(acct.acc || "").trim())) return null;
   return {
-    active: true, amount: Math.min(r2(num(pr.amount)), balNow), balance: balNow, flex: pr.flex !== false, kind: pr.kind || "Token",
+    active: true, amount: on ? Math.min(r2(num(pr.amount)), balNow) : balNow, balance: balNow, flex: pr.flex !== false, kind: on ? (pr.kind || "Token") : "Balance",
     upi: String(acct.upi || "").trim(), payee: String(acct.holder || biz.name || "").trim(),
     bankHolder: acct.holder || "", bankName: acct.bank || "", bankAcc: acct.acc || "", bankIfsc: acct.ifsc || "", bankBranch: acct.branch || "", micr: acct.micr || "", qr: acct.qr || "",
-    note: [state.orderNo, lot].filter(Boolean).join(" ").slice(0, 40)
+    note: [o.orderNo, lot].filter(Boolean).join(" ").slice(0, 40)
   };
 }
+const payData = () => payDataFor(state, false);
 const viewOf = (o) => {
   const v = buildOrderView(o);
   v.payments = (o.payments || []).filter((p) => num(p.amount) > 0).map((p) => ({ date: p.date || "", kind: p.kind || "Part payment", amount: num(p.amount), mode: p.mode || "" }));
@@ -1086,14 +1090,14 @@ $("confStop").addEventListener("click", async () => {
 const custKey = () => normPhone(state.customer.phone);
 const custSlug = () => String(state.customer.firm || state.customer.name || "customer").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 30) || "customer";
 function buildCustomerView(phone){
+  const force = !(customers[phone] && customers[phone].payOnAccount === false);
   const mine = orders.filter((o) => normPhone(o.customer.phone) === phone && o.orderNo !== state.orderNo);
   if (state.orderNo && normPhone(state.customer.phone) === phone) mine.push(state);
   mine.sort((a, b) => String(b.orderDate || "").localeCompare(String(a.orderDate || "")) || String(b.orderNo).localeCompare(String(a.orderNo)));
   const list = mine.map((o) => {
-    const v = viewOf(o), pr = o.payRequest || {};
+    const v = viewOf(o);
     v.orderToken = o.viewToken || "";
-    v.payActive = !!(pr.active && num(pr.amount) > 0 && o.viewToken && v.balance > 0);
-    v.payAmount = v.payActive ? r2(Math.min(num(pr.amount), v.balance)) : 0;
+    v.pay = payDataFor(o, force);
     return v;
   });
   const first = mine[0] || state;
@@ -1113,6 +1117,7 @@ function renderCustState(){
   const cu = customers[phone];
   $("custLinkState").textContent = cu && cu.viewToken ? "Account link is active (it never expires)." : "No account link yet. It is created when you tap one of the buttons above.";
   $("custStop").disabled = !(cu && cu.viewToken);
+  $("custPayOn").checked = !(cu && cu.payOnAccount === false);
   $("custPreview").classList.add("hidden");
 }
 async function custAction(kind){
@@ -1145,6 +1150,16 @@ async function custAction(kind){
 }
 $("custSend").addEventListener("click", () => custAction("send"));
 $("custCopy").addEventListener("click", () => custAction("copy"));
+$("custPayOn").addEventListener("change", async () => {
+  const phone = custKey(), on = $("custPayOn").checked;
+  if (phone.length < 10) { $("custPayOn").checked = true; show($("formMsg"), "Add the customer's WhatsApp number first.", "err"); return; }
+  try {
+    await setDoc(doc(db, "customers", phone), { payOnAccount: on }, { merge: true });
+    customers[phone] = Object.assign(customers[phone] || {}, { payOnAccount: on });
+    const tok = await customerToken(phone); if (tok) await publishCustomerView(phone, tok);
+    show($("formMsg"), on ? "Pay now buttons are showing on this customer's account page." : "Pay now buttons are hidden on this customer's account page.", "ok");
+  } catch (err) { console.error(err); $("custPayOn").checked = !on; show($("formMsg"), "That did not save. Check your connection and try again.", "err"); }
+});
 $("custStop").addEventListener("click", async () => {
   const phone = custKey(), token = await customerToken(phone);
   if (!token) return;

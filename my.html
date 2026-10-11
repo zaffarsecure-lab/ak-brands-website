@@ -205,6 +205,45 @@ details.oc[open]>summary{border-bottom:1px solid var(--line)}
 .btnrow{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
 .btnrow a{flex:1 1 150px;text-align:center;text-decoration:none;font-weight:700;padding:.7rem;border-radius:8px;border:1px solid var(--ink);color:var(--ink);background:#fff}
 .btnrow a.go{background:var(--wa);border-color:var(--wa);color:#0a0a0a}
+
+.hidden{display:none!important}
+button.tl{font:inherit;text-align:left;cursor:pointer;width:100%;color:inherit}
+button.tl .go{display:block;font-size:.66rem;color:var(--muted);margin-top:.15rem}
+.tl.paid{background:#e7f6ec;border-color:#12803f}
+.tl.paid b{color:#0b6b32}
+.tl.due{background:#fdeceb;border-color:#c0392b}
+.tl.due b{color:#a82a1c}
+.tl.due.zero{background:#e7f6ec;border-color:#12803f}
+.tl.due.zero b{color:#0b6b32}
+.paybig{display:block;width:100%;font:inherit;font-size:1.3rem;font-weight:800;letter-spacing:.01em;padding:1.1rem .8rem;border-radius:16px;border:0;background:#f08a24;color:#fff;box-shadow:0 8px 22px rgba(240,138,36,.5);cursor:pointer;animation:pulse 2.2s ease-in-out infinite}
+.paybig small{display:block;font-size:.8rem;font-weight:600;opacity:.95;margin-top:.1rem}
+@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 8px 22px rgba(240,138,36,.5)}50%{transform:scale(1.025);box-shadow:0 12px 30px rgba(240,138,36,.7)}}
+@media (prefers-reduced-motion:reduce){.paybig{animation:none}}
+.oc .pills{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.paysm{flex:0 0 auto;font:inherit;font-weight:700;font-size:.85rem;padding:.4rem .95rem;border-radius:999px;border:0;background:#f08a24;color:#fff;cursor:pointer}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;z-index:100}
+.sheet{background:#fff;width:100%;max-width:560px;max-height:90vh;overflow:auto;border-radius:18px 18px 0 0;padding:1rem 1rem 1.6rem;animation:popup .22s ease-out}
+@keyframes popup{from{transform:translateY(28px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.sh-head{display:flex;justify-content:space-between;align-items:center;gap:.8rem;margin-bottom:.4rem}
+.sh-head h2{margin:0;font-size:1.25rem}
+.xbtn{font:inherit;font-weight:700;padding:.35rem .9rem;border-radius:999px;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
+.mline{display:flex;justify-content:space-between;align-items:center;gap:.8rem;width:100%;text-align:left;font:inherit;background:#fff;border:0;border-top:1px solid var(--line);padding:.75rem .2rem;cursor:pointer;color:inherit}
+.mline.plain{cursor:default}
+.mline .l{min-width:0;overflow-wrap:anywhere}
+.mline .l b{display:block;color:var(--ink)}
+.mline .l small{display:block;color:var(--muted);font-size:.8rem}
+.mline .rt{flex:0 0 auto;text-align:right;font-weight:700;color:var(--ink)}
+.mtotal{display:flex;justify-content:space-between;font-weight:800;font-size:1.1rem;border-top:2px solid var(--ink);padding:.8rem .2rem 0;margin-top:.2rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0}
+.chip{flex:1 1 40%;font:inherit;font-weight:600;padding:.65rem .5rem;border-radius:10px;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--ink);color:#fff}
+.cta.off{opacity:.45;pointer-events:none}
+#payOther{width:100%;font:inherit;padding:.7rem;border:1px solid var(--ink);border-radius:8px;margin-bottom:.3rem}
+.amt{font-size:1.9rem;font-weight:700;color:var(--ink)}
+.cp{flex:0 0 auto;font:inherit;font-size:.8rem;font-weight:600;padding:.25rem .7rem;border-radius:999px;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;margin-left:.5rem}
+.qr{text-align:center;margin:.8rem 0}
+.qr img{max-width:240px;width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
+.cta.alt{background:#fff;color:var(--ink);border:1px solid var(--ink);margin-top:.6rem}
 </style>
 </head>
 <body>
@@ -241,6 +280,7 @@ details.oc[open]>summary{border-bottom:1px solid var(--line)}
     </div>
   </div>
 </footer>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Details"><div class="sheet" id="sheet"></div></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
@@ -262,18 +302,129 @@ const fmtDate = (iso) => { const p = String(iso || "").split("-").map(Number); r
 const WA = "918660502217";
 
 const mb = $("menuBtn"), md = $("menuDropdown");
-if (mb && md) { mb.addEventListener("click", (e) => { e.stopPropagation(); md.classList.toggle("show"); }); document.addEventListener("click", () => md.classList.remove("show")); }
+if (mb && md) { mb.addEventListener("click", (e) => { e.stopPropagation(); md.classList.toggle("show"); }); }
 
 function message(title, text){ $("app").innerHTML = '<div class="state"><strong>' + esc(title) + '</strong>' + esc(text) + '</div><a class="cta" href="https://wa.me/' + WA + '">Message us on WhatsApp</a>'; }
 const row = (a, b, cls) => '<div class="kv ' + (cls || "") + '"><span>' + a + '</span><span>' + b + '</span></div>';
+const money2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
 
+/* ---------- paying: the customer chooses how much ---------- */
+export function payChoices(p){
+  const bal = money2(p.balance != null ? p.balance : p.amount), sug = Math.min(money2(p.amount), bal), flex = p.flex !== false;
+  const kind = p.kind === "Balance" ? "Balance" : (p.kind === "Part payment" ? "Part payment" : "Token");
+  const chips = [];
+  if (flex) {
+    if (sug > 0 && sug < bal) chips.push({ id: "s", label: kind + " " + inr(sug), amt: sug });
+    chips.push({ id: "f", label: "Full balance " + inr(bal), amt: bal });
+    chips.push({ id: "o", label: "Other amount", amt: 0 });
+  }
+  const first = chips.length ? chips[0] : null;
+  return { bal, flex, chips, startId: first ? first.id : "", startAmt: first ? first.amt : (sug > 0 ? sug : bal) };
+}
+export function parseAmount(text, bal){
+  const raw = String(text == null ? "" : text).replace(/[\u20B9,\s]|rs\.?/gi, "");
+  if (!raw) return { amt: 0, err: "" };
+  if (!/^\d+(\.\d{1,2})?$/.test(raw)) return { amt: 0, err: "Please type numbers only, like 2500." };
+  const amt = money2(raw);
+  if (amt < 1) return { amt: 0, err: "Please enter at least " + inr(1) + "." };
+  if (amt > bal + 0.001) return { amt: 0, err: "Your balance is " + inr(bal) + ". Please enter that or less." };
+  return { amt, err: "" };
+}
+export function upiHref(p, amt){
+  if (!/^[A-Za-z0-9._\-]{2,}@[A-Za-z0-9]{2,}$/.test(p.upi || "")) return "";
+  return "upi://pay?pa=" + encodeURIComponent(p.upi) + "&pn=" + encodeURIComponent(p.payee || "AK Brands Marketing") + "&am=" + money2(amt).toFixed(2) + "&cu=INR&tn=" + encodeURIComponent(p.note || "");
+}
+export function paidMessage(o, amt){
+  const lots = (o.items || []).map((it) => it.lotNo).filter(Boolean).map((l) => "Lot " + l).join(", ");
+  return "Hello AK Brands Marketing, I have paid Rs " + money2(amt).toLocaleString("en-IN", { maximumFractionDigits: 2 }) + " for order " + o.orderNo + (lots ? " (" + lots + ")" : "") + ". I am sending the payment screenshot.";
+}
+let PAY = null, ORD = [];
+function applyPay(){
+  if (!PAY) return;
+  const a = PAY.amt, ok = a >= 1 && a <= PAY.ch.bal + 0.001, href = ok ? upiHref(PAY.p, a) : "";
+  if ($("payAmt")) $("payAmt").textContent = ok ? inr(a) : "Enter an amount";
+  const ub = $("upiBtn"); if (ub) { if (href) { ub.setAttribute("href", href); ub.classList.remove("off"); } else { ub.removeAttribute("href"); ub.classList.add("off"); } }
+  const pb = $("paidBtn"); if (pb) { if (ok) { pb.setAttribute("href", "https://wa.me/" + WA + "?text=" + encodeURIComponent(paidMessage(PAY.o, a))); pb.classList.remove("off"); } else { pb.removeAttribute("href"); pb.classList.add("off"); } }
+  if ($("qrAmt")) $("qrAmt").textContent = ok ? inr(a) : "your amount";
+}
+function payHtml(o){
+  const p = o.pay, ch = payChoices(p);
+  PAY = { p, o, ch, amt: ch.startAmt, sel: ch.startId };
+  const qrFile = /^[A-Za-z0-9._\-]{1,60}\.(jpg|jpeg|png)$/i.test(p.qr || "") ? p.qr : "pay-qr.jpg";
+  const cp = (val) => ' <button type="button" class="cp" data-copy="' + esc(val) + '">Copy</button>';
+  const lots = (o.items || []).map((it) => (it.lotNo ? "Lot " + esc(it.lotNo) + " " : "") + esc(it.name)).join(", ");
+  let h = '<div class="sh-head"><h2>Pay now</h2><button type="button" class="xbtn" data-close="1">Close</button></div>' +
+    '<p class="note2" style="margin-top:0">Order ' + esc(o.orderNo) + (lots ? ' &middot; ' + lots : '') + '<br>Balance to pay: <b>' + inr(ch.bal) + '</b>' + (ch.flex ? '. Choose how much you want to pay now.' : '.') + '</p>';
+  if (ch.flex) {
+    h += '<div class="chips">' + ch.chips.map((c) => '<button type="button" class="chip' + (c.id === ch.startId ? ' on' : '') + '" data-amt="' + c.id + '" data-v="' + c.amt + '">' + esc(c.label) + '</button>').join("") + '</div>' +
+      '<div id="otherBox" class="hidden"><input id="payOther" type="text" inputmode="decimal" placeholder="Type the amount in rupees" autocomplete="off"><div id="payErr" class="note2" style="color:#8a2f2f"></div></div>';
+  }
+  h += '<div class="amt" id="payAmt">' + inr(ch.startAmt) + '</div>';
+  const href = upiHref(p, ch.startAmt);
+  if (href) h += '<a class="cta" id="upiBtn" href="' + esc(href) + '">Pay with a UPI app</a><p class="note2">This opens GPay, PhonePe, Paytm or your bank app with the amount filled in. If your app refuses, scan the QR or use the bank details below.</p>';
+  h += '<div class="qr" id="qrBox"><img src="' + esc(qrFile) + '" alt="Scan to pay with any UPI app" onerror="document.getElementById(\'qrBox\').style.display=\'none\'"><div class="note2">Scan with any UPI app. Type the amount <b id="qrAmt">' + esc(inr(ch.startAmt)) + '</b>.</div></div>';
+  if (p.upi) h += row("UPI ID", esc(p.upi) + cp(p.upi));
+  if (p.bankHolder) h += row("Account name", esc(p.bankHolder));
+  if (p.bankAcc) h += row("Account number", esc(p.bankAcc) + cp(p.bankAcc));
+  if (p.bankIfsc) h += row("IFSC", esc(p.bankIfsc) + cp(p.bankIfsc));
+  if (p.micr) h += row("MICR", esc(p.micr));
+  if (p.bankName || p.bankBranch) h += row("Bank", esc([p.bankName, p.bankBranch].filter(Boolean).join(", ")));
+  if (p.note) h += '<p class="note2">Please write this in the payment note: <b>' + esc(p.note) + '</b></p>';
+  h += '<a class="cta alt" id="paidBtn" href="https://wa.me/' + WA + '?text=' + encodeURIComponent(paidMessage(o, ch.startAmt)) + '">I have paid. Send the screenshot on WhatsApp</a>';
+  return h;
+}
+
+/* ---------- the pop-up ---------- */
+function openModal(html){ $("sheet").innerHTML = html; $("modal").classList.remove("hidden"); $("sheet").scrollTop = 0; document.body.style.overflow = "hidden"; }
+function closeModal(){ $("modal").classList.add("hidden"); document.body.style.overflow = ""; PAY = null; }
+const payable = (o) => o.status !== "Cancelled" && o.pay && Number(o.balance) > 0;
+const lotNames = (o) => (o.items || []).map((it) => (it.lotNo ? "Lot " + esc(it.lotNo) + " " : "") + esc(it.name)).join(", ");
+const head = (t) => '<div class="sh-head"><h2>' + esc(t) + '</h2><button type="button" class="xbtn" data-close="1">Close</button></div>';
+function modalTotal(){
+  let h = head("Total ordered") + '<p class="note2" style="margin-top:0">Tap a lot to see it.</p>', sum = 0;
+  ORD.forEach((o, oi) => {
+    if (o.status === "Cancelled") return;
+    let lotSum = 0;
+    (o.items || []).forEach((it, ii) => { lotSum += Number(it.amount) || 0; h += '<button type="button" class="mline" data-goto="lot-' + oi + '-' + ii + '"><span class="l"><b>' + (it.lotNo ? 'Lot ' + esc(it.lotNo) : esc(it.name)) + '</b><small>' + (it.lotNo ? esc(it.name) + ' &middot; ' : '') + esc(it.qty || "") + ' &middot; Order ' + esc(o.orderNo) + '</small></span><span class="rt">' + inr(it.amount) + '</span></button>'; });
+    const extra = money2((Number(o.total) || 0) - lotSum);
+    if (Math.abs(extra) > 0.5) h += '<div class="mline plain"><span class="l"><b>Tax and freight</b><small>Order ' + esc(o.orderNo) + '</small></span><span class="rt">' + inr(extra) + '</span></div>';
+    sum += Number(o.total) || 0;
+  });
+  return h + '<div class="mtotal"><span>Total ordered</span><span>' + inr(sum) + '</span></div>';
+}
+function modalPaid(){
+  const rows = []; let sum = 0;
+  ORD.forEach((o, oi) => { if (o.status === "Cancelled") return; (o.payments || []).forEach((p) => { rows.push({ o, oi, p }); sum += Number(p.amount) || 0; }); });
+  rows.sort((a, b) => String(b.p.date || "").localeCompare(String(a.p.date || "")));
+  let h = head("Paid so far");
+  if (!rows.length) return h + '<p class="note2">No payment received yet.</p>';
+  h += '<p class="note2" style="margin-top:0">Tap a payment to see its lot.</p>';
+  rows.forEach((r) => { h += '<button type="button" class="mline" data-goto="lot-' + r.oi + '-0"><span class="l"><b>' + esc(r.p.kind) + (r.p.mode ? ' &middot; ' + esc(r.p.mode) : '') + '</b><small>' + (r.p.date ? esc(fmtDate(r.p.date)) + ' &middot; ' : '') + 'Order ' + esc(r.o.orderNo) + '</small></span><span class="rt" style="color:#0b6b32">' + inr(r.p.amount) + '</span></button>'; });
+  return h + '<div class="mtotal"><span>Paid so far</span><span style="color:#0b6b32">' + inr(sum) + '</span></div>';
+}
+function modalDue(title){
+  let h = head(title || "Balance to pay"), sum = 0, n = 0;
+  ORD.forEach((o, oi) => {
+    if (o.status === "Cancelled" || !(Number(o.balance) > 0)) return;
+    n++; sum += Number(o.balance);
+    h += '<div class="mline"><button type="button" class="l" data-goto="lot-' + oi + '-0" style="all:unset;cursor:pointer;min-width:0;flex:1"><b>Order ' + esc(o.orderNo) + '</b><small>' + lotNames(o) + '<br>Total ' + inr(o.total) + ' &middot; Paid ' + inr(o.received) + '</small></button><span class="rt" style="color:#a82a1c">' + inr(o.balance) + (o.pay ? '<br><button type="button" class="paysm" data-order="' + oi + '" style="margin-top:.35rem">Pay now</button>' : '') + '</span></div>';
+  });
+  if (!n) return h + '<p class="note2">Nothing is due. Thank you!</p>';
+  return h + '<div class="mtotal"><span>Balance to pay</span><span style="color:#a82a1c">' + inr(sum) + '</span></div>';
+}
+function bigPay(){
+  const idx = ORD.map((o, i) => payable(o) ? i : -1).filter((i) => i >= 0);
+  if (idx.length === 1) openModal(payHtml(ORD[idx[0]]));
+  else openModal(modalDue("What would you like to pay for?"));
+}
+
+/* ---------- the page ---------- */
 function payPill(o){
-  if (o.status === "Cancelled") return "";
-  if (!(o.total > 0)) return "";
+  if (o.status === "Cancelled" || !(o.total > 0)) return "";
   if (o.balance <= 0) return '<span class="pl ok">Paid in full</span>';
   return o.received > 0 ? '<span class="pl warn">Part paid</span>' : '<span class="pl bad">Payment pending</span>';
 }
-function lotCard(o, it){
+function lotCard(o, it, oi, ii){
   const cancelled = o.status === "Cancelled";
   const title = it.lotNo ? "Lot " + esc(it.lotNo) : esc(it.name);
   const sub = [it.lotNo ? esc(it.name) : "", it.qty ? esc(it.qty) : "", esc(fmtDate(o.orderDate))].filter(Boolean).join(" &middot; ");
@@ -295,28 +446,63 @@ function lotCard(o, it){
     more = totals + payBlock + del;
   }
   const links = [];
-  if (o.payActive && o.orderToken && !cancelled) links.push('<a class="go" href="order.html?o=' + esc(o.orderToken) + '#pay">Make a payment</a>');
+  if (payable(o)) links.push('<a class="go" href="#" data-order="' + oi + '">Pay now</a>');
   if (o.orderToken) links.push('<a href="order.html?o=' + esc(o.orderToken) + '">Open full order</a>');
   const ask = "Hello AK Brands Marketing, I have a question about " + (it.lotNo ? "Lot " + it.lotNo + ", " : "") + "order " + o.orderNo + ".";
   links.push('<a href="https://wa.me/' + WA + '?text=' + encodeURIComponent(ask) + '">Ask about this lot</a>');
-  return '<details class="oc"><summary><div class="r1"><span class="lotno">' + title + '</span><span>' + (cancelled || !it.amount ? "" : inr(it.amount)) + '</span></div>' +
+  return '<details class="oc" id="lot-' + oi + '-' + ii + '"><summary><div class="r1"><span class="lotno">' + title + '</span><span>' + (cancelled || !it.amount ? "" : inr(it.amount)) + '</span></div>' +
     '<div class="r2">' + sub + '</div>' +
-    '<div class="pills"><span class="pl ' + stCls + '">' + esc(o.status) + '</span>' + payPill(o) + '</div></summary>' +
+    '<div class="pills"><div><span class="pl ' + stCls + '">' + esc(o.status) + '</span>' + payPill(o) + '</div>' + (payable(o) ? '<button type="button" class="paysm" data-order="' + oi + '">Pay now</button>' : '') + '</div></summary>' +
     '<div class="inner">' + body + more + '<div class="btnrow">' + links.join("") + '</div></div></details>';
 }
 function render(v){
-  const list = v.orders || [], live = list.filter((o) => o.status !== "Cancelled");
+  ORD = v.orders || [];
+  const live = ORD.filter((o) => o.status !== "Cancelled");
   const total = live.reduce((a, o) => a + (Number(o.total) || 0), 0), paid = live.reduce((a, o) => a + (Number(o.received) || 0), 0), due = live.reduce((a, o) => a + (Number(o.balance) || 0), 0);
   const lotsList = [];
-  list.forEach((o) => { (o.items && o.items.length ? o.items : [{ name: "Order" }]).forEach((it) => lotsList.push(lotCard(o, it))); });
+  ORD.forEach((o, oi) => { (o.items && o.items.length ? o.items : [{ name: "Order" }]).forEach((it, ii) => lotsList.push(lotCard(o, it, oi, ii))); });
+  const canPay = ORD.some(payable);
   $("app").innerHTML =
-    '<div class="ov-top"><div class="small">' + esc(v.customerName || "Your account") + '</div><h1>Your orders</h1><div class="meta"><span>' + lotsList.length + (lotsList.length === 1 ? " lot" : " lots") + '</span><span>' + list.length + (list.length === 1 ? " order" : " orders") + '</span></div></div>' +
-    '<div class="tiles3"><div class="tl"><small>Total ordered</small><b>' + inr(total) + '</b></div><div class="tl"><small>Paid so far</small><b>' + inr(paid) + '</b></div><div class="tl"><small>Balance to pay</small><b>' + inr(due) + '</b></div></div>' +
+    '<div class="ov-top"><div class="small">' + esc(v.customerName || "Your account") + '</div><h1>Your orders</h1><div class="meta"><span>' + lotsList.length + (lotsList.length === 1 ? " lot" : " lots") + '</span><span>' + ORD.length + (ORD.length === 1 ? " order" : " orders") + '</span></div></div>' +
+    '<div class="tiles3"><button type="button" class="tl" data-tile="total"><small>Total ordered</small><b>' + inr(total) + '</b><span class="go">Tap to see</span></button>' +
+    '<button type="button" class="tl paid" data-tile="paid"><small>Paid so far</small><b>' + inr(paid) + '</b><span class="go">Tap to see</span></button>' +
+    '<button type="button" class="tl due' + (due > 0 ? '' : ' zero') + '" data-tile="due"><small>Balance to pay</small><b>' + inr(due) + '</b><span class="go">Tap to see</span></button></div>' +
+    (canPay ? '<button type="button" class="paybig" data-payall="1">Pay now<small>Balance ' + inr(due) + '</small></button>' : '') +
     (lotsList.length ? '<p class="note2" style="margin:.2rem 0 0">Newest booking first. Tap a lot to see its details.</p>' + lotsList.join("") : '<div class="state"><strong>No orders yet</strong>Your orders will appear here.</div>') +
     '<p class="note2">Tax invoices and other documents are shared with you personally by AK Brands Marketing. This page updates by itself.</p>' +
     '<a class="cta" href="https://wa.me/' + WA + '?text=' + encodeURIComponent("Hello AK Brands Marketing, I have a question about my orders.") + '">Questions? Message us on WhatsApp</a>';
   document.title = "Your orders | AK Brands Marketing";
 }
+
+document.addEventListener("click", (e) => {
+  const t = e.target; if (!t || !t.closest) return;
+  if (md && !t.closest("#menuBtn")) md.classList.remove("show");
+  if (t.id === "modal") { closeModal(); return; }
+  if (t.closest("[data-close]")) { closeModal(); return; }
+  const cpy = t.closest("[data-copy]");
+  if (cpy) { const val = cpy.getAttribute("data-copy"), done = (ok) => { cpy.textContent = ok ? "Copied" : "Press and hold the text to copy"; }; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(val).then(() => done(true), () => done(false)); else done(false); return; }
+  const chip = t.closest("[data-amt]");
+  if (chip && PAY) {
+    PAY.sel = chip.getAttribute("data-amt");
+    Array.prototype.forEach.call($("sheet").querySelectorAll("[data-amt]"), (b) => b.classList.toggle("on", b === chip));
+    const other = PAY.sel === "o";
+    if ($("otherBox")) $("otherBox").classList.toggle("hidden", !other);
+    if (other) { const r = parseAmount($("payOther") ? $("payOther").value : "", PAY.ch.bal); PAY.amt = r.amt; if ($("payErr")) $("payErr").textContent = r.err; if ($("payOther")) $("payOther").focus(); }
+    else { PAY.amt = Number(chip.getAttribute("data-v")) || 0; if ($("payErr")) $("payErr").textContent = ""; }
+    applyPay(); return;
+  }
+  const po = t.closest("[data-order]");
+  if (po) { if (e.preventDefault) e.preventDefault(); const o = ORD[Number(po.getAttribute("data-order"))]; if (o && payable(o)) openModal(payHtml(o)); return; }
+  if (t.closest("[data-payall]")) { bigPay(); return; }
+  const tile = t.closest("[data-tile]");
+  if (tile) { const k = tile.getAttribute("data-tile"); openModal(k === "total" ? modalTotal() : (k === "paid" ? modalPaid() : modalDue())); return; }
+  const go = t.closest("[data-goto]");
+  if (go) { const id = go.getAttribute("data-goto"); closeModal(); const d = $(id); if (d) { d.open = true; if (d.scrollIntoView) d.scrollIntoView({ behavior: "smooth", block: "start" }); } }
+});
+document.addEventListener("input", (e) => {
+  if (!PAY || !e.target || e.target.id !== "payOther") return;
+  const r = parseAmount(e.target.value, PAY.ch.bal); PAY.amt = r.amt; if ($("payErr")) $("payErr").textContent = r.err; applyPay();
+});
 
 /* Only the last 24 characters (the secret code) are used. The name in front is just a label. */
 const mm = String(location.search || "").replace(/^\?/, "").match(/(?:^|[-_=])([A-Za-z0-9]{24})$/);
