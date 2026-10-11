@@ -204,6 +204,10 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
       <button class="primary" id="newBtn" type="button">New order</button>
       <label for="search">Search everything</label>
       <input id="search" type="search" placeholder="Order no, customer, supplier, product, city, LR number">
+      <div class="chips" id="viewMode" aria-label="How to show the list" style="margin-top:.8rem">
+        <button type="button" data-mode="customer">By customer</button>
+        <button type="button" data-mode="order">By order</button>
+      </div>
       <div class="chips" id="quick" aria-label="Quick filters">
         <button type="button" data-quick="all">All</button>
         <button type="button" data-quick="owes">Customer owes</button>
@@ -333,6 +337,9 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
         <div><label for="d_expectedDate">Expected delivery date</label><input id="d_expectedDate" type="date" data-sec="delivery" data-k="expectedDate"></div>
         <div></div>
       </div>
+      <label for="d_trackUrl">Tracking link <span class="hint">(the transporter's website page, optional)</span></label>
+      <input id="d_trackUrl" type="url" inputmode="url" placeholder="https://..." data-sec="delivery" data-k="trackUrl">
+      <p class="hint">The customer sees a <b>Track your parcel</b> button. Paste the full link, starting with https://</p>
       <div class="two">
         <div><label for="f_amount">Freight amount (&#8377;)</label><input id="f_amount" type="text" inputmode="decimal" data-sec="freight" data-k="amount"></div>
         <div><label for="f_mode">Freight is</label><select id="f_mode" data-sec="freight" data-k="mode"></select></div>
@@ -434,8 +441,25 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
         <div><label for="rc_date">Date</label><input id="rc_date" type="date"></div>
         <div><label for="rc_ref">Reference <span class="hint">(optional)</span></label><input id="rc_ref" type="text" placeholder="UPI ref, cheque no."></div>
       </div>
+      <label for="rc_file">Payment screenshot <span class="hint">(optional, from your phone)</span></label>
+      <input id="rc_file" type="file" accept="image/*,application/pdf">
       <button class="docbtn" type="button" id="rcAdd">Add this payment to the order</button>
       <button class="small" type="button" id="rcBalance">Fill the balance due</button>
+    </section>
+
+    <section class="panel">
+      <h2>7d. Bilty and payment screenshots</h2>
+      <p class="hint">Attach the transporter's Bilty / LR copy, a payment screenshot, or any other paper to this order. Photos are shrunk automatically. PDFs can be up to about 2.5 MB. Files you switch on show on the customer's order page and account page.</p>
+      <p class="hint" style="color:#8a2f2f"><b>Check a Bilty before you show it.</b> The sender (consignor) on it can show your supplier's name and address. Use View to look at it first, then switch it on.</p>
+      <div class="two">
+        <div><label for="fl_kind">What is it?</label><select id="fl_kind"></select></div>
+        <div><label for="fl_label">Name the customer sees</label><input id="fl_label" type="text" maxlength="60"></div>
+      </div>
+      <label for="fl_file">Choose the photo or PDF</label>
+      <input id="fl_file" type="file" accept="image/*,application/pdf">
+      <label class="chk"><input type="checkbox" id="fl_show">Show it to the customer</label>
+      <button class="docbtn" type="button" id="fl_add">Attach to this order</button>
+      <div id="flList"></div>
     </section>
 
     <section class="panel">
@@ -690,6 +714,46 @@ function resultTotals(list){
   });
   return t;
 }
+/* ---------- By customer: one row per customer, tap for every lot they booked ---------- */
+const groupKeyOf = (o) => normPhone(o.customer.phone) || ("n:" + String(o.customer.name || o.customer.firm || "").trim().toLowerCase());
+const lotCount = (list) => list.reduce((a, o) => a + (o.items || []).filter((x) => x.name && x.name.trim()).length, 0);
+const newestFirst = (a, b) => String(b.orderDate || "").localeCompare(String(a.orderDate || "")) || String(b.orderNo).localeCompare(String(a.orderNo));
+function groupOrders(list){
+  const map = new Map();
+  list.forEach((o) => { const k = groupKeyOf(o); if (!map.has(k)) map.set(k, { key: k, orders: [] }); map.get(k).orders.push(o); });
+  const groups = Array.from(map.values());
+  groups.forEach((g) => { g.orders.sort(newestFirst); g.latest = g.orders[0]; });
+  groups.sort((a, b) => newestFirst(a.latest, b.latest));
+  return groups;
+}
+function customerCardHtml(g){
+  const o = g.latest, t = resultTotals(g.orders), n = g.orders.length, lots = lotCount(g.orders);
+  const name = o.customer.name || o.customer.firm || prettyPhone(o.customer.phone) || "No name";
+  const sub = [o.customer.name && o.customer.firm ? o.customer.firm : "", o.customer.phone ? prettyPhone(o.customer.phone) : "", o.customer.city].filter(Boolean).join(" \u00B7 ");
+  return '<div class="ocard" data-cust="' + esc(g.key) + '"><h3><span>' + esc(name) + '</span><span>' + (t.payable ? inr(t.payable) : "") + '</span></h3>' +
+    '<p>' + esc(sub) + '</p>' +
+    '<div><span class="pill">' + n + (n === 1 ? " order" : " orders") + '</span><span class="pill">' + lots + (lots === 1 ? " lot" : " lots") + '</span><span class="pill ' + (t.balance > 0 ? "bad" : "ok") + '">' + (t.balance > 0 ? "Balance due " + inr(t.balance) : "No balance due") + '</span></div>' +
+    '<p>Last booking ' + esc(fmtDate(o.orderDate)) + ' &middot; Received ' + inr(t.received) + (t.supDue > 0 ? ' &middot; You owe suppliers ' + inr(t.supDue) : '') + ' &middot; Profit ' + inr(t.profit) + '</p></div>';
+}
+function customerOrderRowHtml(o){
+  const c = calc(o);
+  const lines = (o.items || []).filter((x) => x.name && x.name.trim()).map((x) => '<span class="r2">' + (x.lotNo ? "Lot " + esc(x.lotNo) + " &middot; " : "") + esc(plain(x.name)) + (num(x.qty) ? " &middot; " + esc(String(x.qty)) + " " + esc(x.unit || "Pcs") : "") + (rateText(x, "\u20B9") ? " &middot; " + esc(rateText(x, "\u20B9")) : "") + '</span>').join("");
+  const sup = c.sup ? " &middot; Supplier: " + esc(c.supStatus) + " &middot; Profit " + inr(c.profit) : "";
+  return '<button type="button" class="drow" data-open="' + esc(o.orderNo) + '"><span class="r1"><span>' + esc(o.orderNo) + ' &middot; ' + esc(fmtDate(o.orderDate)) + '</span><span>' + (c.payable ? inr(c.payable) : "") + '</span></span>' + (lines || '<span class="r2">No products yet</span>') +
+    '<span class="r2"><b>' + esc(o.status) + '</b> &middot; Customer: ' + esc(c.payStatus) + (c.balance > 0 ? " &middot; Balance " + inr(c.balance) : "") + sup + (o.delivery.lr ? " &middot; LR " + esc(o.delivery.lr) : "") + '</span></button>';
+}
+function customerDetailHtml(key){
+  const mine = orders.filter((o) => groupKeyOf(o) === key).sort(newestFirst);
+  if (!mine.length) return '<p class="hint">No orders found for this customer.</p>';
+  const o = mine[0], t = resultTotals(mine), cu = o.customer;
+  const name = cu.name || cu.firm || prettyPhone(cu.phone) || "No name";
+  const sub = [cu.name && cu.firm ? cu.firm : "", cu.phone ? prettyPhone(cu.phone) : "", cu.city, cu.state].filter(Boolean).join(" \u00B7 ");
+  const tile = (a, b, cls) => '<div class="tile ' + (cls || "") + '"><small>' + a + '</small><b>' + b + '</b></div>';
+  return '<h2>' + esc(name) + '</h2><p class="hint">' + esc(sub) + '</p>' +
+    '<div class="tiles" style="margin-top:.6rem">' + tile("Orders and lots", mine.length + " &middot; " + lotCount(mine)) + tile("Total ordered", inr(t.payable)) + tile("Received", inr(t.received)) + tile("Customer owes", inr(t.balance)) + tile("You owe suppliers", inr(t.supDue), "priv") + tile("Profit", inr(t.profit), "priv") + '</div>' +
+    '<button type="button" class="small" data-newfor="' + esc(key) + '" style="margin-top:.8rem">New order for this customer</button>' +
+    '<p class="hint" style="margin-top:1rem">Newest booking first. Tap an order to open it.</p>' + mine.map(customerOrderRowHtml).join("");
+}
 function resultBarHtml(list){
   const t = resultTotals(list);
   if (!t.n) return "<div><b>No orders match.</b></div>";
@@ -710,7 +774,7 @@ $("r_gstMode").innerHTML = gstOpts; $("b_gstMode").innerHTML = gstOpts;
 let linkPairs = [];
 let linkIndex = buildLinkIndex([], []);
 const rebuildLinks = () => { linkIndex = buildLinkIndex(orders, linkPairs); };
-function withPay(o){ o.payRequest = Object.assign({ amount: "", kind: "Token", active: false, accountId: "main", flex: true }, o.payRequest || {}); return o; }
+function withPay(o){ o.payRequest = Object.assign({ amount: "", kind: "Token", active: false, accountId: "main", flex: true }, o.payRequest || {}); o.files = Array.isArray(o.files) ? o.files : []; return o; }
 let state = withPay(newOrder());
 let orders = [];
 let lots = [];
@@ -742,7 +806,7 @@ async function loadAll(){
       getDocs(collection(db, "lots")),
       getDoc(doc(db, "settings", "doclinks"))
     ]);
-    orders = o.docs.map((d) => { const x = fromDoc(d.id, d.data()); x.payRequest = d.data().payRequest || null; return withPay(x); });
+    orders = o.docs.map((d) => { const x = fromDoc(d.id, d.data()); x.payRequest = d.data().payRequest || null; x.files = d.data().files || []; return withPay(x); });
     customers = {}; c.docs.forEach((d) => { customers[d.id] = d.data(); });
     lots = l.docs.map((d) => Object.assign({ id: d.id }, d.data()));
     linkPairs = lk.exists() && Array.isArray(lk.data().pairs) ? lk.data().pairs.slice() : [];
@@ -774,13 +838,21 @@ function detailHtml(d){
 }
 function showDetail(kind){
   lastDetail = kind;
-  $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
+  $("detailBody").innerHTML = kind.indexOf("cust:") === 0 ? customerDetailHtml(kind.slice(5)) : detailHtml(tileDetail(kind, orders));
   $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); $("detailView").classList.remove("hidden");
   window.scrollTo(0, 0);
 }
 $("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) showDetail(b.getAttribute("data-tile")); });
 $("detailBack").addEventListener("click", () => showList());
-$("detailBody").addEventListener("click", (e) => { const r = e.target.closest("[data-open]"); if (r) openOrderByNo(r.getAttribute("data-open")); });
+$("detailBody").addEventListener("click", (e) => {
+  const nf = e.target.closest("[data-newfor]");
+  if (nf) {
+    const latest = orders.filter((o) => groupKeyOf(o) === nf.getAttribute("data-newfor")).sort(newestFirst)[0], o = freshOrder();
+    if (latest) o.customer = Object.assign(o.customer, JSON.parse(JSON.stringify(latest.customer)));
+    openForm(o, null); return;
+  }
+  const r = e.target.closest("[data-open]"); if (r) openOrderByNo(r.getAttribute("data-open"));
+});
 const FIELD_IDS = { q: "search", customer: "fCustomer", supplier: "fSupplier", status: "statusFilter", pay: "fPay", sup: "fSup", ship: "fShip", docs: "fDocs", city: "fCity", product: "fProduct", from: "fFrom", to: "fTo", sort: "fSort" };
 function readFilters(){
   const f = {};
@@ -792,12 +864,18 @@ function setFilters(obj){
   renderList();
 }
 let shown = [];
+let listMode = (function(){ try { return localStorage.getItem("ak_list_mode") === "order" ? "order" : "customer"; } catch (e) { return "customer"; } })();
+$("viewMode").addEventListener("click", (e) => { const b = e.target.closest("[data-mode]"); if (!b) return; listMode = b.getAttribute("data-mode"); try { localStorage.setItem("ak_list_mode", listMode); } catch (e2) {} renderList(); });
 function renderList(){
   renderTiles();
   const f = readFilters();
   shown = applyFilters(orders, f);
-  $("orderList").innerHTML = shown.length ? shown.map(orderCardHtml).join("") : '<p class="hint">' + (orders.length ? "No orders match these filters." : "No orders yet. Tap New order to add your first one.") + '</p>';
-  $("resultBar").innerHTML = orders.length ? resultBarHtml(shown) : "";
+  const groups = listMode === "customer" ? groupOrders(shown) : [];
+  $("orderList").innerHTML = shown.length ? (listMode === "customer" ? groups.map(customerCardHtml).join("") : shown.map(orderCardHtml).join("")) : '<p class="hint">' + (orders.length ? "No orders match these filters." : "No orders yet. Tap New order to add your first one.") + '</p>';
+  let bar = orders.length ? resultBarHtml(shown) : "";
+  if (bar && shown.length && listMode === "customer") bar = bar.replace("<div><b>", "<div><b>" + groups.length + (groups.length === 1 ? " customer" : " customers") + "</b> &middot; <b>");
+  $("resultBar").innerHTML = bar;
+  document.querySelectorAll("#viewMode button").forEach((b) => b.classList.toggle("on", b.getAttribute("data-mode") === listMode));
   const n = activeCount(f);
   $("fCount").textContent = n ? " (" + n + " active)" : "";
   document.querySelectorAll("#quick button").forEach((b) => b.classList.toggle("on", matchQuick(b.getAttribute("data-quick"), f)));
@@ -818,7 +896,10 @@ function openOrderByNo(no){
   const o = orders.find((x) => x.orderNo === no);
   if (o) openForm(JSON.parse(JSON.stringify(Object.assign({}, o, { createdAt: null }))), o.createdAt);
 }
-$("orderList").addEventListener("click", (e) => { const c = e.target.closest("[data-open]"); if (c) openOrderByNo(c.getAttribute("data-open")); });
+$("orderList").addEventListener("click", (e) => {
+  const g = e.target.closest("[data-cust]"); if (g) { showDetail("cust:" + g.getAttribute("data-cust")); return; }
+  const c = e.target.closest("[data-open]"); if (c) openOrderByNo(c.getAttribute("data-open"));
+});
 function freshOrder(){ const o = withPay(newOrder()); o.gstMode = biz.gstMode || "incl"; o.payTerms = biz.payTerms || ""; return o; }
 $("newBtn").addEventListener("click", () => openForm(freshOrder(), null));
 
@@ -972,7 +1053,7 @@ function openForm(order, createdAt){
     if (el.type === "checkbox") el.checked = val !== false; else el.value = val == null ? "" : val;
   });
   $("shipBox").classList.toggle("hidden", state.customer.shipSame !== false);
-  renderDynamic(); refresh(); renderLinks(); renderConfirm(); renderPayState(); renderCustState(); resetRecord();
+  renderDynamic(); refresh(); renderLinks(); renderConfirm(); renderPayState(); renderCustState(); resetRecord(); renderFiles(); $("fl_show").checked = false;
   $("listView").classList.add("hidden"); $("detailView").classList.add("hidden"); $("formView").classList.remove("hidden"); window.scrollTo(0, 0);
 }
 function renderDynamic(){
@@ -998,8 +1079,11 @@ function payDataFor(o, force){
   };
 }
 const payData = () => payDataFor(state, false);
+const safeUrl = (u) => { u = String(u || "").trim(); return /^https?:\/\/[^\s<>"']{4,500}$/i.test(u) ? u : ""; };
 const viewOf = (o) => {
   const v = buildOrderView(o);
+  v.delivery = Object.assign({}, v.delivery, { trackUrl: safeUrl((o.delivery || {}).trackUrl) });
+  v.files = (o.files || []).filter((f) => f.show).map((f) => ({ id: f.id, kind: f.kind, label: f.label, mime: f.mime, size: f.size, parts: f.parts }));
   v.payments = (o.payments || []).filter((p) => num(p.amount) > 0).map((p) => ({ date: p.date || "", kind: p.kind || "Part payment", amount: num(p.amount), mode: p.mode || "" }));
   return v;
 };
@@ -1084,6 +1168,82 @@ $("confStop").addEventListener("click", async () => {
     state.viewToken = ""; renderConfirm();
     show($("formMsg"), "The customer link is switched off. Tapping Send or Copy again makes a new link.", "ok");
   } catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again.", "err"); }
+});
+
+/* ---------- Bilty and payment screenshots, kept inside the database (no extra storage needed) ---------- */
+const FILE_KINDS = [["bilty", "Bilty / LR copy"], ["payment", "Payment screenshot"], ["other", "Other"]];
+const FILE_CHUNK = 700000, FILE_MAX_B64 = 3400000, FILE_MAX_COUNT = 12;
+const kindName = (k) => (FILE_KINDS.find((x) => x[0] === k) || FILE_KINDS[2])[1];
+$("fl_kind").innerHTML = FILE_KINDS.map((k) => '<option value="' + k[0] + '">' + k[1] + '</option>').join("");
+function readDataUrl(file){ return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result)); r.onerror = () => rej(new Error("read")); r.readAsDataURL(file); }); }
+async function shrinkImage(file){
+  const original = await readDataUrl(file);
+  try {
+    const bmp = await createImageBitmap(file), sc = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    const w = Math.max(1, Math.round(bmp.width * sc)), hgt = Math.max(1, Math.round(bmp.height * sc));
+    const cv = document.createElement("canvas"); cv.width = w; cv.height = hgt;
+    const cx = cv.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, w, hgt); cx.drawImage(bmp, 0, 0, w, hgt);
+    let q = 0.78, out = cv.toDataURL("image/jpeg", q);
+    while (out.length > 900000 && q > 0.4) { q -= 0.1; out = cv.toDataURL("image/jpeg", q); }
+    return out;
+  } catch (e) { return original; }
+}
+async function attachFile(opts){
+  if ((state.files || []).length >= FILE_MAX_COUNT) throw new UserError("This order already has " + FILE_MAX_COUNT + " files. Remove one first.");
+  const file = opts.file, isPdf = file.type === "application/pdf", isImg = /^image\//.test(file.type || "");
+  if (!isPdf && !isImg) throw new UserError("Please choose a photo or a PDF.");
+  const dataUrl = isImg ? await shrinkImage(file) : await readDataUrl(file);
+  const m = dataUrl.match(/^data:([^;,]+);base64,([\s\S]*)$/);
+  if (!m) throw new UserError("That file could not be read.");
+  const mime = m[1], b64 = m[2];
+  if (b64.length > FILE_MAX_B64) throw new UserError(isPdf ? "That PDF is too big (the limit is about 2.5 MB). Send a photo of it instead." : "That picture is too big. Take it again or pick a smaller one.");
+  const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; };
+  const id = makeToken(bytes, 24), parts = Math.ceil(b64.length / FILE_CHUNK), written = [];
+  try {
+    for (let i = 0; i < parts; i++) { await setDoc(doc(db, "orderViews", id + "_" + i), { type: "file", part: i, parts, mime, data: b64.slice(i * FILE_CHUNK, (i + 1) * FILE_CHUNK), createdAt: serverTimestamp() }); written.push(i); }
+  } catch (err) { for (const i of written) { try { await deleteDoc(doc(db, "orderViews", id + "_" + i)); } catch (e) {} } throw err; }
+  const entry = { id, kind: opts.kind, label: String(opts.label || "").trim().slice(0, 60) || kindName(opts.kind), name: String(file.name || "file").slice(0, 80), mime, size: Math.round(b64.length * 3 / 4), parts, show: !!opts.show, date: todayISO() };
+  state.files = (state.files || []).concat([entry]);
+  return entry;
+}
+async function removeFileDocs(f){ for (let i = 0; i < (f.parts || 0); i++) { try { await deleteDoc(doc(db, "orderViews", f.id + "_" + i)); } catch (e) { console.error(e); } } }
+function renderFiles(){
+  const list = state.files || [];
+  $("flList").innerHTML = list.length ? list.map((f) => '<div class="lnk"><span><b>' + esc(f.label) + '</b><br><small>' + esc(kindName(f.kind)) + ' &middot; ' + Math.max(1, Math.round((f.size || 0) / 1024)) + ' KB &middot; ' + (f.show ? '<b>Customer can see it</b>' : 'Hidden from the customer') + '</small></span><span><button class="link" type="button" data-fl-view="' + esc(f.id) + '">View</button> <button class="link" type="button" data-fl-show="' + esc(f.id) + '">' + (f.show ? "Hide" : "Show") + '</button> <button class="link" type="button" data-fl-del="' + esc(f.id) + '">Remove</button></span></div>').join("") : '<p class="hint">No files attached yet.</p>';
+}
+$("fl_kind").addEventListener("change", () => { $("fl_show").checked = $("fl_kind").value !== "bilty"; });
+async function afterFileChange(text){
+  try { await persistOrder(); renderFiles(); loadAll(); show($("formMsg"), text, "ok"); }
+  catch (err) { if (!(err instanceof UserError)) console.error(err); show($("formMsg"), err instanceof UserError ? err.message : "That did not save. Check your connection and try again.", "err"); }
+}
+$("fl_add").addEventListener("click", async () => {
+  hideMsg($("formMsg"));
+  const file = ($("fl_file").files || [])[0];
+  if (!file) { show($("formMsg"), "Choose a photo or PDF first.", "err"); return; }
+  const b = $("fl_add"); b.disabled = true;
+  try {
+    await attachFile({ kind: $("fl_kind").value, label: $("fl_label").value, show: $("fl_show").checked, file });
+    $("fl_file").value = ""; $("fl_label").value = "";
+    await afterFileChange("File attached and saved." + ($("fl_show").checked ? " The customer can see it." : " It is hidden from the customer until you tap Show."));
+  } catch (err) { if (!(err instanceof UserError)) console.error(err); show($("formMsg"), err instanceof UserError ? err.message : "The file did not save. Check your connection and try again.", "err"); }
+  finally { b.disabled = false; }
+});
+$("flList").addEventListener("click", async (e) => {
+  const v = e.target.closest("[data-fl-view]"), s = e.target.closest("[data-fl-show]"), d = e.target.closest("[data-fl-del]");
+  const find = (id) => (state.files || []).find((f) => f.id === id);
+  if (v) {
+    const f = find(v.getAttribute("data-fl-view")); if (!f) return;
+    try {
+      const chunks = []; for (let i = 0; i < f.parts; i++) { const sn = await getDoc(doc(db, "orderViews", f.id + "_" + i)); if (!sn.exists()) throw new Error("missing part"); chunks.push(sn.data().data); }
+      const bin = atob(chunks.join("")), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+      const url = URL.createObjectURL(new Blob([u8], { type: f.mime })), a = document.createElement("a"); a.href = url; a.target = "_blank"; a.rel = "noopener"; a.click();
+    } catch (err) { console.error(err); show($("formMsg"), "The file could not be opened. Please try again.", "err"); }
+  }
+  if (s) { const f = find(s.getAttribute("data-fl-show")); if (!f) return; f.show = !f.show; await afterFileChange(f.show ? "The customer can now see: " + f.label : "Hidden from the customer: " + f.label); }
+  if (d) {
+    const f = find(d.getAttribute("data-fl-del")); if (!f || !confirm("Remove " + f.label + "? This cannot be undone.")) return;
+    await removeFileDocs(f); state.files = state.files.filter((x) => x.id !== f.id); await afterFileChange("File removed.");
+  }
 });
 
 /* ---------- Customer account link: one page with all of this customer's orders ---------- */
@@ -1240,15 +1400,22 @@ $("payFillBal").addEventListener("click", () => { const c = calc(state); state.p
 $("rc_mode").innerHTML = opts(PAY_MODES, "UPI");
 function resetRecord(){ $("rc_amount").value = ""; $("rc_ref").value = ""; $("rc_date").value = todayISO(); $("rc_mode").value = "UPI"; }
 $("rcBalance").addEventListener("click", () => { $("rc_amount").value = String(Math.max(0, calc(state).balance)); });
-$("rcAdd").addEventListener("click", () => {
+$("rcAdd").addEventListener("click", async () => {
   hideMsg($("formMsg"));
   const a = num($("rc_amount").value);
   if (!(a > 0)) { show($("formMsg"), "Type the amount you received.", "err"); return; }
   const c = calc(state), mode = $("rc_mode").value || "UPI";
   const kind = a >= c.balance - 0.005 ? "Balance" : (state.payments.some((p) => num(p.amount) > 0) ? "Part payment" : "Token");
   state.payments.push({ date: $("rc_date").value || todayISO(), kind, mode, amount: String(a), ref: $("rc_ref").value.trim() });
+  const shot = ($("rc_file").files || [])[0], when = $("rc_date").value;
   resetRecord(); renderDynamic(); refresh();
-  show($("formMsg"), rs(a) + " received by " + mode + " is added under Customer payments (section 3) as " + kind + ". Tap Save order to keep it and update the customer's page.", "ok");
+  let extra = "";
+  if (shot) {
+    try { await attachFile({ kind: "payment", label: "Payment " + rs(a) + " (" + mode + (when ? ", " + fmtDate(when) : "") + ")", show: true, file: shot }); renderFiles(); extra = " The screenshot is attached and the customer can see it."; }
+    catch (err) { if (!(err instanceof UserError)) console.error(err); extra = " The screenshot was NOT attached: " + (err instanceof UserError ? err.message : "it did not save. Try again in section 7d."); }
+  }
+  $("rc_file").value = "";
+  show($("formMsg"), rs(a) + " received by " + mode + " is added under Customer payments (section 3) as " + kind + "." + extra + " Tap Save order to keep it and update the customer's page.", "ok");
 });
 $("payHide").addEventListener("click", async () => {
   if (!state.viewToken || !state.orderNo) return;
@@ -1512,7 +1679,7 @@ async function persistOrder(){
   const orderNo = isNew ? await nextOrderNo() : state.orderNo;
   const data = {
     orderDate: state.orderDate || todayISO(), status: state.status, gstMode: state.gstMode === "excl" ? "excl" : "incl",
-    payTerms: (state.payTerms || "").trim(), viewToken: state.viewToken || "", payRequest: state.payRequest, invoiceNo: state.invoiceNo || "", invoiceDate: state.invoiceDate || "", urdNo: state.urdNo || "", urdDate: state.urdDate || "",
+    payTerms: (state.payTerms || "").trim(), viewToken: state.viewToken || "", payRequest: state.payRequest, files: state.files || [], invoiceNo: state.invoiceNo || "", invoiceDate: state.invoiceDate || "", urdNo: state.urdNo || "", urdDate: state.urdDate || "",
     customer: Object.assign(clean(state.customer), { phone }),
     supplier: clean(state.supplier), items,
     freight: clean(state.freight), delivery: clean(state.delivery),
@@ -1613,7 +1780,7 @@ $("delBtn").addEventListener("click", async () => {
   if (!state.orderNo) return;
   if (state.invoiceNo || state.urdNo) { show($("formMsg"), "This order has an invoice or URD bill number, so it cannot be deleted. Change its Status to Cancelled instead. That keeps your invoice numbers complete.", "err"); return; }
   if (!confirm("Delete order " + state.orderNo + " permanently? This cannot be undone.")) return;
-  try { if (state.viewToken) await deleteDoc(doc(db, "orderViews", state.viewToken)); await deleteDoc(doc(db, "orders", state.orderNo)); await loadAll(); showList(); show($("listMsg"), "Order deleted.", "ok"); }
+  try { for (const f of (state.files || [])) await removeFileDocs(f); if (state.viewToken) await deleteDoc(doc(db, "orderViews", state.viewToken)); await deleteDoc(doc(db, "orders", state.orderNo)); await loadAll(); showList(); show($("listMsg"), "Order deleted.", "ok"); }
   catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again.", "err"); }
 });
 window.__ordersReady = true;
