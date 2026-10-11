@@ -474,9 +474,13 @@ function lotCard(o, it, oi, ii){
   if (o.orderToken) links.push('<a href="order.html?o=' + esc(o.orderToken) + '">Open full order</a>');
   const ask = "Hello AK Brands Marketing, I have a question about " + (it.lotNo ? "Lot " + it.lotNo + ", " : "") + "order " + o.orderNo + ".";
   links.push('<a href="https://wa.me/' + WA + '?text=' + encodeURIComponent(ask) + '">Ask about this lot</a>');
+  const multi = (o.items || []).filter((x) => x.name && String(x.name).trim()).length > 1;
+  const pend = !cancelled && Number(o.balance) > 0
+    ? '<div class="r2" style="margin-top:.4rem">' + (multi ? "Whole order: " : "") + (Number(o.received) > 0 ? '<b style="color:#0b6b32">Paid ' + inr(o.received) + '</b> &middot; ' : '') + '<b style="color:#a82a1c">Pending ' + inr(o.balance) + '</b></div>'
+    : "";
   return '<details class="oc" id="lot-' + oi + '-' + ii + '"><summary><div class="r1"><span class="lotno">' + title + '</span><span>' + (cancelled || !it.amount ? "" : inr(it.amount)) + '</span></div>' +
     '<div class="r2">' + sub + '</div>' +
-    '<div class="pills"><div><span class="pl ' + stCls + '">' + esc(o.status) + '</span>' + payPill(o) + '</div>' + (payable(o) ? '<button type="button" class="paysm" data-order="' + oi + '">Pay now</button>' : '') + '</div></summary>' +
+    '<div class="pills"><div><span class="pl ' + stCls + '">' + esc(o.status) + '</span>' + payPill(o) + '</div>' + (payable(o) ? '<button type="button" class="paysm" data-order="' + oi + '">Pay now</button>' : '') + '</div>' + pend + '</summary>' +
     '<div class="inner">' + body + more + '<div class="btnrow">' + links.join("") + '</div></div></details>';
 }
 function render(v){
