@@ -1171,16 +1171,9 @@ function paymentMessage(o, url, hasQr){
   });
   const balNow = Math.max(0, calc(o).balance);
   L.push("", "*" + label + " to pay - " + rs(amt) + "*");
-  if (pr.flex !== false && balNow > amt + 0.005) L.push("Full balance - " + rs(balNow), "Pay this, the full balance, or any amount you prefer.");
+  if (pr.flex !== false && balNow > amt + 0.005) L.push("You can pay this, the full balance, or any amount you prefer.");
   L.push("");
-  if (String(acct.upi || "").trim()) L.push("UPI ID - " + String(acct.upi).trim());
-  const bank = [];
-  if (acct.holder) bank.push("A/c name - " + acct.holder);
-  if (acct.acc) bank.push("A/c no - " + acct.acc);
-  if (acct.ifsc) bank.push("IFSC - " + acct.ifsc);
-  if (acct.bank || acct.branch) bank.push("Bank - " + [acct.bank, acct.branch].filter(Boolean).join(", "));
-  if (bank.length) L.push(...bank);
-  L.push("", hasQr ? "Pay online or scan the QR here:" : "Pay online here:", url + "#pay", "", "After paying, please send the screenshot here.", "", "Trusted Firm", "AK Brands Marketing\u00A9");
+  L.push(hasQr ? "Pay online or scan the QR here:" : "Pay online here:", url + "#pay", "", "After paying, please send the screenshot here.", "", "Trusted Firm", "AK Brands Marketing\u00A9");
   return L.join("\n");
 }
 function renderPayState(){
