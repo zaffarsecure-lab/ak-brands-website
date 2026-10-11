@@ -222,6 +222,7 @@ button.tl .go{display:block;font-size:.66rem;color:var(--muted);margin-top:.15re
 .oc .pills{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
 .paysm{flex:0 0 auto;font:inherit;font-weight:700;font-size:.85rem;padding:.4rem .95rem;border-radius:999px;border:0;background:#f08a24;color:#fff;cursor:pointer}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;z-index:100}
+#fmodal{z-index:120}
 .sheet{background:#fff;width:100%;max-width:560px;max-height:90vh;overflow:auto;border-radius:18px 18px 0 0;padding:1rem 1rem 1.6rem;animation:popup .22s ease-out}
 @keyframes popup{from{transform:translateY(28px) scale(.97);opacity:0}to{transform:none;opacity:1}}
 .sh-head{display:flex;justify-content:space-between;align-items:center;gap:.8rem;margin-bottom:.4rem}
@@ -281,6 +282,7 @@ button.tl .go{display:block;font-size:.66rem;color:var(--muted);margin-top:.15re
   </div>
 </footer>
 <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Details"><div class="sheet" id="sheet"></div></div>
+<div id="fmodal" class="modal hidden" role="dialog" aria-modal="true" aria-label="File"><div class="sheet" id="fsheet"></div></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
@@ -419,6 +421,27 @@ function bigPay(){
 }
 
 /* ---------- the page ---------- */
+/* ---------- tracking link and files (Bilty, payment screenshots) ---------- */
+const okId = (s) => /^[A-Za-z0-9]{24}$/.test(String(s || ""));
+const okMime = (m) => /^(image\/(jpeg|png|webp|gif)|application\/pdf)$/.test(String(m || ""));
+const okUrl = (u) => /^https?:\/\/[^\s<>"']{4,500}$/i.test(String(u || ""));
+const trackBtn = (d) => okUrl(d.trackUrl) ? '<a class="cta" href="' + esc(d.trackUrl) + '" target="_blank" rel="noopener noreferrer">Track your parcel</a>' + (d.trackCopyLr && d.lr ? '<p class="note2">On the transporter\'s page, enter your LR number <b>' + esc(d.lr) + '</b> <button type="button" class="cp" data-copy="' + esc(d.lr) + '">Copy</button></p>' : "") : "";
+const fileBtns = (list, kinds, scope) => (list || []).map((f, i) => ({ f, i })).filter((x) => kinds.indexOf(x.f.kind) >= 0 && okId(x.f.id) && okMime(x.f.mime) && x.f.parts >= 1 && x.f.parts <= 6).map((x) => '<button type="button" class="cta alt" data-file="' + scope + ':' + x.i + '">' + (x.f.kind === "bilty" ? "View " : x.f.kind === "payment" ? "View " : "Open ") + esc(x.f.label) + '</button>').join("");
+function sheetOpen(html){ $("fsheet").innerHTML = html; $("fmodal").classList.remove("hidden"); document.body.style.overflow = "hidden"; }
+function sheetClose(){ $("fmodal").classList.add("hidden"); document.body.style.overflow = ""; }
+const sheetHead = (t) => '<div class="sh-head"><h2>' + esc(t) + '</h2><button type="button" class="xbtn" data-fclose="1">Close</button></div>';
+async function openFile(f){
+  sheetOpen(sheetHead(f.label) + '<p class="note2">Loading...</p>');
+  try {
+    const parts = [];
+    for (let i = 0; i < f.parts; i++) { const s = await getDoc(doc(db, "orderViews", f.id + "_" + i)); if (!s.exists()) throw new Error("missing"); parts.push(s.data().data); }
+    const bin = atob(parts.join("")), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([u8], { type: f.mime })), isImg = /^image\//.test(f.mime);
+    const fn = String(f.label || "file").replace(/[^A-Za-z0-9._-]+/g, "-").slice(0, 50) + (isImg ? ".jpg" : ".pdf");
+    sheetOpen(sheetHead(f.label) + (isImg ? '<img src="' + url + '" alt="' + esc(f.label) + '" style="max-width:100%;border:1px solid #d8dede;border-radius:8px;margin:.4rem 0">' : '<p class="note2">Your PDF is ready.</p>') +
+      '<a class="cta" href="' + url + '" target="_blank" rel="noopener">' + (isImg ? "Open full size" : "Open the PDF") + '</a><a class="cta alt" href="' + url + '" download="' + esc(fn) + '">Save to phone</a>');
+  } catch (e) { console.error(e); sheetOpen(sheetHead(f.label) + '<p class="note2">We could not open this file right now. Please try again, or message us on WhatsApp.</p>'); }
+}
 function payPill(o){
   if (o.status === "Cancelled" || !(o.total > 0)) return "";
   if (o.balance <= 0) return '<span class="pl ok">Paid in full</span>';
@@ -439,10 +462,11 @@ function lotCard(o, it, oi, ii){
     if (o.freight) totals += row("Freight", inr(o.freight));
     totals += row("Order total", inr(o.total), "tot");
     const pays = (o.payments || []).map((p) => row(esc(p.kind) + (p.mode ? ' &middot; ' + esc(p.mode) : '') + (p.date ? ' <span style="font-weight:400;color:#5c6869">(' + esc(fmtDate(p.date)) + ')</span>' : ''), inr(p.amount))).join("");
-    const payBlock = '<div class="sec">Payments on this order</div>' + (pays || '<p class="note2" style="margin:0">No payment received yet.</p>') + row("Received so far", inr(o.received)) + row(o.balance > 0 ? "Balance to pay" : "Balance", o.balance > 0 ? inr(o.balance) : "Nil", "tot");
+    const payBlock = '<div class="sec">Payments on this order</div>' + (pays || '<p class="note2" style="margin:0">No payment received yet.</p>') + fileBtns(o.files, ["payment"], String(oi)) + row("Received so far", inr(o.received)) + row(o.balance > 0 ? "Balance to pay" : "Balance", o.balance > 0 ? inr(o.balance) : "Nil", "tot");
     const d = o.delivery || {};
-    const hasD = d.transporter || d.lr || d.dispatchDate || d.expectedDate || d.deliveredDate;
-    const del = hasD ? '<div class="sec">Delivery</div>' + (d.transporter ? row("Transport", esc(d.transporter)) : "") + (d.lr ? row("LR / tracking number", esc(d.lr)) : "") + (d.dispatchDate ? row("Dispatched on", esc(fmtDate(d.dispatchDate))) : "") + (d.expectedDate ? row("Expected delivery", esc(fmtDate(d.expectedDate))) : "") + (d.deliveredDate ? row("Delivered on", esc(fmtDate(d.deliveredDate))) : "") : "";
+    const delFiles = fileBtns(o.files, ["bilty", "other"], String(oi));
+    const hasD = d.transporter || d.lr || d.dispatchDate || d.expectedDate || d.deliveredDate || okUrl(d.trackUrl) || delFiles;
+    const del = hasD ? '<div class="sec">Delivery</div>' + (d.transporter ? row("Transport", esc(d.transporter)) : "") + (d.lr ? row("LR / tracking number", esc(d.lr)) : "") + (d.dispatchDate ? row("Dispatched on", esc(fmtDate(d.dispatchDate))) : "") + (d.expectedDate ? row("Expected delivery", esc(fmtDate(d.expectedDate))) : "") + (d.deliveredDate ? row("Delivered on", esc(fmtDate(d.deliveredDate))) : "") + trackBtn(d) + delFiles : "";
     more = totals + payBlock + del;
   }
   const links = [];
@@ -476,6 +500,9 @@ function render(v){
 
 document.addEventListener("click", (e) => {
   const t = e.target; if (!t || !t.closest) return;
+  if (t.id === "fmodal" || t.closest("[data-fclose]")) { sheetClose(); return; }
+  const fb = t.closest("[data-file]");
+  if (fb) { const parts = String(fb.getAttribute("data-file")).split(":"), o = ORD[Number(parts[0])], f = o && (o.files || [])[Number(parts[1])]; if (f && okId(f.id) && okMime(f.mime)) openFile(f); return; }
   if (md && !t.closest("#menuBtn")) md.classList.remove("show");
   if (t.id === "modal") { closeModal(); return; }
   if (t.closest("[data-close]")) { closeModal(); return; }

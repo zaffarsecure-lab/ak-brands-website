@@ -169,6 +169,9 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
         <div class="two"><div><label for="b_bankAcc">Account number</label><input id="b_bankAcc" type="text" inputmode="numeric"></div><div><label for="b_bankIfsc">IFSC</label><input id="b_bankIfsc" type="text" autocapitalize="characters"></div></div>
         <label for="b_upi">UPI ID <span class="hint">(optional)</span></label><input id="b_upi" type="text">
         <div class="two"><div><label for="b_bankMicr">MICR <span class="hint">(optional)</span></label><input id="b_bankMicr" type="text" inputmode="numeric"></div><div><label for="b_qrFile">QR picture file</label><input id="b_qrFile" type="text" placeholder="pay-qr.jpg"></div></div>
+        <label for="b_trackText" style="margin-top:1.2rem">Tracking pages by transporter</label>
+        <textarea id="b_trackText" style="min-height:90px" placeholder="Delhivery = https://.../{LR}&#10;VRL = https://..."></textarea>
+        <p class="hint">One transporter per line: Name = link. Write {LR} where the LR number goes. You do not have to fill this in: the first time you paste a full tracking link into an order, it learns the pattern and keeps it here. A link without {LR} just opens the transporter's page and shows the customer their LR number with a Copy button.</p>
         <h3 style="font-size:1rem;margin-top:1.2rem">Other payment accounts</h3>
         <p class="hint">The account above is your main account. It prints on invoices and is the usual choice for payments. Add more bank accounts or QR codes here. When you request a payment, you choose which account to use.</p>
         <div id="acctList"></div>
@@ -248,6 +251,7 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
       <datalist id="dlCustomers"></datalist><datalist id="dlSuppliers"></datalist><datalist id="dlCities"></datalist>
       <div class="resultbar" id="resultBar"></div>
       <div id="orderList" style="margin-top:.8rem"><p class="hint">Loading orders</p></div>
+      <button class="small" id="refreshAllBtn" type="button">Refresh all customer pages</button>
       <button class="small" id="csvBtn" type="button">Download all orders (CSV)</button>
       <button class="small" id="salesRegBtn" type="button">Sales register (invoices, with linked URD bill)</button>
       <button class="small" id="purRegBtn" type="button">Purchase register (URD bills, with linked invoice)</button>
@@ -339,7 +343,7 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
       </div>
       <label for="d_trackUrl">Tracking link <span class="hint">(the transporter's website page, optional)</span></label>
       <input id="d_trackUrl" type="url" inputmode="url" placeholder="https://..." data-sec="delivery" data-k="trackUrl">
-      <p class="hint">The customer sees a <b>Track your parcel</b> button. Paste the full link, starting with https://</p>
+      <p class="hint">The customer sees a <b>Track your parcel</b> button. You can leave this empty: the transporter's page is used automatically. To track one parcel directly, paste its full tracking link (starting with https://). The system learns the pattern for that transporter.</p>
       <div class="two">
         <div><label for="f_amount">Freight amount (&#8377;)</label><input id="f_amount" type="text" inputmode="decimal" data-sec="freight" data-k="amount"></div>
         <div><label for="f_mode">Freight is</label><select id="f_mode" data-sec="freight" data-k="mode"></select></div>
@@ -748,11 +752,47 @@ function customerDetailHtml(key){
   const o = mine[0], t = resultTotals(mine), cu = o.customer;
   const name = cu.name || cu.firm || prettyPhone(cu.phone) || "No name";
   const sub = [cu.name && cu.firm ? cu.firm : "", cu.phone ? prettyPhone(cu.phone) : "", cu.city, cu.state].filter(Boolean).join(" \u00B7 ");
-  const tile = (a, b, cls) => '<div class="tile ' + (cls || "") + '"><small>' + a + '</small><b>' + b + '</b></div>';
+  const tile = (k, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-ctile="' + k + '" data-ckey="' + esc(key) + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   return '<h2>' + esc(name) + '</h2><p class="hint">' + esc(sub) + '</p>' +
-    '<div class="tiles" style="margin-top:.6rem">' + tile("Orders and lots", mine.length + " &middot; " + lotCount(mine)) + tile("Total ordered", inr(t.payable)) + tile("Received", inr(t.received)) + tile("Customer owes", inr(t.balance)) + tile("You owe suppliers", inr(t.supDue), "priv") + tile("Profit", inr(t.profit), "priv") + '</div>' +
+    '<div class="tiles" style="margin-top:.6rem">' + tile("orders", "Orders and lots", mine.length + " &middot; " + lotCount(mine)) + tile("total", "Total ordered", inr(t.payable)) + tile("recv", "Received", inr(t.received)) + tile("owes", "Customer owes", inr(t.balance)) + tile("sup", "You owe suppliers", inr(t.supDue), "priv") + tile("profit", "Profit", inr(t.profit), "priv") + '</div>' +
     '<button type="button" class="small" data-newfor="' + esc(key) + '" style="margin-top:.8rem">New order for this customer</button>' +
     '<p class="hint" style="margin-top:1rem">Newest booking first. Tap an order to open it.</p>' + mine.map(customerOrderRowHtml).join("");
+}
+function customerTileHtml(key, tile){
+  const mine = orders.filter((o) => groupKeyOf(o) === key).sort(newestFirst), live = mine.filter((o) => o.status !== "Cancelled");
+  if (!mine.length) return '<p class="hint">No orders found for this customer.</p>';
+  const cu = mine[0].customer, name = cu.name || cu.firm || prettyPhone(cu.phone) || "No name";
+  const lotLines = (o) => (o.items || []).filter((x) => x.name && x.name.trim()).map((x) => '<span class="r2">' + (x.lotNo ? "Lot " + esc(x.lotNo) + " &middot; " : "") + esc(plain(x.name)) + (num(x.qty) ? " &middot; " + esc(String(x.qty)) + " " + esc(x.unit || "Pcs") : "") + (rateText(x, "\u20B9") ? " &middot; " + esc(rateText(x, "\u20B9")) : "") + '</span>').join("");
+  const row = (o, right, lines, extra) => '<button type="button" class="drow" data-open="' + esc(o.orderNo) + '"><span class="r1"><span>' + esc(o.orderNo) + ' &middot; ' + esc(fmtDate(o.orderDate)) + '</span><span>' + right + '</span></span>' + lines + '<span class="r2">' + extra + '</span></button>';
+  let title = "", totalText = "", note = "", rows = "", total = 0;
+  if (tile === "orders") {
+    title = "Orders and lots"; note = "Every order and every lot this customer has booked, newest first. Tap one to open it.";
+    totalText = mine.length + (mine.length === 1 ? " order" : " orders") + " \u00B7 " + lotCount(mine) + (lotCount(mine) === 1 ? " lot" : " lots");
+    rows = mine.map((o) => { const c = calc(o); return row(o, c.payable ? inr(c.payable) : "", lotLines(o) || '<span class="r2">No products yet</span>', "<b>" + esc(o.status) + "</b> &middot; Customer: " + esc(c.payStatus)); }).join("");
+  } else if (tile === "total") {
+    title = "Total ordered"; note = "Cancelled orders are left out. Tap an order to open it.";
+    rows = live.map((o) => { const c = calc(o); total += c.payable; return row(o, inr(c.payable), lotLines(o), esc(o.status)); }).join(""); totalText = inr(total);
+  } else if (tile === "recv") {
+    title = "Received"; note = "Every payment from this customer, newest first. Tap one to open its order.";
+    const pays = []; live.forEach((o) => (o.payments || []).filter((p) => num(p.amount) > 0).forEach((p) => pays.push({ o, p })));
+    pays.sort((a, b) => String(b.p.date || "").localeCompare(String(a.p.date || "")));
+    rows = pays.map((x) => { total += num(x.p.amount); return row(x.o, inr(num(x.p.amount)), '<span class="r2"><b>' + esc(x.p.kind || "Payment") + '</b>' + (x.p.mode ? " &middot; " + esc(x.p.mode) : "") + (x.p.date ? " &middot; " + esc(fmtDate(x.p.date)) : "") + '</span>', "Order " + esc(x.o.orderNo)); }).join("");
+    totalText = inr(total); if (!pays.length) rows = '<p class="hint">Nothing received yet.</p>';
+  } else if (tile === "owes") {
+    title = "Customer owes"; note = "Orders with a balance, largest first. Tap one to open it.";
+    const list = live.filter((o) => calc(o).balance > 0).sort((a, b) => calc(b).balance - calc(a).balance);
+    rows = list.map((o) => { const c = calc(o); total += c.balance; return row(o, inr(c.balance), lotLines(o), "Total " + inr(c.payable) + " &middot; Received " + inr(c.received) + " &middot; <b>Balance " + inr(c.balance) + "</b>"); }).join("");
+    totalText = inr(total); if (!list.length) rows = '<p class="hint">Nothing is owed. All paid.</p>';
+  } else if (tile === "sup") {
+    title = "You owe suppliers"; note = "Private. Orders where a supplier is still to be paid. Tap one to open it.";
+    const list = live.filter((o) => calc(o).supDue > 0).sort((a, b) => calc(b).supDue - calc(a).supDue);
+    rows = list.map((o) => { const c = calc(o); total += c.supDue; return row(o, inr(c.supDue), lotLines(o), "Supplier " + esc((o.supplier && o.supplier.name) || "not named") + " &middot; Total " + inr(c.sup) + " &middot; Paid " + inr(c.sup - c.supDue) + " &middot; <b>Due " + inr(c.supDue) + "</b>"); }).join("");
+    totalText = inr(total); if (!list.length) rows = '<p class="hint">No supplier payment is due for this customer.</p>';
+  } else {
+    title = "Profit"; note = "Private. Worked out on the value before GST. Tap an order to open it.";
+    rows = live.map((o) => { const c = calc(o); total += c.profit; return row(o, inr(c.profit), lotLines(o), c.sup ? "Margin " + r2(c.margin) + "%" : "No supplier cost entered"); }).join(""); totalText = inr(total);
+  }
+  return '<button type="button" class="link" data-back-cust="' + esc(key) + '">&larr; Back to ' + esc(name) + '</button><h2 style="margin-top:.6rem">' + esc(title) + '</h2><div class="bigtot">' + totalText + '</div><p class="hint">' + esc(note) + '</p>' + rows;
 }
 function resultBarHtml(list){
   const t = resultTotals(list);
@@ -764,8 +804,8 @@ function resultBarHtml(list){
 /*LOGIC-END*/
 
 /* ---------- State ---------- */
-const BIZ_FIELDS = ["name", "address", "city", "pincode", "state", "gstin", "pan", "phone", "email", "bankHolder", "bankName", "bankAcc", "bankIfsc", "bankBranch", "upi", "invPrefix", "urdPrefix", "payTerms", "gstMode", "terms", "signatory", "supCustPhone", "supFromPhone", "bankMicr", "qrFile"];
-const defaultBiz = () => ({ name: "AK Brands Marketing", address: "", city: "", pincode: "", state: "Karnataka", gstin: "", pan: "", phone: "+91 86605 02217", email: "abdul@akbrandsmarketing.com", bankHolder: "", bankName: "", bankAcc: "", bankIfsc: "", bankBranch: "", upi: "", invPrefix: "AKB", urdPrefix: "URD", payTerms: "30% advance, 70% balance after packing video", gstMode: "incl", terms: DEFAULT_TERMS, signatory: "Authorised Signatory", supCustPhone: SUP_CUST_PHONE, supFromPhone: SUP_FROM_PHONE, bankMicr: "", qrFile: "pay-qr.jpg", accounts: [] });
+const BIZ_FIELDS = ["name", "address", "city", "pincode", "state", "gstin", "pan", "phone", "email", "bankHolder", "bankName", "bankAcc", "bankIfsc", "bankBranch", "upi", "invPrefix", "urdPrefix", "payTerms", "gstMode", "terms", "signatory", "supCustPhone", "supFromPhone", "bankMicr", "qrFile", "trackText"];
+const defaultBiz = () => ({ name: "AK Brands Marketing", address: "", city: "", pincode: "", state: "Karnataka", gstin: "", pan: "", phone: "+91 86605 02217", email: "abdul@akbrandsmarketing.com", bankHolder: "", bankName: "", bankAcc: "", bankIfsc: "", bankBranch: "", upi: "", invPrefix: "AKB", urdPrefix: "URD", payTerms: "30% advance, 70% balance after packing video", gstMode: "incl", terms: DEFAULT_TERMS, signatory: "Authorised Signatory", supCustPhone: SUP_CUST_PHONE, supFromPhone: SUP_FROM_PHONE, bankMicr: "", qrFile: "pay-qr.jpg", trackText: "", accounts: [] });
 let biz = defaultBiz();
 const stateOpts = '<option value="">Choose state</option>' + STATES.map((x) => '<option>' + esc(x[0]) + '</option>').join("");
 const gstOpts = Object.keys(GST_MODES).map((k) => '<option value="' + k + '">' + esc(GST_MODES[k]) + '</option>').join("");
@@ -838,13 +878,16 @@ function detailHtml(d){
 }
 function showDetail(kind){
   lastDetail = kind;
-  $("detailBody").innerHTML = kind.indexOf("cust:") === 0 ? customerDetailHtml(kind.slice(5)) : detailHtml(tileDetail(kind, orders));
+  if (kind.indexOf("cust:") === 0) { const rest = kind.slice(5), cut = rest.lastIndexOf("|"); $("detailBody").innerHTML = cut > 0 ? customerTileHtml(rest.slice(0, cut), rest.slice(cut + 1)) : customerDetailHtml(rest); }
+  else $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
   $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); $("detailView").classList.remove("hidden");
   window.scrollTo(0, 0);
 }
 $("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) showDetail(b.getAttribute("data-tile")); });
 $("detailBack").addEventListener("click", () => showList());
 $("detailBody").addEventListener("click", (e) => {
+  const ct = e.target.closest("[data-ctile]"); if (ct) { showDetail("cust:" + ct.getAttribute("data-ckey") + "|" + ct.getAttribute("data-ctile")); return; }
+  const bc = e.target.closest("[data-back-cust]"); if (bc) { showDetail("cust:" + bc.getAttribute("data-back-cust")); return; }
   const nf = e.target.closest("[data-newfor]");
   if (nf) {
     const latest = orders.filter((o) => groupKeyOf(o) === nf.getAttribute("data-newfor")).sort(newestFirst)[0], o = freshOrder();
@@ -1079,10 +1122,39 @@ function payDataFor(o, force){
   };
 }
 const payData = () => payDataFor(state, false);
+/* ---------- Tracking pages: from the transporter name and LR number, learned from his own links ---------- */
+const BUILTIN_TRACKERS = [{ name: "delhivery", url: "https://www.delhivery.com/" }];
+function parseTrackers(text){
+  return String(text || "").split(/\r?\n/).map((line) => { const m = line.match(/^\s*([^=|]+?)\s*[=|]\s*(https?:\/\/\S+)\s*$/i); return m ? { name: m[1].trim().toLowerCase(), url: m[2].trim() } : null; }).filter(Boolean);
+}
+function trackInfo(o){
+  const d = o.delivery || {}, lr = String(d.lr || "").trim(), manual = safeUrl(d.trackUrl);
+  if (manual) return { url: manual, copyLr: false };
+  const t = String(d.transporter || "").trim().toLowerCase(); if (!t) return { url: "", copyLr: false };
+  const hit = parseTrackers(biz.trackText).concat(BUILTIN_TRACKERS).find((x) => x.name && (t.indexOf(x.name) >= 0 || (t.length >= 4 && x.name.indexOf(t) >= 0)));
+  if (!hit) return { url: "", copyLr: false };
+  if (hit.url.indexOf("{LR}") >= 0) return lr ? { url: safeUrl(hit.url.split("{LR}").join(encodeURIComponent(lr))), copyLr: false } : { url: "", copyLr: false };
+  return { url: safeUrl(hit.url), copyLr: !!lr };
+}
+let learnedTracker = "";
+async function learnTracker(){
+  learnedTracker = "";
+  const d = state.delivery || {}, url = safeUrl(d.trackUrl), lr = String(d.lr || "").trim(), name = String(d.transporter || "").trim();
+  if (!url || lr.length < 5 || !name) return;
+  const at = url.toLowerCase().indexOf(lr.toLowerCase()); if (at < 0) return;
+  if (parseTrackers(biz.trackText).some((x) => name.toLowerCase().indexOf(x.name) >= 0 && x.url.indexOf("{LR}") >= 0)) return;
+  const template = url.slice(0, at) + "{LR}" + url.slice(at + lr.length);
+  const line = name + " = " + template;
+  biz.trackText = (String(biz.trackText || "").trim() ? String(biz.trackText).trim() + "\n" : "") + line;
+  await setDoc(doc(db, "settings", "business"), { trackText: biz.trackText }, { merge: true });
+  if ($("b_trackText")) $("b_trackText").value = biz.trackText;
+  learnedTracker = name;
+}
 const safeUrl = (u) => { u = String(u || "").trim(); return /^https?:\/\/[^\s<>"']{4,500}$/i.test(u) ? u : ""; };
 const viewOf = (o) => {
   const v = buildOrderView(o);
-  v.delivery = Object.assign({}, v.delivery, { trackUrl: safeUrl((o.delivery || {}).trackUrl) });
+  const ti = trackInfo(o);
+  v.delivery = Object.assign({}, v.delivery, { trackUrl: ti.url, trackCopyLr: ti.copyLr });
   v.files = (o.files || []).filter((f) => f.show).map((f) => ({ id: f.id, kind: f.kind, label: f.label, mime: f.mime, size: f.size, parts: f.parts }));
   v.payments = (o.payments || []).filter((p) => num(p.amount) > 0).map((p) => ({ date: p.date || "", kind: p.kind || "Part payment", amount: num(p.amount), mode: p.mode || "" }));
   return v;
@@ -1694,18 +1766,29 @@ async function persistOrder(){
   ["name", "firm", "city", "state", "gstin", "address"].forEach((k) => { if (c[k]) cu[k] = c[k]; }); /* blanks never erase a saved customer */
   await setDoc(doc(db, "customers", phone), cu, { merge: true });
   state.orderNo = orderNo;
+  try { await learnTracker(); } catch (e) { console.error(e); }
   try { await refreshCustomerView(phone); } catch (e) { console.error(e); }
   if (state.viewToken) await setDoc(doc(db, "orderViews", state.viewToken), viewData());
   $("formTitle").textContent = "Order " + orderNo; $("delBtn").classList.remove("hidden");
   return orderNo;
 }
+$("refreshAllBtn").addEventListener("click", async () => {
+  hideMsg($("listMsg")); const b = $("refreshAllBtn"); b.disabled = true;
+  try {
+    let n = 0, m = 0;
+    for (const o of orders) { if (o.viewToken) { await setDoc(doc(db, "orderViews", o.viewToken), Object.assign(viewOf(o), { pay: payDataFor(o, false), updatedAt: serverTimestamp() })); n++; } }
+    for (const phone of Object.keys(customers)) { const t = customers[phone] && customers[phone].viewToken; if (t) { await publishCustomerView(phone, t); m++; } }
+    show($("listMsg"), "Refreshed " + n + (n === 1 ? " order page" : " order pages") + " and " + m + (m === 1 ? " account page" : " account pages") + ".", "ok");
+  } catch (err) { console.error(err); show($("listMsg"), "That did not work. Check your connection and try again.", "err"); }
+  finally { b.disabled = false; }
+});
 $("saveBtn").addEventListener("click", async () => {
   hideMsg($("formMsg"));
   const btn = $("saveBtn"); btn.disabled = true;
   try {
     const orderNo = await persistOrder();
     await loadAll(); showList();
-    show($("listMsg"), "Order " + orderNo + " saved.", "ok");
+    show($("listMsg"), "Order " + orderNo + " saved." + (learnedTracker ? " The " + learnedTracker + " tracking page is learned: new " + learnedTracker + " orders will link to it automatically." : ""), "ok");
   } catch (err) {
     if (!(err instanceof UserError)) console.error(err);
     show($("formMsg"), err instanceof UserError ? err.message : "That did not save. Check your connection, and check that the database rules were updated, then try again.", "err");
