@@ -69,6 +69,7 @@ a{color:inherit}
 .tools-inner{max-width:1200px;margin:0 auto;padding:.8rem 1.25rem;display:grid;gap:.7rem}
 .search{width:100%;padding:.8rem 1rem;border:1px solid #c5cccc;border-radius:8px;font:inherit;background:#fff;color:var(--text)}
 .hidden{display:none!important}
+.gift{border:1px solid #12803f;background:#e7f6ec;color:#0b6b32;border-radius:8px;padding:.55rem .7rem;margin:.5rem 0;font-weight:600}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;z-index:120}
 .sheet{background:#fff;width:100%;max-width:560px;max-height:90vh;overflow:auto;border-radius:18px 18px 0 0;padding:1rem 1rem 1.6rem;animation:popup .22s ease-out}
 @keyframes popup{from{transform:translateY(28px) scale(.97);opacity:0}to{transform:none;opacity:1}}
@@ -378,6 +379,7 @@ function render(v){
   let totals = "";
   if (v.gstAdded) totals += row("Goods total (before GST)", inr(v.goods)) + row("GST", inr(v.gstAdded));
   if (v.freight) totals += row("Freight", inr(v.freight));
+  if (v.freeLogistics) totals += '<div class="gift">' + (v.freeLogistics.amount > 0 ? "Logistics worth " + inr(v.freeLogistics.amount) + " paid" : "Logistics paid") + ' by AK Brands Marketing as a gift. Free for you.</div>';
   totals += row("Total amount", inr(v.total), "tot") + (v.gstIncluded ? '<p class="note2">The total includes GST of ' + inr(v.gstIncluded) + '.</p>' : '');
   const pays = (v.payments || []).map((p) => row(esc(p.kind) + (p.mode ? ' &middot; ' + esc(p.mode) : '') + (p.date ? ' <span style="font-weight:400;color:#5c6869">(' + esc(fmtDate(p.date)) + ')</span>' : ''), inr(p.amount))).join("");
   const payFiles = fileBtns(v.files, ["payment"], "o");

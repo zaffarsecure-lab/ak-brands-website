@@ -746,6 +746,53 @@ function customerOrderRowHtml(o){
   return '<button type="button" class="drow" data-open="' + esc(o.orderNo) + '"><span class="r1"><span>' + esc(o.orderNo) + ' &middot; ' + esc(fmtDate(o.orderDate)) + '</span><span>' + (c.payable ? inr(c.payable) : "") + '</span></span>' + (lines || '<span class="r2">No products yet</span>') +
     '<span class="r2"><b>' + esc(o.status) + '</b> &middot; Customer: ' + esc(c.payStatus) + (c.balance > 0 ? " &middot; Balance " + inr(c.balance) : "") + sup + (o.delivery.lr ? " &middot; LR " + esc(o.delivery.lr) : "") + '</span></button>';
 }
+function splitPanelHtml(mine){
+  const owing = mine.filter((o) => o.status !== "Cancelled" && calc(o).balance > 0).sort((a, b) => String(a.orderDate || "").localeCompare(String(b.orderDate || "")) || String(a.orderNo).localeCompare(String(b.orderNo)));
+  if (!owing.length) return "";
+  const rows = owing.map((o) => { const c = calc(o), lots = (o.items || []).filter((x) => x.lotNo).map((x) => "Lot " + x.lotNo).join(", ");
+    return '<div class="lnk"><span><b>' + esc(o.orderNo) + '</b><br><small>' + esc(lots) + ' &middot; Balance ' + inr(c.balance) + '</small></span><input class="spA" data-sp-order="' + esc(o.orderNo) + '" data-bal="' + c.balance + '" type="text" inputmode="decimal" style="width:7.5rem" aria-label="Amount for ' + esc(o.orderNo) + '"></div>'; }).join("");
+  return '<details class="grp" style="padding:0 .9rem .9rem;margin-top:.8rem"><summary style="padding:.8rem 0;font-weight:700;cursor:pointer;color:var(--ink)">Record one payment across several orders</summary>' +
+    '<p class="hint">For when this customer pays one amount for several lots. Type the amount, tap Fill oldest first, change any share you like, then add it. Each order gets its own payment line.</p>' +
+    '<div class="two"><div><label for="sp_amount">Amount received (&#8377;)</label><input id="sp_amount" type="text" inputmode="decimal"></div><div><label for="sp_mode">Paid by</label><select id="sp_mode">' + opts(PAY_MODES, "UPI") + '</select></div></div>' +
+    '<div class="two"><div><label for="sp_date">Date</label><input id="sp_date" type="date" value="' + todayISO() + '"></div><div><label for="sp_ref">Reference <span class="hint">(optional)</span></label><input id="sp_ref" type="text"></div></div>' +
+    '<button class="small" type="button" data-sp-fill="1">Fill oldest first</button>' + rows +
+    '<p class="hint" id="sp_sum" style="margin-top:.5rem">Shared \u20B90 of \u20B90</p>' +
+    '<button class="docbtn" type="button" data-sp-apply="1">Add these payments</button></details>';
+}
+function spSum(){
+  const amt = num(($("sp_amount") || {}).value), got = Array.from(document.querySelectorAll("#detailBody .spA")).reduce((a, i) => a + num(i.value), 0);
+  if ($("sp_sum")) { $("sp_sum").textContent = "Shared " + inr(got) + " of " + inr(amt) + (Math.abs(got - amt) < 0.005 && amt > 0 ? " - matches" : (amt > 0 ? " - still " + inr(amt - got) + " to share" : "")); }
+}
+function spFill(){
+  let left = num($("sp_amount").value);
+  Array.from(document.querySelectorAll("#detailBody .spA")).forEach((i) => { const take = Math.max(0, Math.min(left, num(i.getAttribute("data-bal")))); i.value = take ? String(r2(take)) : ""; left = r2(left - take); });
+  spSum();
+}
+async function spApply(){
+  hideMsg($("listMsg"));
+  try {
+    const amt = r2(num($("sp_amount").value)), inputs = Array.from(document.querySelectorAll("#detailBody .spA"));
+    const parts = inputs.map((i) => ({ no: i.getAttribute("data-sp-order"), a: r2(num(i.value)), bal: num(i.getAttribute("data-bal")) })).filter((x) => x.a > 0);
+    if (!(amt > 0)) throw new UserError("Type the amount received first.");
+    if (!parts.length) throw new UserError("Share the amount across the orders, or tap Fill oldest first.");
+    const got = r2(parts.reduce((a, x) => a + x.a, 0));
+    if (Math.abs(got - amt) > 0.009) throw new UserError("The shares add up to " + inr(got) + " but you received " + inr(amt) + ". Make them match.");
+    const over = parts.find((x) => x.a > x.bal + 0.005); if (over) throw new UserError(over.no + " only has " + inr(over.bal) + " pending. Lower that share.");
+    const mode = $("sp_mode").value || "UPI", date = $("sp_date").value || todayISO(), ref = $("sp_ref").value.trim();
+    const key = (lastDetail || "").replace(/^cust:/, "").split("|")[0];
+    for (const x of parts) {
+      const o = orders.find((q) => q.orderNo === x.no); if (!o) continue;
+      const had = (o.payments || []).some((q) => num(q.amount) > 0), kind = x.a >= calc(o).balance - 0.005 ? "Balance" : (had ? "Part payment" : "Token");
+      o.payments = (o.payments || []).concat([{ date, kind, mode, amount: String(x.a), ref }]);
+      await setDoc(doc(db, "orders", o.orderNo), { payments: o.payments, updatedAt: serverTimestamp() }, { merge: true });
+      if (o.viewToken) await setDoc(doc(db, "orderViews", o.viewToken), Object.assign(viewOf(o), { pay: payDataFor(o, false), updatedAt: serverTimestamp() }));
+    }
+    state = withPay(newOrder());
+    if (/^\d{10,}$/.test(key)) { try { await refreshCustomerView(key); } catch (e) { console.error(e); } }
+    await loadAll(); showDetail("cust:" + key);
+    show($("listMsg"), inr(amt) + " received by " + mode + " is added to " + parts.length + (parts.length === 1 ? " order" : " orders") + ". Customer pages are updated.", "ok");
+  } catch (err) { if (!(err instanceof UserError)) console.error(err); show($("listMsg"), err instanceof UserError ? err.message : "That did not save. Check your connection and try again.", "err"); }
+}
 function customerDetailHtml(key){
   const mine = orders.filter((o) => groupKeyOf(o) === key).sort(newestFirst);
   if (!mine.length) return '<p class="hint">No orders found for this customer.</p>';
@@ -755,7 +802,7 @@ function customerDetailHtml(key){
   const tile = (k, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-ctile="' + k + '" data-ckey="' + esc(key) + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   return '<h2>' + esc(name) + '</h2><p class="hint">' + esc(sub) + '</p>' +
     '<div class="tiles" style="margin-top:.6rem">' + tile("orders", "Orders and lots", mine.length + " &middot; " + lotCount(mine)) + tile("total", "Total ordered", inr(t.payable)) + tile("recv", "Received", inr(t.received)) + tile("owes", "Customer owes", inr(t.balance)) + tile("sup", "You owe suppliers", inr(t.supDue), "priv") + tile("profit", "Profit", inr(t.profit), "priv") + '</div>' +
-    '<button type="button" class="small" data-newfor="' + esc(key) + '" style="margin-top:.8rem">New order for this customer</button>' +
+    '<button type="button" class="small" data-newfor="' + esc(key) + '" style="margin-top:.8rem">New order for this customer</button>' + splitPanelHtml(mine) +
     '<p class="hint" style="margin-top:1rem">Newest booking first. Tap an order to open it.</p>' + mine.map(customerOrderRowHtml).join("");
 }
 function customerTileHtml(key, tile){
@@ -885,7 +932,10 @@ function showDetail(kind){
 }
 $("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) showDetail(b.getAttribute("data-tile")); });
 $("detailBack").addEventListener("click", () => showList());
+$("detailBody").addEventListener("input", (e) => { if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
 $("detailBody").addEventListener("click", (e) => {
+  if (e.target.closest("[data-sp-fill]")) { spFill(); return; }
+  if (e.target.closest("[data-sp-apply]")) { spApply(); return; }
   const ct = e.target.closest("[data-ctile]"); if (ct) { showDetail("cust:" + ct.getAttribute("data-ckey") + "|" + ct.getAttribute("data-ctile")); return; }
   const bc = e.target.closest("[data-back-cust]"); if (bc) { showDetail("cust:" + bc.getAttribute("data-back-cust")); return; }
   const nf = e.target.closest("[data-newfor]");
@@ -1153,6 +1203,7 @@ async function learnTracker(){
 const safeUrl = (u) => { u = String(u || "").trim(); return /^https?:\/\/[^\s<>"']{4,500}$/i.test(u) ? u : ""; };
 const viewOf = (o) => {
   const v = buildOrderView(o);
+  v.freeLogistics = (o.freight && o.freight.mode === "ours") ? { amount: r2(num(o.freight.amount)) } : null;
   const ti = trackInfo(o);
   v.delivery = Object.assign({}, v.delivery, { trackUrl: ti.url, trackCopyLr: ti.copyLr });
   v.files = (o.files || []).filter((f) => f.show).map((f) => ({ id: f.id, kind: f.kind, label: f.label, mime: f.mime, size: f.size, parts: f.parts }));

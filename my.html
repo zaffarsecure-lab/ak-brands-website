@@ -245,6 +245,20 @@ button.tl .go{display:block;font-size:.66rem;color:var(--muted);margin-top:.15re
 .qr{text-align:center;margin:.8rem 0}
 .qr img{max-width:240px;width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
 .cta.alt{background:#fff;color:var(--ink);border:1px solid var(--ink);margin-top:.6rem}
+
+.fbar{background:#fff;border:1px solid var(--line);border-radius:10px;padding:.8rem;margin:.7rem 0}
+#fq{width:100%;font:inherit;padding:.75rem;border:1px solid var(--ink);border-radius:8px}
+.fbar .chips{margin:.55rem 0 0}
+.fbar .chip{flex:1 1 auto;font-size:.84rem;padding:.5rem .55rem}
+.fbar details{margin-top:.6rem}
+.fbar summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.fbar label{display:block;font-size:.8rem;color:var(--muted);margin-top:.5rem}
+.fbar input[type=date],.fbar select{width:100%;font:inherit;padding:.55rem;border:1px solid var(--line);border-radius:8px;background:#fff}
+.finfo{font-size:.86rem;color:var(--muted);margin-top:.6rem}
+button.link{background:none;border:0;color:var(--ink);text-decoration:underline;font:inherit;cursor:pointer;padding:0}
+.lrcard{background:#fff;border:1px solid var(--ink);border-left:5px solid var(--gold);border-radius:8px;padding:.8rem .9rem;margin:.5rem 0}
+.lrcard small{display:block;color:var(--muted);margin-top:.2rem}
+.gift{border:1px solid #12803f;background:#e7f6ec;color:#0b6b32;border-radius:8px;padding:.55rem .7rem;margin:.5rem 0;font-weight:600}
 </style>
 </head>
 <body>
@@ -317,7 +331,7 @@ export function payChoices(p){
   const chips = [];
   if (flex) {
     if (sug > 0 && sug < bal) chips.push({ id: "s", label: kind + " " + inr(sug), amt: sug });
-    chips.push({ id: "f", label: "Full balance " + inr(bal), amt: bal });
+    chips.push({ id: "f", label: (p.fullLabel || "Full balance") + " " + inr(bal), amt: bal });
     chips.push({ id: "o", label: "Other amount", amt: 0 });
   }
   const first = chips.length ? chips[0] : null;
@@ -338,7 +352,7 @@ export function upiHref(p, amt){
 }
 export function paidMessage(o, amt){
   const lots = (o.items || []).map((it) => it.lotNo).filter(Boolean).map((l) => "Lot " + l).join(", ");
-  return "Hello AK Brands Marketing, I have paid Rs " + money2(amt).toLocaleString("en-IN", { maximumFractionDigits: 2 }) + " for order " + o.orderNo + (lots ? " (" + lots + ")" : "") + ". I am sending the payment screenshot.";
+  return "Hello AK Brands Marketing, I have paid Rs " + money2(amt).toLocaleString("en-IN", { maximumFractionDigits: 2 }) + " for order " + o.orderNo + (lots ? " (" + lots + ")" : "") + "." + (o.multi ? " Please adjust it against these orders." : "") + " I am sending the payment screenshot.";
 }
 let PAY = null, ORD = [];
 function applyPay(){
@@ -412,12 +426,38 @@ function modalDue(title){
     h += '<div class="mline"><button type="button" class="l" data-goto="lot-' + oi + '-0" style="all:unset;cursor:pointer;min-width:0;flex:1"><b>Order ' + esc(o.orderNo) + '</b><small>' + lotNames(o) + '<br>Total ' + inr(o.total) + ' &middot; Paid ' + inr(o.received) + '</small></button><span class="rt" style="color:#a82a1c">' + inr(o.balance) + (o.pay ? '<br><button type="button" class="paysm" data-order="' + oi + '" style="margin-top:.35rem">Pay now</button>' : '') + '</span></div>';
   });
   if (!n) return h + '<p class="note2">Nothing is due. Thank you!</p>';
-  return h + '<div class="mtotal"><span>Balance to pay</span><span style="color:#a82a1c">' + inr(sum) + '</span></div>';
+  return h + '<div class="mtotal"><span>Balance to pay</span><span style="color:#a82a1c">' + inr(sum) + '</span></div>' + (ORD.filter(payable).length > 1 ? '<button type="button" class="cta" data-pickpay="1">Pay several lots together</button>' : '');
+}
+let SEL = new Set();
+const balOf = (o) => Number(o.balance) || 0;
+function selSummary(){ const picked = Array.from(SEL).map((i) => ORD[i]).filter((o) => o && payable(o)); return { picked, sum: picked.reduce((a, o) => a + balOf(o), 0) }; }
+function modalPick(){
+  const list = ORD.map((o, oi) => ({ o, oi })).filter((x) => payable(x.o));
+  SEL = new Set(list.map((x) => x.oi));
+  const sum = list.reduce((a, x) => a + balOf(x.o), 0);
+  return head("What would you like to pay for?") + '<p class="note2" style="margin-top:0">Tick the lots you want to pay for. You can pay the full amount of everything you tick, or any smaller amount on the next screen.</p>' +
+    '<div class="chips"><button type="button" class="chip" data-selall="1">Tick all</button><button type="button" class="chip" data-selnone="1">Clear</button></div>' +
+    list.map((x) => '<label class="mline" style="cursor:pointer"><span class="l"><b><input type="checkbox" data-sel="' + x.oi + '" checked style="width:1.1rem;height:1.1rem;margin-right:.5rem;vertical-align:-.15rem">Order ' + esc(x.o.orderNo) + '</b><small>' + lotNames(x.o) + '</small></span><span class="rt" style="color:#a82a1c">' + inr(balOf(x.o)) + '</span></label>').join("") +
+    '<div class="mtotal"><span id="selLabel">' + list.length + ' selected</span><span id="selTotal">' + inr(sum) + '</span></div>' +
+    '<button type="button" class="cta" id="paySelBtn" data-paysel="1">Pay selected</button>';
+}
+function selRefresh(){
+  const s = selSummary();
+  if ($("selTotal")) $("selTotal").textContent = inr(s.sum);
+  if ($("selLabel")) $("selLabel").textContent = s.picked.length + " selected";
+  const b = $("paySelBtn"); if (b) { if (s.picked.length) b.classList.remove("off"); else b.classList.add("off"); }
+}
+function openCombo(){
+  const picked = selSummary().picked; if (!picked.length) return;
+  const base = picked[0].pay, bal = picked.reduce((a, o) => a + balOf(o), 0);
+  const note = picked.length === 1 ? base.note : (picked[0].orderNo + " +" + (picked.length - 1)).slice(0, 40);
+  const combo = { orderNo: picked.map((o) => o.orderNo).join(", "), multi: picked.length > 1, items: [].concat(...picked.map((o) => o.items || [])), pay: Object.assign({}, base, { amount: bal, balance: bal, flex: true, kind: "Balance", fullLabel: picked.length > 1 ? "All ticked" : "Full balance", note }) };
+  openModal(payHtml(combo));
 }
 function bigPay(){
   const idx = ORD.map((o, i) => payable(o) ? i : -1).filter((i) => i >= 0);
   if (idx.length === 1) openModal(payHtml(ORD[idx[0]]));
-  else openModal(modalDue("What would you like to pay for?"));
+  else openModal(modalPick());
 }
 
 /* ---------- the page ---------- */
@@ -460,13 +500,14 @@ function lotCard(o, it, oi, ii){
     let totals = "";
     if (o.gstAdded) totals += row("Goods total (before GST)", inr(o.goods)) + row("GST", inr(o.gstAdded));
     if (o.freight) totals += row("Freight", inr(o.freight));
+    if (o.freeLogistics) totals += '<div class="gift">' + (o.freeLogistics.amount > 0 ? "Logistics worth " + inr(o.freeLogistics.amount) + " paid" : "Logistics paid") + ' by AK Brands Marketing as a gift. Free for you.</div>';
     totals += row("Order total", inr(o.total), "tot");
     const pays = (o.payments || []).map((p) => row(esc(p.kind) + (p.mode ? ' &middot; ' + esc(p.mode) : '') + (p.date ? ' <span style="font-weight:400;color:#5c6869">(' + esc(fmtDate(p.date)) + ')</span>' : ''), inr(p.amount))).join("");
     const payBlock = '<div class="sec">Payments on this order</div>' + (pays || '<p class="note2" style="margin:0">No payment received yet.</p>') + fileBtns(o.files, ["payment"], String(oi)) + row("Received so far", inr(o.received)) + row(o.balance > 0 ? "Balance to pay" : "Balance", o.balance > 0 ? inr(o.balance) : "Nil", "tot");
     const d = o.delivery || {};
     const delFiles = fileBtns(o.files, ["bilty", "other"], String(oi));
     const hasD = d.transporter || d.lr || d.dispatchDate || d.expectedDate || d.deliveredDate || okUrl(d.trackUrl) || delFiles;
-    const del = hasD ? '<div class="sec">Delivery</div>' + (d.transporter ? row("Transport", esc(d.transporter)) : "") + (d.lr ? row("LR / tracking number", esc(d.lr)) : "") + (d.dispatchDate ? row("Dispatched on", esc(fmtDate(d.dispatchDate))) : "") + (d.expectedDate ? row("Expected delivery", esc(fmtDate(d.expectedDate))) : "") + (d.deliveredDate ? row("Delivered on", esc(fmtDate(d.deliveredDate))) : "") + trackBtn(d) + delFiles : "";
+    const del = hasD ? '<div class="sec">Delivery</div>' + (d.transporter ? row("Transport", esc(d.transporter)) : "") + (d.lr ? row("LR / tracking number", esc(d.lr)) + '<p class="note2" style="margin:.2rem 0"><button type="button" class="cp" data-lrfilter="' + esc(d.lr) + '">Show all lots on this LR</button></p>' : "") + (d.dispatchDate ? row("Dispatched on", esc(fmtDate(d.dispatchDate))) : "") + (d.expectedDate ? row("Expected delivery", esc(fmtDate(d.expectedDate))) : "") + (d.deliveredDate ? row("Delivered on", esc(fmtDate(d.deliveredDate))) : "") + trackBtn(d) + delFiles : "";
     more = totals + payBlock + del;
   }
   const links = [];
@@ -483,22 +524,81 @@ function lotCard(o, it, oi, ii){
     '<div class="pills"><div><span class="pl ' + stCls + '">' + esc(o.status) + '</span>' + payPill(o) + '</div>' + (payable(o) ? '<button type="button" class="paysm" data-order="' + oi + '">Pay now</button>' : '') + '</div>' + pend + '</summary>' +
     '<div class="inner">' + body + more + '<div class="btnrow">' + links.join("") + '</div></div></details>';
 }
+let F = { q: "", ship: "all", pay: "all", from: "", to: "", tr: "" };
+const shipOf = (o) => { const d = o.delivery || {}; if (o.status === "Cancelled") return "cancelled"; if (d.deliveredDate || o.status === "Delivered" || o.status === "Closed") return "delivered"; if (d.dispatchDate || d.lr || o.status === "Dispatched") return "transit"; return "todispatch"; };
+const payOf = (o) => (!(Number(o.total) > 0) || Number(o.balance) <= 0 ? "paid" : "due");
+const filterActive = () => !!(F.q.trim() || F.ship !== "all" || F.pay !== "all" || F.from || F.to || F.tr);
+function lotMatches(o, it){
+  const s = shipOf(o);
+  if (F.ship !== "all" && s !== F.ship) return false;
+  if (F.pay !== "all" && (o.status === "Cancelled" || payOf(o) !== F.pay)) return false;
+  if (F.from && String(o.orderDate || "") < F.from) return false;
+  if (F.to && String(o.orderDate || "") > F.to) return false;
+  if (F.tr && String((o.delivery || {}).transporter || "") !== F.tr) return false;
+  const q = F.q.trim().toLowerCase();
+  if (q) {
+    const d = o.delivery || {};
+    const hay = [it.lotNo, it.name, it.qty, it.rate, o.orderNo, o.status, fmtDate(o.orderDate), o.orderDate, d.transporter, d.lr, fmtDate(d.dispatchDate), d.dispatchDate, fmtDate(d.expectedDate), d.expectedDate, fmtDate(d.deliveredDate), (o.payments || []).map((p) => (p.mode || "") + " " + (p.kind || "")).join(" "), s === "transit" ? "in transit" : (s === "delivered" ? "delivered" : (s === "todispatch" ? "not dispatched" : "")), payOf(o) === "due" ? "balance due pending" : "paid"].join(" ").toLowerCase();
+    return q.split(/\s+/).every((w) => hay.indexOf(w) >= 0);
+  }
+  return true;
+}
+const itemsOf = (o) => (o.items && o.items.length ? o.items : [{ name: "Order" }]);
+function lotsIn(state){ return ORD.reduce((a, o) => a + ((state === "all" ? o.status !== "Cancelled" || true : shipOf(o) === state) ? itemsOf(o).length : 0), 0); }
+function renderFilterChips(){
+  const ship = [["all", "All"], ["todispatch", "Not dispatched"], ["transit", "In transit"], ["delivered", "Delivered"]];
+  const pay = [["all", "All payments"], ["due", "Balance due"], ["paid", "Paid in full"]];
+  $("fship").innerHTML = ship.map((x) => '<button type="button" class="chip' + (F.ship === x[0] ? " on" : "") + '" data-fship="' + x[0] + '">' + x[1] + ' (' + lotsIn(x[0]) + ')</button>').join("");
+  $("fpay").innerHTML = pay.map((x) => '<button type="button" class="chip' + (F.pay === x[0] ? " on" : "") + '" data-fpay="' + x[0] + '">' + x[1] + '</button>').join("");
+}
+function lrSummaryHtml(){
+  const q = F.q.trim().toLowerCase(); if (q.length < 3) return "";
+  const groups = new Map();
+  ORD.forEach((o) => {
+    const lr = String((o.delivery || {}).lr || "").trim(); if (!lr || o.status === "Cancelled" || lr.toLowerCase().indexOf(q) < 0) return;
+    if (!groups.has(lr)) groups.set(lr, { lr, orders: [], lots: [] });
+    const g = groups.get(lr); g.orders.push(o); (o.items || []).filter((x) => x.name).forEach((x) => g.lots.push(x.lotNo ? "Lot " + x.lotNo : x.name));
+  });
+  return Array.from(groups.values()).map((g) => {
+    const d = g.orders[0].delivery || {};
+    return '<div class="lrcard"><b>LR ' + esc(g.lr) + '</b>' + (d.transporter ? ' &middot; ' + esc(d.transporter) : '') + '<br><b>' + g.lots.length + (g.lots.length === 1 ? " lot" : " lots") + '</b> in ' + g.orders.length + (g.orders.length === 1 ? " order" : " orders") +
+      '<small>' + esc([d.dispatchDate ? "Dispatched " + fmtDate(d.dispatchDate) : "", d.expectedDate ? "Expected " + fmtDate(d.expectedDate) : "", d.deliveredDate ? "Delivered " + fmtDate(d.deliveredDate) : ""].filter(Boolean).join(" \u00B7 ")) + '</small>' +
+      '<small>' + esc(g.lots.join(", ")) + '</small>' + trackBtn(d) + '</div>';
+  }).join("");
+}
+function renderLots(){
+  const out = []; let total = 0;
+  ORD.forEach((o, oi) => { itemsOf(o).forEach((it, ii) => { total++; if (lotMatches(o, it)) out.push(lotCard(o, it, oi, ii)); }); });
+  $("lots").innerHTML = out.length ? out.join("") : '<div class="state"><strong>No lots match</strong>Try a different word, or clear the filters.</div>';
+  $("finfo").innerHTML = "Showing " + out.length + " of " + total + (total === 1 ? " lot" : " lots") + (filterActive() ? ' &middot; <button type="button" class="link" data-fclear="1">Clear filters</button>' : "");
+  $("lrbox").innerHTML = lrSummaryHtml();
+}
+function clearFilters(){
+  F = { q: "", ship: "all", pay: "all", from: "", to: "", tr: "" };
+  if ($("fq")) $("fq").value = ""; if ($("ffrom")) $("ffrom").value = ""; if ($("fto")) $("fto").value = ""; if ($("ftr")) $("ftr").value = "";
+  renderFilterChips(); renderLots();
+}
 function render(v){
   ORD = v.orders || [];
   const live = ORD.filter((o) => o.status !== "Cancelled");
   const total = live.reduce((a, o) => a + (Number(o.total) || 0), 0), paid = live.reduce((a, o) => a + (Number(o.received) || 0), 0), due = live.reduce((a, o) => a + (Number(o.balance) || 0), 0);
-  const lotsList = [];
-  ORD.forEach((o, oi) => { (o.items && o.items.length ? o.items : [{ name: "Order" }]).forEach((it, ii) => lotsList.push(lotCard(o, it, oi, ii))); });
+  const nLots = ORD.reduce((a, o) => a + itemsOf(o).length, 0);
   const canPay = ORD.some(payable);
+  const trs = Array.from(new Set(ORD.map((o) => String((o.delivery || {}).transporter || "").trim()).filter(Boolean))).sort();
+  F = { q: "", ship: "all", pay: "all", from: "", to: "", tr: "" };
   $("app").innerHTML =
-    '<div class="ov-top"><div class="small">' + esc(v.customerName || "Your account") + '</div><h1>Your orders</h1><div class="meta"><span>' + lotsList.length + (lotsList.length === 1 ? " lot" : " lots") + '</span><span>' + ORD.length + (ORD.length === 1 ? " order" : " orders") + '</span></div></div>' +
+    '<div class="ov-top"><div class="small">' + esc(v.customerName || "Your account") + '</div><h1>Your orders</h1><div class="meta"><span>' + nLots + (nLots === 1 ? " lot" : " lots") + '</span><span>' + ORD.length + (ORD.length === 1 ? " order" : " orders") + '</span></div></div>' +
     '<div class="tiles3"><button type="button" class="tl" data-tile="total"><small>Total ordered</small><b>' + inr(total) + '</b><span class="go">Tap to see</span></button>' +
     '<button type="button" class="tl paid" data-tile="paid"><small>Paid so far</small><b>' + inr(paid) + '</b><span class="go">Tap to see</span></button>' +
     '<button type="button" class="tl due' + (due > 0 ? '' : ' zero') + '" data-tile="due"><small>Balance to pay</small><b>' + inr(due) + '</b><span class="go">Tap to see</span></button></div>' +
     (canPay ? '<button type="button" class="paybig" data-payall="1">Pay now<small>Balance ' + inr(due) + '</small></button>' : '') +
-    (lotsList.length ? '<p class="note2" style="margin:.2rem 0 0">Newest booking first. Tap a lot to see its details.</p>' + lotsList.join("") : '<div class="state"><strong>No orders yet</strong>Your orders will appear here.</div>') +
+    (nLots ? '<div class="fbar"><input id="fq" type="search" placeholder="Search lot, product, order, LR number, date, transport..." autocomplete="off">' +
+      '<div class="chips" id="fship"></div><div class="chips" id="fpay"></div>' +
+      '<details><summary>More filters</summary><label for="ffrom">Booked from</label><input id="ffrom" type="date"><label for="fto">Booked to</label><input id="fto" type="date"><label for="ftr">Transport</label><select id="ftr"><option value="">Any transport</option>' + trs.map((t) => '<option>' + esc(t) + '</option>').join("") + '</select></details>' +
+      '<div class="finfo" id="finfo"></div></div><div id="lrbox"></div><div id="lots"></div><p class="note2" style="margin:.2rem 0 0">Newest booking first. Tap a lot to see its details.</p>' : '<div class="state"><strong>No orders yet</strong>Your orders will appear here.</div>') +
     '<p class="note2">Tax invoices and other documents are shared with you personally by AK Brands Marketing. This page updates by itself.</p>' +
     '<a class="cta" href="https://wa.me/' + WA + '?text=' + encodeURIComponent("Hello AK Brands Marketing, I have a question about my orders.") + '">Questions? Message us on WhatsApp</a>';
+  if (nLots) { renderFilterChips(); renderLots(); }
   document.title = "Your orders | AK Brands Marketing";
 }
 
@@ -525,12 +625,30 @@ document.addEventListener("click", (e) => {
   const po = t.closest("[data-order]");
   if (po) { if (e.preventDefault) e.preventDefault(); const o = ORD[Number(po.getAttribute("data-order"))]; if (o && payable(o)) openModal(payHtml(o)); return; }
   if (t.closest("[data-payall]")) { bigPay(); return; }
+  if (t.closest("[data-pickpay]")) { openModal(modalPick()); return; }
+  if (t.closest("[data-selall]")) { SEL = new Set(ORD.map((o, i) => (payable(o) ? i : -1)).filter((i) => i >= 0)); Array.prototype.forEach.call($("sheet").querySelectorAll("[data-sel]"), (b) => { b.checked = true; }); selRefresh(); return; }
+  if (t.closest("[data-selnone]")) { SEL = new Set(); Array.prototype.forEach.call($("sheet").querySelectorAll("[data-sel]"), (b) => { b.checked = false; }); selRefresh(); return; }
+  if (t.closest("[data-paysel]")) { if (!t.closest("[data-paysel]").classList.contains("off")) openCombo(); return; }
+  const fs = t.closest("[data-fship]"); if (fs) { F.ship = fs.getAttribute("data-fship"); renderFilterChips(); renderLots(); return; }
+  const fp = t.closest("[data-fpay]"); if (fp) { F.pay = fp.getAttribute("data-fpay"); renderFilterChips(); renderLots(); return; }
+  if (t.closest("[data-fclear]")) { clearFilters(); return; }
+  const lf = t.closest("[data-lrfilter]"); if (lf) { F.q = lf.getAttribute("data-lrfilter"); if ($("fq")) { $("fq").value = F.q; if ($("fq").scrollIntoView) $("fq").scrollIntoView({ behavior: "smooth", block: "center" }); } renderLots(); return; }
   const tile = t.closest("[data-tile]");
   if (tile) { const k = tile.getAttribute("data-tile"); openModal(k === "total" ? modalTotal() : (k === "paid" ? modalPaid() : modalDue())); return; }
   const go = t.closest("[data-goto]");
-  if (go) { const id = go.getAttribute("data-goto"); closeModal(); const d = $(id); if (d) { d.open = true; if (d.scrollIntoView) d.scrollIntoView({ behavior: "smooth", block: "start" }); } }
+  if (go) { const id = go.getAttribute("data-goto"); closeModal(); let d = $(id); if (!d && filterActive()) { clearFilters(); d = $(id); } if (d) { d.open = true; if (d.scrollIntoView) d.scrollIntoView({ behavior: "smooth", block: "start" }); } }
+});
+document.addEventListener("change", (e) => {
+  const t = e.target; if (!t || !t.getAttribute) return;
+  const si = t.getAttribute("data-sel");
+  if (si !== null && si !== undefined) { const i = Number(si); if (t.checked) SEL.add(i); else SEL.delete(i); selRefresh(); return; }
+  if (t.id === "ftr") { F.tr = t.value; renderLots(); }
 });
 document.addEventListener("input", (e) => {
+  const t0 = e.target;
+  if (t0 && t0.id === "fq") { F.q = t0.value; renderLots(); return; }
+  if (t0 && t0.id === "ffrom") { F.from = t0.value; renderLots(); return; }
+  if (t0 && t0.id === "fto") { F.to = t0.value; renderLots(); return; }
   if (!PAY || !e.target || e.target.id !== "payOther") return;
   const r = parseAmount(e.target.value, PAY.ch.bal); PAY.amt = r.amt; if ($("payErr")) $("payErr").textContent = r.err; applyPay();
 });
