@@ -103,6 +103,23 @@ button.tile:active{background:#f4f1e8}
 .lotrow{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:8px;background:#fcfbf8;padding:.65rem .8rem;margin-top:.5rem;font:inherit;cursor:pointer;color:inherit}
 .lotrow .r1{display:flex;justify-content:space-between;gap:.8rem;font-weight:600;color:var(--ink)}
 .lotrow .r2{display:block;font-size:.84rem;color:var(--muted);overflow-wrap:anywhere}
+.stbox{margin-top:.8rem;border:1px solid var(--line);border-radius:8px;padding:.6rem .8rem;background:#fcfbf8}
+.stbox>summary{cursor:pointer;font-weight:600;color:var(--ink);font-size:.92rem}
+.stgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem .8rem;margin-top:.7rem}
+.strow label{display:block;font-size:.78rem;margin:0;color:var(--muted)}
+.strow.cur label{font-weight:700;color:var(--ink)}
+.strow input{width:100%}
+.accbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+h2.acc{cursor:pointer;margin:0;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+h2.acc::before{content:"\25B8";display:inline-block;transition:transform .15s;color:var(--ink);font-size:1.1rem}
+section.panel.open>h2.acc::before,section.panel.open>.lblrow h2.acc::before{transform:rotate(90deg)}
+[data-acch]{cursor:pointer}
+.secsum{font-size:.85rem;color:var(--muted);margin:.2rem 0 0 1.5rem;cursor:pointer;overflow-wrap:anywhere}
+.secbody{display:none;margin-top:.9rem}
+section.panel.open>.secbody{display:block}
+.secfiles{margin-top:1.1rem;padding-top:.8rem;border-top:1px dashed var(--line)}
+.sfhead{font-weight:700;font-size:.9rem;color:var(--ink);margin-bottom:.3rem}
+.secfiles input[type=text],.secfiles input[type=file]{margin-top:.4rem}
 button.docbtn{display:block;width:100%;margin-top:.7rem;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.85rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
 button.docbtn.alt{background:#fff;color:var(--ink);border:1px solid var(--ink)}
 button.docbtn[disabled]{opacity:.6;cursor:wait}
@@ -276,6 +293,11 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
         <div><label for="r_orderDate">Order date</label><input id="r_orderDate" type="date" data-sec="root" data-k="orderDate"></div>
         <div><label for="r_status">Status</label><select id="r_status" data-sec="root" data-k="status"></select></div>
       </div>
+      <details class="stbox" id="stBox"><summary id="stSummary">Status dates</summary>
+        <div id="stGrid" class="stgrid"></div>
+        <p class="hint">Each status keeps its own date. Picking a status fills in today's date. Change it if it happened on another day.</p>
+      </details>
+      <div class="accbar"><button class="small" type="button" id="accOpen">Open all sections</button><button class="small" type="button" id="accClose">Close all sections</button></div>
     </section>
 
     <section class="panel">
@@ -366,6 +388,8 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
       <textarea id="s_address" style="min-height:70px" data-sec="supplier" data-k="address"></textarea>
       <label for="s_pan">Supplier PAN or ID <span class="hint">(optional)</span></label>
       <input id="s_pan" type="text" autocapitalize="characters" data-sec="supplier" data-k="pan">
+      <label for="s_gstin">Supplier GST number <span class="hint">(optional)</span></label>
+      <input id="s_gstin" type="text" maxlength="15" autocapitalize="characters" placeholder="Example: 29ABCDE1234F1Z5" data-sec="supplier" data-k="gstin">
       <label>Payments made to the supplier</label>
       <div id="supPaymentsBox"></div>
       <button class="small" type="button" data-add="supplierPayments">Add a supplier payment</button>
@@ -503,10 +527,11 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
     <section class="panel">
       <h2>11. Private notes</h2>
       <textarea id="r_notes" data-sec="root" data-k="notes" placeholder="Anything for you and your team. The customer never sees this."></textarea>
-      <div class="msg" id="formMsg" role="status"></div>
       <button class="danger hidden" id="delBtn" type="button">Delete this order</button>
       <p class="hint">Orders that have an invoice or URD bill number cannot be deleted. Set the status to Cancelled instead.</p>
     </section>
+
+    <div class="msg" id="formMsg" role="status"></div>
 
     <div class="savebar">
       <div class="due">Balance due<b id="dueBar">&#8377;0</b></div>
@@ -861,7 +886,7 @@ $("r_gstMode").innerHTML = gstOpts; $("b_gstMode").innerHTML = gstOpts;
 let linkPairs = [];
 let linkIndex = buildLinkIndex([], []);
 const rebuildLinks = () => { linkIndex = buildLinkIndex(orders, linkPairs); };
-function withPay(o){ o.payRequest = Object.assign({ amount: "", kind: "Token", active: false, accountId: "main", flex: true }, o.payRequest || {}); o.files = Array.isArray(o.files) ? o.files : []; return o; }
+function withPay(o){ o.statusDates = (o.statusDates && typeof o.statusDates === "object") ? o.statusDates : {}; o.payRequest = Object.assign({ amount: "", kind: "Token", active: false, accountId: "main", flex: true }, o.payRequest || {}); o.files = Array.isArray(o.files) ? o.files : []; return o; }
 let state = withPay(newOrder());
 let orders = [];
 let lots = [];
@@ -893,7 +918,7 @@ async function loadAll(){
       getDocs(collection(db, "lots")),
       getDoc(doc(db, "settings", "doclinks"))
     ]);
-    orders = o.docs.map((d) => { const x = fromDoc(d.id, d.data()); x.payRequest = d.data().payRequest || null; x.files = d.data().files || []; return withPay(x); });
+    orders = o.docs.map((d) => { const x = fromDoc(d.id, d.data()); x.payRequest = d.data().payRequest || null; x.files = d.data().files || []; x.statusDates = d.data().statusDates || {}; return withPay(x); });
     customers = {}; c.docs.forEach((d) => { customers[d.id] = d.data(); });
     lots = l.docs.map((d) => Object.assign({ id: d.id }, d.data()));
     linkPairs = lk.exists() && Array.isArray(lk.data().pairs) ? lk.data().pairs.slice() : [];
@@ -993,7 +1018,7 @@ $("orderList").addEventListener("click", (e) => {
   const g = e.target.closest("[data-cust]"); if (g) { showDetail("cust:" + g.getAttribute("data-cust")); return; }
   const c = e.target.closest("[data-open]"); if (c) openOrderByNo(c.getAttribute("data-open"));
 });
-function freshOrder(){ const o = withPay(newOrder()); o.gstMode = biz.gstMode || "incl"; o.payTerms = biz.payTerms || ""; return o; }
+function freshOrder(){ const o = withPay(newOrder()); o.statusDates = { [o.status || "Booked"]: todayISO() }; o.gstMode = biz.gstMode || "incl"; o.payTerms = biz.payTerms || ""; return o; }
 $("newBtn").addEventListener("click", () => openForm(freshOrder(), null));
 
 /* ---------- Business details (printed on invoices) ---------- */
@@ -1146,7 +1171,7 @@ function openForm(order, createdAt){
     if (el.type === "checkbox") el.checked = val !== false; else el.value = val == null ? "" : val;
   });
   $("shipBox").classList.toggle("hidden", state.customer.shipSame !== false);
-  renderDynamic(); refresh(); renderLinks(); renderConfirm(); renderPayState(); renderCustState(); resetRecord(); renderFiles(); $("fl_show").checked = false;
+  renderDynamic(); refresh(); renderLinks(); renderConfirm(); renderPayState(); renderCustState(); resetRecord(); renderFiles(); renderStatusDates(); openSections(!state.orderNo); $("fl_show").checked = false;
   $("listView").classList.add("hidden"); $("detailView").classList.add("hidden"); $("formView").classList.remove("hidden"); window.scrollTo(0, 0);
 }
 function renderDynamic(){
@@ -1206,7 +1231,7 @@ const viewOf = (o) => {
   v.freeLogistics = (o.freight && o.freight.mode === "ours") ? { amount: r2(num(o.freight.amount)) } : null;
   const ti = trackInfo(o);
   v.delivery = Object.assign({}, v.delivery, { trackUrl: ti.url, trackCopyLr: ti.copyLr });
-  v.files = (o.files || []).filter((f) => f.show).map((f) => ({ id: f.id, kind: f.kind, label: f.label, mime: f.mime, size: f.size, parts: f.parts }));
+  v.files = (o.files || []).filter((f) => f.show && PRIVATE_SECS.indexOf(f.section) < 0).map((f) => ({ id: f.id, kind: f.kind, label: f.label, mime: f.mime, size: f.size, parts: f.parts }));
   v.payments = (o.payments || []).filter((p) => num(p.amount) > 0).map((p) => ({ date: p.date || "", kind: p.kind || "Part payment", amount: num(p.amount), mode: p.mode || "" }));
   return v;
 };
@@ -1293,6 +1318,75 @@ $("confStop").addEventListener("click", async () => {
   } catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again.", "err"); }
 });
 
+/* ---------- Folding sections: tap a heading to open it; each shows a one-line summary ---------- */
+const SEC_FILE_RULES = { s1: { kind: "other" }, s2: { kind: "other", can: true, show: false }, s3: { kind: "payment", can: true, show: true }, s4: { kind: "bilty", can: true, show: false }, s5: { kind: "other" }, s6: { kind: "other" }, s7: { kind: "other" }, s8: { kind: "other" }, s9: { kind: "other" }, s10: { kind: "other" }, s11: { kind: "other" } };
+const PRIVATE_SECS = ["s1", "s5", "s6", "s7", "s8", "s9", "s10", "s11"];
+function secFilesHtml(key){
+  const r = SEC_FILE_RULES[key] || { kind: "other" };
+  return '<div class="secfiles" data-secfiles="' + key + '"><div class="sfhead">Files for this section ' + (r.can ? "" : '<span class="hint">(private, the customer never sees these)</span>') + '</div><div data-seclist="' + key + '"></div>' +
+    '<input type="text" data-secname="' + key + '" maxlength="60" placeholder="Name (optional)"><input type="file" data-secfile="' + key + '" accept="image/*,application/pdf">' +
+    (r.can ? '<label class="chk"><input type="checkbox" data-secshow="' + key + '"' + (r.show ? " checked" : "") + '>Show it to the customer</label>' : "") +
+    '<button class="small" type="button" data-secattach="' + key + '">Attach file</button></div>';
+}
+function setSection(sec, open){ sec.classList.toggle("open", !!open); const h2 = sec.querySelector("h2.acc"); if (h2) h2.setAttribute("aria-expanded", open ? "true" : "false"); }
+function initSections(){
+  Array.prototype.forEach.call(document.querySelectorAll("#formView > section.panel"), (sec) => {
+    const h2 = sec.querySelector("h2"); if (!h2 || h2.id === "formTitle" || sec.getAttribute("data-acc")) return;
+    const head = h2.parentNode === sec ? h2 : h2.parentNode;
+    const num = ((h2.textContent || "").match(/^\s*(\d+[a-z]?)\./) || [])[1] || "";
+    sec.setAttribute("data-acc", "1"); sec.setAttribute("data-sec-no", num);
+    const body = document.createElement("div"); body.className = "secbody";
+    while (head.nextSibling) body.appendChild(head.nextSibling);
+    const sum = document.createElement("div"); sum.className = "secsum";
+    sec.appendChild(sum); sec.appendChild(body);
+    head.setAttribute("data-acch", "1"); h2.classList.add("acc"); h2.setAttribute("role", "button"); h2.setAttribute("tabindex", "0"); h2.setAttribute("aria-expanded", "false");
+    if (/^(1|2|3|4|5|6|7|8|9|10|11)$/.test(num)) body.insertAdjacentHTML("beforeend", secFilesHtml("s" + num));
+  });
+}
+function openSections(isNew){
+  Array.prototype.forEach.call(document.querySelectorAll("#formView section.panel[data-acc]"), (sec) => { const n = sec.getAttribute("data-sec-no"); setSection(sec, !!isNew && (n === "1" || n === "2")); });
+}
+function sectionSummaries(){
+  const c = calc(state), cu = state.customer, d = state.delivery || {}, s = state.supplier || {}, files = state.files || [];
+  const items = state.items.filter((it) => (it.name || "").trim());
+  const j = (a) => a.filter(Boolean).join(" \u00B7 ");
+  const lk = ((state.invoiceNo && linkIndex.urdsOf.get(state.invoiceNo)) ? linkIndex.urdsOf.get(state.invoiceNo).size : 0) + ((state.urdNo && linkIndex.invsOf.get(state.urdNo)) ? linkIndex.invsOf.get(state.urdNo).size : 0);
+  const cuTok = customers[normPhone(cu.phone)] && customers[normPhone(cu.phone)].viewToken;
+  return {
+    "1": j([cu.firm || cu.name, cu.phone ? prettyPhone(normPhone(cu.phone)) : "", cu.city]) || "Not filled in yet",
+    "2": items.length ? j([items.length + (items.length === 1 ? " product" : " products"), c.payable ? inr(c.payable) : ""]) : "No products yet",
+    "3": c.received > 0 ? inr(c.received) + " received \u00B7 " + c.payStatus : "No payment yet",
+    "4": j([d.transporter, d.lr ? "LR " + d.lr : "", d.dispatchDate ? "Dispatched " + fmtDate(d.dispatchDate) : "", d.expectedDate ? "Expected " + fmtDate(d.expectedDate) : ""]) || "Not dispatched yet",
+    "5": j([s.name, c.sup ? "Due " + inr(Math.max(0, c.supDue)) : ""]) || "Not filled in yet",
+    "6": j(["Total " + inr(c.payable), "Balance " + inr(Math.max(0, c.balance))]),
+    "7": state.viewToken ? "The customer's link is active" : "Not sent yet",
+    "7a": cuTok ? "The account link is active" : "Not sent yet",
+    "7b": (state.payRequest && state.payRequest.active) ? "Payment details are showing: " + inr(num(state.payRequest.amount)) : "Not requested",
+    "7c": "Add cash, UPI or bank payments",
+    "7d": files.length ? files.length + (files.length === 1 ? " file" : " files") + " attached" : "No files yet",
+    "8": "Parcel label text for the supplier",
+    "9": j([state.invoiceNo, state.urdNo]) || "No invoice or bill yet",
+    "10": lk ? lk + (lk === 1 ? " link" : " links") : "No links yet",
+    "11": (state.notes || "").trim().slice(0, 60) || "No notes"
+  };
+}
+function renderSectionSummaries(){
+  const secs = document.querySelectorAll("#formView section.panel[data-sec-no]"); if (!secs || !secs.length) return;
+  const sums = sectionSummaries();
+  Array.prototype.forEach.call(secs, (sec) => { const el = sec.querySelector(".secsum"); if (el) el.textContent = sums[sec.getAttribute("data-sec-no")] || ""; });
+}
+try { initSections(); } catch (err) { console.error(err); }
+$("formView").addEventListener("click", (e) => {
+  const t = e.target; if (!t || !t.closest) return;
+  const h = t.closest("section.panel[data-acc] [data-acch], section.panel[data-acc] > .secsum");
+  if (h && !t.closest("button")) { const sec = h.closest("section.panel"); setSection(sec, !sec.classList.contains("open")); }
+});
+$("formView").addEventListener("keydown", (e) => {
+  if ((e.key === "Enter" || e.key === " ") && e.target && e.target.classList && e.target.classList.contains("acc")) { e.preventDefault(); const sec = e.target.closest("section.panel"); setSection(sec, !sec.classList.contains("open")); }
+});
+$("accOpen").addEventListener("click", () => Array.prototype.forEach.call(document.querySelectorAll("#formView section.panel[data-acc]"), (s) => setSection(s, true)));
+$("accClose").addEventListener("click", () => Array.prototype.forEach.call(document.querySelectorAll("#formView section.panel[data-acc]"), (s) => setSection(s, false)));
+
 /* ---------- Bilty and payment screenshots, kept inside the database (no extra storage needed) ---------- */
 const FILE_KINDS = [["bilty", "Bilty / LR copy"], ["payment", "Payment screenshot"], ["other", "Other"]];
 const FILE_CHUNK = 700000, FILE_MAX_B64 = 3400000, FILE_MAX_COUNT = 12;
@@ -1325,14 +1419,22 @@ async function attachFile(opts){
   try {
     for (let i = 0; i < parts; i++) { await setDoc(doc(db, "orderViews", id + "_" + i), { type: "file", part: i, parts, mime, data: b64.slice(i * FILE_CHUNK, (i + 1) * FILE_CHUNK), createdAt: serverTimestamp() }); written.push(i); }
   } catch (err) { for (const i of written) { try { await deleteDoc(doc(db, "orderViews", id + "_" + i)); } catch (e) {} } throw err; }
-  const entry = { id, kind: opts.kind, label: String(opts.label || "").trim().slice(0, 60) || kindName(opts.kind), name: String(file.name || "file").slice(0, 80), mime, size: Math.round(b64.length * 3 / 4), parts, show: !!opts.show, date: todayISO() };
+  const entry = { id, section: opts.section || "", kind: opts.kind, label: String(opts.label || "").trim().slice(0, 60) || kindName(opts.kind), name: String(file.name || "file").slice(0, 80), mime, size: Math.round(b64.length * 3 / 4), parts, show: !!opts.show, date: todayISO() };
   state.files = (state.files || []).concat([entry]);
   return entry;
 }
 async function removeFileDocs(f){ for (let i = 0; i < (f.parts || 0); i++) { try { await deleteDoc(doc(db, "orderViews", f.id + "_" + i)); } catch (e) { console.error(e); } } }
+function fileRowHtml(f, can){
+  return '<div class="lnk"><span><b>' + esc(f.label) + '</b><br><small>' + esc(kindName(f.kind)) + ' &middot; ' + Math.max(1, Math.round((f.size || 0) / 1024)) + ' KB &middot; ' + (can ? (f.show ? '<b>Customer can see it</b>' : 'Hidden from the customer') : 'Private') + '</small></span><span><button class="link" type="button" data-fl-view="' + esc(f.id) + '">View</button> ' + (can ? '<button class="link" type="button" data-fl-show="' + esc(f.id) + '">' + (f.show ? "Hide" : "Show") + '</button> ' : '') + '<button class="link" type="button" data-fl-del="' + esc(f.id) + '">Remove</button></span></div>';
+}
 function renderFiles(){
-  const list = state.files || [];
-  $("flList").innerHTML = list.length ? list.map((f) => '<div class="lnk"><span><b>' + esc(f.label) + '</b><br><small>' + esc(kindName(f.kind)) + ' &middot; ' + Math.max(1, Math.round((f.size || 0) / 1024)) + ' KB &middot; ' + (f.show ? '<b>Customer can see it</b>' : 'Hidden from the customer') + '</small></span><span><button class="link" type="button" data-fl-view="' + esc(f.id) + '">View</button> <button class="link" type="button" data-fl-show="' + esc(f.id) + '">' + (f.show ? "Hide" : "Show") + '</button> <button class="link" type="button" data-fl-del="' + esc(f.id) + '">Remove</button></span></div>').join("") : '<p class="hint">No files attached yet.</p>';
+  const list = state.files || [], general = list.filter((f) => !f.section || f.section === "general");
+  $("flList").innerHTML = general.length ? general.map((f) => fileRowHtml(f, true)).join("") : '<p class="hint">No files attached yet.</p>';
+  Array.prototype.forEach.call(document.querySelectorAll("#formView [data-seclist]"), (box) => {
+    const key = box.getAttribute("data-seclist"), can = !!(SEC_FILE_RULES[key] || {}).can, mine = list.filter((f) => f.section === key);
+    box.innerHTML = mine.length ? mine.map((f) => fileRowHtml(f, can)).join("") : '<p class="hint" style="margin:.2rem 0">No files here yet.</p>';
+  });
+  if (typeof renderSectionSummaries === "function") renderSectionSummaries();
 }
 $("fl_kind").addEventListener("change", () => { $("fl_show").checked = $("fl_kind").value !== "bilty"; });
 async function afterFileChange(text){
@@ -1351,7 +1453,7 @@ $("fl_add").addEventListener("click", async () => {
   } catch (err) { if (!(err instanceof UserError)) console.error(err); show($("formMsg"), err instanceof UserError ? err.message : "The file did not save. Check your connection and try again.", "err"); }
   finally { b.disabled = false; }
 });
-$("flList").addEventListener("click", async (e) => {
+async function fileAction(e){
   const v = e.target.closest("[data-fl-view]"), s = e.target.closest("[data-fl-show]"), d = e.target.closest("[data-fl-del]");
   const find = (id) => (state.files || []).find((f) => f.id === id);
   if (v) {
@@ -1367,6 +1469,22 @@ $("flList").addEventListener("click", async (e) => {
     const f = find(d.getAttribute("data-fl-del")); if (!f || !confirm("Remove " + f.label + "? This cannot be undone.")) return;
     await removeFileDocs(f); state.files = state.files.filter((x) => x.id !== f.id); await afterFileChange("File removed.");
   }
+}
+$("flList").addEventListener("click", fileAction);
+$("formView").addEventListener("click", (e) => { if (e.target.closest && e.target.closest("#flList")) return; fileAction(e); });
+$("formView").addEventListener("click", async (e) => {
+  const b = e.target.closest && e.target.closest("[data-secattach]"); if (!b) return;
+  const key = b.getAttribute("data-secattach"), root = b.closest("[data-secfiles]"), rule = SEC_FILE_RULES[key] || { kind: "other" };
+  const fileEl = root.querySelector("[data-secfile]"), nameEl = root.querySelector("[data-secname]"), showEl = root.querySelector("[data-secshow]");
+  const file = (fileEl.files || [])[0]; hideMsg($("formMsg"));
+  if (!file) { show($("formMsg"), "Choose a photo or PDF first.", "err"); return; }
+  b.disabled = true;
+  try {
+    await attachFile({ kind: rule.kind, label: nameEl.value, show: rule.can ? !!(showEl && showEl.checked) : false, file, section: key });
+    fileEl.value = ""; nameEl.value = "";
+    await afterFileChange("File attached and saved to this section.");
+  } catch (err) { if (!(err instanceof UserError)) console.error(err); show($("formMsg"), err instanceof UserError ? err.message : "The file did not save. Check your connection and try again.", "err"); }
+  finally { b.disabled = false; }
 });
 
 /* ---------- Customer account link: one page with all of this customer's orders ---------- */
@@ -1718,6 +1836,7 @@ $("linksBox").addEventListener("click", (e) => {
 });
 function refresh(){
   const c = calc(state);
+  try { renderSectionSummaries(); } catch (err) { console.error(err); }
   $("summary").innerHTML = summaryHtml(c);
   $("dueBar").textContent = inr(Math.max(0, c.balance));
   c.lines.forEach((ln, i) => {
@@ -1726,8 +1845,16 @@ function refresh(){
   });
   $("docNos").textContent = "Tax invoice no.: " + (state.invoiceNo || "given when you first download it") + "   <->   URD bill no.: " + (state.urdNo || "given when you first download it") + "   (both belong to order " + (state.orderNo || "this order") + ", so they are linked)";
 }
+function renderStatusDates(){
+  const sd = state.statusDates || {};
+  $("stGrid").innerHTML = STATUSES.map((s) => '<div class="strow' + (s === state.status ? " cur" : "") + '"><label>' + esc(s) + '</label><input type="date" data-st="' + esc(s) + '" value="' + esc(sd[s] || "") + '"></div>').join("");
+  const parts = STATUSES.filter((s) => sd[s]).map((s) => s + " " + fmtDate(sd[s]));
+  $("stSummary").textContent = parts.length ? "Status dates: " + parts.join(" \u00B7 ") : "Status dates (none yet)";
+}
 function onEdit(e){
-  const t = e.target, sec = t.getAttribute && t.getAttribute("data-sec");
+  const t = e.target;
+  if (t && t.getAttribute && t.getAttribute("data-st")) { state.statusDates = state.statusDates || {}; state.statusDates[t.getAttribute("data-st")] = t.value; renderStatusDates(); return; }
+  const sec = t.getAttribute && t.getAttribute("data-sec");
   if (!sec) return;
   const k = t.getAttribute("data-k");
   const val = t.type === "checkbox" ? t.checked : t.value;
@@ -1735,6 +1862,7 @@ function onEdit(e){
   else if (t.hasAttribute("data-i")) state[sec][+t.getAttribute("data-i")][k] = val;
   else state[sec][k] = val;
   if (t.id === "c_shipSame") $("shipBox").classList.toggle("hidden", t.checked);
+  if (t.id === "r_status") { state.statusDates = state.statusDates || {}; if (!state.statusDates[state.status]) state.statusDates[state.status] = todayISO(); renderStatusDates(); }
   refresh();
 }
 $("formView").addEventListener("input", onEdit);
@@ -1798,11 +1926,14 @@ async function persistOrder(){
   if (phone.length < 10 || phone.length > 15) throw new UserError("Enter the customer's WhatsApp number (10 digits).");
   const items = state.items.filter((it) => (it.name || "").trim() || it.qty || it.custRate || it.supRate).map(clean);
   if (!items.length) throw new UserError("Add at least one product.");
+  const sGst = String((state.supplier || {}).gstin || "").trim().toUpperCase();
+  if (sGst && !/^\d{2}[A-Z]{5}\d{4}[A-Z][A-Z\d]Z[A-Z\d]$/.test(sGst)) throw new UserError("The supplier GST number does not look right. It has 15 letters and numbers, like 29ABCDE1234F1Z5. Leave it empty if you do not have it.");
+  state.supplier.gstin = sGst;
   const isNew = !state.orderNo;
   const orderNo = isNew ? await nextOrderNo() : state.orderNo;
   const data = {
     orderDate: state.orderDate || todayISO(), status: state.status, gstMode: state.gstMode === "excl" ? "excl" : "incl",
-    payTerms: (state.payTerms || "").trim(), viewToken: state.viewToken || "", payRequest: state.payRequest, files: state.files || [], invoiceNo: state.invoiceNo || "", invoiceDate: state.invoiceDate || "", urdNo: state.urdNo || "", urdDate: state.urdDate || "",
+    payTerms: (state.payTerms || "").trim(), viewToken: state.viewToken || "", payRequest: state.payRequest, files: state.files || [], statusDates: state.statusDates || {}, invoiceNo: state.invoiceNo || "", invoiceDate: state.invoiceDate || "", urdNo: state.urdNo || "", urdDate: state.urdDate || "",
     customer: Object.assign(clean(state.customer), { phone }),
     supplier: clean(state.supplier), items,
     freight: clean(state.freight), delivery: clean(state.delivery),
