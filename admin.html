@@ -50,6 +50,17 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;color:var(--ink)}
 .btns button.del{border-color:var(--bad);color:var(--bad)}
 .btns button.wa{border-color:var(--ok);color:var(--ok);font-weight:600}
 .hidden{display:none!important}
+.smodal{position:fixed;inset:0;background:rgba(10,18,30,.6);display:flex;align-items:flex-end;justify-content:center;z-index:80}
+.sbox{background:#fff;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:1rem 1rem 1.4rem}
+.shead{display:flex;justify-content:space-between;align-items:center;gap:.8rem}
+.shead h2{font-size:1.15rem;margin:0}
+.slink{background:none;border:1px solid var(--ink);border-radius:999px;padding:.35rem .9rem;font:inherit;font-weight:600;cursor:pointer}
+.posterbox{margin:.8rem 0;text-align:center;background:var(--ivory);border:1px solid var(--line);border-radius:10px;padding:.6rem;min-height:120px}
+.posterbox img{max-width:100%;max-height:52vh;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.sbig{display:block;width:100%;border:0;border-radius:12px;background:var(--ink);color:#fff;font:inherit;font-weight:700;font-size:1.02rem;padding:.95rem;cursor:pointer}
+.sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin-top:.6rem}
+.sgrid button{border:1px solid #bfb7a2;background:#fff;border-radius:10px;padding:.7rem .5rem;font:inherit;font-weight:600;cursor:pointer}
+.sgrid button.wa{border-color:var(--ok);color:var(--ok)}
 </style>
 </head>
 <body>
@@ -80,14 +91,14 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;color:var(--ink)}
 
   <!-- Sharing settings -->
   <section class="panel hidden" id="shareCfg">
-    <h2>Sharing to WhatsApp</h2>
+    <h2>Sharing (WhatsApp, posters, social media)</h2>
     <label for="rateMode" style="margin-top:0">What to show on the Lot rate line</label>
     <select id="rateMode">
       <option value="link">Click the link only</option>
       <option value="exact">Exact rate only</option>
       <option value="both">Exact rate and Click the link</option>
     </select>
-    <p class="hint" style="margin-top:.4rem">This applies to every Share on WhatsApp button on this page. Buyers who share from the catalogue always send the Click the link version.</p>
+    <p class="hint" style="margin-top:.4rem">This applies to every Share button on this page, including the poster. For public Facebook and Instagram posts, Click the link only keeps your exact rate off the post. Buyers who share from the catalogue always send the Click the link version.</p>
   </section>
 
   <!-- Add / edit a lot -->
@@ -197,6 +208,25 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;color:var(--ink)}
   </section>
 </main>
 
+<div id="shareModal" class="smodal hidden" role="dialog" aria-modal="true" aria-label="Share this lot">
+  <div class="sbox">
+    <div class="shead"><h2 id="shTitle">Share this lot</h2><button type="button" class="slink" id="shClose">Close</button></div>
+    <div class="posterbox"><img id="posterImg" alt="Lot poster preview"><p class="hint" id="shWait">Making the poster...</p></div>
+    <button type="button" class="sbig" id="shAny">Share poster and text to any app</button>
+    <p class="hint" style="margin:.4rem 0 0">Opens your phone's own share list. Choose Instagram, Facebook, Telegram, WhatsApp Business or any app.</p>
+    <div class="sgrid">
+      <button type="button" id="shText">Share text only</button>
+      <button type="button" id="shSave">Save poster</button>
+      <button type="button" id="shFb">Facebook</button>
+      <button type="button" id="shTg">Telegram</button>
+      <button type="button" id="shIn">LinkedIn</button>
+      <button type="button" class="wa" id="shWa">WhatsApp</button>
+      <button type="button" id="shCopy">Copy text</button>
+    </div>
+    <div class="msg" id="shMsg" role="status"></div>
+  </div>
+</div>
+<canvas id="posterCv" width="1080" height="1350" class="hidden"></canvas>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
@@ -262,6 +292,122 @@ function shareText(l, mode){
   lines.push("Trusted Firm", "AK Brands Marketing\u00A9");
   return lines.join("\n");
 }
+
+/* ---------- Share window: a branded poster image plus the same text, to any app ---------- */
+let shLot = null, shBlob = null, shUrl = "";
+const shText = () => shareText(shLot, currentMode());
+function wrapLines(g, text, maxW, maxLines){
+  const words = String(text || "").split(/\s+/).filter(Boolean), lines = []; let cur = "";
+  for (const w of words) { const t = cur ? cur + " " + w : w; if (g.measureText(t).width <= maxW) cur = t; else { if (cur) lines.push(cur); cur = w; } }
+  if (cur) lines.push(cur);
+  if (lines.length > maxLines) { lines.length = maxLines; let last = lines[maxLines - 1]; while (last.length > 1 && g.measureText(last + "...").width > maxW) last = last.slice(0, -1); lines[maxLines - 1] = last + "..."; }
+  return lines;
+}
+function rrect(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+function loadImg(src){ return new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; }); }
+async function makePoster(l){
+  const W = 1080, H = 1350, cv = $("posterCv"), g = cv.getContext("2d"), mode = currentMode();
+  const SANS = '"Inter","Segoe UI",Roboto,Arial,sans-serif', SERIF = 'Georgia,"Times New Roman",serif';
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
+  g.clearRect(0, 0, W, H);
+  g.fillStyle = "#0B1F3A"; g.fillRect(0, 0, W, H);
+  g.fillStyle = "#102a4c"; g.fillRect(0, 0, W, 270);
+  g.fillStyle = "#F08A24"; g.fillRect(0, 270, W, 8);
+  const logo = await loadImg("logo.jpg");
+  if (logo) { g.save(); rrect(g, 60, 55, 160, 160, 22); g.clip(); g.drawImage(logo, 60, 55, 160, 160); g.restore(); }
+  g.textBaseline = "alphabetic";
+  const tx = logo ? 250 : 60;
+  g.fillStyle = "#02C3A3"; g.font = "bold 54px " + SERIF; g.fillText("AK Brands Marketing\u00A9", tx, 120);
+  g.fillStyle = "#ffffff"; g.font = "italic 36px " + SERIF; g.fillText("Source The Value", tx, 172);
+  g.fillStyle = "#b9c6d8"; g.font = "28px " + SANS; g.fillText("India's B2B Liquidation Sourcing Partner", tx, 218);
+  const lotTxt = "LOT " + String(l.lotNo || l.id).toUpperCase();
+  g.font = "bold 66px " + SANS; const lw = g.measureText(lotTxt).width + 80;
+  g.fillStyle = "#F08A24"; rrect(g, 60, 340, lw, 100, 50); g.fill();
+  g.fillStyle = "#ffffff"; g.fillText(lotTxt, 100, 411);
+  const title = l.title || "Liquidation lot", desc = String(l.description || "").trim();
+  const rows = [];
+  if (l.qty) rows.push(["Quantity", l.qty]); if (l.moq) rows.push(["Minimum quantity", l.moq]);
+  if (l.mrp) rows.push(["MRP", l.mrp]); if (l.onlinePrice) rows.push(["Online price", l.onlinePrice]);
+  rows.push(["Lot rate", mode === "link" ? "Message us for the rate" : (l.rate || "Message us for the rate")]);
+  /* choose the biggest layout that fits: title size, lines of details, row height */
+  const plans = [[76, 2, 86], [76, 2, 76], [68, 2, 76], [68, 1, 72], [60, 1, 68], [60, 0, 68], [52, 0, 64]];
+  let plan = plans[plans.length - 1], tl = [], dl = [];
+  for (const pl of plans) {
+    g.font = "bold " + pl[0] + "px " + SANS; const t = wrapLines(g, title, W - 120, 3), need = wrapLines(g, title, W - 120, 99).length;
+    g.font = "34px " + SANS; const d = pl[1] && desc ? wrapLines(g, desc, W - 120, pl[1]) : [];
+    const used = 510 + t.length * pl[0] * 1.2 + (d.length ? d.length * 46 + 26 : 0) + 24 + rows.length * pl[2] + 30;
+    if ((need <= 3 || pl[0] <= 52) && used <= 1150) { plan = pl; tl = t; dl = d; break; }
+    plan = pl; tl = t; dl = d;
+  }
+  let y = 510;
+  g.font = "bold " + plan[0] + "px " + SANS; g.fillStyle = "#ffffff"; tl.forEach((ln) => { g.fillText(ln, 60, y); y += plan[0] * 1.2; });
+  if (dl.length) { y += 4; g.font = "34px " + SANS; g.fillStyle = "#c9d5e6"; dl.forEach((ln) => { g.fillText(ln, 60, y + 24); y += 46; }); y += 22; }
+  const rowH = plan[2], cardH = rows.length * rowH + 30, cardY = Math.max(y + 10, Math.min(1140 - cardH, y + 40));
+  g.fillStyle = "#ffffff"; rrect(g, 50, cardY, W - 100, cardH, 30); g.fill();
+  rows.forEach((r, i) => {
+    const ry = cardY + 15 + i * rowH, last = i === rows.length - 1;
+    if (last) { g.fillStyle = "#fff1e0"; rrect(g, 62, ry + 4, W - 124, rowH - 8, 20); g.fill(); }
+    else if (i > 0) { g.fillStyle = "#e6e9ee"; g.fillRect(90, ry, W - 180, 2); }
+    g.fillStyle = "#5c6b80"; g.font = "30px " + SANS; g.textAlign = "left"; g.fillText(r[0], 90, ry + rowH / 2 + 11);
+    g.fillStyle = last ? "#c4600c" : "#0B1F3A"; g.font = "bold " + (last ? 42 : 40) + "px " + SANS; g.textAlign = "right";
+    let v = String(r[1]); const full = v; while (g.measureText(v).width > W - 520 && v.length > 4) v = v.slice(0, -1); g.fillText(v === full ? v : v + "...", W - 90, ry + rowH / 2 + 14);
+  });
+  g.textAlign = "left";
+  const num = String(l.waNumber || DEFAULT_NUMBER), nice = typeof pretty === "function" ? pretty(num) : "+" + num;
+  g.fillStyle = "#F08A24"; rrect(g, 50, 1170, W - 100, 104, 52); g.fill();
+  g.fillStyle = "#ffffff"; g.font = "bold 44px " + SANS; g.textAlign = "center"; g.fillText("Book on WhatsApp  " + nice, W / 2, 1238);
+  g.fillStyle = "#b9c6d8"; g.font = "27px " + SANS; g.fillText("Trusted Firm  |  AK Brands Marketing\u00A9  |  akbrandsmarketing.com", W / 2, 1318);
+  g.textAlign = "left";
+  return new Promise((res) => cv.toBlob((b) => res(b), "image/jpeg", 0.92));
+}
+function shMsg(text, kind){ show($("shMsg"), text, kind || "ok"); }
+async function openShare(l){
+  shLot = l; shBlob = null; hideMsg($("shMsg"));
+  $("shTitle").textContent = "Share lot " + l.lotNo; $("posterImg").removeAttribute("src"); $("shWait").classList.remove("hidden");
+  $("shareModal").classList.remove("hidden");
+  try {
+    shBlob = await makePoster(l); if (shUrl) URL.revokeObjectURL(shUrl);
+    shUrl = URL.createObjectURL(shBlob); $("posterImg").src = shUrl; $("shWait").classList.add("hidden");
+  } catch (err) { console.error(err); $("shWait").textContent = "The poster could not be made. You can still share the text."; }
+}
+const posterFile = () => (shBlob ? new File([shBlob], "AK-Lot-" + String(shLot.lotNo).replace(/\s+/g, "-") + ".jpg", { type: "image/jpeg" }) : null);
+async function copyText(t){ try { await navigator.clipboard.writeText(t); return true; } catch (e) { return false; } }
+$("shClose").addEventListener("click", () => $("shareModal").classList.add("hidden"));
+$("shareModal").addEventListener("click", (e) => { if (e.target.id === "shareModal") $("shareModal").classList.add("hidden"); });
+$("shAny").addEventListener("click", async () => {
+  hideMsg($("shMsg")); if (!shLot) return;
+  const f = posterFile(), data = { text: shText(), title: "Lot " + shLot.lotNo };
+  try {
+    if (!navigator.share) { shMsg("This browser has no share list. Use the buttons below, or Save poster.", "err"); return; }
+    if (f && navigator.canShare && navigator.canShare({ files: [f] })) data.files = [f];
+    await navigator.share(data);
+  } catch (err) { if (err && err.name !== "AbortError") shMsg("Sharing did not start. Use the buttons below, or Save poster.", "err"); }
+});
+$("shText").addEventListener("click", async () => {
+  hideMsg($("shMsg")); if (!shLot) return;
+  try { if (!navigator.share) { shMsg("This browser has no share list. Use Copy text instead.", "err"); return; } await navigator.share({ text: shText() }); }
+  catch (err) { if (err && err.name !== "AbortError") shMsg("Sharing did not start. Use Copy text instead.", "err"); }
+});
+$("shSave").addEventListener("click", () => {
+  hideMsg($("shMsg")); const f = posterFile(); if (!f) { shMsg("The poster is not ready yet.", "err"); return; }
+  const a = document.createElement("a"); a.href = shUrl; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); shMsg("Poster saved to your downloads.");
+});
+$("shCopy").addEventListener("click", async () => { hideMsg($("shMsg")); if (!shLot) return; shMsg((await copyText(shText())) ? "Text copied. Paste it in your post." : "Could not copy. Press and hold the text and copy it by hand.", "ok"); });
+$("shFb").addEventListener("click", async () => {
+  if (!shLot) return; const ok = await copyText(shText());
+  window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(lotUrl(shLot)), "_blank", "noopener");
+  shMsg(ok ? "Facebook is opening. The lot text is copied: paste it into your post." : "Facebook is opening. Use Copy text first, then paste it into your post.");
+});
+$("shTg").addEventListener("click", () => {
+  if (!shLot) return; const t = shText().split(lotUrl(shLot)).join("").replace(/\n{3,}/g, "\n\n");
+  window.open("https://t.me/share/url?url=" + encodeURIComponent(lotUrl(shLot)) + "&text=" + encodeURIComponent(t), "_blank", "noopener");
+});
+$("shIn").addEventListener("click", async () => {
+  if (!shLot) return; const ok = await copyText(shText());
+  window.open("https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(lotUrl(shLot)), "_blank", "noopener");
+  shMsg(ok ? "LinkedIn is opening. The lot text is copied: paste it into your post." : "LinkedIn is opening. Use Copy text first.");
+});
+$("shWa").addEventListener("click", () => { if (shLot) window.open("https://wa.me/?text=" + encodeURIComponent(shText()), "_blank", "noopener"); });
 
 function show(el, text, kind){ el.textContent = text; el.className = "msg show " + kind; }
 function hideMsg(el){ el.className = "msg"; el.textContent = ""; }
@@ -519,6 +665,11 @@ $("lotForm").addEventListener("submit", async (e) => {
     sharer.textContent = "Share this lot on WhatsApp";
     $("formMsg").appendChild(document.createElement("br"));
     $("formMsg").appendChild(sharer);
+    const savedLot = Object.assign({ id: lotNo }, data);
+    const social = document.createElement("a");
+    social.className = "sharenow"; social.href = "#"; social.style.marginLeft = ".5rem"; social.textContent = "Poster and social media";
+    social.addEventListener("click", (ev) => { ev.preventDefault(); openShare(savedLot); });
+    $("formMsg").appendChild(social);
     const keepWa = $("waSelect").value;
     resetForm();
     renderTeam(keepWa.indexOf("custom:") === 0 ? "default" : keepWa);
@@ -566,7 +717,7 @@ function renderList(){
       '<p>Quantity ' + esc(l.qty) + ' / Minimum quantity ' + esc(l.moq) + ' / Lot rate ' + esc(l.rate) + '</p>' +
       '<p>Buyer queries go to: ' + esc(l.waNumber ? (l.waName ? l.waName + " " : "") + "(" + pretty(l.waNumber) + ")" : "Main business number") + '</p>' +
       '<div class="btns">' +
-        '<button type="button" class="wa" data-act="share" data-id="' + esc(l.id) + '">Share on WhatsApp</button>' +
+        '<button type="button" class="wa" data-act="share" data-id="' + esc(l.id) + '">Share</button>' +
         '<button type="button" data-act="edit" data-id="' + esc(l.id) + '">Edit</button>' +
         '<button type="button" data-act="toggle" data-id="' + esc(l.id) + '">' + (sold ? "Mark available" : "Mark sold") + '</button>' +
         '<button type="button" class="del" data-act="delete" data-id="' + esc(l.id) + '">Delete</button>' +
@@ -583,7 +734,7 @@ $("lotList").addEventListener("click", async (e) => {
   const act = b.getAttribute("data-act");
   try {
     if (act === "share"){
-      window.open("https://wa.me/?text=" + encodeURIComponent(shareText(l, currentMode())), "_blank");
+      openShare(l);
     } else if (act === "toggle"){
       await updateDoc(doc(db, "lots", id), { status: l.status === "sold" ? "available" : "sold" });
       await loadLots();
