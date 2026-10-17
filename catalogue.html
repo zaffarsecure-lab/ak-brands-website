@@ -230,6 +230,545 @@ dialog::backdrop{background:rgba(10,18,30,.7)}
 </footer>
 
 
+<style>
+.btn-sharemore{display:block;width:100%;text-align:center;font:inherit;font-weight:600;font-size:.95rem;color:#0f1b2d;padding:.8rem 1rem;background:#fff;border:1px solid #0f1b2d;border-radius:10px;cursor:pointer}
+.btn-sharemore:hover{background:#f1f3f6}
+.sxm{position:fixed;inset:0;background:rgba(10,18,30,.6);display:flex;align-items:flex-end;justify-content:center;z-index:200}
+.sxm.sxhide{display:none}
+.sxb{background:#fff;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:1rem 1rem 1.4rem;color:#243247}
+.sxh{display:flex;justify-content:space-between;align-items:center;gap:.8rem}
+.sxh h2{font-size:1.15rem;margin:0;color:#0f1b2d}
+.sxx{background:none;border:1px solid #0f1b2d;border-radius:999px;padding:.35rem .9rem;font:inherit;font-weight:600;cursor:pointer;color:#0f1b2d}
+.sxp{margin:.8rem 0;text-align:center;background:#f7f5ef;border:1px solid #e2ddcf;border-radius:10px;padding:.6rem;min-height:120px}
+.sxp img{max-width:100%;max-height:56vh;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.sxbig{display:block;width:100%;border:0;border-radius:12px;background:#0f1b2d;color:#fff;font:inherit;font-weight:700;font-size:1.02rem;padding:.95rem;cursor:pointer}
+.sxg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin-top:.6rem}
+.sxg button{border:1px solid #bfb7a2;background:#fff;border-radius:10px;padding:.7rem .5rem;font:inherit;font-weight:600;cursor:pointer;color:#0f1b2d}
+.sxg button.sxwa{border-color:#12803f;color:#12803f}
+.sxnote{font-size:.85rem;color:#5f6e82;margin:.4rem 0 0}
+.sxmsg{font-size:.9rem;margin-top:.7rem;color:#12803f}.sxmsg.err{color:#8a2f2f}
+</style>
+<div id="sxModal" class="sxm sxhide" role="dialog" aria-modal="true" aria-label="Share this lot">
+  <div class="sxb">
+    <div class="sxh"><h2 id="sxTitle">Share this lot</h2><button type="button" class="sxx" id="sxClose">Close</button></div>
+    <div class="sxp"><img id="sxImg" alt="Lot poster preview"><p class="sxnote" id="sxWait">Making the poster...</p></div>
+    <button type="button" class="sxx" id="sxShuffle" style="display:block;margin:0 auto .7rem">Try another design</button>
+    <button type="button" class="sxbig" id="sxAny">Share poster and text to any app</button>
+    <p class="sxnote">Opens your phone's own share list. Choose Instagram, Facebook, Telegram, WhatsApp or any app.</p>
+    <div class="sxg">
+      <button type="button" id="sxText">Share text only</button>
+      <button type="button" id="sxSave">Save poster</button>
+      <button type="button" id="sxFb">Facebook</button>
+      <button type="button" id="sxTg">Telegram</button>
+      <button type="button" id="sxIn">LinkedIn</button>
+      <button type="button" class="sxwa" id="sxWa">WhatsApp</button>
+      <button type="button" id="sxCopy">Copy text</button>
+    </div>
+    <p class="sxmsg" id="sxMsg" role="status"></p>
+  </div>
+</div>
+<script type="module" id="akPosterEngine">
+/* AK Brands Marketing - ad poster engine.
+   Makes a 1080 x 1920 (9:16) JPEG for Reels, Stories, Status and Facebook.
+   26 layouts x 14 colour schemes x 45 headlines: every lot gets its own look.
+   Words used are liquidation words: Lot, Excess, Clearance, Surplus, Bulk, Overstock. */
+const W = 1080, H = 1920;
+const SANS = '"Segoe UI","Helvetica Neue",Roboto,Arial,sans-serif';
+const HEAVY = '"Arial Black","Segoe UI Black",Impact,Roboto,"Helvetica Neue",Arial,sans-serif';
+const MONO = '"Courier New",Courier,monospace';
+const SERIF = 'Georgia,"Times New Roman",serif';
+
+const PALETTES = [
+  { n: "Brand Orange", bg1: "#0B1F3A", bg2: "#173f73", hero: "#F08A24", heroText: "#0B1F3A", a2: "#FFD166", text: "#FFFFFF", sub: "#b9c6d8", chip: "#ffffff", chipText: "#0B1F3A", cta: "#1FAF38", ctaText: "#fff", name: "#02C3A3", light: false },
+  { n: "Neon Night", bg1: "#0a0a0a", bg2: "#232323", hero: "#FFE600", heroText: "#111111", a2: "#FF3D71", text: "#FFFFFF", sub: "#c8c8c8", chip: "#FFE600", chipText: "#111111", cta: "#1FAF38", ctaText: "#fff", name: "#FFE600", light: false },
+  { n: "Red Gold", bg1: "#6e000f", bg2: "#b3001b", hero: "#FFC400", heroText: "#6b0010", a2: "#FFFFFF", text: "#FFFFFF", sub: "#ffd0d6", chip: "#FFC400", chipText: "#6b0010", cta: "#1FAF38", ctaText: "#fff", name: "#FFC400", light: false },
+  { n: "Purple Pop", bg1: "#26085a", bg2: "#5b1fa8", hero: "#FF4DA6", heroText: "#FFFFFF", a2: "#FFE14D", text: "#FFFFFF", sub: "#e0cfff", chip: "#FFE14D", chipText: "#26085a", cta: "#1FAF38", ctaText: "#fff", name: "#FFE14D", light: false },
+  { n: "Teal Lime", bg1: "#00343a", bg2: "#00706f", hero: "#C6F432", heroText: "#00343a", a2: "#FFFFFF", text: "#FFFFFF", sub: "#bfeceb", chip: "#C6F432", chipText: "#00343a", cta: "#F08A24", ctaText: "#fff", name: "#C6F432", light: false },
+  { n: "Emerald Gold", bg1: "#04281a", bg2: "#0c5c35", hero: "#F5C542", heroText: "#04281a", a2: "#F5C542", text: "#FFFFFF", sub: "#c4e8d2", chip: "#F5C542", chipText: "#04281a", cta: "#F08A24", ctaText: "#fff", name: "#F5C542", light: false },
+  { n: "Midnight Cyan", bg1: "#080e2c", bg2: "#18246f", hero: "#00D4FF", heroText: "#04102e", a2: "#FF9F1C", text: "#FFFFFF", sub: "#c3cbf5", chip: "#FF9F1C", chipText: "#080e2c", cta: "#1FAF38", ctaText: "#fff", name: "#00D4FF", light: false },
+  { n: "Coral Charcoal", bg1: "#1b232b", bg2: "#35424e", hero: "#FF6B57", heroText: "#FFFFFF", a2: "#FFD166", text: "#FFFFFF", sub: "#cfd6dd", chip: "#FFD166", chipText: "#1b232b", cta: "#1FAF38", ctaText: "#fff", name: "#FFD166", light: false },
+  { n: "Cream Red", bg1: "#FFF4E0", bg2: "#FFDDAA", hero: "#E10600", heroText: "#FFFFFF", a2: "#E10600", text: "#2b1a00", sub: "#7a5a2a", chip: "#2b1a00", chipText: "#FFF4E0", cta: "#1FAF38", ctaText: "#fff", name: "#B30000", light: true },
+  { n: "Sky Sunshine", bg1: "#E6F5FF", bg2: "#B5E1FF", hero: "#FF8A00", heroText: "#FFFFFF", a2: "#0B5CAD", text: "#07324d", sub: "#3d6a86", chip: "#07324d", chipText: "#E6F5FF", cta: "#1FAF38", ctaText: "#fff", name: "#0B5CAD", light: true },
+  { n: "Magenta Mint", bg1: "#34002e", bg2: "#7a0a6b", hero: "#00F5C8", heroText: "#34002e", a2: "#FFFFFF", text: "#FFFFFF", sub: "#f0c8ea", chip: "#00F5C8", chipText: "#34002e", cta: "#1FAF38", ctaText: "#fff", name: "#00F5C8", light: false },
+  { n: "Orange Blaze", bg1: "#7a1d00", bg2: "#d94a00", hero: "#FFE34D", heroText: "#6b1a00", a2: "#FFFFFF", text: "#FFFFFF", sub: "#ffd9c4", chip: "#FFE34D", chipText: "#6b1a00", cta: "#1FAF38", ctaText: "#fff", name: "#FFE34D", light: false },
+  { n: "Ocean Gold", bg1: "#002f5f", bg2: "#0a6bc4", hero: "#FFD21F", heroText: "#002f5f", a2: "#FFFFFF", text: "#FFFFFF", sub: "#c4e0f7", chip: "#FFD21F", chipText: "#002f5f", cta: "#1FAF38", ctaText: "#fff", name: "#FFD21F", light: false },
+  { n: "Graphite Lime", bg1: "#101010", bg2: "#2b2b2b", hero: "#B6FF00", heroText: "#111111", a2: "#FFFFFF", text: "#FFFFFF", sub: "#c4c4c4", chip: "#B6FF00", chipText: "#111111", cta: "#F08A24", ctaText: "#fff", name: "#B6FF00", light: false }
+];
+/* punchy headlines: liquidation language only */
+const HEADLINES = [
+  "BULK DEAL ALERT", "LIQUIDATION LOT IS LIVE", "SURPLUS STOCK CLEARANCE", "EXCESS STOCK, UNBEATABLE RATE", "CLEARANCE LOT. GRAB IT NOW.",
+  "FULL LOT AT A CLEARANCE RATE", "BULK BUYERS, THIS IS YOUR LOT", "SURPLUS LOT, SMASHED RATE", "OVERSTOCK ALERT", "EXCESS LOT. EXTRA MARGIN.",
+  "RESELLERS, GRAB THIS LOT", "PROFIT STARTS WITH THIS LOT", "STOP SCROLLING: BULK LOT LIVE", "NEW SURPLUS JUST LANDED", "THE LOT EVERYONE WANTS",
+  "BULK RATE. BIG MARGIN.", "CLEARANCE RATE, LIMITED LOT", "BUY THE FULL LOT, SAVE BIG", "BOOK THIS LOT BEFORE IT'S GONE", "ONE LOT. ONE CHANCE.",
+  "SURPLUS SMASHER", "EXCESS STOCK EXPLOSION", "SMASHING BULK RATE", "LIMITED STOCK, BIG SAVINGS", "MARGIN MAKER LOT",
+  "GRAB THE LOT. GROW THE MARGIN.", "SURPLUS FOUND. RATE DROPPED.", "BULK LOT. SMALL RATE.", "LOT ON. RATE DOWN.", "HOT LOT OF THE DAY",
+  "SURPLUS MUST MOVE", "BULK UP YOUR STOCK", "FILL YOUR SHELVES FOR LESS", "RESELLER'S JACKPOT LOT", "CLEARANCE ALERT: BULK LOT LIVE",
+  "EXCESS STOCK, EXTRA PROFIT", "SURPLUS DEAL. FULL LOT.", "BULK BUYERS ONLY", "WHILE THE LOT LASTS", "MORE PCS. MORE PROFIT.",
+  "PURE SURPLUS. PURE PROFIT.", "OVERSTOCK CLEARANCE LOT", "LOT RATE THAT STOPS THE SCROLL", "CLEARANCE LOT, BULK RATE", "THE SURPLUS YOU WERE WAITING FOR"
+];
+const LABELS = ["LOT RATE", "CLEARANCE RATE", "SURPLUS RATE", "BULK RATE", "EXCESS STOCK RATE", "LIQUIDATION RATE", "TODAY'S LOT RATE", "ONLY"];
+
+/* ---------- small helpers ---------- */
+const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+const rng = (seed) => { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
+const font = (g, w, s, f) => { g.font = w + " " + s + "px " + (f || SANS); };
+function fitSize(g, text, maxW, size, min, w, f){ let s = size; font(g, w, s, f); while (g.measureText(text).width > maxW && s > min) { s -= 2; font(g, w, s, f); } return s; }
+function wrap(g, text, maxW, maxLines){
+  const words = String(text || "").split(/\s+/).filter(Boolean), lines = []; let cur = "";
+  for (const w of words) { const t = cur ? cur + " " + w : w; if (g.measureText(t).width <= maxW) cur = t; else { if (cur) lines.push(cur); cur = w; } }
+  if (cur) lines.push(cur);
+  if (lines.length > maxLines) { lines.length = maxLines; let last = lines[maxLines - 1]; while (last.length > 1 && g.measureText(last + "...").width > maxW) last = last.slice(0, -1); lines[maxLines - 1] = last + "..."; }
+  return lines;
+}
+function rr(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+function burst(g, cx, cy, ro, ri, n, rot){ g.beginPath(); for (let i = 0; i < n * 2; i++) { const a = rot + i * Math.PI / n, r = i % 2 === 0 ? ro : ri; const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r; if (i) g.lineTo(x, y); else g.moveTo(x, y); } g.closePath(); }
+function rays(g, cx, cy, len, n, rot, fill){ g.fillStyle = fill; for (let i = 0; i < n; i++) { const a0 = rot + i * 2 * Math.PI / n, a1 = a0 + Math.PI / n; g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + Math.cos(a0) * len, cy + Math.sin(a0) * len); g.lineTo(cx + Math.cos(a1) * len, cy + Math.sin(a1) * len); g.closePath(); g.fill(); } }
+function dots(g, x, y, w, h, step, r, fill){ g.fillStyle = fill; for (let yy = y; yy < y + h; yy += step) for (let xx = x + ((Math.round((yy - y) / step) % 2) ? step / 2 : 0); xx < x + w; xx += step) { g.beginPath(); g.arc(xx, yy, r, 0, 7); g.fill(); } }
+function star4(g, x, y, s, fill){ g.fillStyle = fill; g.beginPath(); for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, r = i % 2 ? s * 0.28 : s; g[i ? "lineTo" : "moveTo"](x + Math.cos(a) * r, y + Math.sin(a) * r); } g.closePath(); g.fill(); }
+function shadowText(g, t, x, y, fill, sh, off){ if (sh) { g.fillStyle = sh; g.fillText(t, x + off, y + off); } g.fillStyle = fill; g.fillText(t, x, y); }
+const loadImg = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+const inr = (n) => { try { return Number(n).toLocaleString("en-IN"); } catch (e) { return String(n); } };
+const nice = (n, fb) => { n = String(n || fb || "").replace(/\D/g, ""); return n.length === 12 && n.slice(0, 2) === "91" ? "+91 " + n.slice(2, 7) + " " + n.slice(7) : (n ? "+" + n : ""); };
+function money(s){
+  const str = String(s || "").trim(); const m = str.replace(/,/g, "").match(/(\d+(?:\.\d+)?)/); if (!m) return null;
+  const val = parseFloat(m[1]); if (!(val > 0)) return null;
+  const after = str.replace(/,/g, "").slice(str.replace(/,/g, "").indexOf(m[1]) + m[1].length).trim();
+  return { val, text: inr(val), unit: after.replace(/^(\/|per)\s*/i, "").replace(/^[-.:]+/, "").trim(), raw: str };
+}
+
+function hexPath(g, cx, cy, R, rot, n){ g.beginPath(); for (let i = 0; i < n; i++) { const a = rot + i * 2 * Math.PI / n; const x = cx + Math.cos(a) * R, y = cy + Math.sin(a) * R; if (i) g.lineTo(x, y); else g.moveTo(x, y); } g.closePath(); }
+function blob(g, x, y, r, col){ const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, col); gr.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+function zigRect(g, x, y, w, h, amp, step){ g.beginPath(); g.moveTo(x, y); for (let xx = x; xx < x + w; xx += step) { g.lineTo(xx + step / 2, y + amp); g.lineTo(Math.min(xx + step, x + w), y); } g.lineTo(x + w, y + h); for (let xx = x + w; xx > x; xx -= step) { g.lineTo(xx - step / 2, y + h - amp); g.lineTo(Math.max(xx - step, x), y + h); } g.closePath(); }
+
+/* ---------- numbers for the lot (full lot value, minimum order value) ---------- */
+const UNIT_OK = /^(pcs?|pieces?|units?|kit|kits|boxes|box|sets?)?$/i;
+const fam = (u) => { u = String(u || "").replace(/\./g, "").trim().toLowerCase(); if (!u) return ""; if (/^(pcs?|pieces?)$/.test(u)) return "pc"; if (/^units?$/.test(u)) return "unit"; if (/^(boxes|box)$/.test(u)) return "box"; if (/^kits?$/.test(u)) return "kit"; if (/^sets?$/.test(u)) return "set"; return "?"; };
+function calcInfo(lot, rate){
+  if (!rate) return null; const q = money(String(lot.qty || "")); if (!q || !UNIT_OK.test(q.unit.replace(/\./g, "").trim())) return null;
+  const qf = fam(q.unit), rf = fam(rate.unit.replace(/^per\s*/i, "")); if (rf === "?" || (rf && qf && rf !== qf)) return null;   /* rate and quantity must use the same unit */
+  const m = money(String(lot.moq || "")), mOk = m && UNIT_OK.test(m.unit.replace(/\./g, "").trim()) && (!fam(m.unit) || !qf || fam(m.unit) === qf);
+  return { qty: q, total: Math.round(rate.val * q.val), min: mOk ? Math.round(rate.val * m.val) : null };
+}
+
+/* ---------- which design this lot gets ---------- */
+const HKEY = "ak_ad_hist2";
+const DESIGN_COUNT = { get layouts(){ return LAYOUTS.length; }, palettes: PALETTES.length, headlines: HEADLINES.length };
+function pickDesign(lot, variant, avail, force){
+  const id = String(lot.lotNo || lot.id || ""), r = rng(hash(id) + variant * 7919);
+  let t = avail[Math.floor(r() * avail.length)], p = Math.floor(r() * PALETTES.length), h = Math.floor(r() * HEADLINES.length), hist = [];
+  if (force && force.layout != null) { t = force.layout; }
+  if (force && force.palette != null) { p = force.palette; }
+  else if (!(force && force.layout != null)) {
+    try { hist = JSON.parse(localStorage.getItem(HKEY) || "[]"); if (!Array.isArray(hist)) hist = []; } catch (e) { hist = []; }
+    const same = hist.find((x) => x.lot === id && x.v === variant && avail.indexOf(x.t) >= 0);
+    if (same) { t = same.t; p = same.p; h = same.h; }
+    else {
+      const recent = hist.slice(-8), rt = recent.slice(-5).map((x) => x.t), rp = recent.slice(-4).map((x) => x.p), rh = recent.slice(-6).map((x) => x.h);
+      let i = avail.indexOf(t); for (let k = 0; k < avail.length && rt.indexOf(avail[i]) >= 0; k++) i = (i + 1) % avail.length; t = avail[i];
+      for (let k = 0; k < PALETTES.length && rp.indexOf(p) >= 0; k++) p = (p + 1) % PALETTES.length;
+      for (let k = 0; k < HEADLINES.length && rh.indexOf(h) >= 0; k++) h = (h + 1) % HEADLINES.length;
+      hist.push({ lot: id, v: variant, t, p, h }); try { localStorage.setItem(HKEY, JSON.stringify(hist.slice(-16))); } catch (e) {}
+    }
+  }
+  if (LAYOUTS[t] && LAYOUTS[t].dark) { for (let k = 0; k < PALETTES.length && PALETTES[p].light; k++) p = (p + 1) % PALETTES.length; }
+  return { t, p, h, r: rng(hash(id) + variant * 104729 + 13) };
+}
+
+/* ---------- shared pieces ---------- */
+function paintBg(c, kind){
+  const { g, P, r } = c, ang = r() * 0.6 - 0.3;
+  const gr = g.createLinearGradient(W * (0.5 - ang), 0, W * (0.5 + ang), H); gr.addColorStop(0, P.bg1); gr.addColorStop(1, P.bg2);
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  const soft = P.light ? "rgba(255,255,255,.35)" : "rgba(255,255,255,.07)", deep = P.light ? "rgba(0,0,0,.05)" : "rgba(0,0,0,.18)";
+  if (kind === "rays") rays(g, W / 2, 940, 1700, 22, r() * 3, soft);
+  else if (kind === "dots") { dots(g, 0, 0, W, H, 46, 5, deep); }
+  else if (kind === "bigdots") { dots(g, 0, 0, W, H, 70, 14, P.light ? "rgba(0,0,0,.07)" : "rgba(255,255,255,.08)"); }
+  else if (kind === "circles") { g.fillStyle = soft; for (let i = 0; i < 6; i++) { g.beginPath(); g.arc(r() * W, r() * H, 120 + r() * 260, 0, 7); g.fill(); } }
+  else if (kind === "diag") { g.fillStyle = deep; for (let i = -4; i < 14; i++) { g.save(); g.translate(0, i * 190); g.rotate(-0.35); g.fillRect(-300, 0, W + 900, 70); g.restore(); } }
+  else if (kind === "grid") { g.strokeStyle = P.light ? "rgba(0,0,0,.06)" : "rgba(255,255,255,.06)"; g.lineWidth = 2; for (let x = 0; x < W; x += 90) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); } for (let y = 0; y < H; y += 90) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); } }
+  const vg = g.createRadialGradient(W / 2, H / 2, 500, W / 2, H / 2, 1250); vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, P.light ? "rgba(0,0,0,.10)" : "rgba(0,0,0,.35)"); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+}
+function brandBar(c){
+  const { g, P, l, logo } = c;
+  if (logo) { g.save(); rr(g, 50, 60, 110, 110, 18); g.clip(); g.drawImage(logo, 50, 60, 110, 110); g.restore(); }
+  const x = logo ? 182 : 56; g.textAlign = "left";
+  font(g, "700", 42, SERIF); g.fillStyle = P.name; g.fillText("AK Brands Marketing\u00A9", x, 108);
+  font(g, "italic 400", 30, SERIF); g.fillStyle = P.sub; g.fillText("Source The Value", x, 152);
+  const lot = "LOT " + String(l.lotNo || l.id).toUpperCase(); font(g, "800", 38, HEAVY); const w = g.measureText(lot).width + 54;
+  g.fillStyle = P.hero; rr(g, W - 50 - w, 78, w, 74, 37); g.fill(); g.fillStyle = P.heroText; g.textAlign = "center"; g.fillText(lot, W - 50 - w / 2, 128); g.textAlign = "left";
+}
+function headline(c, y, align){
+  const { g, P, copy } = c; g.textAlign = align || "center"; const x = align === "left" ? 60 : W / 2; let size = 104, lines;
+  for (;;) { font(g, "900", size, HEAVY); lines = wrap(g, copy.headline, W - 120, 3); if (lines.length <= 2 || size <= 56) break; size -= 6; }
+  lines.length = Math.min(lines.length, 2);
+  lines.forEach((ln) => { shadowText(g, ln, x, y + size * 0.82, P.light ? P.hero : P.a2, P.light ? "rgba(0,0,0,.12)" : "rgba(0,0,0,.45)", 5); y += size * 1.04; });
+  g.textAlign = "left"; return y;
+}
+function titleBlock(c, y, align, col){
+  const { g, P, l } = c; g.textAlign = align || "center"; const x = align === "left" ? 60 : W / 2, title = String(l.title || "Liquidation lot"); let size = 64, lines;
+  for (;;) { font(g, "800", size, SANS); lines = wrap(g, title, W - 140, 2); if (wrap(g, title, W - 140, 9).length <= 2 || size <= 42) break; size -= 4; }
+  g.fillStyle = col || P.text; lines.forEach((ln) => { g.fillText(ln, x, y + size * 0.85); y += size * 1.14; });
+  g.textAlign = "left"; return y;
+}
+/* the big number: label above, rupee and amount, unit below. opt: { stroke, strokeW, neon, mono, noLabel } */
+function heroRate(c, cx, cy, boxW, color, label, scale, opt){
+  const { g, rate, showRate } = c; opt = opt || {}; const HF = opt.mono ? MONO : HEAVY; g.textAlign = "center"; g.fillStyle = color; scale = scale || 1;
+  if (opt.neon) { g.shadowColor = color; g.shadowBlur = 28; }
+  const put = (t, x, y, size) => { if (opt.stroke) { g.lineJoin = "round"; g.strokeStyle = opt.stroke; g.lineWidth = opt.strokeW || 14; g.strokeText(t, x, y); } if (opt.neon) { g.strokeStyle = color; g.lineWidth = 7; g.strokeText(t, x, y); g.save(); g.fillStyle = opt.neonFill || "rgba(0,0,0,.55)"; g.shadowBlur = 0; g.fillText(t, x, y); g.restore(); } else g.fillText(t, x, y); };
+  if (showRate && rate) {
+    const sym = "\u20B9"; let size = Math.round(360 * scale); const txt = rate.text;
+    for (;;) { font(g, "900", size, HF); const w = g.measureText(txt).width + size * 0.46; if (w <= boxW || size <= 110) break; size -= 6; }
+    font(g, "900", size, HF); const wNum = g.measureText(txt).width, wSym = size * 0.46, total = wNum + wSym, base = cy + size * 0.34, left = cx - total / 2;
+    g.textAlign = "left"; font(g, "900", Math.round(size * 0.55), HF); put(sym, left, base - size * 0.28); font(g, "900", size, HF); put(txt, left + wSym, base);
+    g.textAlign = "center"; if (!opt.noLabel) { font(g, "800", Math.round(52 * scale), SANS); g.fillText(label, cx, base - size * 0.82 - 14); }
+    const unit = rate.unit ? "per " + rate.unit.replace(/^per\s*/i, "") : ""; if (unit) { font(g, "800", Math.round(64 * scale), SANS); g.fillText(unit, cx, base + 84 * scale); }
+  } else if (showRate && c.l.rate) {
+    const t = String(c.l.rate); const s = fitSize(g, t, boxW, 130, 50, "900", HF); put(t, cx, cy + s * 0.35);
+  } else {
+    font(g, "800", Math.round(56 * scale), SANS); g.fillText("GET TODAY'S", cx, cy - 100 * scale);
+    const s = fitSize(g, "LOT RATE", boxW, 210 * scale, 90, "900", HF); put("LOT RATE", cx, cy + s * 0.25);
+    font(g, "800", Math.round(60 * scale), SANS); g.fillText("ON WHATSAPP", cx, cy + s * 0.25 + 90 * scale);
+  }
+  g.shadowBlur = 0; g.textAlign = "left";
+}
+function mrpStrike(c, cx, y, color){
+  const { g, mrp, showRate } = c; if (!showRate || !mrp) return; const t = "MRP \u20B9" + mrp.text + (mrp.unit ? " per " + mrp.unit.replace(/^per\s*/i, "") : ""); font(g, "700", 48, SANS); g.textAlign = "center"; g.fillStyle = color; g.fillText(t, cx, y);
+  const w = g.measureText(t).width; g.fillRect(cx - w / 2 - 6, y - 17, w + 12, 6); g.textAlign = "left";
+}
+function mrpSticker(c, cx, y){
+  const { g, P, mrp, showRate } = c; if (!showRate || !mrp) return;
+  const t = "MRP \u20B9" + mrp.text + (mrp.unit ? " per " + mrp.unit.replace(/^per\s*/i, "") : ""); font(g, "800", 40, SANS); const w = g.measureText(t).width + 76;
+  g.save(); g.translate(cx, y); g.rotate(-0.04); g.fillStyle = "rgba(0,0,0,.3)"; rr(g, -w / 2 + 6, -26, w, 68, 34); g.fill();
+  g.fillStyle = P.light ? "#2b1a00" : "#ffffff"; rr(g, -w / 2, -34, w, 68, 34); g.fill();
+  g.fillStyle = P.light ? "#fff4e0" : "#0B1F3A"; g.textAlign = "center"; g.fillText(t, 0, 13); g.fillStyle = "#E10600"; g.fillRect(-w / 2 + 24, -3, w - 48, 6); g.restore(); g.textAlign = "left";
+}
+function discBadge(c, x, y, r, rot, fill, textCol){
+  const { g, pct, showRate } = c; if (!showRate || !pct) return;
+  if (String(fill).toLowerCase() === String(c.P.hero).toLowerCase()) { fill = c.P.light ? "#0B1F3A" : "#ffffff"; textCol = c.P.light ? "#ffffff" : "#0B1F3A"; }
+  g.save(); g.translate(x, y); g.rotate(rot); burst(g, 0, 0, r, r * 0.84, 16, 0); g.fillStyle = "rgba(0,0,0,.25)"; g.fill(); g.translate(-5, -5); burst(g, 0, 0, r, r * 0.84, 16, 0); g.fillStyle = fill; g.fill();
+  g.fillStyle = textCol; g.textAlign = "center"; font(g, "900", Math.round(r * 0.62), HEAVY); g.fillText(pct + "%", 0, r * 0.18); font(g, "800", Math.round(r * 0.26), SANS); g.fillText("BELOW MRP", 0, r * 0.52); g.restore(); g.textAlign = "left";
+}
+function chips(c, y){
+  const { g, P, l } = c, items = []; if (l.qty) items.push(["QUANTITY", l.qty]); if (l.moq) items.push(["MINIMUM ORDER", l.moq]); if (!items.length) return;
+  const gap = 24, w = (W - 120 - gap * (items.length - 1)) / items.length;
+  items.forEach((it, i) => {
+    const x = 60 + i * (w + gap); g.fillStyle = P.chip; rr(g, x, y, w, 128, 26); g.fill();
+    g.fillStyle = P.chipText; g.globalAlpha = 0.7; font(g, "700", 26, SANS); g.textAlign = "center"; g.fillText(it[0], x + w / 2, y + 40); g.globalAlpha = 1;
+    const s = fitSize(g, String(it[1]), w - 40, 52, 28, "900", HEAVY); g.fillText(String(it[1]), x + w / 2, y + 40 + s * 0.95 + 8); g.textAlign = "left";
+  });
+}
+function statBar(c, y){
+  const { g, P, l } = c, items = []; if (l.qty) items.push(["QTY", l.qty]); if (l.moq) items.push(["MIN ORDER", l.moq]); if (!items.length) return;
+  g.fillStyle = P.light ? "rgba(0,0,0,.08)" : "rgba(255,255,255,.12)"; rr(g, 60, y + 10, W - 120, 108, 54); g.fill(); g.lineWidth = 4; g.strokeStyle = P.a2; rr(g, 60, y + 10, W - 120, 108, 54); g.stroke();
+  const w = (W - 120) / items.length; items.forEach((it, i) => {
+    const cx = 60 + w * i + w / 2; g.textAlign = "center"; g.fillStyle = P.sub; font(g, "700", 24, SANS); g.fillText(it[0], cx, y + 52); const s = fitSize(g, String(it[1]), w - 50, 46, 26, "900", HEAVY); g.fillStyle = P.text; g.fillText(String(it[1]), cx, y + 52 + s * 0.88);
+    if (i) { g.fillStyle = P.a2; g.fillRect(60 + w * i - 2, y + 34, 4, 60); }
+  }); g.textAlign = "left";
+}
+function usps(c, y, style){
+  const { g, P, copy } = c; copy.usps.forEach((u, i) => {
+    const yy = y + i * 72;
+    if (style === 1) { g.fillStyle = P.a2; g.beginPath(); g.moveTo(70, yy - 36); g.lineTo(104, yy - 14); g.lineTo(70, yy + 8); g.closePath(); g.fill(); }
+    else { g.fillStyle = P.a2; g.beginPath(); g.arc(88, yy - 14, 24, 0, 7); g.fill(); g.strokeStyle = P.light ? "#fff" : P.bg1; g.lineWidth = 7; g.lineCap = "round"; g.lineJoin = "round"; g.beginPath(); g.moveTo(76, yy - 13); g.lineTo(85, yy - 3); g.lineTo(101, yy - 25); g.stroke(); }
+    const s = fitSize(g, u, W - 220, 42, 28, "700", SANS); g.fillStyle = P.text; g.fillText(u, 136, yy);
+  });
+}
+function cta(c, y, style){
+  const { g, P, number } = c; const rad = style === 1 ? 26 : 59;
+  g.fillStyle = "rgba(0,0,0,.28)"; rr(g, 58, y + 8, W - 116, 118, rad); g.fill(); g.fillStyle = P.cta; rr(g, 54, y, W - 108, 118, rad); g.fill();
+  g.fillStyle = P.ctaText; g.textAlign = "center"; const t = (style === 1 ? "BOOK THIS LOT  " : "BOOK ON WHATSAPP  ") + number; const s = fitSize(g, t, W - 330, 46, 26, "900", HEAVY); g.fillText(t, W / 2 + 36, y + 59 + s * 0.35);
+  if (style === 1) { g.beginPath(); g.arc(130, y + 59, 34, 0, 7); g.fillStyle = "#fff"; g.fill(); g.fillStyle = P.cta; g.font = "900 40px " + HEAVY; g.fillText("W", 130, y + 73); }
+  else { g.beginPath(); g.moveTo(108, y + 34); g.lineTo(108, y + 84); g.lineTo(152, y + 59); g.closePath(); g.fill(); }
+  g.textAlign = "left";
+}
+function footer(c){ const { g, P } = c; g.textAlign = "center"; font(g, "600", 27, SANS); g.fillStyle = P.sub; g.fillText("Trusted Firm  |  AK Brands Marketing\u00A9  |  akbrandsmarketing.com", W / 2, 1880); g.textAlign = "left"; }
+function bottom(c){ const s = c.bstyle; if (s === 1) statBar(c, 1338); else chips(c, 1338); usps(c, 1540, s); cta(c, 1712, s); footer(c); }
+const botOf = (c) => (c.showRate && c.mrp ? 1236 : 1316) + (c.noChips ? 96 : 0);
+const onBadge = (c) => (c.P.light ? "#fff" : c.P.bg1);
+function frame(c, bg, align, noTitle){ paintBg(c, bg); brandBar(c); let y = headline(c, 215, align); if (!noTitle) y = titleBlock(c, y + 4, align); return { top: y + 60, bot: botOf(c) }; }
+const sideMrp = (c, bot, col) => mrpStrike(c, 540, bot + 66, col);
+
+/* ---------- the 26 layouts (each is a different angle) ---------- */
+const lum = (hex) => { const h = String(hex).replace("#", ""); const n = parseInt(h.length === 3 ? h.split("").map((x) => x + x).join("") : h, 16); return (0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255; };
+const PAPER = (accent, paper) => ({ n: "Paper", bg1: paper, bg2: paper, hero: accent, heroText: "#ffffff", a2: accent, text: "#1a1a1a", sub: "#5a5a5a", chip: "#1a1a1a", chipText: paper, cta: "#1FAF38", ctaText: "#fff", name: "#1a1a1a", light: true });
+function shield(g, x, y, w, h){ g.beginPath(); g.moveTo(x, y); g.lineTo(x + w, y); g.lineTo(x + w, y + h * 0.55); g.quadraticCurveTo(x + w, y + h * 0.9, x + w / 2, y + h); g.quadraticCurveTo(x, y + h * 0.9, x, y + h * 0.55); g.closePath(); }
+const LAYOUTS = [
+  { name: "Starburst", fn(c){
+    const { g, P, r } = c; const { top } = frame(c, "rays"); const bot = 1322 + (c.noChips ? 96 : 0), t2 = top - 20, cy = (t2 + bot) / 2, R = Math.min(440, (bot - t2) / 2), rot = r() * 3;
+    g.fillStyle = "rgba(0,0,0,.30)"; burst(g, 550, cy + 14, R, R * 0.86, 22, rot); g.fill();
+    burst(g, 540, cy, R, R * 0.86, 22, rot); g.fillStyle = P.hero; g.fill(); g.lineWidth = 8; g.strokeStyle = P.a2; g.stroke();
+    g.beginPath(); g.arc(540, cy, R * 0.74, 0, 7); g.lineWidth = 5; g.strokeStyle = "rgba(255,255,255,.45)"; g.stroke();
+    heroRate(c, 540, cy - 6, R * 1.26, P.heroText, c.copy.label, Math.min(1, R / 430) * 0.94); mrpSticker(c, 540, cy + R * 0.9);
+    discBadge(c, 905, t2 + 110, 118, 0.22, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Diagonal banner", fn(c){
+    const { g, P, r } = c; const { top: t0, bot } = frame(c, "diag", "left"); const top = t0 + 10, cy = (top + bot) / 2, h = Math.min(520, (bot - top) * 0.86), ang = (r() < 0.5 ? -1 : 1) * (0.09 + r() * 0.05);
+    g.save(); g.translate(540, cy); g.rotate(-ang); g.fillStyle = "rgba(0,0,0,.28)"; g.fillRect(-900, -h / 2 + 24, 1800, h); g.fillStyle = P.a2; g.fillRect(-900, -h / 2 - 22, 1800, h + 44); g.fillStyle = P.hero; g.fillRect(-900, -h / 2, 1800, h);
+    g.fillStyle = "rgba(255,255,255,.14)"; for (let i = -9; i < 10; i++) g.fillRect(i * 110, -h / 2, 44, h);
+    heroRate(c, 0, -4, 720, P.heroText, c.copy.label, Math.min(1, h / 470)); g.restore();
+    sideMrp(c, bot, P.text); discBadge(c, 900, top + 20, 112, -0.2, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Price tag", fn(c){
+    const { g, P, r } = c; const { top: t0, bot } = frame(c, "circles"); const top = t0 + 50, h = Math.min(720, bot - top), cy = top + h / 2, w = 790, ang = (r() < 0.5 ? -1 : 1) * (0.06 + r() * 0.04);
+    g.save(); g.translate(540, cy); g.rotate(ang);
+    g.strokeStyle = P.a2; g.lineWidth = 12; g.lineCap = "round"; g.beginPath(); g.moveTo(0, -h / 2 + 40); g.bezierCurveTo(50, -h / 2 - 20, 160, -h / 2 - 50, 250, -h / 2 - 78); g.stroke();
+    g.fillStyle = "rgba(0,0,0,.3)"; rr(g, -w / 2 + 14, -h / 2 + 18, w, h, 60); g.fill(); g.fillStyle = P.hero; rr(g, -w / 2, -h / 2, w, h, 60); g.fill();
+    g.setLineDash([22, 16]); g.lineWidth = 7; g.strokeStyle = P.light ? "rgba(255,255,255,.8)" : "rgba(0,0,0,.35)"; rr(g, -w / 2 + 28, -h / 2 + 28, w - 56, h - 56, 40); g.stroke(); g.setLineDash([]);
+    g.fillStyle = P.bg1; g.beginPath(); g.arc(0, -h / 2 + 56, 24, 0, 7); g.fill();
+    heroRate(c, 0, 24, w - 160, P.heroText, c.copy.label, Math.min(1, h / 700)); g.restore();
+    sideMrp(c, bot, P.text); discBadge(c, 190, top + 30, 112, -0.25, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Spotlight ring", fn(c){
+    const { g, P, r } = c; const { top: t0 } = frame(c, "rays"); const top = t0 - 20, bot = 1322 + (c.noChips ? 96 : 0), cy = (top + bot) / 2, R = Math.min(440, (bot - top) / 2);
+    g.fillStyle = P.hero; g.globalAlpha = 0.25; g.beginPath(); g.arc(540, cy, R + 34, 0, 7); g.fill(); g.globalAlpha = 1;
+    g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); g.arc(548, cy + 14, R, 0, 7); g.fill(); g.fillStyle = P.hero; g.beginPath(); g.arc(540, cy, R, 0, 7); g.fill();
+    g.fillStyle = P.light ? "#ffffff" : P.bg1; g.beginPath(); g.arc(540, cy, R * 0.84, 0, 7); g.fill();
+    g.strokeStyle = P.a2; g.lineWidth = 8; g.setLineDash([2, 22]); g.lineCap = "round"; g.beginPath(); g.arc(540, cy, R * 0.92, 0, 7); g.stroke(); g.setLineDash([]);
+    heroRate(c, 540, cy - 6, R * 1.3, P.hero, c.copy.label, Math.min(1, R / 430) * 0.94);
+    star4(g, 130 + r() * 40, cy - R * 0.62, 44, P.a2); star4(g, 950 - r() * 40, cy + R * 0.55, 56, P.a2); star4(g, 930, cy - R * 0.9, 30, P.hero);
+    mrpSticker(c, 540, cy + R * 0.9); discBadge(c, 150, top + 90, 108, -0.22, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Coupon", fn(c){
+    const { g, P, r } = c; const { top: t0, bot } = frame(c, "dots"); const top = t0 + 10, h = Math.min(780, bot - top), cy = top + h / 2, w = 930, x = 75, rot = (r() < 0.5 ? -1 : 1) * 0.03;
+    g.save(); g.translate(540, cy); g.rotate(rot); g.translate(-540, -cy);
+    g.fillStyle = "rgba(0,0,0,.3)"; rr(g, x + 12, top + 16, w, h, 40); g.fill(); g.fillStyle = P.hero; rr(g, x, top, w, h, 40); g.fill();
+    const dashY = top + h * 0.8; g.fillStyle = P.light ? "#fff" : P.bg1; g.beginPath(); g.arc(x, dashY, 42, 0, 7); g.fill(); g.beginPath(); g.arc(x + w, dashY, 42, 0, 7); g.fill();
+    g.fillStyle = P.heroText; font(g, "900", 44, HEAVY); g.textAlign = "center"; g.fillText("BULK DEAL COUPON", 540, top + 80);
+    g.setLineDash([20, 14]); g.lineWidth = 6; g.strokeStyle = P.heroText; g.globalAlpha = 0.5; g.beginPath(); g.moveTo(x + 70, dashY); g.lineTo(x + w - 70, dashY); g.stroke(); g.setLineDash([]); g.globalAlpha = 1;
+    heroRate(c, 540, top + h * 0.43 + 20, w - 180, P.heroText, c.copy.label, Math.min(1, (h * 0.78) / 600));
+    font(g, "800", 40, SANS); g.fillStyle = P.heroText; g.textAlign = "center"; g.fillText("USE CODE: LOT " + String(c.l.lotNo || c.l.id).toUpperCase(), 540, dashY + (top + h - dashY) / 2 + 14); g.restore(); g.textAlign = "left";
+    sideMrp(c, bot, P.text); discBadge(c, 925, top + 60, 100, 0.25, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Striped banner", fn(c){
+    const { g, P, r } = c; const { top: t0, bot } = frame(c, "circles", "left"); const top = t0 + 10, cy = (top + bot) / 2, bh = Math.min(660, bot - top), sk = (r() < 0.5 ? -1 : 1) * 0.1;
+    g.save(); g.translate(540, cy); g.rotate(sk * 0.5); g.fillStyle = "rgba(0,0,0,.28)"; g.fillRect(-900, -bh / 2 + 22, 1800, bh); g.fillStyle = P.hero; g.fillRect(-900, -bh / 2, 1800, bh);
+    g.fillStyle = "rgba(0,0,0,.16)"; for (let i = -14; i < 14; i++) { g.save(); g.transform(1, 0, -0.55, 1, 0, 0); g.fillRect(i * 90, -bh / 2, 40, bh); g.restore(); }
+    const bw = 770, bhh = bh - 120; g.fillStyle = "rgba(0,0,0,.25)"; rr(g, -bw / 2 + 12, -bhh / 2 + 14, bw, bhh, 40); g.fill(); g.fillStyle = P.light ? "#fff" : P.bg1; rr(g, -bw / 2, -bhh / 2, bw, bhh, 40); g.fill(); g.lineWidth = 8; g.strokeStyle = P.a2; rr(g, -bw / 2, -bhh / 2, bw, bhh, 40); g.stroke();
+    heroRate(c, 0, 4, bw - 130, P.hero, c.copy.label, Math.min(1, bhh / 500));
+    font(g, "900", 56, HEAVY); g.fillStyle = P.a2; g.textAlign = "center"; g.fillText(">>", -bw / 2 - 48, 20); g.fillText("<<", bw / 2 + 48, 20); g.restore(); g.textAlign = "left";
+    sideMrp(c, bot, P.text); discBadge(c, 905, top + 20, 112, 0.2, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Stop sign", fn(c){
+    const { g, P } = c; const { top, bot } = frame(c, "rays"); const cy = (top + bot) / 2, R = Math.min(400, (bot - top) / 2), rot = Math.PI / 8;
+    g.save(); g.translate(12, 16); hexPath(g, 540, cy, R, rot, 8); g.fillStyle = "rgba(0,0,0,.32)"; g.fill(); g.restore();
+    hexPath(g, 540, cy, R, rot, 8); g.fillStyle = "#ffffff"; g.fill(); hexPath(g, 540, cy, R * 0.93, rot, 8); g.fillStyle = P.hero; g.fill();
+    hexPath(g, 540, cy, R * 0.83, rot, 8); g.lineWidth = 5; g.strokeStyle = "rgba(255,255,255,.6)"; g.stroke();
+    heroRate(c, 540, cy - 6, R * 1.42, P.heroText, c.copy.label, Math.min(1, R / 400) * 0.88);
+    sideMrp(c, bot, P.text); discBadge(c, 915, top + 50, 108, 0.22, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Hexagon", fn(c){
+    const { g, P } = c; const { top, bot } = frame(c, "grid"); const cy = (top + bot) / 2, R = Math.min(420, (bot - top) / 2 * 1.05);
+    g.save(); g.translate(12, 16); hexPath(g, 540, cy, R, -Math.PI / 2, 6); g.fillStyle = "rgba(0,0,0,.32)"; g.fill(); g.restore();
+    hexPath(g, 540, cy, R, -Math.PI / 2, 6); g.fillStyle = P.hero; g.fill(); g.lineWidth = 12; g.strokeStyle = P.a2; g.lineJoin = "round"; g.stroke();
+    hexPath(g, 540, cy, R * 0.86, -Math.PI / 2, 6); g.lineWidth = 4; g.strokeStyle = "rgba(255,255,255,.55)"; g.stroke();
+    hexPath(g, 160, cy + R * 0.7, 62, 0, 6); g.lineWidth = 8; g.strokeStyle = P.a2; g.stroke(); hexPath(g, 925, cy - R * 0.55, 46, 0, 6); g.stroke();
+    heroRate(c, 540, cy - 4, R * 1.48, P.heroText, c.copy.label, Math.min(1, R / 420) * 0.92);
+    sideMrp(c, bot, P.text); discBadge(c, 915, cy + R * 0.7, 100, 0.2, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Shield", fn(c){
+    const { g, P } = c; const { top: t0, bot } = frame(c, "dots"); const top = t0 + 40, w = 760, h = Math.min(760, bot - top), x = (W - w) / 2;
+    g.save(); g.translate(12, 18); shield(g, x, top, w, h); g.fillStyle = "rgba(0,0,0,.32)"; g.fill(); g.restore();
+    shield(g, x, top, w, h); g.fillStyle = P.a2; g.fill(); shield(g, x + 22, top + 22, w - 44, h - 44); g.fillStyle = P.hero; g.fill();
+    shield(g, x + 44, top + 44, w - 88, h - 88); g.lineWidth = 4; g.strokeStyle = "rgba(255,255,255,.55)"; g.stroke();
+    g.fillStyle = P.light ? "#0B1F3A" : P.bg1; rr(g, 540 - 270, top - 38, 540, 84, 42); g.fill(); g.fillStyle = P.light ? "#fff" : P.a2; font(g, "900", 40, HEAVY); g.textAlign = "center"; g.fillText("CLEARANCE LOT", 540, top + 20); g.textAlign = "left";
+    heroRate(c, 540, top + h * 0.47, w - 190, P.heroText, c.copy.label, Math.min(1, h / 760) * 0.95);
+    sideMrp(c, bot, P.text); discBadge(c, 190, top + 90, 104, -0.22, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Speech bubble", fn(c){
+    const { g, P, r } = c; const { top: t0, bot } = frame(c, "circles"); const top = t0 + 10, w = 900, h = Math.min(580, bot - top - 80), x = 90, ang = (r() < 0.5 ? -1 : 1) * 0.03;
+    g.save(); g.translate(540, top + h / 2); g.rotate(ang); g.translate(-540, -(top + h / 2));
+    const path = (dx, dy) => { rr(g, x + dx, top + dy, w, h, 90); g.moveTo(x + 150 + dx, top + h - 4 + dy); g.lineTo(x + 70 + dx, top + h + 110 + dy); g.lineTo(x + 330 + dx, top + h - 4 + dy); };
+    g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); path(14, 18); g.fill(); g.fillStyle = P.hero; g.beginPath(); path(0, 0); g.fill();
+    g.lineWidth = 8; g.strokeStyle = P.a2; g.setLineDash([26, 18]); rr(g, x + 26, top + 26, w - 52, h - 52, 70); g.stroke(); g.setLineDash([]);
+    heroRate(c, 540, top + h / 2 + 6, w - 190, P.heroText, c.copy.label, Math.min(1, h / 580) * 0.95); g.restore();
+    sideMrp(c, bot, P.text); discBadge(c, 905, top - 10, 100, 0.22, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Arrow banner", fn(c){
+    const { g, P } = c; const { top, bot } = frame(c, "diag", "left"); const h = Math.min(520, bot - top - 30), cy = (top + bot) / 2;
+    const arrow = (dx, dy, inset) => { g.beginPath(); g.moveTo(40 + dx + inset, cy - h / 2 + dy + inset); g.lineTo(W - 230 + dx, cy - h / 2 + dy + inset); g.lineTo(W - 40 + dx - inset * 1.6, cy + dy); g.lineTo(W - 230 + dx, cy + h / 2 + dy - inset); g.lineTo(40 + dx + inset, cy + h / 2 + dy - inset); g.closePath(); };
+    arrow(16, 20, 0); g.fillStyle = "rgba(0,0,0,.3)"; g.fill(); arrow(0, 0, 0); g.fillStyle = P.hero; g.fill(); arrow(0, 0, 22); g.lineWidth = 6; g.setLineDash([24, 16]); g.strokeStyle = P.light ? "rgba(255,255,255,.8)" : "rgba(0,0,0,.35)"; g.stroke(); g.setLineDash([]);
+    g.fillStyle = P.a2; font(g, "900", 60, HEAVY); g.textAlign = "center"; g.fillText("\u25B6\u25B6", 996, cy + 20); g.textAlign = "left";
+    heroRate(c, 470, cy - 4, W - 360, P.heroText, c.copy.label, Math.min(1, h / 520));
+    sideMrp(c, bot, P.text); discBadge(c, 905, top - 20, 100, 0.2, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Comic pop", fn(c){
+    const { g, P, r } = c; const { top: t0, bot } = frame(c, "bigdots"); const top = t0 + 10, h = bot - top - 20;
+    g.fillStyle = "#000"; rr(g, 70 + 18, top + 18, W - 140, h, 28); g.fill(); g.fillStyle = P.bg1; rr(g, 70, top, W - 140, h, 28); g.fill(); g.lineWidth = 12; g.strokeStyle = "#000"; rr(g, 70, top, W - 140, h, 28); g.stroke();
+    dots(g, 560, top + 14, W - 640, h - 28, 30, 7, P.light ? "rgba(0,0,0,.10)" : "rgba(255,255,255,.12)");
+    heroRate(c, 540, top + h / 2 + 18, W - 260, P.hero, c.copy.label, Math.min(1, h / 640) * 1.02, { stroke: "#000", strokeW: 30 });
+    g.save(); g.translate(165, top + 70); g.rotate(-0.2); burst(g, 0, 0, 104, 78, 12, 0); g.fillStyle = "#000"; g.fill(); burst(g, -5, -5, 104, 78, 12, 0); g.fillStyle = P.a2; g.fill(); g.fillStyle = "#000"; g.textAlign = "center"; font(g, "900", 44, HEAVY); g.fillText("LOT!", -5, 12); g.restore(); g.textAlign = "left";
+    sideMrp(c, bot, P.text); discBadge(c, 915, top + 40, 104, 0.2, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Newspaper", fn(c){
+    const { g, r } = c; const acc = ["#C1121F", "#0B5CAD", "#12803f"][Math.floor(r() * 3)], paper = ["#f3ead3", "#e9eef2", "#f6e7e2"][Math.floor(r() * 3)]; c.P = PAPER(acc, paper); const P = c.P;
+    g.fillStyle = paper; g.fillRect(0, 0, W, H); g.fillStyle = "rgba(0,0,0,.10)"; for (let col = 0; col < 3; col++) for (let yy = 330; yy < 1310; yy += 22) { g.fillRect(60 + col * 340, yy, 300 * (0.5 + r() * 0.5), 8); }
+    if (c.logo) { g.save(); rr(g, 50, 60, 110, 110, 18); g.clip(); g.drawImage(c.logo, 50, 60, 110, 110); g.restore(); }
+    g.fillStyle = "#111"; g.textAlign = "center"; font(g, "900", 92, SERIF); g.fillText("THE LOT TIMES", 600, 140); g.fillRect(190, 168, 810, 5); g.fillRect(190, 180, 810, 2);
+    font(g, "700", 28, SERIF); g.fillText("SURPLUS EDITION  \u2022  BULK  \u2022  CLEARANCE  \u2022  LOT " + String(c.l.lotNo || "").toUpperCase(), 600, 222); g.textAlign = "left";
+    let y = 250; g.fillStyle = "#111"; g.textAlign = "center"; let size = 100, lines; for (;;) { font(g, "900", size, SERIF); lines = wrap(g, c.copy.headline, W - 120, 3); if (lines.length <= 2 || size <= 56) break; size -= 6; } lines.length = Math.min(lines.length, 2); lines.forEach((ln) => { g.fillText(ln, 540, y + size * 0.82); y += size * 1.02; }); g.textAlign = "left";
+    y = titleBlock(c, y + 6, "center", "#111"); const top = y + 60, bot = botOf(c), h = bot - top;
+    g.fillStyle = "rgba(0,0,0,.25)"; g.fillRect(90 + 14, top + 14, W - 180, h); g.fillStyle = "#fffdf6"; g.fillRect(90, top, W - 180, h); g.lineWidth = 12; g.strokeStyle = "#111"; g.strokeRect(90, top, W - 180, h); g.lineWidth = 3; g.strokeRect(104, top + 14, W - 208, h - 28);
+    heroRate(c, 540, top + h / 2 + 10, W - 330, acc, c.copy.label, Math.min(1, h / 640)); font(g, "800", 28, SERIF); g.fillStyle = "#555"; g.textAlign = "center"; g.fillText("SPECIAL NOTICE TO BULK BUYERS", 540, top + 56); g.textAlign = "left";
+    sideMrp(c, bot, "#1a1a1a"); bottom(c);
+  } },
+  { name: "Receipt", fn(c){
+    const { g, P, r } = c; const { top: t0, bot } = frame(c, "dots", "center", true); const top = t0 - 20, x = 150, w = W - 300, h = bot - top + 36;
+    g.save(); g.translate(540, top + h / 2); g.rotate((r() < 0.5 ? -1 : 1) * 0.02); g.translate(-540, -(top + h / 2));
+    g.fillStyle = "rgba(0,0,0,.3)"; zigRect(g, x + 12, top + 14, w, h, 14, 30); g.fill(); g.fillStyle = "#fffef8"; zigRect(g, x, top, w, h, 14, 30); g.fill();
+    let y = top + 70; g.fillStyle = "#111"; g.textAlign = "center"; font(g, "900", 36, MONO); g.fillText("AK BRANDS MARKETING", 540, y); font(g, "700", 24, MONO); g.fillText("SURPLUS & CLEARANCE LOTS", 540, y + 34);
+    const dash = (yy) => { g.setLineDash([12, 9]); g.lineWidth = 3; g.strokeStyle = "#111"; g.beginPath(); g.moveTo(x + 36, yy); g.lineTo(x + w - 36, yy); g.stroke(); g.setLineDash([]); };
+    dash(y + 62); y += 104; g.textAlign = "left"; font(g, "700", 28, MONO);
+    const row = (a, b) => { g.fillStyle = "#111"; g.fillText(a, x + 40, y); g.textAlign = "right"; const s = fitSize(g, b, w - 260, 28, 18, "700", MONO); g.fillText(b, x + w - 40, y); g.textAlign = "left"; font(g, "700", 28, MONO); y += 44; };
+    row("LOT NO", String(c.l.lotNo || "").toUpperCase()); row("ITEM", String(c.l.title || "").slice(0, 40)); if (c.l.qty) row("QTY", String(c.l.qty)); if (c.l.moq && h > 700) row("MIN ORDER", String(c.l.moq));
+    dash(y - 14); const rh = bot - 40 - y - (c.calc ? 110 : 40); heroRate(c, 540, y + rh / 2 + 10, w - 130, "#111", c.copy.label, Math.min(1, rh / 420), { mono: true });
+    if (c.calc) { g.textAlign = "left"; font(g, "900", 29, MONO); g.fillStyle = "#111"; g.fillText("FULL LOT VALUE", x + 40, top + h - 78); font(g, "900", 40, MONO); g.fillText("\u20B9" + inr(c.calc.total), x + 40, top + h - 34); }
+    g.save(); g.translate(x + w - 165, top + h - 62); g.rotate(-0.2); g.globalAlpha = 0.9; g.strokeStyle = "#D00000"; g.fillStyle = "#D00000"; g.lineWidth = 7; rr(g, -150, -42, 300, 84, 10); g.stroke(); g.textAlign = "center"; font(g, "900", 46, HEAVY); g.fillText("CLEARANCE", 0, 16); g.restore();
+    g.restore(); g.textAlign = "left"; sideMrp(c, bot + 18, P.text); bottom(c);
+  } },
+  { name: "Stamp and tape", fn(c){
+    const { g, P, r } = c; const { top: t0, bot } = frame(c, "diag"); const top = t0 - 10, red = P.light ? "#B30000" : "#FF4B3E";
+    g.save(); g.translate(540, top + 105); g.rotate(-0.1); g.globalAlpha = 0.95; g.strokeStyle = red; g.fillStyle = red; g.lineWidth = 12; rr(g, -380, -100, 760, 200, 22); g.stroke(); g.lineWidth = 4; rr(g, -362, -84, 724, 168, 14); g.stroke();
+    g.textAlign = "center"; const s = fitSize(g, "CLEARANCE LOT", 660, 104, 56, "900", HEAVY); g.fillText("CLEARANCE LOT", 0, 14); font(g, "800", 32, SANS); g.fillText("SURPLUS  \u2022  BULK  \u2022  EXCESS", 0, 62); g.restore(); g.globalAlpha = 1;
+    const ty = top + 268, th = Math.min(440, bot - ty - 6);
+    g.save(); g.translate(540, ty + th / 2); g.rotate(0.03); g.fillStyle = "rgba(0,0,0,.3)"; zigRect(g, -540 + 10, -th / 2 + 14, 1080, th, 12, 26); g.fill(); g.fillStyle = "#fffbea"; zigRect(g, -540, -th / 2, 1080, th, 12, 26); g.fill();
+    heroRate(c, 0, 14, 800, "#111", c.copy.label, Math.min(1, th / 540)); g.restore();
+    sideMrp(c, bot + 10, P.text); discBadge(c, 925, ty - 10, 100, 0.24, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Billboard", fn(c){
+    const { g, P } = c; const { top: t0, bot } = frame(c, "grid"); const top = t0 + 40, bh = Math.min(560, bot - top - 130), x = 90, w = 900;
+    g.fillStyle = "#222"; g.fillRect(250, top + bh, 46, bot - top - bh + 8); g.fillRect(784, top + bh, 46, bot - top - bh + 8);
+    g.fillStyle = "rgba(0,0,0,.35)"; g.fillRect(x + 14, top + 18, w, bh); g.fillStyle = "#121212"; rr(g, x - 18, top - 18, w + 36, bh + 36, 14); g.fill(); g.fillStyle = P.hero; g.fillRect(x, top, w, bh);
+    g.lineWidth = 6; g.strokeStyle = "rgba(255,255,255,.5)"; g.strokeRect(x + 14, top + 14, w - 28, bh - 28);
+    for (let i = 0; i < 6; i++) { const lx = x + 90 + i * 144; g.fillStyle = "rgba(255,240,170,.35)"; g.beginPath(); g.arc(lx, top - 44, 34, 0, 7); g.fill(); g.fillStyle = "#fff6c4"; g.beginPath(); g.arc(lx, top - 44, 16, 0, 7); g.fill(); }
+    heroRate(c, 540, top + bh / 2 + 8, w - 150, P.heroText, c.copy.label, Math.min(1, bh / 560));
+    sideMrp(c, bot, P.text); discBadge(c, 925, top + bh - 10, 100, 0.2, P.a2, onBadge(c)); bottom(c);
+  }, dark: false },
+  { name: "Neon sign", dark: true, fn(c){
+    const { g, P } = c; const grd = g.createLinearGradient(0, 0, 0, H); grd.addColorStop(0, "#07070d"); grd.addColorStop(1, "#14141f"); g.fillStyle = grd; g.fillRect(0, 0, W, H);
+    g.strokeStyle = "rgba(255,255,255,.05)"; g.lineWidth = 3; for (let yy = 0; yy < H; yy += 70) { g.beginPath(); g.moveTo(0, yy); g.lineTo(W, yy); g.stroke(); for (let xx = (yy / 70) % 2 ? 0 : 90; xx < W; xx += 180) { g.beginPath(); g.moveTo(xx, yy); g.lineTo(xx, yy + 70); g.stroke(); } }
+    brandBar(c); let y = headline(c, 215); y = titleBlock(c, y + 4); const top = y + 50, bot = botOf(c), h = bot - top - 10;
+    g.save(); g.shadowColor = P.hero; g.shadowBlur = 38; g.strokeStyle = P.hero; g.lineWidth = 12; rr(g, 90, top, W - 180, h, 70); g.stroke(); g.shadowBlur = 0; g.strokeStyle = "rgba(255,255,255,.85)"; g.lineWidth = 3; rr(g, 90, top, W - 180, h, 70); g.stroke(); g.restore();
+    heroRate(c, 540, top + h / 2 + 8, W - 330, P.hero, c.copy.label, Math.min(1, h / 620), { neon: true });
+    sideMrp(c, bot, P.text); discBadge(c, 925, top + 30, 100, 0.2, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Calculator", needs: "calc", fn(c){
+    const { g, P } = c; const { top: t0, bot } = frame(c, "grid"); const top = t0 - 10, h = Math.min(740, bot - top - 22), x = 70, w = 940, ink = lum(P.hero) > 0.55 ? "#111" : P.hero;
+    g.fillStyle = "rgba(0,0,0,.3)"; rr(g, x + 14, top + 18, w, h, 44); g.fill(); g.fillStyle = "#ffffff"; rr(g, x, top, w, h, 44); g.fill();
+    heroRate(c, 540, top + h * 0.3, w - 170, ink, c.copy.label, Math.min(1, h / 780) * 0.78);
+    g.fillStyle = "#222"; g.textAlign = "center"; font(g, "900", 62, HEAVY); g.fillText("\u00D7 " + c.calc.qty.text + (c.calc.qty.unit ? " " + c.calc.qty.unit : ""), 540, top + h * 0.6);
+    g.fillStyle = "#ddd"; g.fillRect(x + 60, top + h * 0.64, w - 120, 6);
+    g.fillStyle = P.hero; rr(g, x + 40, top + h * 0.69, w - 80, h * 0.24, 30); g.fill(); g.fillStyle = P.heroText; font(g, "800", 34, SANS); g.fillText("= FULL LOT VALUE", 540, top + h * 0.69 + 52);
+    const t = "\u20B9" + inr(c.calc.total); const s = fitSize(g, t, w - 160, 120, 60, "900", HEAVY); g.fillText(t, 540, top + h * 0.69 + 52 + s * 0.95 + 8); g.textAlign = "left";
+    sideMrp(c, bot + 14, P.text); discBadge(c, 925, top - 10, 100, 0.22, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Medal", fn(c){
+    const { g, P } = c; const { top: t0, bot } = frame(c, "rays"); const top = t0 - 10, R = Math.min(330, (bot - top) / 2 - 60), cy = top + R + 20;
+    [-1, 1].forEach((sd) => { g.fillStyle = sd < 0 ? P.a2 : P.hero; g.beginPath(); g.moveTo(540 + sd * 40, cy + R * 0.5); g.lineTo(540 + sd * 250, cy + R * 0.7); g.lineTo(540 + sd * 190, cy + R + 100); g.lineTo(540 + sd * 120, cy + R + 50); g.lineTo(540 + sd * 40, cy + R + 100); g.closePath(); g.fill(); });
+    g.fillStyle = "rgba(0,0,0,.3)"; burst(g, 552, cy + 16, R, R * 0.93, 44, 0); g.fill();
+    const gg = g.createLinearGradient(540 - R, cy - R, 540 + R, cy + R); gg.addColorStop(0, "#FFE27A"); gg.addColorStop(0.5, "#E8B40E"); gg.addColorStop(1, "#B98700"); burst(g, 540, cy, R, R * 0.93, 44, 0); g.fillStyle = gg; g.fill();
+    g.fillStyle = P.hero; g.beginPath(); g.arc(540, cy, R * 0.8, 0, 7); g.fill(); g.lineWidth = 8; g.strokeStyle = "#FFE27A"; g.stroke();
+    heroRate(c, 540, cy - 4, R * 1.28, P.heroText, c.copy.label, Math.min(1, R / 430) * 0.95);
+    sideMrp(c, bot + 6, P.text); discBadge(c, 925, top + 80, 104, 0.2, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Stickers", fn(c){
+    const { g, P, r } = c; const { top: t0, bot } = frame(c, "circles"); const top = t0 + 20, w = 800, h = Math.min(560, bot - top - 60), cy = top + h / 2 + 20, ang = (r() < 0.5 ? -1 : 1) * 0.07;
+    g.save(); g.translate(540, cy); g.rotate(ang);
+    g.shadowColor = "rgba(0,0,0,.4)"; g.shadowBlur = 30; g.shadowOffsetY = 14; g.fillStyle = "#fff"; g.strokeStyle = "#fff"; g.lineWidth = 40; g.lineJoin = "round"; rr(g, -w / 2, -h / 2, w, h, 70); g.stroke(); g.fill(); g.shadowBlur = 0; g.shadowOffsetY = 0;
+    g.fillStyle = P.hero; rr(g, -w / 2, -h / 2, w, h, 70); g.fill(); g.fillStyle = "rgba(255,255,255,.14)"; rr(g, -w / 2 + 20, -h / 2 + 20, w - 40, h * 0.34, 54); g.fill();
+    heroRate(c, 0, 12, w - 150, P.heroText, c.copy.label, Math.min(1, h / 560) * 0.95); g.restore();
+    g.save(); g.translate(180, top + 20); g.rotate(-0.18); g.shadowColor = "rgba(0,0,0,.4)"; g.shadowBlur = 20; g.fillStyle = "#fff"; g.beginPath(); g.arc(0, 0, 118, 0, 7); g.fill(); g.shadowBlur = 0; g.fillStyle = P.a2; g.beginPath(); g.arc(0, 0, 102, 0, 7); g.fill(); g.fillStyle = onBadge(c); g.textAlign = "center"; font(g, "900", 46, HEAVY); g.fillText("BULK", 0, -6); g.fillText("LOT", 0, 44); g.restore(); g.textAlign = "left";
+    sideMrp(c, bot, P.text); discBadge(c, 915, top + 10, 104, 0.2, "#ffffff", "#B30000"); bottom(c);
+  } },
+  { name: "Caution tape", fn(c){
+    const { g, P } = c; const { top: t0, bot } = frame(c, "grid"); const top = t0 - 10;
+    const tape = (yy, ang, txt) => { g.save(); g.translate(540, yy); g.rotate(ang); g.fillStyle = "rgba(0,0,0,.35)"; g.fillRect(-900, -44 + 10, 1800, 96); g.fillStyle = "#FFD400"; g.fillRect(-900, -48, 1800, 96); g.fillStyle = "#111"; for (let i = -30; i < 30; i++) { g.save(); g.transform(1, 0, -0.6, 1, 0, 0); g.fillRect(i * 56, -48, 24, 14); g.fillRect(i * 56, 34, 24, 14); g.restore(); } g.textAlign = "center"; font(g, "900", 42, HEAVY); g.fillText(txt, 0, 14); g.restore(); };
+    const panelTop = top + 80, panelH = bot - panelTop - 70; g.fillStyle = "rgba(0,0,0,.4)"; rr(g, 110 + 12, panelTop + 14, 860, panelH, 36); g.fill(); g.fillStyle = "#101010"; rr(g, 110, panelTop, 860, panelH, 36); g.fill(); g.lineWidth = 8; g.strokeStyle = P.hero; rr(g, 110, panelTop, 860, panelH, 36); g.stroke();
+    heroRate(c, 540, panelTop + panelH / 2 + 10, 700, P.hero, c.copy.label, Math.min(1, panelH / 560));
+    tape(top + 40, -0.045, "CLEARANCE \u2605 SURPLUS \u2605 BULK \u2605 EXCESS \u2605 CLEARANCE \u2605 SURPLUS"); tape(bot - 66, 0.045, "LOT " + String(c.l.lotNo || "").toUpperCase() + " \u2605 BULK LOT \u2605 EXCESS STOCK \u2605 LOT " + String(c.l.lotNo || "").toUpperCase());
+    sideMrp(c, bot + 66, P.text); discBadge(c, 930, panelTop + 20, 96, 0.22, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Carton box", fn(c){
+    const { g, P } = c; const { top: t0, bot } = frame(c, "diag"); const top = t0 - 10, x = 120, w = 840, h = Math.min(660, bot - top - 20), fl = 70;
+    g.fillStyle = "rgba(0,0,0,.35)"; g.fillRect(x + 16, top + 20, w, h); g.fillStyle = "#D8AC74"; g.beginPath(); g.moveTo(x + 40, top); g.lineTo(x + w - 40, top); g.lineTo(x + w, top + fl); g.lineTo(x, top + fl); g.closePath(); g.fill();
+    g.fillStyle = "#C99A5B"; g.fillRect(x, top + fl, w, h - fl); g.fillStyle = "rgba(0,0,0,.08)"; for (let i = 0; i < 14; i++) g.fillRect(x, top + fl + 30 + i * 42, w, 3);
+    g.fillStyle = "#EAD7A0"; g.fillRect(540 - 70, top, 140, h); g.fillStyle = "rgba(0,0,0,.08)"; g.fillRect(540 - 70, top, 6, h); g.fillRect(540 + 64, top, 6, h);
+    g.save(); g.translate(540, top + fl + (h - fl) / 2); g.rotate(-0.03); g.fillStyle = "rgba(0,0,0,.28)"; rr(g, -330 + 10, -(h - fl) * 0.42 + 12, 660, (h - fl) * 0.84, 22); g.fill(); g.fillStyle = "#ffffff"; rr(g, -330, -(h - fl) * 0.42, 660, (h - fl) * 0.84, 22); g.fill();
+    g.setLineDash([14, 10]); g.lineWidth = 4; g.strokeStyle = "#111"; rr(g, -312, -(h - fl) * 0.42 + 18, 624, (h - fl) * 0.84 - 36, 14); g.stroke(); g.setLineDash([]);
+    g.fillStyle = "#111"; g.textAlign = "center"; font(g, "900", 34, MONO); g.fillText("LOT " + String(c.l.lotNo || "").toUpperCase(), 0, -(h - fl) * 0.42 + 70);
+    heroRate(c, 0, 52, 520, "#111", c.copy.label, Math.min(1, (h - fl) / 600) * 0.78); g.restore(); g.textAlign = "left";
+    g.fillStyle = "#6b4a1f"; font(g, "900", 40, HEAVY); g.fillText("\u25B2\u25B2", x + 28, top + h - 26); g.fillText("\u25B2\u25B2", x + w - 120, top + h - 26);
+    sideMrp(c, bot + 14, P.text); discBadge(c, 925, top + 10, 100, 0.2, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Glass card", fn(c){
+    const { g, P } = c; paintBg(c, "none"); g.globalAlpha = 0.55; blob(g, 180, 760, 520, P.hero); blob(g, 930, 1180, 520, P.hero); g.globalAlpha = 0.4; blob(g, 560, 1380, 480, P.bg2); g.globalAlpha = 1; brandBar(c);
+    let y = headline(c, 215); y = titleBlock(c, y + 4); const top = y + 50, bot = botOf(c), h = bot - top, ink = P.light ? "#0B1F3A" : "#ffffff";
+    g.fillStyle = P.light ? "rgba(255,255,255,.55)" : "rgba(255,255,255,.14)"; rr(g, 80, top, W - 160, h, 54); g.fill(); g.lineWidth = 4; g.strokeStyle = P.light ? "rgba(255,255,255,.9)" : "rgba(255,255,255,.4)"; rr(g, 80, top, W - 160, h, 54); g.stroke();
+    g.fillStyle = "rgba(255,255,255,.22)"; rr(g, 100, top + 14, W - 200, 8, 4); g.fill();
+    heroRate(c, 540, top + h / 2 + 8, W - 330, ink, c.copy.label, Math.min(1, h / 640));
+    sideMrp(c, bot, P.text); discBadge(c, 925, top + 30, 100, 0.2, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Compare bars", needs: "mrp", fn(c){
+    const { g, P } = c; const { top: t0, bot } = frame(c, "grid"); const top = t0 - 10, base = bot + 10, hMax = base - top - 120, hr = Math.max(120, hMax * (c.rate.val / c.mrp.val));
+    g.fillStyle = "rgba(0,0,0,.3)"; g.fillRect(110 + 12, base - hMax + 12, 340, hMax); g.fillStyle = "#98a3b0"; g.fillRect(110, base - hMax, 340, hMax);
+    g.fillStyle = "rgba(0,0,0,.3)"; g.fillRect(630 + 12, base - hr + 12, 340, hr); g.fillStyle = P.hero; g.fillRect(630, base - hr, 340, hr);
+    g.fillStyle = P.light ? "#0B1F3A" : "#fff"; g.textAlign = "center"; font(g, "800", 36, SANS); g.fillText("MRP", 280, base - hMax - 68); const mt = "\u20B9" + c.mrp.text; fitSize(g, mt, 330, 62, 30, "900", HEAVY); g.fillText(mt, 280, base - hMax - 12);
+    g.fillRect(90, base, 900, 8);
+    heroRate(c, 800, base - hr - 200, 440, P.a2, "LOT RATE", 0.56);
+    g.strokeStyle = P.a2; g.lineWidth = 10; g.setLineDash([22, 16]); g.beginPath(); g.moveTo(330, base - hMax + 70); g.lineTo(480, base - hr - 130); g.stroke(); g.setLineDash([]);
+    discBadge(c, 470, base - hMax * 0.5, 120, -0.2, P.a2, onBadge(c)); g.textAlign = "left"; bottom(c);
+  } },
+  { name: "Capsules", fn(c){
+    const { g, P } = c; const { top: t0, bot } = frame(c, "circles"); const top = t0 - 10;
+    g.lineWidth = 6; g.strokeStyle = P.a2; rr(g, 140, top, 800, 84, 42); g.stroke(); g.fillStyle = P.a2; g.textAlign = "center"; font(g, "900", 36, HEAVY); g.fillText("BULK  \u2022  SURPLUS  \u2022  CLEARANCE", 540, top + 56); g.textAlign = "left";
+    const ch = Math.min(520, bot - top - 130), cy = top + 120 + ch / 2;
+    g.fillStyle = "rgba(0,0,0,.3)"; rr(g, 70 + 12, cy - ch / 2 + 18, 940, ch, ch / 2); g.fill(); g.fillStyle = P.hero; rr(g, 70, cy - ch / 2, 940, ch, ch / 2); g.fill();
+    g.fillStyle = "rgba(255,255,255,.2)"; rr(g, 110, cy - ch / 2 + 16, 860, ch * 0.34, ch * 0.17); g.fill();
+    heroRate(c, 540, cy + 8, 940 - ch * 0.8, P.heroText, c.copy.label, Math.min(1, ch / 520) * 0.95);
+    g.fillStyle = P.a2; g.beginPath(); g.arc(110 + 20, cy, 20, 0, 7); g.fill(); g.beginPath(); g.arc(970 - 20, cy, 20, 0, 7); g.fill();
+    sideMrp(c, bot, P.text); discBadge(c, 925, top + 120, 96, 0.2, P.a2, onBadge(c)); bottom(c);
+  } },
+  { name: "Big circle", fn(c){
+    const { g, P } = c; const { top: t0, bot } = frame(c, "bigdots", "left"); const top = t0 - 10, R = Math.min(360, (bot - top) / 2), cx = 60 + R + 20, cy = (top + bot) / 2 + 10;
+    g.fillStyle = "rgba(0,0,0,.3)"; g.beginPath(); g.arc(cx + 12, cy + 16, R, 0, 7); g.fill(); g.fillStyle = P.hero; g.beginPath(); g.arc(cx, cy, R, 0, 7); g.fill(); g.lineWidth = 12; g.strokeStyle = P.a2; g.stroke();
+    g.setLineDash([2, 22]); g.lineCap = "round"; g.lineWidth = 8; g.strokeStyle = "rgba(255,255,255,.7)"; g.beginPath(); g.arc(cx, cy, R * 0.86, 0, 7); g.stroke(); g.setLineDash([]);
+    heroRate(c, cx, cy - 4, R * 1.38, P.heroText, c.copy.label, Math.min(1, R / 430) * 0.92);
+    g.save(); g.translate(985, cy); g.rotate(Math.PI / 2); g.textAlign = "center"; const lt = "LOT " + String(c.l.lotNo || "").toUpperCase(); const ls = fitSize(g, lt, bot - top - 30, 140, 60, "900", HEAVY); g.lineWidth = 5; g.strokeStyle = P.a2; g.lineJoin = "round"; g.strokeText(lt, 0, ls * 0.34); g.restore(); g.textAlign = "left";
+    star4(g, cx + R * 0.9, top + 30, 40, P.a2); mrpSticker(c, cx, cy + R * 0.98); discBadge(c, cx + R * 0.85, cy - R * 0.8, 100, 0.2, P.a2, onBadge(c)); bottom(c);
+  } }
+];
+
+/* ---------- ad copy that changes from lot to lot ---------- */
+function copyFor(l, r, hIdx, calc){
+  const pool = ["Direct sourcing. Direct accountability.", "Surplus stock, priced to move", "Trusted by resellers since 2016", "Dispatch across India", "Book on WhatsApp in one minute", "Buy in bulk. Sell at your margin.", "Photos and video on request", "Quantity, minimum order and rate shown clearly", "Honest lots, sold as is, where is"];
+  if (l.moq) pool.push("Minimum order only " + l.moq); if (l.qty) pool.push("Full lot of " + l.qty + " available");
+  if (calc) { pool.push("Full lot value \u20B9" + inr(calc.total)); if (calc.min) pool.push("Start with just \u20B9" + inr(calc.min)); }
+  const picked = []; const bag = pool.slice(); while (picked.length < 3 && bag.length) picked.push(bag.splice(Math.floor(r() * bag.length), 1)[0]);
+  return { headline: HEADLINES[hIdx], label: LABELS[Math.floor(r() * LABELS.length)], usps: picked };
+}
+
+/* Makes the poster. Returns { blob, name }. opts: { variant, showRate, logoUrl, defaultNumber, layout, palette } */
+async function makeAdPoster(lot, opts){
+  opts = opts || {}; const cv = document.createElement("canvas"); cv.width = W; cv.height = H; const g = cv.getContext("2d");
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
+  const showRate = opts.showRate !== false, rate = money(lot.rate), mrp = money(lot.mrp), logo = await loadImg(opts.logoUrl || "/logo.jpg");
+  let pct = 0; if (rate && mrp && mrp.val > rate.val && !/lot|kg|box|set|dozen/i.test(rate.raw + " " + mrp.raw)) { pct = Math.round((1 - rate.val / mrp.val) * 100); if (pct < 5 || pct > 95) pct = 0; }
+  const calc = showRate ? calcInfo(lot, rate) : null;
+  const avail = []; LAYOUTS.forEach((L, i) => { if (L.needs === "calc" && !calc) return; if (L.needs === "mrp" && !(showRate && pct)) return; avail.push(i); });
+  const d = pickDesign(lot, opts.variant | 0, avail, { layout: opts.layout, palette: opts.palette }), P = PALETTES[d.p];
+  const c = { g, P, l: lot, r: d.r, logo, rate, mrp, pct, calc, showRate, number: nice(lot.waNumber, opts.defaultNumber), bstyle: d.r() < 0.5 ? 0 : 1 };
+  c.noChips = !lot.qty && !lot.moq; c.copy = copyFor(lot, d.r, d.h, calc); g.textBaseline = "alphabetic";
+  let used = d.t; if (avail.indexOf(used) < 0) used = avail[0];
+  try { LAYOUTS[used].fn(c); }
+  catch (err) { console.error("poster layout failed, using the safe one", err); used = 0; g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1; g.shadowBlur = 0; g.setLineDash([]); c.P = P; g.clearRect(0, 0, W, H); LAYOUTS[0].fn(c); }
+  const blob = await new Promise((res) => cv.toBlob((b) => res(b), "image/jpeg", 0.92));
+  return { blob, name: LAYOUTS[used].name + " / " + c.P.n, layout: used };
+}
+const POSTER_WORDS = { headlines: HEADLINES, labels: LABELS };
+/* the lot's full value and minimum-order value, or null when the units do not match */
+function lotNumbers(lot){ const c = calcInfo(lot, money(lot.rate)); return c ? { total: c.total, min: c.min } : null; }
+
+window.akPoster = { makeAdPoster: makeAdPoster, lotNumbers: lotNumbers, words: POSTER_WORDS };
+</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
@@ -350,12 +889,72 @@ function rateBlock(l){
 // 6th: sign-off
 const SIGNOFF = '<p class="signoff">Trusted Firm<br>AK Brands Marketing&copy;</p>';
 
+/* ---------- Share window: a branded poster image plus the lot text, to any app ---------- */
+const SX_LOTS = new Map();
+let sxLot = null, sxBlob = null, sxUrl = "", sxVariant = 0;
+const sxText = () => shareText(sxLot);
+const sxNice = (n) => { n = String(n || WHATSAPP_NUMBER).replace(/\D/g, ""); return n.length === 12 && n.slice(0, 2) === "91" ? "+91 " + n.slice(2, 7) + " " + n.slice(7) : "+" + n; };
+function sxSay(text, bad){ const m = $("sxMsg"); m.textContent = text; m.className = "sxmsg" + (bad ? " err" : ""); }
+async function getPoster(){ if (!window.akPoster || !window.akPoster.makeAdPoster) throw new Error("The poster engine is missing"); return window.akPoster.makeAdPoster; }
+async function sxBuild(){
+  $("sxWait").textContent = "Making the poster..."; $("sxWait").style.display = ""; $("sxImg").style.opacity = "0.35";
+  try { const makeAdPoster = await getPoster(); const r = await makeAdPoster(sxLot, { variant: sxVariant, showRate: false, defaultNumber: WHATSAPP_NUMBER }); sxBlob = r.blob; if (sxUrl) URL.revokeObjectURL(sxUrl); sxUrl = URL.createObjectURL(sxBlob); $("sxImg").src = sxUrl; $("sxWait").style.display = "none"; $("sxImg").style.opacity = "1"; }
+  catch (err) { console.error(err); $("sxWait").textContent = "The poster could not be made. You can still share the text."; }
+}
+async function sxOpen(l){
+  sxLot = l; sxBlob = null; sxVariant = 0; sxSay(""); $("sxTitle").textContent = "Share lot " + l.lotNo; $("sxImg").removeAttribute("src");
+  $("sxModal").classList.remove("sxhide"); await sxBuild();
+}
+$("sxShuffle").addEventListener("click", () => { if (sxLot) { sxVariant++; sxTrack("new_design"); sxBuild(); } });
+const sxFile = () => (sxBlob ? new File([sxBlob], "AK-Lot-" + String(sxLot.lotNo).replace(/\s+/g, "-") + ".jpg", { type: "image/jpeg" }) : null);
+async function sxCopyText(t){ try { await navigator.clipboard.writeText(t); return true; } catch (e) { return false; } }
+const sxTrack = (m) => track("share_click", { lot_id: sxLot ? sxLot.lotNo : "", method: m });
+document.addEventListener("click", (e) => {
+  const b = e.target.closest && e.target.closest("[data-sharelot]"); if (!b) return;
+  const l = SX_LOTS.get(b.getAttribute("data-sharelot")); if (l) { track("share_poster_open", { lot_id: l.lotNo }); sxOpen(l); }
+});
+$("sxClose").addEventListener("click", () => $("sxModal").classList.add("sxhide"));
+$("sxModal").addEventListener("click", (e) => { if (e.target.id === "sxModal") $("sxModal").classList.add("sxhide"); });
+$("sxAny").addEventListener("click", async () => {
+  sxSay(""); if (!sxLot) return; sxTrack("any_app");
+  const f = sxFile(), data = { text: sxText(), title: "Lot " + sxLot.lotNo };
+  try { if (!navigator.share) { sxSay("This browser has no share list. Use the buttons below, or Save poster.", true); return; } if (f && navigator.canShare && navigator.canShare({ files: [f] })) data.files = [f]; await navigator.share(data); }
+  catch (err) { if (err && err.name !== "AbortError") sxSay("Sharing did not start. Use the buttons below, or Save poster.", true); }
+});
+$("sxText").addEventListener("click", async () => {
+  sxSay(""); if (!sxLot) return; sxTrack("text");
+  try { if (!navigator.share) { sxSay("This browser has no share list. Use Copy text instead.", true); return; } await navigator.share({ text: sxText() }); }
+  catch (err) { if (err && err.name !== "AbortError") sxSay("Sharing did not start. Use Copy text instead.", true); }
+});
+$("sxSave").addEventListener("click", () => {
+  sxSay(""); const f = sxFile(); if (!f) { sxSay("The poster is not ready yet.", true); return; } sxTrack("save_poster");
+  const a = document.createElement("a"); a.href = sxUrl; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); sxSay("Poster saved to your downloads.");
+});
+$("sxCopy").addEventListener("click", async () => { sxSay(""); if (!sxLot) return; sxTrack("copy_text"); sxSay((await sxCopyText(sxText())) ? "Text copied. Paste it in your post." : "Could not copy. Press and hold the text and copy it by hand.", false); });
+$("sxFb").addEventListener("click", async () => {
+  if (!sxLot) return; sxTrack("facebook"); const ok = await sxCopyText(sxText());
+  window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(lotUrl(sxLot)), "_blank", "noopener");
+  sxSay(ok ? "Facebook is opening. The lot text is copied: paste it into your post." : "Facebook is opening. Use Copy text first, then paste it into your post.");
+});
+$("sxTg").addEventListener("click", () => {
+  if (!sxLot) return; sxTrack("telegram"); const t = sxText().split(lotUrl(sxLot)).join("").replace(/\n{3,}/g, "\n\n");
+  window.open("https://t.me/share/url?url=" + encodeURIComponent(lotUrl(sxLot)) + "&text=" + encodeURIComponent(t), "_blank", "noopener");
+});
+$("sxIn").addEventListener("click", async () => {
+  if (!sxLot) return; sxTrack("linkedin"); const ok = await sxCopyText(sxText());
+  window.open("https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(lotUrl(sxLot)), "_blank", "noopener");
+  sxSay(ok ? "LinkedIn is opening. The lot text is copied: paste it into your post." : "LinkedIn is opening. Use Copy text first.");
+});
+$("sxWa").addEventListener("click", () => { if (sxLot) { sxTrack("whatsapp"); window.open("https://wa.me/?text=" + encodeURIComponent(sxText()), "_blank", "noopener"); } });
+
 function actionsHTML(l){
   if (l.status === "sold") return '<p class="soldnote">This lot has been sold</p>';
   const id = esc(l.lotNo);
+  SX_LOTS.set(String(l.id), l);
   return '<div class="actions">' +
     '<a class="btn btn-wa" data-track="book_click" data-lotid="' + id + '" href="' + bookLink(l) + '" target="_blank" rel="noopener">Book on WhatsApp</a>' +
     '<a class="btn-share" data-track="share_click" data-lotid="' + id + '" href="' + shareLink(l) + '" target="_blank" rel="noopener">Share this lot on WhatsApp</a>' +
+    '<button type="button" class="btn-sharemore" data-sharelot="' + esc(l.id) + '">Share poster and more</button>' +
     '<a class="btn btn-ghost" data-track="media_request_click" data-lotid="' + id + '" href="' + mediaLink(l) + '" target="_blank" rel="noopener">Request full video and photos</a>' +
   '</div>';
 }
