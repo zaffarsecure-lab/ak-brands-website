@@ -120,6 +120,25 @@ section.panel.open>.secbody{display:block}
 .secfiles{margin-top:1.1rem;padding-top:.8rem;border-top:1px dashed var(--line)}
 .sfhead{font-weight:700;font-size:.9rem;color:var(--ink);margin-bottom:.3rem}
 .secfiles input[type=text],.secfiles input[type=file]{margin-top:.4rem}
+.tile.wide{grid-column:1/-1}
+.tile.alert{border:2px solid var(--bad);background:#fdf0ee}.tile.alert b{color:var(--bad)}
+.tile.good{border:2px solid var(--ok);background:#f0f8f2}.tile.good b{color:var(--ok)}
+.pfchips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0}
+.pfchips button{border:1px solid var(--ink);background:#fff;border-radius:999px;padding:.35rem .8rem;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;color:var(--ink)}
+.pfchips button.on{background:var(--ink);color:#fff}
+.drow .pr{display:block;font-size:.82rem;margin-top:.35rem;padding:.3rem .5rem;border-radius:6px;background:#f3efe4}
+.drow .pr.ok{background:#eaf6ee}
+.drow .pr b{color:var(--ink)}.drow .pr i{font-style:normal;font-weight:700;margin-left:.4rem}
+.drow .pr i.ok,.pb-t i.ok{color:var(--ok)}.drow .pr i.bad,.pb-t i.bad{color:var(--bad)}
+.drow .pr em{display:block;font-style:normal;color:var(--muted);font-size:.78rem}
+.pendbox{margin-top:.8rem;border:2px solid var(--line);border-radius:10px;padding:.7rem .8rem;background:#fcfbf8}
+.pendbox.alert{border-color:var(--bad);background:#fdf0ee}.pendbox.good{border-color:var(--ok);background:#f0f8f2}
+.pb-head{display:flex;flex-direction:column;gap:.1rem;margin-bottom:.4rem}
+.pb-rule{border-top:1px solid var(--line);padding:.5rem 0}
+.pb-t{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
+.pb-t i{font-style:normal;font-weight:700;margin-left:.5rem}
+.pb-rule small{display:block;color:var(--muted);font-size:.8rem}
+.pb-act{display:flex;gap:.5rem;margin-top:.4rem;flex-wrap:wrap}
 button.docbtn{display:block;width:100%;margin-top:.7rem;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.85rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
 button.docbtn.alt{background:#fff;color:var(--ink);border:1px solid var(--ink)}
 button.docbtn[disabled]{opacity:.6;cursor:wait}
@@ -297,6 +316,7 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
         <div id="stGrid" class="stgrid"></div>
         <p class="hint">Each status keeps its own date. Picking a status fills in today's date. Change it if it happened on another day.</p>
       </details>
+      <div class="pendbox" id="pendBox"></div>
       <div class="accbar"><button class="small" type="button" id="accOpen">Open all sections</button><button class="small" type="button" id="accClose">Close all sections</button></div>
     </section>
 
@@ -639,7 +659,7 @@ function orderCardHtml(o){
   const stCls = o.status === "Cancelled" || o.status === "Claim open" ? "bad" : (o.status === "Delivered" || o.status === "Closed" ? "ok" : "");
   return '<div class="ocard" data-open="' + esc(o.orderNo) + '"><h3><span>' + esc(o.orderNo) + ' &middot; ' + esc(o.customer.name || prettyPhone(o.customer.phone) || "No name") + '</span><span>' + (c.payable ? inr(c.payable) : "") + '</span></h3>' +
     '<p>' + esc(fmtDate(o.orderDate)) + (o.customer.phone ? ' &middot; ' + esc(prettyPhone(o.customer.phone)) : '') + ' &middot; ' + esc(what) + '</p>' +
-    '<div><span class="pill ' + stCls + '">' + esc(o.status) + '</span><span class="pill ' + payCls + '">Customer: ' + esc(c.payStatus) + '</span>' + (supCls ? '<span class="pill ' + supCls + '">Supplier: ' + esc(c.supStatus) + '</span>' : '') + '</div>' +
+    '<div><span class="pill ' + stCls + '">' + esc(o.status) + '</span><span class="pill ' + payCls + '">Customer: ' + esc(c.payStatus) + '</span>' + (supCls ? '<span class="pill ' + supCls + '">Supplier: ' + esc(c.supStatus) + '</span>' : '') + (function(){ const pi = pendingInfo(o); return pi.skip ? "" : (pi.complete ? '<span class="pill ok">Complete \u2713</span>' : '<span class="pill bad">Action pending (' + pi.pending + ')</span>'); })() + '</div>' +
     '<p>' + (c.balance > 0 ? 'Balance due ' + inr(c.balance) : 'No balance due') + (c.sup ? ' &middot; Profit ' + inr(c.profit) + ' (' + r2(c.margin) + '%)' : '') + (o.delivery.lr ? ' &middot; LR ' + esc(o.delivery.lr) : '') + '</p>' + linkLineHtml(o) + '</div>';
 }
 function linkLineHtml(o){
@@ -761,7 +781,7 @@ function customerCardHtml(g){
   const sub = [o.customer.name && o.customer.firm ? o.customer.firm : "", o.customer.phone ? prettyPhone(o.customer.phone) : "", o.customer.city].filter(Boolean).join(" \u00B7 ");
   return '<div class="ocard" data-cust="' + esc(g.key) + '"><h3><span>' + esc(name) + '</span><span>' + (t.payable ? inr(t.payable) : "") + '</span></h3>' +
     '<p>' + esc(sub) + '</p>' +
-    '<div><span class="pill">' + n + (n === 1 ? " order" : " orders") + '</span><span class="pill">' + lots + (lots === 1 ? " lot" : " lots") + '</span><span class="pill ' + (t.balance > 0 ? "bad" : "ok") + '">' + (t.balance > 0 ? "Balance due " + inr(t.balance) : "No balance due") + '</span></div>' +
+    '<div><span class="pill">' + n + (n === 1 ? " order" : " orders") + '</span><span class="pill">' + lots + (lots === 1 ? " lot" : " lots") + '</span><span class="pill ' + (t.balance > 0 ? "bad" : "ok") + '">' + (t.balance > 0 ? "Balance due " + inr(t.balance) : "No balance due") + '</span>' + (function(){ const k = g.orders.filter((x) => !pendingInfo(x).complete).length; return k ? '<span class="pill bad">' + k + (k === 1 ? " order needs action" : " orders need action") + '</span>' : ""; })() + '</div>' +
     '<p>Last booking ' + esc(fmtDate(o.orderDate)) + ' &middot; Received ' + inr(t.received) + (t.supDue > 0 ? ' &middot; You owe suppliers ' + inr(t.supDue) : '') + ' &middot; Profit ' + inr(t.profit) + '</p></div>';
 }
 function customerOrderRowHtml(o){
@@ -931,13 +951,71 @@ async function loadAll(){
 
 /* ---------- List ---------- */
 $("statusFilter").innerHTML = '<option value="">All statuses</option><option value="__open">Open (not closed or cancelled)</option>' + STATUSES.map((s) => '<option>' + s + '</option>').join("");
+/* ---------- Action pending: every order needs three proofs ---------- */
+const hasProof = (o, secs, kinds) => (o.files || []).some((f) => secs.indexOf(f.section) >= 0 || (!f.section && kinds.indexOf(f.kind) >= 0));
+function pendingInfo(o){
+  if (o.status === "Cancelled") return { skip: true, rules: [], pending: 0, proofs: 0, complete: true };
+  const c = calc(o), d = o.delivery || {}, s = o.supplier || {}, sd = o.statusDates || {}, cWhy = [], sWhy = [], dWhy = [];
+  if (!(c.payable > 0)) cWhy.push("No order amount yet");
+  else if (c.balance > 0.5) cWhy.push(c.received > 0 ? "Balance " + inr(c.balance) + " still to receive" : "No payment recorded yet (" + inr(c.balance) + " due)");
+  if (!String(s.name || "").trim()) sWhy.push("Supplier name missing");
+  if (!(c.sup > 0)) sWhy.push("Supplier rate missing");
+  else if (c.supDue > 0.5) sWhy.push(c.supPaid > 0 ? inr(c.supDue) + " still to pay the supplier" : "Supplier not paid yet (" + inr(c.supDue) + " due)");
+  const miss = []; if (!String(d.transporter || "").trim()) miss.push("transporter"); if (!String(d.lr || "").trim()) miss.push("LR number"); if (!d.dispatchDate) miss.push("dispatch date");
+  if (!(d.deliveredDate || sd.Delivered || o.status === "Delivered" || o.status === "Closed")) miss.push("delivered date");
+  if (miss.length) dWhy.push("Missing: " + miss.join(", "));
+  const rules = [
+    { key: "cust", title: "Customer payment", sec: "3", detOk: !cWhy.length, why: cWhy, attOk: hasProof(o, ["s3"], ["payment"]), attWhy: "No payment screenshot or receipt attached" },
+    { key: "sup", title: "Supplier payment", sec: "5", detOk: !sWhy.length, why: sWhy, attOk: hasProof(o, ["s5"], []), attWhy: "No supplier payment proof or bill attached" },
+    { key: "del", title: "Delivery receipt", sec: "4", detOk: !dWhy.length, why: dWhy, attOk: hasProof(o, ["s4"], ["bilty"]), attWhy: "No Bilty, LR copy or delivery receipt attached" }
+  ];
+  rules.forEach((r) => { r.ok = r.detOk && r.attOk; });
+  return { rules, pending: rules.filter((r) => !r.ok).length, proofs: rules.filter((r) => !r.attOk).length, complete: rules.every((r) => r.ok) };
+}
+let pendF = "all";
+function pendingScreenHtml(){
+  const live = orders.filter((o) => o.status !== "Cancelled"), open = live.map((o) => ({ o, p: pendingInfo(o) })).filter((x) => !x.p.complete);
+  const cnt = (k) => open.filter((x) => x.p.rules.some((r) => r.key === k && !r.ok)).length, att = open.filter((x) => x.p.proofs > 0).length;
+  let list = open; if (pendF === "att") list = open.filter((x) => x.p.proofs > 0); else if (pendF === "cust" || pendF === "sup" || pendF === "del") list = open.filter((x) => x.p.rules.some((r) => r.key === pendF && !r.ok));
+  list = list.slice().sort((a, b) => b.p.pending - a.p.pending || String(a.o.orderDate || "").localeCompare(String(b.o.orderDate || "")));
+  const chip = (k, t, n) => '<button type="button" class="' + (pendF === k ? "on" : "") + '" data-pf="' + k + '">' + t + ' (' + n + ')</button>';
+  const rows = list.map((x) => {
+    const o = x.o, c = calc(o), items = (o.items || []).filter((i) => i.name).map((i) => plain(i.name)), what = items.length ? items[0] + (items.length > 1 ? " +" + (items.length - 1) + " more" : "") : "No products yet";
+    return '<button type="button" class="drow" data-open="' + esc(o.orderNo) + '"><span class="r1"><span>' + esc(o.orderNo) + ' &middot; ' + esc(o.customer.name || o.customer.firm || prettyPhone(o.customer.phone) || "No name") + '</span><span>' + (c.payable ? inr(c.payable) : "") + '</span></span><span class="r2">' + esc(fmtDate(o.orderDate)) + ' &middot; ' + esc(what) + ' &middot; ' + esc(o.status) + '</span>' +
+      x.p.rules.map((r) => '<span class="pr ' + (r.ok ? "ok" : "bad") + '"><b>' + r.title + '</b><i class="' + (r.detOk ? "ok" : "bad") + '">Details ' + (r.detOk ? "\u2713" : "\u2717") + '</i><i class="' + (r.attOk ? "ok" : "bad") + '">Proof ' + (r.attOk ? "\u2713" : "\u2717") + '</i>' + (r.detOk ? "" : '<em>' + esc(r.why.join("; ")) + '</em>') + (r.attOk ? "" : '<em>' + esc(r.attWhy) + '</em>') + '</span>').join("") + '</button>';
+  }).join("");
+  return '<h2>Action pending</h2><div class="bigtot">' + open.length + ' of ' + live.length + (live.length === 1 ? ' order needs' : ' orders need') + ' action</div>' +
+    '<p class="hint">An order is perfect only when customer payment, supplier payment and delivery each have <b>details</b> and <b>proof</b> (an attachment). Missing proof comes first below.</p>' +
+    '<div class="pfchips">' + chip("all", "All", open.length) + chip("att", "Missing proof", att) + chip("cust", "Customer payment", cnt("cust")) + chip("sup", "Supplier payment", cnt("sup")) + chip("del", "Delivery", cnt("del")) + '</div>' +
+    '<details class="grp" style="padding:0 .9rem .6rem"><summary style="padding:.7rem 0;font-weight:700;cursor:pointer">What counts as complete?</summary>' +
+    '<p class="hint"><b>Customer payment.</b> Details: paid in full, no balance left. Proof: a payment screenshot or receipt is attached (3. Customer payments, files).</p>' +
+    '<p class="hint"><b>Supplier payment.</b> Details: supplier name and rate filled, and the supplier paid in full. Proof: the payment proof or bill is attached (5. Supplier, files).</p>' +
+    '<p class="hint"><b>Delivery receipt.</b> Details: transporter, LR number, dispatch date and delivered date filled. Proof: Bilty, LR copy or delivery receipt attached (4. Delivery, files).</p></details>' +
+    (rows || '<p class="hint">' + (open.length ? "Nothing in this filter." : "Every order is complete. Well done.") + '</p>');
+}
+function renderPending(){
+  const box = $("pendBox"); if (!box) return; const p = pendingInfo(state);
+  if (p.skip) { box.className = "pendbox"; box.innerHTML = '<div class="pb-head"><b>Cancelled order</b><span class="hint">No action needed.</span></div>'; return; }
+  box.className = "pendbox " + (p.complete ? "good" : "alert");
+  box.innerHTML = '<div class="pb-head"><b>' + (p.complete ? "Complete \u2713 All three are done" : "Action pending: " + p.pending + " of 3 not complete") + '</b><span class="hint">An order is perfect only when customer payment, supplier payment and delivery each have details and proof.</span></div>' +
+    p.rules.map((r, i) => '<div class="pb-rule"><div class="pb-t"><b>' + (i + 1) + '. ' + r.title + '</b><span><i class="' + (r.detOk ? "ok" : "bad") + '">Details ' + (r.detOk ? "\u2713" : "\u2717") + '</i><i class="' + (r.attOk ? "ok" : "bad") + '">Proof ' + (r.attOk ? "\u2713" : "\u2717") + '</i></span></div>' +
+      (r.detOk ? "" : '<small>' + esc(r.why.join("; ")) + '</small>') + (r.attOk ? "" : '<small>' + esc(r.attWhy) + '</small>') +
+      (r.ok ? "" : '<div class="pb-act">' + (r.detOk ? "" : '<button type="button" class="small" data-pj="' + r.sec + '">Add details</button>') + (r.attOk ? "" : '<button type="button" class="small" data-pj="' + r.sec + '" data-pjp="1">Add proof</button>') + '</div>') + '</div>').join("");
+}
+$("pendBox").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-pj]"); if (!b) return;
+  const sec = document.querySelector('#formView section.panel[data-sec-no="' + b.getAttribute("data-pj") + '"]'); if (!sec) return;
+  setSection(sec, true); const target = b.getAttribute("data-pjp") ? (sec.querySelector("[data-secfiles]") || sec) : sec; target.scrollIntoView({ behavior: "smooth", block: "start" });
+});
 function renderTiles(){
   const live = orders.filter((o) => o.status !== "Cancelled");
   const open = live.filter((o) => o.status !== "Closed").length;
   let bal = 0, sup = 0, profit = 0;
   live.forEach((o) => { const c = calc(o); bal += Math.max(0, c.balance); sup += Math.max(0, c.supDue); profit += c.profit; });
   const t = (kind, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-tile="' + kind + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
-  $("tiles").innerHTML = t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
+  const need = live.map((o) => pendingInfo(o)).filter((p) => !p.complete), proofs = need.reduce((a, p) => a + p.proofs, 0);
+  const tp = '<button type="button" class="tile wide ' + (need.length ? "alert" : "good") + '" data-tile="pending"><small>Action pending</small><b>' + (need.length ? need.length + (need.length === 1 ? " order needs action" : " orders need action") : "All orders are complete") + '</b><span class="go">' + (need.length ? proofs + (proofs === 1 ? " proof" : " proofs") + " missing. Tap to see" : "Tap to see details") + '</span></button>';
+  $("tiles").innerHTML = tp + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
 }
 /* tap a tile: groups, then orders, then the order itself */
 let lastDetail = "";
@@ -951,14 +1029,16 @@ function detailHtml(d){
 function showDetail(kind){
   lastDetail = kind;
   if (kind.indexOf("cust:") === 0) { const rest = kind.slice(5), cut = rest.lastIndexOf("|"); $("detailBody").innerHTML = cut > 0 ? customerTileHtml(rest.slice(0, cut), rest.slice(cut + 1)) : customerDetailHtml(rest); }
+  else if (kind === "pending") $("detailBody").innerHTML = pendingScreenHtml();
   else $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
   $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); $("detailView").classList.remove("hidden");
   window.scrollTo(0, 0);
 }
-$("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) showDetail(b.getAttribute("data-tile")); });
+$("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) { if (b.getAttribute("data-tile") === "pending") pendF = "all"; showDetail(b.getAttribute("data-tile")); } });
 $("detailBack").addEventListener("click", () => showList());
 $("detailBody").addEventListener("input", (e) => { if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
 $("detailBody").addEventListener("click", (e) => {
+  const pf = e.target.closest("[data-pf]"); if (pf) { pendF = pf.getAttribute("data-pf"); $("detailBody").innerHTML = pendingScreenHtml(); return; }
   if (e.target.closest("[data-sp-fill]")) { spFill(); return; }
   if (e.target.closest("[data-sp-apply]")) { spApply(); return; }
   const ct = e.target.closest("[data-ctile]"); if (ct) { showDetail("cust:" + ct.getAttribute("data-ckey") + "|" + ct.getAttribute("data-ctile")); return; }
@@ -1435,6 +1515,7 @@ function renderFiles(){
     box.innerHTML = mine.length ? mine.map((f) => fileRowHtml(f, can)).join("") : '<p class="hint" style="margin:.2rem 0">No files here yet.</p>';
   });
   if (typeof renderSectionSummaries === "function") renderSectionSummaries();
+  if (typeof renderPending === "function") renderPending();
 }
 $("fl_kind").addEventListener("change", () => { $("fl_show").checked = $("fl_kind").value !== "bilty"; });
 async function afterFileChange(text){
@@ -1836,7 +1917,7 @@ $("linksBox").addEventListener("click", (e) => {
 });
 function refresh(){
   const c = calc(state);
-  try { renderSectionSummaries(); } catch (err) { console.error(err); }
+  try { renderSectionSummaries(); renderPending(); } catch (err) { console.error(err); }
   $("summary").innerHTML = summaryHtml(c);
   $("dueBar").textContent = inr(Math.max(0, c.balance));
   c.lines.forEach((ln, i) => {
