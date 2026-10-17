@@ -972,26 +972,40 @@ function pendingInfo(o){
   rules.forEach((r) => { r.ok = r.detOk && r.attOk; });
   return { rules, pending: rules.filter((r) => !r.ok).length, proofs: rules.filter((r) => !r.attOk).length, complete: rules.every((r) => r.ok) };
 }
-let pendF = "all";
+let pendF = "all", pendQ = "";
+function pendMatches(o, q){
+  const toks = String(q || "").toLowerCase().split(/\s+/).filter(Boolean); if (!toks.length) return true;
+  const items = o.items || [], d = o.delivery || {};
+  const hay = [o.orderNo, o.customer.name, o.customer.firm, o.customer.phone, o.customer.city, o.status, (o.supplier || {}).name, d.lr, d.transporter].concat(items.map((i) => i.lotNo), items.map((i) => i.name)).join(" ").toLowerCase(), hayNS = hay.replace(/\s+/g, "");
+  return toks.every((t) => hay.indexOf(t) >= 0 || hayNS.indexOf(t.replace(/\s+/g, "")) >= 0);
+}
+function pendingListHtml(){
+  const q = pendQ.trim(), all = orders.map((o) => ({ o, p: pendingInfo(o) })), open = all.filter((x) => !x.p.skip && !x.p.complete);
+  let list = q ? all.filter((x) => pendMatches(x.o, q)) : open;
+  if (pendF === "att") list = list.filter((x) => x.p.proofs > 0); else if (pendF === "cust" || pendF === "sup" || pendF === "del") list = list.filter((x) => x.p.rules.some((r) => r.key === pendF && !r.ok));
+  list = list.slice().sort((a, b) => (a.p.skip ? 1 : 0) - (b.p.skip ? 1 : 0) || b.p.pending - a.p.pending || String(a.o.orderDate || "").localeCompare(String(b.o.orderDate || "")));
+  const rows = list.map((x) => {
+    const o = x.o, c = calc(o), items = (o.items || []).filter((i) => i.name), lots = items.filter((i) => i.lotNo).map((i) => i.lotNo).join(", "), first = items.length ? plain(items[0].name) + (items.length > 1 ? " +" + (items.length - 1) + " more" : "") : "No products yet", d = o.delivery || {};
+    const state = x.p.skip ? '<span class="pill">Cancelled, no action needed</span>' : (x.p.complete ? '<span class="pill ok">Complete \u2713</span>' : '<span class="pill bad">Action pending (' + x.p.pending + ')</span>');
+    return '<button type="button" class="drow" data-open="' + esc(o.orderNo) + '"><span class="r1"><span>' + esc(o.orderNo) + ' &middot; ' + esc(o.customer.name || o.customer.firm || prettyPhone(o.customer.phone) || "No name") + '</span><span>' + (c.payable ? inr(c.payable) : "") + '</span></span><span class="r2">' + (lots ? "Lot " + esc(lots) + " &middot; " : "") + esc(first) + (d.lr ? " &middot; LR " + esc(d.lr) : "") + ' &middot; ' + esc(fmtDate(o.orderDate)) + ' &middot; ' + esc(o.status) + '</span><span class="r2">' + state + '</span>' +
+      x.p.rules.map((r) => '<span class="pr ' + (r.ok ? "ok" : "bad") + '"><b>' + r.title + '</b><i class="' + (r.detOk ? "ok" : "bad") + '">Details ' + (r.detOk ? "\u2713" : "\u2717") + '</i><i class="' + (r.attOk ? "ok" : "bad") + '">Proof ' + (r.attOk ? "\u2713" : "\u2717") + '</i>' + (r.detOk ? "" : '<em>' + esc(r.why.join("; ")) + '</em>') + (r.attOk ? "" : '<em>' + esc(r.attWhy) + '</em>') + '</span>').join("") + '</button>';
+  }).join("");
+  const found = q ? '<p class="hint"><b>' + list.length + '</b> ' + (list.length === 1 ? "order" : "orders") + ' found for \u201C' + esc(q) + '\u201D. Complete orders are included, so you can check them too.</p>' : "";
+  return found + (rows || '<p class="hint">' + (q ? "No order matches that. Check the lot number or LR number." : (open.length ? "Nothing in this filter." : "Every order is complete. Well done.")) + '</p>');
+}
 function pendingScreenHtml(){
   const live = orders.filter((o) => o.status !== "Cancelled"), open = live.map((o) => ({ o, p: pendingInfo(o) })).filter((x) => !x.p.complete);
   const cnt = (k) => open.filter((x) => x.p.rules.some((r) => r.key === k && !r.ok)).length, att = open.filter((x) => x.p.proofs > 0).length;
-  let list = open; if (pendF === "att") list = open.filter((x) => x.p.proofs > 0); else if (pendF === "cust" || pendF === "sup" || pendF === "del") list = open.filter((x) => x.p.rules.some((r) => r.key === pendF && !r.ok));
-  list = list.slice().sort((a, b) => b.p.pending - a.p.pending || String(a.o.orderDate || "").localeCompare(String(b.o.orderDate || "")));
   const chip = (k, t, n) => '<button type="button" class="' + (pendF === k ? "on" : "") + '" data-pf="' + k + '">' + t + ' (' + n + ')</button>';
-  const rows = list.map((x) => {
-    const o = x.o, c = calc(o), items = (o.items || []).filter((i) => i.name).map((i) => plain(i.name)), what = items.length ? items[0] + (items.length > 1 ? " +" + (items.length - 1) + " more" : "") : "No products yet";
-    return '<button type="button" class="drow" data-open="' + esc(o.orderNo) + '"><span class="r1"><span>' + esc(o.orderNo) + ' &middot; ' + esc(o.customer.name || o.customer.firm || prettyPhone(o.customer.phone) || "No name") + '</span><span>' + (c.payable ? inr(c.payable) : "") + '</span></span><span class="r2">' + esc(fmtDate(o.orderDate)) + ' &middot; ' + esc(what) + ' &middot; ' + esc(o.status) + '</span>' +
-      x.p.rules.map((r) => '<span class="pr ' + (r.ok ? "ok" : "bad") + '"><b>' + r.title + '</b><i class="' + (r.detOk ? "ok" : "bad") + '">Details ' + (r.detOk ? "\u2713" : "\u2717") + '</i><i class="' + (r.attOk ? "ok" : "bad") + '">Proof ' + (r.attOk ? "\u2713" : "\u2717") + '</i>' + (r.detOk ? "" : '<em>' + esc(r.why.join("; ")) + '</em>') + (r.attOk ? "" : '<em>' + esc(r.attWhy) + '</em>') + '</span>').join("") + '</button>';
-  }).join("");
   return '<h2>Action pending</h2><div class="bigtot">' + open.length + ' of ' + live.length + (live.length === 1 ? ' order needs' : ' orders need') + ' action</div>' +
     '<p class="hint">An order is perfect only when customer payment, supplier payment and delivery each have <b>details</b> and <b>proof</b> (an attachment). Missing proof comes first below.</p>' +
+    '<label for="pendQ" style="font-weight:700">Find a lot or LR number</label><input id="pendQ" type="search" autocomplete="off" placeholder="Lot number, LR number, order, customer..." value="' + esc(pendQ) + '">' +
     '<div class="pfchips">' + chip("all", "All", open.length) + chip("att", "Missing proof", att) + chip("cust", "Customer payment", cnt("cust")) + chip("sup", "Supplier payment", cnt("sup")) + chip("del", "Delivery", cnt("del")) + '</div>' +
+    '<div id="pendList">' + pendingListHtml() + '</div>' +
     '<details class="grp" style="padding:0 .9rem .6rem"><summary style="padding:.7rem 0;font-weight:700;cursor:pointer">What counts as complete?</summary>' +
     '<p class="hint"><b>Customer payment.</b> Details: paid in full, no balance left. Proof: a payment screenshot or receipt is attached (3. Customer payments, files).</p>' +
     '<p class="hint"><b>Supplier payment.</b> Details: supplier name and rate filled, and the supplier paid in full. Proof: the payment proof or bill is attached (5. Supplier, files).</p>' +
-    '<p class="hint"><b>Delivery receipt.</b> Details: transporter, LR number, dispatch date and delivered date filled. Proof: Bilty, LR copy or delivery receipt attached (4. Delivery, files).</p></details>' +
-    (rows || '<p class="hint">' + (open.length ? "Nothing in this filter." : "Every order is complete. Well done.") + '</p>');
+    '<p class="hint"><b>Delivery receipt.</b> Details: transporter, LR number, dispatch date and delivered date filled. Proof: Bilty, LR copy or delivery receipt attached (4. Delivery, files).</p></details>';
 }
 function renderPending(){
   const box = $("pendBox"); if (!box) return; const p = pendingInfo(state);
@@ -1034,9 +1048,9 @@ function showDetail(kind){
   $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); $("detailView").classList.remove("hidden");
   window.scrollTo(0, 0);
 }
-$("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) { if (b.getAttribute("data-tile") === "pending") pendF = "all"; showDetail(b.getAttribute("data-tile")); } });
+$("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) { if (b.getAttribute("data-tile") === "pending") { pendF = "all"; pendQ = ""; } showDetail(b.getAttribute("data-tile")); } });
 $("detailBack").addEventListener("click", () => showList());
-$("detailBody").addEventListener("input", (e) => { if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
+$("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
 $("detailBody").addEventListener("click", (e) => {
   const pf = e.target.closest("[data-pf]"); if (pf) { pendF = pf.getAttribute("data-pf"); $("detailBody").innerHTML = pendingScreenHtml(); return; }
   if (e.target.closest("[data-sp-fill]")) { spFill(); return; }
