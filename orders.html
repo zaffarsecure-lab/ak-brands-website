@@ -139,6 +139,9 @@ section.panel.open>.secbody{display:block}
 .pb-t i{font-style:normal;font-weight:700;margin-left:.5rem}
 .pb-rule small{display:block;color:var(--muted);font-size:.8rem}
 .pb-act{display:flex;gap:.5rem;margin-top:.4rem;flex-wrap:wrap}
+.pill.wait{border-color:#1f5fae;color:#1f5fae}
+.drow .pr.wait{background:#eaf1fb}.drow .pr i.wt,.pb-t i.wt{color:#1f5fae}
+.pendbox.wait{border-color:#1f5fae;background:#eef4fc}
 button.docbtn{display:block;width:100%;margin-top:.7rem;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.85rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
 button.docbtn.alt{background:#fff;color:var(--ink);border:1px solid var(--ink)}
 button.docbtn[disabled]{opacity:.6;cursor:wait}
@@ -659,7 +662,7 @@ function orderCardHtml(o){
   const stCls = o.status === "Cancelled" || o.status === "Claim open" ? "bad" : (o.status === "Delivered" || o.status === "Closed" ? "ok" : "");
   return '<div class="ocard" data-open="' + esc(o.orderNo) + '"><h3><span>' + esc(o.orderNo) + ' &middot; ' + esc(o.customer.name || prettyPhone(o.customer.phone) || "No name") + '</span><span>' + (c.payable ? inr(c.payable) : "") + '</span></h3>' +
     '<p>' + esc(fmtDate(o.orderDate)) + (o.customer.phone ? ' &middot; ' + esc(prettyPhone(o.customer.phone)) : '') + ' &middot; ' + esc(what) + '</p>' +
-    '<div><span class="pill ' + stCls + '">' + esc(o.status) + '</span><span class="pill ' + payCls + '">Customer: ' + esc(c.payStatus) + '</span>' + (supCls ? '<span class="pill ' + supCls + '">Supplier: ' + esc(c.supStatus) + '</span>' : '') + (function(){ const pi = pendingInfo(o); return pi.skip ? "" : (pi.complete ? '<span class="pill ok">Complete \u2713</span>' : '<span class="pill bad">Action pending (' + pi.pending + ')</span>'); })() + '</div>' +
+    '<div><span class="pill ' + stCls + '">' + esc(o.status) + '</span><span class="pill ' + payCls + '">Customer: ' + esc(c.payStatus) + '</span>' + (supCls ? '<span class="pill ' + supCls + '">Supplier: ' + esc(c.supStatus) + '</span>' : '') + (function(){ const pi = pendingInfo(o); return pi.skip ? "" : (pi.complete ? '<span class="pill ok">Complete \u2713</span>' : (pi.pending ? '<span class="pill bad">Action pending (' + pi.pending + ')</span>' : '<span class="pill wait">In transit, on schedule</span>')); })() + '</div>' +
     '<p>' + (c.balance > 0 ? 'Balance due ' + inr(c.balance) : 'No balance due') + (c.sup ? ' &middot; Profit ' + inr(c.profit) + ' (' + r2(c.margin) + '%)' : '') + (o.delivery.lr ? ' &middot; LR ' + esc(o.delivery.lr) : '') + '</p>' + linkLineHtml(o) + '</div>';
 }
 function linkLineHtml(o){
@@ -781,7 +784,7 @@ function customerCardHtml(g){
   const sub = [o.customer.name && o.customer.firm ? o.customer.firm : "", o.customer.phone ? prettyPhone(o.customer.phone) : "", o.customer.city].filter(Boolean).join(" \u00B7 ");
   return '<div class="ocard" data-cust="' + esc(g.key) + '"><h3><span>' + esc(name) + '</span><span>' + (t.payable ? inr(t.payable) : "") + '</span></h3>' +
     '<p>' + esc(sub) + '</p>' +
-    '<div><span class="pill">' + n + (n === 1 ? " order" : " orders") + '</span><span class="pill">' + lots + (lots === 1 ? " lot" : " lots") + '</span><span class="pill ' + (t.balance > 0 ? "bad" : "ok") + '">' + (t.balance > 0 ? "Balance due " + inr(t.balance) : "No balance due") + '</span>' + (function(){ const k = g.orders.filter((x) => !pendingInfo(x).complete).length; return k ? '<span class="pill bad">' + k + (k === 1 ? " order needs action" : " orders need action") + '</span>' : ""; })() + '</div>' +
+    '<div><span class="pill">' + n + (n === 1 ? " order" : " orders") + '</span><span class="pill">' + lots + (lots === 1 ? " lot" : " lots") + '</span><span class="pill ' + (t.balance > 0 ? "bad" : "ok") + '">' + (t.balance > 0 ? "Balance due " + inr(t.balance) : "No balance due") + '</span>' + (function(){ const k = g.orders.filter((x) => pendingInfo(x).pending > 0).length; return k ? '<span class="pill bad">' + k + (k === 1 ? " order needs action" : " orders need action") + '</span>' : ""; })() + '</div>' +
     '<p>Last booking ' + esc(fmtDate(o.orderDate)) + ' &middot; Received ' + inr(t.received) + (t.supDue > 0 ? ' &middot; You owe suppliers ' + inr(t.supDue) : '') + ' &middot; Profit ' + inr(t.profit) + '</p></div>';
 }
 function customerOrderRowHtml(o){
@@ -954,23 +957,31 @@ $("statusFilter").innerHTML = '<option value="">All statuses</option><option val
 /* ---------- Action pending: every order needs three proofs ---------- */
 const hasProof = (o, secs, kinds) => (o.files || []).some((f) => secs.indexOf(f.section) >= 0 || (!f.section && kinds.indexOf(f.kind) >= 0));
 function pendingInfo(o){
-  if (o.status === "Cancelled") return { skip: true, rules: [], pending: 0, proofs: 0, complete: true };
-  const c = calc(o), d = o.delivery || {}, s = o.supplier || {}, sd = o.statusDates || {}, cWhy = [], sWhy = [], dWhy = [];
+  if (o.status === "Cancelled") return { skip: true, rules: [], pending: 0, proofs: 0, complete: true, waiting: false };
+  const c = calc(o), d = o.delivery || {}, s = o.supplier || {}, sd = o.statusDates || {}, cWhy = [], sWhy = [], dWhy = [], today = todayISO();
   if (!(c.payable > 0)) cWhy.push("No order amount yet");
   else if (c.balance > 0.5) cWhy.push(c.received > 0 ? "Balance " + inr(c.balance) + " still to receive" : "No payment recorded yet (" + inr(c.balance) + " due)");
   if (!String(s.name || "").trim()) sWhy.push("Supplier name missing");
   if (!(c.sup > 0)) sWhy.push("Supplier rate missing");
   else if (c.supDue > 0.5) sWhy.push(c.supPaid > 0 ? inr(c.supDue) + " still to pay the supplier" : "Supplier not paid yet (" + inr(c.supDue) + " due)");
+  const delivered = !!(d.deliveredDate || sd.Delivered || o.status === "Delivered" || o.status === "Closed");
   const miss = []; if (!String(d.transporter || "").trim()) miss.push("transporter"); if (!String(d.lr || "").trim()) miss.push("LR number"); if (!d.dispatchDate) miss.push("dispatch date");
-  if (!(d.deliveredDate || sd.Delivered || o.status === "Delivered" || o.status === "Closed")) miss.push("delivered date");
-  if (miss.length) dWhy.push("Missing: " + miss.join(", "));
+  let dWait = false, dNote = "";
+  if (delivered) { if (miss.length) dWhy.push("Missing: " + miss.join(", ")); }
+  else {
+    if (!d.expectedDate) miss.push("expected delivery date");
+    if (miss.length) dWhy.push("Not shipped or not fully entered. Missing: " + miss.join(", "));
+    else if (String(d.expectedDate) >= today) { dWait = true; dNote = "In transit, expected delivery " + fmtDate(d.expectedDate) + ". Not counted as pending. It moves to Action pending if it is not delivered by then."; }
+    else dWhy.push("Expected delivery " + fmtDate(d.expectedDate) + " has passed and no delivered date is recorded. Add the delivered date, or a new expected date if it is still on the way.");
+  }
   const rules = [
     { key: "cust", title: "Customer payment", sec: "3", detOk: !cWhy.length, why: cWhy, attOk: hasProof(o, ["s3"], ["payment"]), attWhy: "No payment screenshot or receipt attached" },
     { key: "sup", title: "Supplier payment", sec: "5", detOk: !sWhy.length, why: sWhy, attOk: hasProof(o, ["s5"], []), attWhy: "No supplier payment proof or bill attached" },
-    { key: "del", title: "Delivery receipt", sec: "4", detOk: !dWhy.length, why: dWhy, attOk: hasProof(o, ["s4"], ["bilty"]), attWhy: "No Bilty, LR copy or delivery receipt attached" }
+    { key: "del", title: "Delivery receipt", sec: "4", detOk: !dWhy.length, why: dWhy, attOk: hasProof(o, ["s4"], ["bilty"]), attWhy: "No Bilty, LR copy or delivery receipt attached", wait: dWait, note: dNote }
   ];
-  rules.forEach((r) => { r.ok = r.detOk && r.attOk; });
-  return { rules, pending: rules.filter((r) => !r.ok).length, proofs: rules.filter((r) => !r.attOk).length, complete: rules.every((r) => r.ok) };
+  rules.forEach((r) => { r.ok = !r.wait && r.detOk && r.attOk; });
+  const pending = rules.filter((r) => !r.ok && !r.wait).length;
+  return { rules, pending, proofs: rules.filter((r) => !r.wait && !r.attOk).length, complete: rules.every((r) => r.ok), waiting: pending === 0 && rules.some((r) => r.wait) };
 }
 let pendF = "all", pendQ = "";
 function pendMatches(o, q){
@@ -980,24 +991,24 @@ function pendMatches(o, q){
   return toks.every((t) => hay.indexOf(t) >= 0 || hayNS.indexOf(t.replace(/\s+/g, "")) >= 0);
 }
 function pendingListHtml(){
-  const q = pendQ.trim(), all = orders.map((o) => ({ o, p: pendingInfo(o) })), open = all.filter((x) => !x.p.skip && !x.p.complete);
+  const q = pendQ.trim(), all = orders.map((o) => ({ o, p: pendingInfo(o) })), open = all.filter((x) => !x.p.skip && x.p.pending > 0);
   let list = q ? all.filter((x) => pendMatches(x.o, q)) : open;
-  if (pendF === "att") list = list.filter((x) => x.p.proofs > 0); else if (pendF === "cust" || pendF === "sup" || pendF === "del") list = list.filter((x) => x.p.rules.some((r) => r.key === pendF && !r.ok));
+  if (pendF === "att") list = list.filter((x) => x.p.proofs > 0); else if (pendF === "cust" || pendF === "sup" || pendF === "del") list = list.filter((x) => x.p.rules.some((r) => r.key === pendF && !r.ok && !r.wait));
   list = list.slice().sort((a, b) => (a.p.skip ? 1 : 0) - (b.p.skip ? 1 : 0) || b.p.pending - a.p.pending || String(a.o.orderDate || "").localeCompare(String(b.o.orderDate || "")));
   const rows = list.map((x) => {
     const o = x.o, c = calc(o), items = (o.items || []).filter((i) => i.name), lots = items.filter((i) => i.lotNo).map((i) => i.lotNo).join(", "), first = items.length ? plain(items[0].name) + (items.length > 1 ? " +" + (items.length - 1) + " more" : "") : "No products yet", d = o.delivery || {};
-    const state = x.p.skip ? '<span class="pill">Cancelled, no action needed</span>' : (x.p.complete ? '<span class="pill ok">Complete \u2713</span>' : '<span class="pill bad">Action pending (' + x.p.pending + ')</span>');
+    const state = x.p.skip ? '<span class="pill">Cancelled, no action needed</span>' : (x.p.complete ? '<span class="pill ok">Complete \u2713</span>' : (x.p.pending ? '<span class="pill bad">Action pending (' + x.p.pending + ')</span>' : '<span class="pill wait">In transit, on schedule</span>'));
     return '<button type="button" class="drow" data-open="' + esc(o.orderNo) + '"><span class="r1"><span>' + esc(o.orderNo) + ' &middot; ' + esc(o.customer.name || o.customer.firm || prettyPhone(o.customer.phone) || "No name") + '</span><span>' + (c.payable ? inr(c.payable) : "") + '</span></span><span class="r2">' + (lots ? "Lot " + esc(lots) + " &middot; " : "") + esc(first) + (d.lr ? " &middot; LR " + esc(d.lr) : "") + ' &middot; ' + esc(fmtDate(o.orderDate)) + ' &middot; ' + esc(o.status) + '</span><span class="r2">' + state + '</span>' +
-      x.p.rules.map((r) => '<span class="pr ' + (r.ok ? "ok" : "bad") + '"><b>' + r.title + '</b><i class="' + (r.detOk ? "ok" : "bad") + '">Details ' + (r.detOk ? "\u2713" : "\u2717") + '</i><i class="' + (r.attOk ? "ok" : "bad") + '">Proof ' + (r.attOk ? "\u2713" : "\u2717") + '</i>' + (r.detOk ? "" : '<em>' + esc(r.why.join("; ")) + '</em>') + (r.attOk ? "" : '<em>' + esc(r.attWhy) + '</em>') + '</span>').join("") + '</button>';
+      x.p.rules.map((r) => r.wait ? '<span class="pr wait"><b>' + r.title + '</b><i class="wt">Waiting</i><em>' + esc(r.note) + '</em></span>' : '<span class="pr ' + (r.ok ? "ok" : "bad") + '"><b>' + r.title + '</b><i class="' + (r.detOk ? "ok" : "bad") + '">Details ' + (r.detOk ? "\u2713" : "\u2717") + '</i><i class="' + (r.attOk ? "ok" : "bad") + '">Proof ' + (r.attOk ? "\u2713" : "\u2717") + '</i>' + (r.detOk ? "" : '<em>' + esc(r.why.join("; ")) + '</em>') + (r.attOk ? "" : '<em>' + esc(r.attWhy) + '</em>') + '</span>').join("") + '</button>';
   }).join("");
   const found = q ? '<p class="hint"><b>' + list.length + '</b> ' + (list.length === 1 ? "order" : "orders") + ' found for \u201C' + esc(q) + '\u201D. Complete orders are included, so you can check them too.</p>' : "";
   return found + (rows || '<p class="hint">' + (q ? "No order matches that. Check the lot number or LR number." : (open.length ? "Nothing in this filter." : "Every order is complete. Well done.")) + '</p>');
 }
 function pendingScreenHtml(){
-  const live = orders.filter((o) => o.status !== "Cancelled"), open = live.map((o) => ({ o, p: pendingInfo(o) })).filter((x) => !x.p.complete);
-  const cnt = (k) => open.filter((x) => x.p.rules.some((r) => r.key === k && !r.ok)).length, att = open.filter((x) => x.p.proofs > 0).length;
+  const live = orders.filter((o) => o.status !== "Cancelled"), open = live.map((o) => ({ o, p: pendingInfo(o) })).filter((x) => x.p.pending > 0), onTime = live.filter((o) => pendingInfo(o).waiting).length;
+  const cnt = (k) => open.filter((x) => x.p.rules.some((r) => r.key === k && !r.ok && !r.wait)).length, att = open.filter((x) => x.p.proofs > 0).length;
   const chip = (k, t, n) => '<button type="button" class="' + (pendF === k ? "on" : "") + '" data-pf="' + k + '">' + t + ' (' + n + ')</button>';
-  return '<h2>Action pending</h2><div class="bigtot">' + open.length + ' of ' + live.length + (live.length === 1 ? ' order needs' : ' orders need') + ' action</div>' +
+  return '<h2>Action pending</h2><div class="bigtot">' + open.length + ' of ' + live.length + (live.length === 1 ? ' order needs' : ' orders need') + ' action</div>' + (onTime ? '<p class="hint"><b>' + onTime + '</b> more ' + (onTime === 1 ? "is" : "are") + ' in transit and on schedule, so not counted here. They come in if the expected delivery date passes. Search any of them below.</p>' : '') +
     '<p class="hint">An order is perfect only when customer payment, supplier payment and delivery each have <b>details</b> and <b>proof</b> (an attachment). Missing proof comes first below.</p>' +
     '<label for="pendQ" style="font-weight:700">Find a lot or LR number</label><input id="pendQ" type="search" autocomplete="off" placeholder="Lot number, LR number, order, customer..." value="' + esc(pendQ) + '">' +
     '<div class="pfchips">' + chip("all", "All", open.length) + chip("att", "Missing proof", att) + chip("cust", "Customer payment", cnt("cust")) + chip("sup", "Supplier payment", cnt("sup")) + chip("del", "Delivery", cnt("del")) + '</div>' +
@@ -1005,16 +1016,16 @@ function pendingScreenHtml(){
     '<details class="grp" style="padding:0 .9rem .6rem"><summary style="padding:.7rem 0;font-weight:700;cursor:pointer">What counts as complete?</summary>' +
     '<p class="hint"><b>Customer payment.</b> Details: paid in full, no balance left. Proof: a payment screenshot or receipt is attached (3. Customer payments, files).</p>' +
     '<p class="hint"><b>Supplier payment.</b> Details: supplier name and rate filled, and the supplier paid in full. Proof: the payment proof or bill is attached (5. Supplier, files).</p>' +
-    '<p class="hint"><b>Delivery receipt.</b> Details: transporter, LR number, dispatch date and delivered date filled. Proof: Bilty, LR copy or delivery receipt attached (4. Delivery, files).</p></details>';
+    '<p class="hint"><b>Delivery receipt.</b> Details: transporter, LR number, dispatch date and delivered date filled. Proof: Bilty, LR copy or delivery receipt attached (4. Delivery, files). <b>While a parcel is in transit and its expected delivery date has not passed, it is not counted as pending.</b> If the date passes with no delivered date, it comes into Action pending. A late parcel that is still on its way goes back to waiting when you enter a new expected date.</p></details>';
 }
 function renderPending(){
   const box = $("pendBox"); if (!box) return; const p = pendingInfo(state);
   if (p.skip) { box.className = "pendbox"; box.innerHTML = '<div class="pb-head"><b>Cancelled order</b><span class="hint">No action needed.</span></div>'; return; }
-  box.className = "pendbox " + (p.complete ? "good" : "alert");
-  box.innerHTML = '<div class="pb-head"><b>' + (p.complete ? "Complete \u2713 All three are done" : "Action pending: " + p.pending + " of 3 not complete") + '</b><span class="hint">An order is perfect only when customer payment, supplier payment and delivery each have details and proof.</span></div>' +
-    p.rules.map((r, i) => '<div class="pb-rule"><div class="pb-t"><b>' + (i + 1) + '. ' + r.title + '</b><span><i class="' + (r.detOk ? "ok" : "bad") + '">Details ' + (r.detOk ? "\u2713" : "\u2717") + '</i><i class="' + (r.attOk ? "ok" : "bad") + '">Proof ' + (r.attOk ? "\u2713" : "\u2717") + '</i></span></div>' +
-      (r.detOk ? "" : '<small>' + esc(r.why.join("; ")) + '</small>') + (r.attOk ? "" : '<small>' + esc(r.attWhy) + '</small>') +
-      (r.ok ? "" : '<div class="pb-act">' + (r.detOk ? "" : '<button type="button" class="small" data-pj="' + r.sec + '">Add details</button>') + (r.attOk ? "" : '<button type="button" class="small" data-pj="' + r.sec + '" data-pjp="1">Add proof</button>') + '</div>') + '</div>').join("");
+  box.className = "pendbox " + (p.complete ? "good" : (p.pending ? "alert" : "wait"));
+  box.innerHTML = '<div class="pb-head"><b>' + (p.complete ? "Complete \u2713 All three are done" : (p.pending ? "Action pending: " + p.pending + " of 3 not complete" : "In transit, on schedule. Nothing pending today")) + '</b><span class="hint">An order is perfect only when customer payment, supplier payment and delivery each have details and proof.</span></div>' +
+    p.rules.map((r, i) => '<div class="pb-rule"><div class="pb-t"><b>' + (i + 1) + '. ' + r.title + '</b><span>' + (r.wait ? '<i class="wt">Waiting</i>' : '<i class="' + (r.detOk ? "ok" : "bad") + '">Details ' + (r.detOk ? "\u2713" : "\u2717") + '</i><i class="' + (r.attOk ? "ok" : "bad") + '">Proof ' + (r.attOk ? "\u2713" : "\u2717") + '</i>') + '</span></div>' +
+      (r.wait ? '<small>' + esc(r.note) + '</small>' + (r.attOk ? '' : '<small>You can attach the Bilty or LR copy now. It is not required until delivery.</small>') : (r.detOk ? "" : '<small>' + esc(r.why.join("; ")) + '</small>') + (r.attOk ? "" : '<small>' + esc(r.attWhy) + '</small>')) +
+      (r.ok ? "" : '<div class="pb-act">' + ((r.detOk || r.wait) ? "" : '<button type="button" class="small" data-pj="' + r.sec + '">Add details</button>') + (r.attOk ? "" : '<button type="button" class="small" data-pj="' + r.sec + '" data-pjp="1">' + (r.wait ? "Add Bilty or LR copy" : "Add proof") + '</button>') + '</div>') + '</div>').join("");
 }
 $("pendBox").addEventListener("click", (e) => {
   const b = e.target.closest("[data-pj]"); if (!b) return;
@@ -1027,8 +1038,8 @@ function renderTiles(){
   let bal = 0, sup = 0, profit = 0;
   live.forEach((o) => { const c = calc(o); bal += Math.max(0, c.balance); sup += Math.max(0, c.supDue); profit += c.profit; });
   const t = (kind, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-tile="' + kind + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
-  const need = live.map((o) => pendingInfo(o)).filter((p) => !p.complete), proofs = need.reduce((a, p) => a + p.proofs, 0);
-  const tp = '<button type="button" class="tile wide ' + (need.length ? "alert" : "good") + '" data-tile="pending"><small>Action pending</small><b>' + (need.length ? need.length + (need.length === 1 ? " order needs action" : " orders need action") : "All orders are complete") + '</b><span class="go">' + (need.length ? proofs + (proofs === 1 ? " proof" : " proofs") + " missing. Tap to see" : "Tap to see details") + '</span></button>';
+  const infos = live.map((o) => pendingInfo(o)), need = infos.filter((p) => p.pending > 0), onTime = infos.filter((p) => p.waiting).length, proofs = need.reduce((a, p) => a + p.proofs, 0);
+  const tp = '<button type="button" class="tile wide ' + (need.length ? "alert" : "good") + '" data-tile="pending"><small>Action pending</small><b>' + (need.length ? need.length + (need.length === 1 ? " order needs action" : " orders need action") : "Nothing needs action") + '</b><span class="go">' + (need.length ? proofs + (proofs === 1 ? " proof" : " proofs") + " missing" + (onTime ? ", " + onTime + " in transit on schedule" : "") + ". Tap to see" : (onTime ? onTime + " in transit, on schedule. Tap to see" : "Tap to see details")) + '</span></button>';
   $("tiles").innerHTML = tp + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
 }
 /* tap a tile: groups, then orders, then the order itself */
