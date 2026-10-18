@@ -155,6 +155,41 @@ section.panel.open>.secbody{display:block}
 .chgrow{border:1px solid var(--line);border-radius:8px;padding:.5rem .7rem .7rem;margin:.5rem 0;background:#fcfbf8}
 .dtsearch{margin:.8rem 0}
 .dtsearch input{margin-top:.2rem}
+.dashT{background:linear-gradient(135deg,#0f1b2d,#1d3f73);border:0}.dashT small,.dashT .go{color:#c9d6ea}.dashT b{color:#fff}
+.dashbtn{border-color:#1f5fae;color:#1f5fae}
+.dash{margin:-.2rem -.2rem 0}
+.dhead>div{min-width:0;flex:1}.dhead{background:linear-gradient(135deg,#0f1b2d 0%,#1d3f73 100%);color:#fff;border-radius:16px;padding:1rem 1.1rem;display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;border-bottom:4px solid var(--gold)}
+.dhead small{color:#d9c06a;letter-spacing:.06em;text-transform:uppercase;font-size:.7rem;font-weight:700}
+.dhead h2{color:#fff;margin:.15rem 0;font-size:1.35rem}.dhead span{color:#c9d6ea;font-size:.84rem;overflow-wrap:anywhere}
+.dprint{flex:0 0 auto;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:.35rem .8rem;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.dchips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.8rem 0 .4rem}
+.dchips button{border:1px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:.35rem .8rem;font:inherit;font-size:.84rem;font-weight:600;cursor:pointer}
+.dchips button.on{background:var(--ink);color:#fff}
+.dtog{display:flex;flex-direction:column;gap:.2rem;margin:.4rem 0 .6rem}
+.dtog .chk{margin:.1rem 0;font-weight:600;font-size:.88rem}
+.dbadges{margin:.7rem 0 .2rem}
+.dk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:.7rem 0}
+.dk{background:#fff;border-radius:14px;padding:.75rem .8rem .65rem;box-shadow:0 6px 18px rgba(15,27,45,.09);border-top:4px solid var(--c);position:relative;overflow:hidden}
+.dk small{color:var(--muted);font-weight:600;font-size:.76rem}
+.dk b{display:block;font-size:1.35rem;color:var(--ink);line-height:1.2;margin:.1rem 0}
+.dsub{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;font-size:.74rem;color:var(--muted)}
+.dd{font-style:normal;font-weight:800;padding:.05rem .4rem;border-radius:999px;font-size:.72rem}
+.dd.up{background:#e3f4e8;color:#0d6b33}.dd.dn{background:#fdeaea;color:#a72a2a}
+.dspark{display:block;width:100%;height:24px;margin-top:.35rem}
+.dcard{background:#fff;border-radius:16px;padding:.9rem 1rem 1rem;box-shadow:0 6px 18px rgba(15,27,45,.08);margin:.7rem 0}
+.dcard h3{margin:0 0 .6rem;font-size:1rem;color:var(--ink);display:flex;justify-content:space-between;gap:.5rem;align-items:baseline}
+.dcard h3 small{font-weight:500;color:var(--muted);font-size:.74rem}
+.dsvg{width:100%;height:auto;display:block}
+.dkey{display:flex;gap:1rem;font-size:.78rem;color:var(--muted);margin-top:.2rem}.dkey i,.dleg i{display:inline-block;width:.65rem;height:.65rem;border-radius:3px;margin-right:.35rem}
+.dwrap{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}.ddon{width:132px;height:132px;flex:0 0 auto}
+.dleg{flex:1 1 130px;font-size:.84rem}.dleg div{display:flex;align-items:center;gap:.2rem;padding:.2rem 0;border-bottom:1px dashed #eee7d6}.dleg span{flex:1}.dleg b{color:var(--ink)}
+.dhb{display:grid;grid-template-columns:minmax(70px,34%) 1fr auto;gap:.5rem;align-items:center;width:100%;border:0;background:none;padding:.32rem 0;text-align:left;font:inherit;color:var(--text)}
+button.dhb{cursor:pointer}
+.dhb .dl{font-size:.84rem;overflow-wrap:anywhere}.dhb .dbar{display:block;background:#f0ece0;border-radius:999px;height:.7rem;overflow:hidden;min-width:0}.dhb .dbar i{display:block;height:100%;border-radius:999px}
+.dhb .dv{font-weight:700;color:var(--ink);font-size:.84rem;text-align:right}.dhb .dv small{display:block;font-weight:500;color:var(--muted);font-size:.7rem}
+.dstats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+.dstats div{background:#f7f5ef;border-radius:12px;padding:.6rem;text-align:center}.dstats b{display:block;font-size:1.3rem;color:var(--ink)}.dstats span{font-size:.74rem;color:var(--muted)}.dstats .bad b{color:var(--bad)}
+@media print{body *{visibility:hidden}#detailBody,#detailBody *{visibility:visible}#detailBody{position:absolute;left:0;top:0;width:100%}.dnoprint{display:none!important}.dk,.dcard,.dhead,.dhb .dbar i,.ddon circle,.dsvg rect{-webkit-print-color-adjust:exact;print-color-adjust:exact}.dcard,.dk{break-inside:avoid;box-shadow:none;border:1px solid #ddd}}
 button.docbtn{display:block;width:100%;margin-top:.7rem;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.85rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
 button.docbtn.alt{background:#fff;color:var(--ink);border:1px solid var(--ink)}
 button.docbtn[disabled]{opacity:.6;cursor:wait}
@@ -810,7 +845,7 @@ function customerCardHtml(g){
   return '<div class="ocard" data-cust="' + esc(g.key) + '"><h3><span>' + esc(name) + '</span><span>' + (t.payable ? inr(t.payable) : "") + '</span></h3>' +
     '<p>' + esc(sub) + '</p>' +
     '<div><span class="pill">' + n + (n === 1 ? " order" : " orders") + '</span><span class="pill">' + lots + (lots === 1 ? " lot" : " lots") + '</span><span class="pill ' + (t.balance > 0 ? "bad" : "ok") + '">' + (t.balance > 0 ? "Balance due " + inr(t.balance) : "No balance due") + '</span>' + (function(){ const k = g.orders.filter((x) => pendingInfo(x).pending > 0).length; return k ? '<span class="pill bad">' + k + (k === 1 ? " order needs action" : " orders need action") + '</span>' : ""; })() + '</div>' +
-    '<p>Last booking ' + esc(fmtDate(o.orderDate)) + ' &middot; Received ' + inr(t.received) + (t.supDue > 0 ? ' &middot; You owe suppliers ' + inr(t.supDue) : '') + ' &middot; Profit ' + inr(t.profit) + '</p></div>';
+    '<p>Last booking ' + esc(fmtDate(o.orderDate)) + ' &middot; Received ' + inr(t.received) + (t.supDue > 0 ? ' &middot; You owe suppliers ' + inr(t.supDue) : '') + ' &middot; Profit ' + inr(t.profit) + '</p><button type="button" class="small dashbtn" data-cdash="' + esc(g.key) + '" style="margin-top:.5rem">Dashboard</button></div>';
 }
 function customerOrderRowHtml(o){
   const c = calc(o);
@@ -876,7 +911,7 @@ function customerDetailHtml(key){
   const tile = (k, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-ctile="' + k + '" data-ckey="' + esc(key) + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   return '<h2>' + esc(name) + '</h2><p class="hint">' + esc(sub) + '</p>' +
     '<div class="tiles" style="margin-top:.6rem">' + tile("orders", "Orders and lots", mine.length + " &middot; " + lotCount(mine)) + tile("total", "Total ordered", inr(t.payable)) + tile("recv", "Received", inr(t.received)) + tile("owes", "Customer owes", inr(t.balance)) + tile("sup", "You owe suppliers", inr(t.supDue), "priv") + tile("profit", "Profit", inr(t.profit), "priv") + '</div>' +
-    '<button type="button" class="small" data-newfor="' + esc(key) + '" style="margin-top:.8rem">New order for this customer</button>' + splitPanelHtml(mine) +
+    '<button type="button" class="small" data-newfor="' + esc(key) + '" style="margin-top:.8rem">New order for this customer</button> <button type="button" class="small dashbtn" data-cdash="' + esc(key) + '" style="margin-top:.8rem">Customer dashboard</button>' + splitPanelHtml(mine) +
     '<p class="hint" style="margin-top:1rem">Newest booking first. Tap an order to open it.</p>' + mine.map(customerOrderRowHtml).join("");
 }
 function customerTileHtml(key, tile){
@@ -1186,6 +1221,188 @@ function renderStaffBox(){
   if (!mine.length) { box.classList.add("hidden"); box.innerHTML = ""; return; }
   box.classList.remove("hidden"); box.innerHTML = '<b style="color:var(--ink)">Staff updates on this order</b>' + mine.map((e) => feedItemHtml(e, false).replace(/<button[^>]*data-apply[^>]*>.*?<\/button>/, "")).join("") + (mine.some((e) => e.type === "parcel_delivered" && !e.appliedAt) ? '<p class="hint">Staff reported this as delivered. Apply it from the Staff activity screen.</p>' : "");
 }
+/* ---------- Dashboards: the whole business, and each customer ---------- */
+const dz = (v) => String(v).padStart(2, "0");
+const isoOf = (d) => d.getFullYear() + "-" + dz(d.getMonth() + 1) + "-" + dz(d.getDate());
+const addDays = (iso, n) => { const d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return isoOf(d); };
+const dayDiff = (a, b) => Math.round((new Date(b + "T00:00:00") - new Date(a + "T00:00:00")) / 86400000);
+const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const inrShort = (n) => { n = Number(n) || 0; const a = Math.abs(n), s = n < 0 ? "-" : ""; if (a >= 1e7) return s + "\u20B9" + r2(a / 1e7) + " Cr"; if (a >= 1e5) return s + "\u20B9" + r2(a / 1e5) + " L"; return s + "\u20B9" + Math.round(a).toLocaleString("en-IN"); };
+const axisShort = (n) => { const a = Math.abs(n); if (a >= 1e7) return +(a / 1e7).toFixed(1) + "Cr"; if (a >= 1e5) return +(a / 1e5).toFixed(1) + "L"; if (a >= 1e3) return +(a / 1e3).toFixed(a >= 1e4 ? 0 : 1) + "k"; return String(Math.round(a)); };
+const DC = { navy: "#0f1b2d", gold: "#d4af37", teal: "#1f9e89", blue: "#2f6fdb", orange: "#e8833a", red: "#c0392b", green: "#12803f", violet: "#7a4fd1", grey: "#a9b3c2" };
+const PALETTE = [DC.blue, DC.teal, DC.orange, DC.violet, DC.gold, DC.red, DC.green, DC.grey];
+let dashPeriod = "fy", dashPriv = false, dashNames = false, svgN = 0;
+const PERIODS = [["month", "This month"], ["30", "Last 30 days"], ["quarter", "This quarter"], ["fy", "This financial year"], ["lastfy", "Last financial year"], ["all", "All time"]];
+function periodRange(key){
+  const t = todayISO(), d = new Date(t + "T00:00:00"), y = d.getFullYear(), m = d.getMonth(), first = (yy, mm) => yy + "-" + dz(mm + 1) + "-01";
+  if (key === "month") return { key, from: first(y, m), to: t };
+  if (key === "30") return { key, from: addDays(t, -29), to: t };
+  if (key === "quarter") return { key, from: first(y, Math.floor(m / 3) * 3), to: t };
+  if (key === "fy") { const s = m >= 3 ? y : y - 1; return { key, from: s + "-04-01", to: t }; }
+  if (key === "lastfy") { const s = (m >= 3 ? y : y - 1) - 1; return { key, from: s + "-04-01", to: (s + 1) + "-03-31" }; }
+  return { key: "all", from: "0000-01-01", to: "9999-12-31" };
+}
+const itemKey = (i) => String((i && i.name) || "").trim().toLowerCase().replace(/\s+/g, " ");
+const custName = (o) => o.customer.name || o.customer.firm || prettyPhone(o.customer.phone) || "No name";
+const payDate = (p) => String(p.date || "");
+function sumOrders(list){
+  const s = { sales: 0, profit: 0, received: 0, balance: 0, sup: 0, supDue: 0, pcs: 0, orders: list.length, custs: new Set() };
+  list.forEach((o) => { const c = calc(o); s.sales += c.payable; s.profit += c.profit; s.received += c.received; s.balance += Math.max(0, c.balance); s.sup += c.sup; s.supDue += Math.max(0, c.supDue); (o.items || []).forEach((i) => { s.pcs += num(i.qty); }); s.custs.add(groupKeyOf(o)); });
+  return s;
+}
+function makeBuckets(from, to){
+  const span = dayDiff(from, to) + 1, out = [];
+  if (span <= 35) { for (let d = from, k = 0; d <= to; d = addDays(d, 1), k++) out.push({ label: String(+d.slice(8)), idx: (x) => (x === d ? k : -1), start: d }); out.mode = "day"; return out; }
+  if (span <= 120) { for (let d = from, k = 0; d <= to; d = addDays(d, 7), k++) out.push({ label: +d.slice(8) + " " + MON[+d.slice(5, 7) - 1], start: d }); out.mode = "week"; return out; }
+  let y = +from.slice(0, 4), m = +from.slice(5, 7) - 1; const ey = +to.slice(0, 4), em = +to.slice(5, 7) - 1;
+  while (y < ey || (y === ey && m <= em)) { out.push({ label: MON[m] + (m === 0 || !out.length ? " " + String(y).slice(2) : ""), start: y + "-" + dz(m + 1) + "-01", ym: y * 12 + m }); m++; if (m > 11) { m = 0; y++; } }
+  while (out.length > 24) out.shift(); out.mode = "month"; return out;
+}
+function bucketIndex(b, iso){
+  if (b.mode === "day") return dayDiff(b[0].start, iso);
+  if (b.mode === "week") return Math.floor(dayDiff(b[0].start, iso) / 7);
+  const ym = +iso.slice(0, 4) * 12 + (+iso.slice(5, 7) - 1); return ym - b[0].ym;
+}
+function dashModel(range){
+  const t = todayISO(), live = orders.filter((o) => o.status !== "Cancelled"), dates = live.map((o) => o.orderDate).filter(Boolean).sort();
+  const eff = { from: range.from === "0000-01-01" ? (dates[0] || t) : range.from, to: range.to === "9999-12-31" ? t : (range.to > t ? t : range.to) };
+  const cur = live.filter((o) => o.orderDate >= eff.from && o.orderDate <= eff.to), S = sumOrders(cur);
+  const len = dayDiff(eff.from, eff.to) + 1, prev = range.key === "all" ? null : live.filter((o) => o.orderDate >= addDays(eff.from, -len) && o.orderDate <= addDays(eff.from, -1)), P = prev ? sumOrders(prev) : null;
+  const bk = makeBuckets(eff.from, eff.to), n = bk.length, sales = new Array(n).fill(0), profit = new Array(n).fill(0), cnt = new Array(n).fill(0);
+  cur.forEach((o) => { const i = bucketIndex(bk, o.orderDate); if (i >= 0 && i < n) { const c = calc(o); sales[i] += c.payable; profit[i] += c.profit; cnt[i]++; } });
+  const cm = new Map(), pm = new Map(), sm = new Map(), stat = {};
+  cur.forEach((o) => {
+    const c = calc(o), k = groupKeyOf(o), e = cm.get(k) || { key: k, name: custName(o), sales: 0, orders: 0 }; e.sales += c.payable; e.orders++; cm.set(k, e);
+    (o.items || []).forEach((it, ix) => { const nk = itemKey(it); if (!nk) return; const ln = c.lines && c.lines[ix], amt = ln ? ln.cust : num(it.qty) * num(it.custRate), p = pm.get(nk) || { name: plain(it.name), pcs: 0, sales: 0 }; p.pcs += num(it.qty); p.sales += amt; pm.set(nk, p); });
+    const st = o.customer.state || o.customer.city || "Not set", s2 = sm.get(st) || { name: st, sales: 0 }; s2.sales += c.payable; sm.set(st, s2);
+    stat[o.status] = (stat[o.status] || 0) + 1;
+  });
+  const modes = {}; let collected = 0;
+  live.forEach((o) => (o.payments || []).forEach((p) => { const a = num(p.amount); if (a > 0 && payDate(p) >= eff.from && payDate(p) <= eff.to) { collected += a; const m = p.mode || "Other"; modes[m] = (modes[m] || 0) + a; } }));
+  const ageB = [["0 to 7 days", 0, 7], ["8 to 15 days", 8, 15], ["16 to 30 days", 16, 30], ["31 to 60 days", 31, 60], ["Over 60 days", 61, 99999]].map((x) => ({ label: x[0], lo: x[1], hi: x[2], value: 0, n: 0 })); let owedNow = 0, supNow = 0;
+  live.forEach((o) => { const c = calc(o); supNow += Math.max(0, c.supDue); if (c.balance > 0.5) { const a = Math.max(0, dayDiff(o.orderDate || t, t)), b = ageB.find((x) => a >= x.lo && a <= x.hi); b.value += c.balance; b.n++; owedNow += c.balance; } });
+  let delivered = 0, onTime = 0, withDates = 0, transit = 0, transitN = 0, late = 0;
+  cur.forEach((o) => { const d = o.delivery || {}, done = !!(d.deliveredDate || o.status === "Delivered" || o.status === "Closed"); if (done) { delivered++; if (d.deliveredDate && d.expectedDate) { withDates++; if (d.deliveredDate <= d.expectedDate) onTime++; } if (d.deliveredDate && d.dispatchDate) { transit += Math.max(0, dayDiff(d.dispatchDate, d.deliveredDate)); transitN++; } } else if (d.expectedDate && d.expectedDate < t) late++; });
+  const firstOrder = new Map(); live.forEach((o) => { const k = groupKeyOf(o); if (!firstOrder.has(k) || o.orderDate < firstOrder.get(k)) firstOrder.set(k, o.orderDate); });
+  const perCust = new Map(); live.forEach((o) => { const k = groupKeyOf(o); perCust.set(k, (perCust.get(k) || 0) + 1); });
+  let nNew = 0, nRet = 0; S.custs.forEach((k) => { if (range.key === "all") { if ((perCust.get(k) || 0) >= 2) nRet++; else nNew++; } else if ((firstOrder.get(k) || "") >= eff.from) nNew++; else nRet++; });
+  return { eff, S, P, bk, sales, profit, cnt, cust: Array.from(cm.values()).sort((a, b) => b.sales - a.sales), prod: Array.from(pm.values()).sort((a, b) => b.sales - a.sales), states: Array.from(sm.values()).sort((a, b) => b.sales - a.sales), stat, modes, collected, ageB, owedNow, supNow, delivered, onTime, withDates, avgTransit: transitN ? transit / transitN : null, late, nNew, nRet, hasAll: range.key === "all" };
+}
+/* ----- small chart helpers (plain SVG, no outside libraries) ----- */
+function niceStep(x){ const p = Math.pow(10, Math.floor(Math.log10(x))), f = x / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p; }
+function chartBars(labels, bars, line, c1, c2){
+  const id = "gb" + (++svgN), W = 360, H = 200, pl = 42, pr = 10, pt = 14, pb = 28, n = labels.length, iw = W - pl - pr, ih = H - pt - pb;
+  const max = Math.max(1, ...bars, ...(line || [0])), step = niceStep(max / 4), top = step * 4;
+  let g = ""; for (let i = 0; i <= 4; i++) { const y = pt + ih - ih * i / 4; g += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y + '" y2="' + y + '" stroke="#e7e2d4" stroke-width="1"></line><text x="' + (pl - 6) + '" y="' + (y + 3) + '" text-anchor="end" font-size="9" fill="#7a8798">' + axisShort(step * i) + '</text>'; }
+  const bw = Math.min(28, iw / n * 0.62); let bs = "", pts = [], xl = "", every = Math.ceil(n / 6);
+  bars.forEach((v, k) => { const cx = pl + iw / n * (k + 0.5), h = v / top * ih; bs += '<rect x="' + (cx - bw / 2).toFixed(1) + '" y="' + (pt + ih - h).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(0, h).toFixed(1) + '" rx="3" fill="url(#' + id + ')"></rect>'; if (line) pts.push([cx, pt + ih - line[k] / top * ih]); if (k % every === 0) xl += '<text x="' + cx.toFixed(1) + '" y="' + (H - 9) + '" text-anchor="middle" font-size="9" fill="#7a8798">' + esc(labels[k]) + '</text>'; });
+  const ln = line ? '<polyline points="' + pts.map((p) => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ") + '" fill="none" stroke="' + c2 + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></polyline>' + pts.map((p) => '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3" fill="#fff" stroke="' + c2 + '" stroke-width="2"></circle>').join("") : "";
+  return '<svg viewBox="0 0 ' + W + " " + H + '" class="dsvg" role="img"><defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + c1 + '"></stop><stop offset="1" stop-color="' + c1 + '" stop-opacity=".45"></stop></linearGradient></defs>' + g + bs + ln + xl + '</svg>';
+}
+function chartDonut(parts, top, bottom){
+  const tot = parts.reduce((a, p) => a + p.value, 0); if (!(tot > 0)) return '<p class="hint">Nothing to show yet.</p>';
+  const R = 52, C = 2 * Math.PI * R; let off = 0, circ = "";
+  parts.forEach((p) => { if (!(p.value > 0)) return; const len = p.value / tot * C; circ += '<circle r="' + R + '" cx="70" cy="70" fill="none" stroke="' + p.color + '" stroke-width="20" stroke-dasharray="' + len.toFixed(2) + " " + (C - len).toFixed(2) + '" stroke-dashoffset="' + (-off).toFixed(2) + '" transform="rotate(-90 70 70)"></circle>'; off += len; });
+  const svg = '<svg viewBox="0 0 140 140" class="ddon" role="img"><circle r="' + R + '" cx="70" cy="70" fill="none" stroke="#f0ece0" stroke-width="20"></circle>' + circ + '<text x="70" y="68" text-anchor="middle" font-size="15" font-weight="800" fill="#0f1b2d">' + esc(top) + '</text><text x="70" y="84" text-anchor="middle" font-size="9" fill="#7a8798">' + esc(bottom) + '</text></svg>';
+  return '<div class="dwrap">' + svg + '<div class="dleg">' + parts.filter((p) => p.value > 0).map((p) => '<div><i style="background:' + p.color + '"></i><span>' + esc(p.label) + '</span><b>' + esc(p.text || String(Math.round(p.value / tot * 100)) + "%") + '</b></div>').join("") + '</div></div>';
+}
+function hbars(rows, color, attr){
+  if (!rows.length) return '<p class="hint">Nothing to show yet.</p>'; const max = Math.max(1, ...rows.map((r) => r.value));
+  return rows.map((r) => '<' + (attr && r.attr ? 'button type="button" data-' + attr + '="' + esc(r.attr) + '"' : 'div') + ' class="dhb"><span class="dl">' + esc(r.label) + '</span><span class="dbar"><i style="width:' + (r.value > 0 ? Math.max(3, r.value / max * 100) : 0).toFixed(1) + '%;background:' + (r.color || color) + '"></i></span><span class="dv">' + esc(r.text) + (r.sub ? '<small>' + esc(r.sub) + '</small>' : '') + '</span></' + (attr && r.attr ? "button" : "div") + '>').join("");
+}
+function spark(vals, color){
+  const n = vals.length; if (n < 2) return ""; const max = Math.max(1, ...vals), W = 96, H = 28, pts = vals.map((v, i) => (i / (n - 1) * W).toFixed(1) + "," + (H - 3 - v / max * (H - 6)).toFixed(1));
+  return '<svg viewBox="0 0 ' + W + " " + H + '" class="dspark"><polyline points="' + pts.join(" ") + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>';
+}
+function deltaPill(cur, prev){
+  if (prev === null || prev === undefined) return ""; if (!(prev > 0)) return cur > 0 ? '<em class="dd up">New</em>' : "";
+  const p = (cur - prev) / prev * 100, up = p >= 0; return '<em class="dd ' + (up ? "up" : "dn") + '">' + (up ? "\u25B2 " : "\u25BC ") + Math.abs(Math.round(p)) + "%</em>";
+}
+function kpi(k, label, text, v, opt){ opt = opt || {}; return '<div class="dk" data-k="' + k + '" data-v="' + (v === null || v === undefined ? "" : Math.round(v * 100) / 100) + '" style="--c:' + (opt.color || DC.blue) + '"><small>' + esc(label) + '</small><b>' + esc(text) + '</b><span class="dsub">' + (opt.delta || "") + (opt.sub ? '<span>' + esc(opt.sub) + '</span>' : "") + '</span>' + (opt.spark || "") + '</div>'; }
+function dashControls(){
+  return '<div class="dnoprint"><div class="dchips">' + PERIODS.map((p) => '<button type="button" data-dp="' + p[0] + '" class="' + (dashPeriod === p[0] ? "on" : "") + '">' + p[1] + '</button>').join("") + '</div>' +
+    '<div class="dtog"><label class="chk"><input type="checkbox" data-dtoggle="priv"' + (dashPriv ? " checked" : "") + '> Showcase: hide profit and supplier numbers</label><label class="chk"><input type="checkbox" data-dtoggle="names"' + (dashNames ? " checked" : "") + '> Hide customer names</label></div></div>';
+}
+function dashboardHtml(){
+  const range = periodRange(dashPeriod), M = dashModel(range), S = M.S, P = M.P, per = PERIODS.find((p) => p[0] === dashPeriod)[1];
+  const head = '<div class="dhead"><div><small>AK Brands Marketing\u00A9</small><h2>Business dashboard</h2><span>' + esc(per) + ' &middot; ' + esc(fmtDate(M.eff.from) + " to " + fmtDate(M.eff.to)) + '</span></div><button type="button" class="dprint dnoprint" data-dprint="1">Save PDF</button></div>';
+  if (!S.orders) return '<div class="dash">' + head + dashControls() + '<div class="dcard"><p class="hint">No orders in this period. Try All time.</p></div></div>';
+  const margin = S.sales > 0 ? S.profit / S.sales * 100 : 0, sp = M.sales;
+  const kpis = kpi("sales", "Sales", inrShort(S.sales), S.sales, { color: DC.blue, delta: deltaPill(S.sales, P && P.sales), spark: spark(sp, DC.blue), sub: "vs earlier period" }) +
+    (dashPriv ? "" : kpi("profit", "Profit", inrShort(S.profit), S.profit, { color: DC.green, delta: deltaPill(S.profit, P && P.profit), spark: spark(M.profit, DC.green), sub: r2(margin) + "% margin" })) +
+    kpi("orders", "Orders", String(S.orders), S.orders, { color: DC.orange, delta: deltaPill(S.orders, P && P.orders), spark: spark(M.cnt, DC.orange) }) +
+    kpi("pcs", "Pieces sold", Math.round(S.pcs).toLocaleString("en-IN"), S.pcs, { color: DC.violet }) +
+    kpi("custs", "Customers", String(S.custs.size), S.custs.size, { color: DC.teal, delta: deltaPill(S.custs.size, P && P.custs.size) }) +
+    kpi("aov", "Average order", inrShort(S.orders ? S.sales / S.orders : 0), S.orders ? S.sales / S.orders : 0, { color: DC.gold }) +
+    kpi("collected", "Money collected", inrShort(M.collected), M.collected, { color: DC.green, sub: "payments in this period" }) +
+    kpi("owed", "Customers owe you", inrShort(M.owedNow), M.owedNow, { color: DC.red, sub: "all orders, today" }) +
+    (dashPriv ? "" : kpi("supnow", "You owe suppliers", inrShort(M.supNow), M.supNow, { color: DC.navy, sub: "today" }));
+  const nm = (c, i) => (dashNames ? "Customer " + (i + 1) : c.name);
+  const modes = Object.keys(M.modes).map((m, i) => ({ label: m, value: M.modes[m], color: PALETTE[i % PALETTE.length], text: inrShort(M.modes[m]) }));
+  const stCol = { Booked: DC.blue, "Token received": DC.teal, Dispatched: DC.orange, Delivered: DC.green, Closed: DC.navy };
+  const sts = Object.keys(M.stat).map((s, i) => ({ label: s, value: M.stat[s], color: stCol[s] || PALETTE[(i + 3) % PALETTE.length], text: String(M.stat[s]) }));
+  const colTot = S.received + S.balance, ageCol = [DC.green, DC.teal, DC.gold, DC.orange, DC.red];
+  const chartTitle = M.bk.mode === "day" ? "by day" : (M.bk.mode === "week" ? "by week" : "by month");
+  return '<div class="dash' + (dashPriv ? " showcase" : "") + '">' + head + dashControls() +
+    '<div class="dk-grid">' + kpis + '</div>' +
+    '<div class="dcard"><h3>Sales' + (dashPriv ? "" : " and profit") + ' <small>' + chartTitle + '</small></h3>' + chartBars(M.bk.map((b) => b.label), M.sales, dashPriv ? null : M.profit, DC.blue, DC.gold) + (dashPriv ? "" : '<div class="dkey"><span><i style="background:' + DC.blue + '"></i>Sales</span><span><i style="background:' + DC.gold + '"></i>Profit</span></div>') + '</div>' +
+    '<div class="dcard"><h3>Money received on these orders</h3>' + chartDonut([{ label: "Received", value: S.received, color: DC.green, text: inrShort(S.received) }, { label: "Still to receive", value: S.balance, color: DC.orange, text: inrShort(S.balance) }], colTot > 0 ? Math.round(S.received / colTot * 100) + "%" : "0%", "received") + '</div>' +
+    '<div class="dcard"><h3>How customers paid <small>in this period</small></h3>' + chartDonut(modes, inrShort(M.collected), "collected") + '</div>' +
+    '<div class="dcard"><h3>Top customers <small>tap one for its dashboard</small></h3>' + hbars(M.cust.slice(0, 6).map((c, i) => ({ label: nm(c, i), value: c.sales, text: inrShort(c.sales), sub: c.orders + (c.orders === 1 ? " order" : " orders"), attr: dashNames ? "" : c.key })), DC.blue, "cdash") + '</div>' +
+    '<div class="dcard"><h3>Best selling products</h3>' + hbars(M.prod.slice(0, 6).map((p) => ({ label: p.name, value: p.sales, text: inrShort(p.sales), sub: Math.round(p.pcs).toLocaleString("en-IN") + " pcs" })), DC.teal) + '</div>' +
+    '<div class="dcard"><h3>Who owes you, by age <small>' + inrShort(M.owedNow) + ' in all</small></h3>' + hbars(M.ageB.map((b, i) => ({ label: b.label, value: b.value, text: inrShort(b.value), sub: b.n + (b.n === 1 ? " order" : " orders"), color: ageCol[i] })), DC.orange) + '</div>' +
+    '<div class="dcard"><h3>Orders by status</h3>' + chartDonut(sts, String(S.orders), S.orders === 1 ? "order" : "orders") + '</div>' +
+    '<div class="dcard"><h3>Delivery</h3><div class="dstats"><div><b>' + M.delivered + '</b><span>delivered</span></div><div><b>' + (M.withDates ? Math.round(M.onTime / M.withDates * 100) + "%" : "-") + '</b><span>on time</span></div><div><b>' + (M.avgTransit === null ? "-" : (Math.round(M.avgTransit * 10) / 10)) + '</b><span>avg days in transit</span></div><div class="' + (M.late ? "bad" : "") + '"><b>' + M.late + '</b><span>late now</span></div></div></div>' +
+    '<div class="dcard"><h3>' + (M.hasAll ? "One-time and repeat customers" : "New and returning customers") + '</h3>' + chartDonut([{ label: M.hasAll ? "One order" : "New", value: M.nNew, color: DC.blue, text: String(M.nNew) }, { label: M.hasAll ? "2 or more orders" : "Returning", value: M.nRet, color: DC.teal, text: String(M.nRet) }], String(S.custs.size), S.custs.size === 1 ? "customer" : "customers") + '</div>' +
+    '<div class="dcard"><h3>Where customers are</h3>' + hbars(M.states.slice(0, 6).map((s) => ({ label: s.name, value: s.sales, text: inrShort(s.sales) })), DC.violet) + '</div>' +
+    '<p class="hint" style="text-align:center">Built from your orders. Cancelled orders are left out.' + (dashPriv ? " Showcase view: profit and supplier numbers are hidden." : "") + '</p></div>';
+}
+/* ----- one customer ----- */
+function custModel(key){
+  const t = todayISO(), mine = orders.filter((o) => groupKeyOf(o) === key && o.status !== "Cancelled").sort((a, b) => String(a.orderDate).localeCompare(String(b.orderDate)));
+  if (!mine.length) return null;
+  const S = sumOrders(mine), first = mine[0].orderDate, last = mine[mine.length - 1].orderDate;
+  const bk = makeBuckets(first, t), n = bk.length; if (bk.mode === "day" || bk.mode === "week") { bk.mode = bk.mode; }
+  const sales = new Array(n).fill(0); mine.forEach((o) => { const i = bucketIndex(bk, o.orderDate); if (i >= 0 && i < n) sales[i] += calc(o).payable; });
+  const pm = new Map(), modes = {}, delays = []; let lots = 0, full = 0, delivered = 0, transit = 0, transitN = 0, late = 0;
+  const owing = [];
+  mine.forEach((o) => {
+    const c = calc(o), d = o.delivery || {};
+    (o.items || []).forEach((it, ix) => { const nk = itemKey(it); if (!nk) return; lots++; const ln = c.lines && c.lines[ix], amt = ln ? ln.cust : num(it.qty) * num(it.custRate), p = pm.get(nk) || { name: plain(it.name), pcs: 0, sales: 0 }; p.pcs += num(it.qty); p.sales += amt; pm.set(nk, p); });
+    const pays = (o.payments || []).filter((p) => num(p.amount) > 0); pays.forEach((p) => { const m = p.mode || "Other"; modes[m] = (modes[m] || 0) + num(p.amount); });
+    if (pays.length && o.orderDate) { const f = pays.map(payDate).filter(Boolean).sort()[0]; if (f) delays.push(Math.max(0, dayDiff(o.orderDate, f))); }
+    if (c.balance <= 0.5 && c.payable > 0) full++; else if (c.balance > 0.5) owing.push({ orderNo: o.orderNo, age: Math.max(0, dayDiff(o.orderDate || t, t)), balance: c.balance });
+    const done = !!(d.deliveredDate || o.status === "Delivered" || o.status === "Closed"); if (done) { delivered++; if (d.deliveredDate && d.dispatchDate) { transit += Math.max(0, dayDiff(d.dispatchDate, d.deliveredDate)); transitN++; } } else if (d.expectedDate && d.expectedDate < t) late++;
+  });
+  owing.sort((a, b) => b.age - a.age);
+  return { mine, S, first, last, daysSince: dayDiff(last, t), bk, sales, prod: Array.from(pm.values()).sort((a, b) => b.sales - a.sales), modes, avgPay: delays.length ? delays.reduce((a, b) => a + b, 0) / delays.length : null, full, lots, owing, delivered, late, avgTransit: transitN ? transit / transitN : null };
+}
+function customerDashHtml(key){
+  const M = custModel(key); if (!M) return '<p class="hint">No orders found for this customer.</p>';
+  const S = M.S, o = M.mine[M.mine.length - 1], cu = o.customer, name = dashNames ? "Customer" : custName(o), sub = dashNames ? "" : [cu.name && cu.firm ? cu.firm : "", cu.phone ? prettyPhone(cu.phone) : "", cu.city, cu.state].filter(Boolean).join(" \u00B7 ");
+  const badges = []; if (M.mine.length >= 3) badges.push(["Repeat buyer", "ok"]); else if (M.mine.length === 1) badges.push(["New customer", "wait"]);
+  const oldDue = M.owing.length && M.owing[0].age > 30; if (M.mine.length >= 2 && M.avgPay !== null && M.avgPay <= 7 && !oldDue) badges.push(["Pays quickly", "ok"]); if (oldDue) badges.push(["Payment follow-up needed", "bad"]); else if (!M.owing.length && M.mine.length >= 2) badges.push(["All paid up", "ok"]); if (M.daysSince > 60) badges.push(["No order for " + M.daysSince + " days", "warn"]);
+  const modes = Object.keys(M.modes).map((m, i) => ({ label: m, value: M.modes[m], color: PALETTE[i % PALETTE.length], text: inrShort(M.modes[m]) })), ageCol = (a) => (a > 60 ? DC.red : a > 30 ? DC.orange : a > 15 ? DC.gold : DC.green);
+  const mode = M.bk.mode, chartTitle = mode === "day" ? "by day" : (mode === "week" ? "by week" : "by month");
+  const kpis = kpi("sales", "Total ordered", inrShort(S.sales), S.sales, { color: DC.blue, spark: spark(M.sales, DC.blue) }) + kpi("received", "Paid so far", inrShort(S.received), S.received, { color: DC.green, sub: S.sales > 0 ? Math.round(S.received / S.sales * 100) + "% of total" : "" }) +
+    kpi("balance", "Balance to pay", inrShort(S.balance), S.balance, { color: S.balance > 0 ? DC.red : DC.green, sub: M.owing.length ? M.owing.length + (M.owing.length === 1 ? " order unpaid" : " orders unpaid") : "all clear" }) + kpi("orders", "Orders", String(M.mine.length), M.mine.length, { color: DC.orange, sub: M.lots + (M.lots === 1 ? " lot" : " lots") }) +
+    kpi("pcs", "Pieces bought", Math.round(S.pcs).toLocaleString("en-IN"), S.pcs, { color: DC.violet }) + kpi("aov", "Average order", inrShort(S.sales / M.mine.length), S.sales / M.mine.length, { color: DC.gold }) +
+    kpi("pay", "Pays in about", M.avgPay === null ? "-" : (Math.round(M.avgPay * 10) / 10) + (M.avgPay === 1 ? " day" : " days"), M.avgPay, { color: DC.teal, sub: "first payment after booking" }) + (dashPriv ? "" : kpi("profit", "Profit from this customer", inrShort(S.profit), S.profit, { color: DC.green, sub: S.sales > 0 ? r2(S.profit / S.sales * 100) + "% margin" : "" }));
+  return '<div class="dash' + (dashPriv ? " showcase" : "") + '"><div class="dnoprint" style="margin-bottom:.4rem"><button type="button" class="link" data-dback="cust:' + esc(key) + '">&larr; Customer screen</button></div>' +
+    '<div class="dhead"><div><small>Customer dashboard</small><h2>' + esc(name) + '</h2><span>' + esc(sub) + '</span></div><button type="button" class="dprint dnoprint" data-dprint="1">Save PDF</button></div>' +
+    '<div class="dtog dnoprint"><label class="chk"><input type="checkbox" data-dtoggle="priv"' + (dashPriv ? " checked" : "") + '> Showcase: hide profit</label><label class="chk"><input type="checkbox" data-dtoggle="names"' + (dashNames ? " checked" : "") + '> Hide the customer\'s name and phone</label></div>' +
+    '<div class="dbadges">' + badges.map((b) => '<span class="pill ' + b[1] + '">' + esc(b[0]) + '</span>').join("") + '<span class="pill">Customer since ' + esc(fmtDate(M.first)) + '</span><span class="pill">Last order ' + esc(fmtDate(M.last)) + '</span></div>' +
+    '<div class="dk-grid">' + kpis + '</div>' +
+    '<div class="dcard"><h3>Purchases <small>' + chartTitle + '</small></h3>' + chartBars(M.bk.map((b) => b.label), M.sales, null, DC.blue, DC.gold) + '</div>' +
+    '<div class="dcard"><h3>Paid and still to pay</h3>' + chartDonut([{ label: "Paid", value: S.received, color: DC.green, text: inrShort(S.received) }, { label: "Balance", value: S.balance, color: DC.orange, text: inrShort(S.balance) }], S.sales > 0 ? Math.round(S.received / S.sales * 100) + "%" : "0%", "paid") + '</div>' +
+    '<div class="dcard"><h3>How they pay</h3>' + chartDonut(modes, inrShort(S.received), "received") + '</div>' +
+    '<div class="dcard"><h3>What they buy</h3>' + hbars(M.prod.slice(0, 6).map((p) => ({ label: p.name, value: p.sales, text: inrShort(p.sales), sub: Math.round(p.pcs).toLocaleString("en-IN") + " pcs" })), DC.teal) + '</div>' +
+    (M.owing.length ? '<div class="dcard"><h3>Unpaid orders <small>oldest first</small></h3>' + hbars(M.owing.slice(0, 8).map((x) => ({ label: x.orderNo, value: x.balance, text: inrShort(x.balance), sub: x.age + (x.age === 1 ? " day old" : " days old"), color: ageCol(x.age) })), DC.orange) + '</div>' : '') +
+    '<div class="dcard"><h3>Delivery</h3><div class="dstats"><div><b>' + M.delivered + '</b><span>delivered</span></div><div><b>' + (M.avgTransit === null ? "-" : (Math.round(M.avgTransit * 10) / 10)) + '</b><span>avg days in transit</span></div><div class="' + (M.late ? "bad" : "") + '"><b>' + M.late + '</b><span>late now</span></div></div></div>' +
+    '<p class="hint" style="text-align:center">Built from this customer\'s orders. Cancelled orders are left out.' + (dashPriv ? " Showcase view: profit is hidden." : "") + '</p></div>';
+}
+const dashTileHtml = () => '<button type="button" class="tile wide dashT" data-tile="dash"><small>Business dashboard</small><b>Sales, profit, customers and collections</b><span class="go">Tap to open the charts</span></button>';
+
 function renderTiles(){
   const live = orders.filter((o) => o.status !== "Cancelled");
   const open = live.filter((o) => o.status !== "Closed").length;
@@ -1194,7 +1411,7 @@ function renderTiles(){
   const t = (kind, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-tile="' + kind + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   const infos = live.map((o) => pendingInfo(o)), need = infos.filter((p) => p.pending > 0), onTime = infos.filter((p) => p.waiting).length, proofs = need.reduce((a, p) => a + p.proofs, 0);
   const tp = '<button type="button" class="tile wide ' + (need.length ? "alert" : "good") + '" data-tile="pending"><small>Action pending</small><b>' + (need.length ? need.length + (need.length === 1 ? " order needs action" : " orders need action") : "Nothing needs action") + '</b><span class="go">' + (need.length ? proofs + (proofs === 1 ? " proof" : " proofs") + " missing" + (onTime ? ", " + onTime + " in transit on schedule" : "") + ". Tap to see" : (onTime ? onTime + " in transit, on schedule. Tap to see" : "Tap to see details")) + '</span></button>';
-  $("tiles").innerHTML = tp + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
+  $("tiles").innerHTML = tp + dashTileHtml() + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
 }
 /* tap a tile: groups, then orders, then the order itself */
 let lastDetail = "";
@@ -1232,6 +1449,8 @@ function showDetail(kind){
   lastDetail = kind;
   if (kind.indexOf("cust:") === 0) { const rest = kind.slice(5), cut = rest.lastIndexOf("|"); $("detailBody").innerHTML = cut > 0 ? customerTileHtml(rest.slice(0, cut), rest.slice(cut + 1)) : customerDetailHtml(rest); }
   else if (kind === "pending") $("detailBody").innerHTML = pendingScreenHtml();
+  else if (kind === "dash") $("detailBody").innerHTML = dashboardHtml();
+  else if (kind.indexOf("cdash:") === 0) $("detailBody").innerHTML = customerDashHtml(kind.slice(6));
   else $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
   $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); $("detailView").classList.remove("hidden");
   if (kind !== "pending") decorateSearch();
@@ -1242,6 +1461,11 @@ $("detailBack").addEventListener("click", () => showList());
 $("detailBody").addEventListener("change", (e) => { if (e.target && e.target.id === "sf_who") { sfWho = e.target.value; $("detailBody").innerHTML = staffScreenHtml(); } });
 $("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "dtQ") { applyDtFilter(e.target.value); return; } if (e.target && e.target.id === "sf_q") { sfQ = e.target.value; $("sfList").innerHTML = feedListHtml(); return; } if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
 $("detailBody").addEventListener("click", (e) => {
+  const dpp = e.target.closest("[data-dp]"); if (dpp) { dashPeriod = dpp.getAttribute("data-dp"); showDetail("dash"); return; }
+  const dtg = e.target.closest("[data-dtoggle]"); if (dtg) { if (dtg.getAttribute("data-dtoggle") === "priv") dashPriv = !dashPriv; else dashNames = !dashNames; showDetail(lastDetail); return; }
+  if (e.target.closest("[data-dprint]")) { window.print(); return; }
+  const dcd = e.target.closest("[data-cdash]"); if (dcd && dcd.getAttribute("data-cdash")) { showDetail("cdash:" + dcd.getAttribute("data-cdash")); return; }
+  const dbk = e.target.closest("[data-dback]"); if (dbk) { showDetail(dbk.getAttribute("data-dback")); return; }
   if (e.target.closest("[data-st-save]")) { saveStaff(); return; }
   const se = e.target.closest("[data-st-edit]"); if (se) { stEditing = se.getAttribute("data-st-edit"); $("detailBody").innerHTML = staffScreenHtml(); window.scrollTo(0, 0); return; }
   if (e.target.closest("[data-st-cancel]")) { stEditing = ""; $("detailBody").innerHTML = staffScreenHtml(); return; }
@@ -1307,6 +1531,7 @@ function openOrderByNo(no){
   if (o) openForm(JSON.parse(JSON.stringify(Object.assign({}, o, { createdAt: null }))), o.createdAt);
 }
 $("orderList").addEventListener("click", (e) => {
+  const cd = e.target.closest("[data-cdash]"); if (cd) { showDetail("cdash:" + cd.getAttribute("data-cdash")); return; }
   const g = e.target.closest("[data-cust]"); if (g) { showDetail("cust:" + g.getAttribute("data-cust")); return; }
   const c = e.target.closest("[data-open]"); if (c) openOrderByNo(c.getAttribute("data-open"));
 });
