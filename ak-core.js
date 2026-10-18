@@ -109,16 +109,17 @@ export function calc(o){
   const fAmt = num(o.freight && o.freight.amount), fMode = (o.freight && o.freight.mode) || "billed";
   const fs = fMode === "billed" ? splitTax(fAmt, num(o.freight && o.freight.gst), mode) : { taxable: 0, tax: 0, total: 0 };
   const freightBilled = fMode === "billed" ? fAmt : 0, freightCost = fMode === "ours" ? fAmt : 0;
+  const extraCost = r2((o.otherCharges || []).reduce((a, c) => a + num(c && c.amount), 0));
   const payable = goodsTotal + fs.total;
   const received = (o.payments || []).reduce((a, p) => a + num(p.amount), 0);
   const balance = r2(payable - received);
   const supPaid = (o.supplierPayments || []).reduce((a, p) => a + num(p.amount), 0);
   const supDue = r2(sup - supPaid);
-  const profit = r2(taxable - sup - freightCost);
+  const profit = r2(taxable - sup - freightCost - extraCost);
   const margin = taxable > 0 ? (profit / taxable) * 100 : 0;
   const payStatus = payable <= 0 ? "No amount yet" : (balance <= 0 ? "Paid in full" : (received > 0 ? "Part paid" : "Unpaid"));
   const supStatus = sup <= 0 ? "No supplier amount" : (supDue <= 0 ? "Paid" : (supPaid > 0 ? "Part paid" : "Not paid"));
-  return { lines, mode, goods: r2(goods), taxable: r2(taxable), goodsTax: r2(goodsTax), freightTax: fs.tax, tax: r2(goodsTax + fs.tax), freightBilled, freightTotal: fs.total, freightCost,
+  return { lines, mode, goods: r2(goods), taxable: r2(taxable), goodsTax: r2(goodsTax), freightTax: fs.tax, tax: r2(goodsTax + fs.tax), freightBilled, freightTotal: fs.total, freightCost, extraCost,
     payable: r2(payable), received: r2(received), balance, sup: r2(sup), supPaid: r2(supPaid), supDue, profit, margin, payStatus, supStatus };
 }
 
