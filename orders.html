@@ -142,6 +142,19 @@ section.panel.open>.secbody{display:block}
 .pill.wait{border-color:#1f5fae;color:#1f5fae}
 .drow .pr.wait{background:#eaf1fb}.drow .pr i.wt,.pb-t i.wt{color:#1f5fae}
 .pendbox.wait{border-color:#1f5fae;background:#eef4fc}
+.fe{border-top:1px solid var(--line);padding:.7rem .9rem;background:#fcfbf8}
+.fe .t{display:flex;justify-content:space-between;gap:.6rem;font-size:.82rem;color:var(--muted)}
+.fe .w{font-weight:700;color:var(--ink)}
+.fe p{margin:.25rem 0;font-size:.92rem;overflow-wrap:anywhere}
+.fe .a{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
+.stm{border:1px solid var(--line);border-radius:10px;background:#fff;padding:.7rem .8rem;margin:.5rem 0}
+.stm b{color:var(--ink)}
+.staffbox{margin-top:.8rem;border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem;background:#f6f3ea}
+.staffbox .fe{background:none;padding:.4rem 0}
+.tile.staffT{border-color:#1f5fae}
+.chgrow{border:1px solid var(--line);border-radius:8px;padding:.5rem .7rem .7rem;margin:.5rem 0;background:#fcfbf8}
+.dtsearch{margin:.8rem 0}
+.dtsearch input{margin-top:.2rem}
 button.docbtn{display:block;width:100%;margin-top:.7rem;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.85rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
 button.docbtn.alt{background:#fff;color:var(--ink);border:1px solid var(--ink)}
 button.docbtn[disabled]{opacity:.6;cursor:wait}
@@ -320,6 +333,7 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
         <p class="hint">Each status keeps its own date. Picking a status fills in today's date. Change it if it happened on another day.</p>
       </details>
       <div class="pendbox" id="pendBox"></div>
+      <div class="staffbox hidden" id="staffBox"></div>
       <div class="accbar"><button class="small" type="button" id="accOpen">Open all sections</button><button class="small" type="button" id="accClose">Close all sections</button></div>
     </section>
 
@@ -375,6 +389,10 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
       <label for="d_lr">LR number / tracking number</label>
       <input id="d_lr" type="text" data-sec="delivery" data-k="lr">
       <div class="two">
+        <div><label for="d_agentName">Booking agent name</label><input id="d_agentName" type="text" maxlength="60" data-sec="delivery" data-k="agentName"></div>
+        <div><label for="d_agentPhone">Booking agent number</label><input id="d_agentPhone" type="tel" inputmode="tel" maxlength="20" data-sec="delivery" data-k="agentPhone"></div>
+      </div>
+      <div class="two">
         <div><label for="d_vehicle">Vehicle number</label><input id="d_vehicle" type="text" autocapitalize="characters" data-sec="delivery" data-k="vehicle"></div>
         <div><label for="d_eway">E-way bill number</label><input id="d_eway" type="text" inputmode="numeric" data-sec="delivery" data-k="eway"></div>
       </div>
@@ -397,6 +415,12 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
         <div><label for="f_gst">GST % on freight <span class="hint">(if billed)</span></label><input id="f_gst" type="text" inputmode="decimal" list="dlGst" data-sec="freight" data-k="gst"></div>
         <div></div>
       </div>
+      <label>Other charges paid by AK Brands Marketing</label>
+      <p class="hint" style="margin-top:0">Porter, labour, packing, loading and so on, that you paid and did not bill to the customer. Each one reduces your profit. Tick the box to mention it on the customer's page as paid by AK Brands Marketing as a gift.</p>
+      <datalist id="dlCharge"><option value="Porter"></option><option value="Labour"></option><option value="Packing"></option><option value="Loading"></option><option value="Unloading"></option><option value="Other"></option></datalist>
+      <div id="chargeBox"></div>
+      <button class="small" type="button" id="chargeAdd">Add a charge</button>
+      <p class="hint" id="chargeTotal" style="font-weight:700"></p>
       <label for="d_note">Delivery note</label>
       <input id="d_note" type="text" data-sec="delivery" data-k="note">
     </section>
@@ -609,7 +633,7 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, runTransaction, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, documentId, runTransaction, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 import { STATUSES, UNITS, PAY_KINDS, PAY_MODES, FREIGHT_MODES, GST_MODES, STATES, DEFAULT_TERMS, num, r2, inr, plain, normPhone, prettyPhone, todayISO, fmtDate, fyShort, newItem, newOrder, fromDoc, calc, customerMessage, toCSV, buildInvoice, buildUrd, invoiceIssues, salesRegister, purchaseRegister, registerCSV, buildLinkIndex, pairKey, confirmMessage, orderSummaryMessage, rateText, rs, SITE_URL, tileDetail, buildOrderView, makeToken, orderLink, supplierDeliveryMessage, supplierDeliveryIssues, SUP_CUST_PHONE, SUP_FROM_PHONE } from "./ak-core.js";
 import { makeCustomerCopyPdf, makeTransporterCopyPdf, makeSupplierCopyPdf } from "./ak-pdf.js";
@@ -684,6 +708,7 @@ function summaryHtml(c){
     row("Supplier total (private)", inr(c.sup), "sep") + row("Paid to supplier", inr(c.supPaid)) + row("Supplier due", inr(Math.max(0, c.supDue))) + row("Supplier payment", c.supStatus) +
     (c.freightCost ? row("Freight (our cost)", inr(c.freightCost)) : "") +
     (c.tax ? row("Sale value before GST", inr(c.taxable)) : "") +
+    (chargesTotal(state) > 0 ? row("Other charges paid by us", inr(chargesTotal(state)) + (c.extraCost === undefined ? " (not in profit yet)" : "")) : "") +
     row("Profit (private)", inr(c.profit) + " &middot; " + r2(c.margin) + "%", "sep pr");
 }
 function shipState(o){
@@ -834,6 +859,7 @@ async function spApply(){
       o.payments = (o.payments || []).concat([{ date, kind, mode, amount: String(x.a), ref }]);
       await setDoc(doc(db, "orders", o.orderNo), { payments: o.payments, updatedAt: serverTimestamp() }, { merge: true });
       if (o.viewToken) await setDoc(doc(db, "orderViews", o.viewToken), Object.assign(viewOf(o), { pay: payDataFor(o, false), updatedAt: serverTimestamp() }));
+      await syncStaff(o);
     }
     state = withPay(newOrder());
     if (/^\d{10,}$/.test(key)) { try { await refreshCustomerView(key); } catch (e) { console.error(e); } }
@@ -909,7 +935,7 @@ $("r_gstMode").innerHTML = gstOpts; $("b_gstMode").innerHTML = gstOpts;
 let linkPairs = [];
 let linkIndex = buildLinkIndex([], []);
 const rebuildLinks = () => { linkIndex = buildLinkIndex(orders, linkPairs); };
-function withPay(o){ o.statusDates = (o.statusDates && typeof o.statusDates === "object") ? o.statusDates : {}; o.payRequest = Object.assign({ amount: "", kind: "Token", active: false, accountId: "main", flex: true }, o.payRequest || {}); o.files = Array.isArray(o.files) ? o.files : []; return o; }
+function withPay(o){ o.otherCharges = Array.isArray(o.otherCharges) ? o.otherCharges : []; o.statusDates = (o.statusDates && typeof o.statusDates === "object") ? o.statusDates : {}; o.payRequest = Object.assign({ amount: "", kind: "Token", active: false, accountId: "main", flex: true }, o.payRequest || {}); o.files = Array.isArray(o.files) ? o.files : []; return o; }
 let state = withPay(newOrder());
 let orders = [];
 let lots = [];
@@ -925,11 +951,13 @@ $("loginForm").addEventListener("submit", async (e) => {
   catch (err) { show($("loginMsg"), "Login failed. Check your email and password and try again.", "err"); }
 });
 $("logout").addEventListener("click", () => signOut(auth));
+const OWNER_UID = "E1s9qd0aGuQCudyrZMAJV8AHtY02";
 onAuthStateChanged(auth, (user) => {
+  if (user && user.uid !== OWNER_UID) { show($("loginMsg"), "This page is for the owner only.", "err"); signOut(auth); return; }
   const on = !!user;
   $("loginPanel").classList.toggle("hidden", on);
   $("logout").classList.toggle("hidden", !on);
-  if (on) { showList(); loadAll(); loadBiz(); loadTeam(); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
+  if (on) { showList(); loadAll(); loadBiz(); loadTeam(); loadStaffLogs().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
 });
 
 /* ---------- Loading ---------- */
@@ -941,7 +969,7 @@ async function loadAll(){
       getDocs(collection(db, "lots")),
       getDoc(doc(db, "settings", "doclinks"))
     ]);
-    orders = o.docs.map((d) => { const x = fromDoc(d.id, d.data()); x.payRequest = d.data().payRequest || null; x.files = d.data().files || []; x.statusDates = d.data().statusDates || {}; return withPay(x); });
+    orders = o.docs.map((d) => { const x = fromDoc(d.id, d.data()); x.payRequest = d.data().payRequest || null; x.files = d.data().files || []; x.statusDates = d.data().statusDates || {}; x.otherCharges = d.data().otherCharges || []; return withPay(x); });
     customers = {}; c.docs.forEach((d) => { customers[d.id] = d.data(); });
     lots = l.docs.map((d) => Object.assign({ id: d.id }, d.data()));
     linkPairs = lk.exists() && Array.isArray(lk.data().pairs) ? lk.data().pairs.slice() : [];
@@ -987,7 +1015,7 @@ let pendF = "all", pendQ = "";
 function pendMatches(o, q){
   const toks = String(q || "").toLowerCase().split(/\s+/).filter(Boolean); if (!toks.length) return true;
   const items = o.items || [], d = o.delivery || {};
-  const hay = [o.orderNo, o.customer.name, o.customer.firm, o.customer.phone, o.customer.city, o.status, (o.supplier || {}).name, d.lr, d.transporter].concat(items.map((i) => i.lotNo), items.map((i) => i.name)).join(" ").toLowerCase(), hayNS = hay.replace(/\s+/g, "");
+  const hay = [o.orderNo, o.customer.name, o.customer.firm, o.customer.phone, o.customer.city, o.status, (o.supplier || {}).name, d.lr, d.transporter, d.agentName, d.agentPhone].concat(items.map((i) => i.lotNo), items.map((i) => i.name)).join(" ").toLowerCase(), hayNS = hay.replace(/\s+/g, "");
   return toks.every((t) => hay.indexOf(t) >= 0 || hayNS.indexOf(t.replace(/\s+/g, "")) >= 0);
 }
 function pendingListHtml(){
@@ -1032,6 +1060,132 @@ $("pendBox").addEventListener("click", (e) => {
   const sec = document.querySelector('#formView section.panel[data-sec-no="' + b.getAttribute("data-pj") + '"]'); if (!sec) return;
   setSection(sec, true); const target = b.getAttribute("data-pjp") ? (sec.querySelector("[data-secfiles]") || sec) : sec; target.scrollIntoView({ behavior: "smooth", block: "start" });
 });
+/* ---------- Staff: cleaned copies for staff, members, and the record of what staff do ---------- */
+/* Staff access is built but switched OFF until the owner asks for it. */
+const STAFF_ENABLED = false;
+const SL = [["slShare", "Sharing"], ["slParcel", "Logistics"], ["slPayment", "Payments"]];
+let staffList = [], staffLogs = [], staffErr = "", staffLogErr = "", staffSyncErr = "", sfDomain = "all", sfWho = "", sfQ = "", stEditing = "";
+const staffLots = (o) => (o.items || []).filter((i) => i.name || i.lotNo).map((i) => ({ lotNo: String(i.lotNo || ""), name: plain(i.name || ""), qty: String(i.qty || ""), unit: String(i.unit || "") }));
+function staffParcelDoc(o){
+  const d = o.delivery || {}, ti = trackInfo(o);
+  return { orderNo: o.orderNo, orderDate: o.orderDate || "", status: o.status || "", customerName: o.customer.name || o.customer.firm || "", phone: String(o.customer.phone || ""), city: o.customer.city || "", lots: staffLots(o), transporter: d.transporter || "", lr: d.lr || "", agentName: d.agentName || "", agentPhone: d.agentPhone || "", dispatchDate: d.dispatchDate || "", expectedDate: d.expectedDate || "", deliveredDate: d.deliveredDate || "", trackUrl: (ti && ti.url) || "", updatedAt: serverTimestamp() };
+}
+function staffPayDoc(o){
+  const c = calc(o), proofs = (o.files || []).filter((f) => f.section === "s3" || (!f.section && f.kind === "payment")).map((f) => ({ id: f.id, parts: f.parts || 1, label: f.label || "Payment proof", mime: f.mime || "" }));
+  return { orderNo: o.orderNo, orderDate: o.orderDate || "", status: o.status || "", customerName: o.customer.name || o.customer.firm || "", phone: String(o.customer.phone || ""), city: o.customer.city || "", lots: staffLots(o), total: c.payable, received: c.received, balance: c.balance, payments: (o.payments || []).filter((p) => num(p.amount) > 0).map((p) => ({ date: p.date || "", kind: p.kind || "", mode: p.mode || "", amount: num(p.amount) })), proofs, updatedAt: serverTimestamp() };
+}
+async function syncStaff(o){
+  if (!STAFF_ENABLED) return;
+  try {
+    if (!o || !o.orderNo) return;
+    if (o.status === "Cancelled") { await deleteDoc(doc(db, "staffParcels", o.orderNo)); await deleteDoc(doc(db, "staffPayments", o.orderNo)); }
+    else { await setDoc(doc(db, "staffParcels", o.orderNo), staffParcelDoc(o)); await setDoc(doc(db, "staffPayments", o.orderNo), staffPayDoc(o)); }
+    staffSyncErr = "";
+  } catch (e) { console.error(e); staffSyncErr = String((e && e.code) || e); }
+}
+async function loadStaff(){
+  try { const s = await getDocs(collection(db, "staff")); staffList = s.docs.map((d) => Object.assign({ id: d.id }, d.data())).sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""))); staffErr = ""; }
+  catch (e) { console.error(e); staffErr = (e && e.code) || "error"; staffList = []; }
+}
+async function loadStaffLogs(){
+  if (!STAFF_ENABLED) { staffLogs = []; staffLogErr = ""; return; }
+  try {
+    const sets = await Promise.all(SL.map((x) => getDocs(query(collection(db, x[0]), orderBy(documentId(), "desc"), limit(150)))));
+    staffLogs = []; sets.forEach((s, i) => s.docs.forEach((d) => staffLogs.push(Object.assign({ coll: SL[i][0], domain: SL[i][1], id: d.id }, d.data()))));
+    staffLogs.sort((a, b) => String(b.id).localeCompare(String(a.id))); staffLogErr = "";
+  } catch (e) { staffLogErr = (e && e.code) || "error"; staffLogs = []; }
+}
+const stamp = (ts) => (ts && ts.seconds ? new Date(ts.seconds * 1000).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "just now");
+const sameDay = (ts) => { if (!ts || !ts.seconds) return false; const a = new Date(ts.seconds * 1000), b = new Date(); return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); };
+const RESULT = { received: "Received in bank", partial: "Partly received", not_received: "Not received yet" };
+function staffTileHtml(){
+  if (!STAFF_ENABLED) return "";
+  const today = staffLogs.filter((e) => sameDay(e.at)), who = new Set(today.map((e) => e.by)).size;
+  const txt = staffLogErr ? "Not set up yet" : (today.length ? today.length + (today.length === 1 ? " action" : " actions") + " today by " + who + (who === 1 ? " person" : " people") : "No staff activity today"), sub = staffLogErr ? "Tap to see the setup steps" : "Tap to see who did what, and when";
+  return '<button type="button" class="tile wide staffT" data-tile="staff"><small>Staff activity</small><b>' + esc(txt) + '</b><span class="go">' + esc(sub) + '</span></button>';
+}
+function feedText(e){
+  if (e.type === "share") return "Shared lot " + e.lotNo + " on " + e.platform;
+  if (e.type === "parcel_note") return "Note on " + e.orderNo + (e.lr ? " (LR " + e.lr + ")" : "") + ": " + (e.note || "");
+  if (e.type === "parcel_delivered") return "Reported " + e.orderNo + " delivered on " + fmtDate(e.date) + (e.note ? ": " + e.note : "");
+  if (e.type === "payment_check") return "Payment check on " + e.orderNo + ": " + (RESULT[e.result] || e.result || "") + (e.amount ? " " + inr(e.amount) : "") + (e.note ? ": " + e.note : "");
+  return e.note || e.type || "";
+}
+function feedItemHtml(e, withOpen){
+  const o = e.orderNo ? orders.find((x) => x.orderNo === e.orderNo) : null;
+  const applied = e.appliedAt ? '<span class="pill ok">Applied by you, ' + esc(stamp(e.appliedAt)) + '</span>' : "";
+  const canApply = e.type === "parcel_delivered" && o && !e.appliedAt;
+  return '<div class="fe"><div class="t"><span class="w">' + esc(e.byName || e.by) + '</span><span>' + esc(stamp(e.at)) + '</span></div><p>' + esc(feedText(e)) + '</p>' + (applied ? '<p>' + applied + '</p>' : '') +
+    ((withOpen && o) || canApply ? '<div class="a">' + (withOpen && o ? '<button type="button" class="small" data-open="' + esc(e.orderNo) + '">Open order</button>' : '') + (canApply ? '<button type="button" class="small" data-apply="' + esc(e.coll) + '|' + esc(e.id) + '">Apply delivered date to the order</button>' : '') + '</div>' : '') + '</div>';
+}
+function feedListHtml(){
+  const toks = String(sfQ || "").toLowerCase().split(/\s+/).filter(Boolean);
+  const q = staffLogs.filter((e) => (sfDomain === "all" || e.domain === sfDomain) && (!sfWho || e.by === sfWho) && toks.every((t) => [e.byName, e.by, feedText(e), e.orderNo, e.lotNo, e.lr, e.platform].join(" ").toLowerCase().indexOf(t) >= 0));
+  return q.length ? q.slice(0, 120).map((e) => feedItemHtml(e, true)).join("") : '<p class="hint">' + (toks.length ? "Nothing matches that." : "Nothing yet.") + '</p>';
+}
+function staffScreenHtml(){
+  const perm = staffErr === "permission-denied" || staffLogErr === "permission-denied";
+  const banner = perm ? '<div class="msg show err">The staff part of your database is not switched on yet. Do <b>Step 1</b> below (database rules), then come back here.</div>' : (staffErr || staffLogErr ? '<div class="msg show err">Could not load staff data. Check your connection and open this screen again.</div>' : "") + (staffSyncErr ? '<div class="msg show err">Staff copies of your orders could not be saved yet (' + esc(staffSyncErr) + '). Do Step 1 below, then tap <b>Rebuild staff data</b>.</div>' : "");
+  const mem = staffList.length ? staffList.map((s) => { const p = s.perms || {}; return '<div class="stm"><b>' + esc(s.name || "") + '</b> &middot; ' + esc(s.email || s.id) + '<br>' + (s.active ? '<span class="pill ok">Active</span>' : '<span class="pill bad">Switched off</span>') + (p.share ? '<span class="pill">Share lots</span>' : '') + (p.logistics ? '<span class="pill">Logistics</span>' : '') + (p.payments ? '<span class="pill">Customer payments</span>' : '') + '<span class="pill ' + (s.showRate === false ? "warn" : "") + '">' + (s.showRate === false ? "Lot rate hidden on posters" : "Lot rate shown on posters") + '</span><div class="a" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem"><button type="button" class="small" data-st-edit="' + esc(s.id) + '">Edit</button><button type="button" class="small" data-st-toggle="' + esc(s.id) + '">' + (s.active ? "Switch off" : "Switch on") + '</button><button type="button" class="small" data-st-del="' + esc(s.id) + '">Remove</button></div></div>'; }).join("") : '<p class="hint">No staff added yet.</p>';
+  const ed = staffList.find((s) => s.id === stEditing) || {}, ep = ed.perms || { share: true, logistics: true, payments: true }, chk = (v) => (v ? " checked" : "");
+  const form = '<details class="grp" style="padding:0 .9rem .9rem"' + (stEditing || !staffList.length ? " open" : "") + '><summary style="padding:.8rem 0;font-weight:700;cursor:pointer">' + (stEditing ? "Edit " + esc(ed.name || stEditing) : "Add a staff member") + '</summary>' +
+    '<label for="st_name">Name</label><input id="st_name" type="text" maxlength="60" value="' + esc(ed.name || "") + '">' +
+    '<label for="st_email">Email (the same one you use in Firebase)</label><input id="st_email" type="email" autocapitalize="none" value="' + esc(ed.email || "") + '"' + (stEditing ? " readonly" : "") + '>' +
+    '<label class="chk"><input type="checkbox" id="st_share"' + chk(ep.share) + '> Share lots on social media</label>' +
+    '<label class="chk"><input type="checkbox" id="st_logi"' + chk(ep.logistics) + '> Logistics cases (parcels, no money shown)</label>' +
+    '<label class="chk"><input type="checkbox" id="st_pay"' + chk(ep.payments) + '> Customer payments (totals and payment proof, no supplier or profit)</label>' +
+    '<label class="chk"><input type="checkbox" id="st_rate"' + chk(ed.showRate !== false) + '> Show the lot rate on the posters they make</label>' +
+    '<button type="button" class="docbtn" data-st-save="1" style="margin-top:.6rem">' + (stEditing ? "Save changes" : "Add staff member") + '</button>' + (stEditing ? ' <button type="button" class="small" data-st-cancel="1">Cancel</button>' : '') + '</details>';
+  const how = '<details class="grp" style="padding:0 .9rem .6rem"><summary style="padding:.7rem 0;font-weight:700;cursor:pointer">How to give someone a login</summary>' +
+    '<p class="hint"><b>Step 1: database rules (once only).</b> Open the Firebase console, then Firestore Database, then the Rules tab. Select all, paste the new rules from the download page, and tap Publish.</p>' +
+    '<p class="hint"><b>Step 2: create their login.</b> In the Firebase console tap Authentication, then Users, then Add user. Type their email and a password you choose, and tap Add user.</p>' +
+    '<p class="hint"><b>Step 3: add them here</b> with the same email, and choose what they may do.</p>' +
+    '<p class="hint"><b>Step 4: tap Rebuild staff data</b> (below, once), then give them the link <b>akbrandsmarketing.com/staff.html</b>, their email and password.</p>' +
+    '<p class="hint"><b>To stop someone at once:</b> tap Switch off next to their name. Nothing else is needed.</p></details>';
+  const who = Array.from(new Set(staffLogs.map((e) => e.by)));
+  const chip = (k, t) => '<button type="button" data-sf="' + k + '" class="' + (sfDomain === k ? "on" : "") + '">' + t + '</button>';
+  const feed = '<h2 style="margin-top:1.4rem">What staff did</h2><div class="pfchips">' + chip("all", "All") + chip("Sharing", "Sharing") + chip("Logistics", "Logistics") + chip("Payments", "Payments") + '</div>' +
+    '<select id="sf_who" style="margin-bottom:.6rem"><option value="">All staff</option>' + who.map((w) => '<option value="' + esc(w) + '"' + (sfWho === w ? " selected" : "") + '>' + esc((staffLogs.find((e) => e.by === w) || {}).byName || w) + '</option>').join("") + '</select>' +
+    '<input id="sf_q" type="search" autocomplete="off" placeholder="Search: staff name, lot, order, LR, note..." value="' + esc(sfQ) + '" style="margin-bottom:.6rem"><div id="sfList">' + feedListHtml() + '</div>';
+  return '<h2>Staff</h2><p class="hint">Staff see only cleaned copies of your orders: never supplier names, cost rates, profit or notes. Everything they do below is recorded with their name and the time, and they cannot change or delete it.</p>' + banner +
+    '<h2 style="margin-top:1rem">Your staff</h2>' + mem + form + '<div id="stMsg" class="msg" role="status"></div>' + how +
+    '<button type="button" class="small" data-st-rebuild="1" style="margin-top:.8rem">Rebuild staff data for all orders</button>' + feed;
+}
+async function openStaff(){
+  $("detailBody").innerHTML = '<h2>Staff</h2><p class="hint">Loading...</p>'; lastDetail = "staff";
+  $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); $("detailView").classList.remove("hidden"); window.scrollTo(0, 0);
+  await Promise.all([loadStaff(), loadStaffLogs()]); if (lastDetail === "staff") $("detailBody").innerHTML = staffScreenHtml();
+}
+const stMsg = (t, k) => { const m = $("stMsg"); if (m) show(m, t, k || "ok"); };
+async function saveStaff(){
+  const name = $("st_name").value.trim(), email = $("st_email").value.trim().toLowerCase(), perms = { share: $("st_share").checked, logistics: $("st_logi").checked, payments: $("st_pay").checked };
+  if (name.length < 2) { stMsg("Type their name.", "err"); return; }
+  if (!/^[^\s@\/]+@[^\s@\/]+\.[^\s@\/]+$/.test(email)) { stMsg("Type a proper email address.", "err"); return; }
+  if (!perms.share && !perms.logistics && !perms.payments) { stMsg("Tick at least one thing they may do.", "err"); return; }
+  try {
+    const old = staffList.find((s) => s.id === email) || {};
+    await setDoc(doc(db, "staff", email), { email, name, active: old.active === false ? false : true, perms, showRate: $("st_rate").checked, updatedAt: serverTimestamp() }, { merge: true });
+    stEditing = ""; await loadStaff(); $("detailBody").innerHTML = staffScreenHtml(); stMsg("Saved. Now create their login in Firebase (Step 2), if you have not already.", "ok");
+  } catch (e) { console.error(e); stMsg(e && e.code === "permission-denied" ? "The database rules are not updated yet. Do Step 1 first." : "That did not save. Check your connection and try again.", "err"); }
+}
+async function applyDelivered(coll, id){
+  const e = staffLogs.find((x) => x.coll === coll && x.id === id); if (!e) return; const o = orders.find((x) => x.orderNo === e.orderNo);
+  if (!o) { stMsg("That order was not found.", "err"); return; }
+  try {
+    const delivery = Object.assign({}, o.delivery, { deliveredDate: e.date }), statusDates = Object.assign({}, o.statusDates || {}, { Delivered: e.date }), keep = ["Closed", "Cancelled", "Claim open"].indexOf(o.status) >= 0, status = keep ? o.status : "Delivered";
+    await setDoc(doc(db, "orders", o.orderNo), { delivery, statusDates, status, updatedAt: serverTimestamp() }, { merge: true });
+    Object.assign(o, { delivery, statusDates, status });
+    if (o.viewToken) await setDoc(doc(db, "orderViews", o.viewToken), Object.assign(viewOf(o), { pay: payDataFor(o, false), updatedAt: serverTimestamp() }));
+    state = withPay(newOrder()); try { await refreshCustomerView(normPhone(o.customer.phone)); } catch (err) { console.error(err); }
+    await syncStaff(o); await setDoc(doc(db, coll, id), { appliedAt: serverTimestamp(), appliedBy: "owner" }, { merge: true });
+    e.appliedAt = { seconds: Math.floor(Date.now() / 1000) }; renderTiles(); $("detailBody").innerHTML = staffScreenHtml(); stMsg("Done. " + o.orderNo + " now shows delivered on " + fmtDate(e.date) + ".", "ok");
+  } catch (err) { console.error(err); stMsg("That did not work. Check your connection and try again.", "err"); }
+}
+function renderStaffBox(){
+  const box = $("staffBox"); if (!box) return; const mine = state.orderNo ? staffLogs.filter((e) => e.orderNo === state.orderNo).slice(0, 8) : [];
+  if (!mine.length) { box.classList.add("hidden"); box.innerHTML = ""; return; }
+  box.classList.remove("hidden"); box.innerHTML = '<b style="color:var(--ink)">Staff updates on this order</b>' + mine.map((e) => feedItemHtml(e, false).replace(/<button[^>]*data-apply[^>]*>.*?<\/button>/, "")).join("") + (mine.some((e) => e.type === "parcel_delivered" && !e.appliedAt) ? '<p class="hint">Staff reported this as delivered. Apply it from the Staff activity screen.</p>' : "");
+}
 function renderTiles(){
   const live = orders.filter((o) => o.status !== "Cancelled");
   const open = live.filter((o) => o.status !== "Closed").length;
@@ -1040,7 +1194,7 @@ function renderTiles(){
   const t = (kind, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-tile="' + kind + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   const infos = live.map((o) => pendingInfo(o)), need = infos.filter((p) => p.pending > 0), onTime = infos.filter((p) => p.waiting).length, proofs = need.reduce((a, p) => a + p.proofs, 0);
   const tp = '<button type="button" class="tile wide ' + (need.length ? "alert" : "good") + '" data-tile="pending"><small>Action pending</small><b>' + (need.length ? need.length + (need.length === 1 ? " order needs action" : " orders need action") : "Nothing needs action") + '</b><span class="go">' + (need.length ? proofs + (proofs === 1 ? " proof" : " proofs") + " missing" + (onTime ? ", " + onTime + " in transit on schedule" : "") + ". Tap to see" : (onTime ? onTime + " in transit, on schedule. Tap to see" : "Tap to see details")) + '</span></button>';
-  $("tiles").innerHTML = tp + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
+  $("tiles").innerHTML = tp + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
 }
 /* tap a tile: groups, then orders, then the order itself */
 let lastDetail = "";
@@ -1051,18 +1205,51 @@ function detailHtml(d){
     : '<p class="hint">Nothing here right now.</p>';
   return '<h2>' + esc(d.title) + '</h2><div class="bigtot">' + esc(d.totalText) + '</div><p class="hint">' + esc(d.note) + '</p>' + groups;
 }
+/* ---------- a search box on every inside screen ---------- */
+function orderHay(o){
+  const d = o.delivery || {}, items = o.items || [];
+  return [o.orderNo, o.orderDate, fmtDate(o.orderDate), o.status, o.customer.name, o.customer.firm, o.customer.phone, o.customer.city, o.customer.state, (o.supplier || {}).name, d.transporter, d.lr, d.agentName, d.agentPhone, d.vehicle, o.invoiceNo, o.urdNo, o.notes]
+    .concat(items.map((i) => (i.lotNo || "") + " " + (i.name || ""))).concat((o.payments || []).map((p) => (p.mode || "") + " " + (p.kind || ""))).join(" ").toLowerCase();
+}
+function decorateSearch(){
+  const body = $("detailBody"), rows = body.querySelectorAll(".drow[data-open]"); if (!rows.length || body.querySelector("#dtQ")) return;
+  let anchor = rows[0]; while (anchor.parentNode && anchor.parentNode !== body) anchor = anchor.parentNode;
+  const prev = anchor.previousElementSibling; if (prev && prev.classList && prev.classList.contains("hint")) anchor = prev;
+  const wrap = document.createElement("div"); wrap.className = "dtsearch";
+  wrap.innerHTML = '<label for="dtQ" style="font-weight:700">Search these orders</label><input id="dtQ" type="search" autocomplete="off" placeholder="Lot, LR number, order, customer..."><div class="hint" id="dtMsg"></div>';
+  body.insertBefore(wrap, anchor);
+}
+function applyDtFilter(q){
+  const body = $("detailBody"), toks = String(q || "").toLowerCase().split(/\s+/).filter(Boolean), rows = Array.prototype.slice.call(body.querySelectorAll(".drow[data-open]")); let shown = 0;
+  rows.forEach((r) => {
+    const o = orders.find((x) => x.orderNo === r.getAttribute("data-open")), hay = o ? orderHay(o) : r.textContent.toLowerCase(), ns = hay.replace(/\s+/g, "");
+    const ok = toks.every((t) => hay.indexOf(t) >= 0 || ns.indexOf(t.replace(/\s+/g, "")) >= 0); r.style.display = ok ? "" : "none"; if (ok) shown++;
+  });
+  Array.prototype.forEach.call(body.querySelectorAll("details.grp"), (g) => { if (!g.querySelector(".drow[data-open]")) return; const any = Array.prototype.some.call(g.querySelectorAll(".drow[data-open]"), (r) => r.style.display !== "none"); g.style.display = any ? "" : "none"; if (toks.length && any) g.open = true; });
+  const m = $("dtMsg"); if (m) m.textContent = toks.length ? shown + " of " + rows.length + (rows.length === 1 ? " order matches." : " orders match.") : "";
+}
 function showDetail(kind){
   lastDetail = kind;
   if (kind.indexOf("cust:") === 0) { const rest = kind.slice(5), cut = rest.lastIndexOf("|"); $("detailBody").innerHTML = cut > 0 ? customerTileHtml(rest.slice(0, cut), rest.slice(cut + 1)) : customerDetailHtml(rest); }
   else if (kind === "pending") $("detailBody").innerHTML = pendingScreenHtml();
   else $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
   $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); $("detailView").classList.remove("hidden");
+  if (kind !== "pending") decorateSearch();
   window.scrollTo(0, 0);
 }
-$("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) { if (b.getAttribute("data-tile") === "pending") { pendF = "all"; pendQ = ""; } showDetail(b.getAttribute("data-tile")); } });
+$("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) { if (b.getAttribute("data-tile") === "staff") { openStaff(); return; } if (b.getAttribute("data-tile") === "pending") { pendF = "all"; pendQ = ""; } showDetail(b.getAttribute("data-tile")); } });
 $("detailBack").addEventListener("click", () => showList());
-$("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
+$("detailBody").addEventListener("change", (e) => { if (e.target && e.target.id === "sf_who") { sfWho = e.target.value; $("detailBody").innerHTML = staffScreenHtml(); } });
+$("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "dtQ") { applyDtFilter(e.target.value); return; } if (e.target && e.target.id === "sf_q") { sfQ = e.target.value; $("sfList").innerHTML = feedListHtml(); return; } if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
 $("detailBody").addEventListener("click", (e) => {
+  if (e.target.closest("[data-st-save]")) { saveStaff(); return; }
+  const se = e.target.closest("[data-st-edit]"); if (se) { stEditing = se.getAttribute("data-st-edit"); $("detailBody").innerHTML = staffScreenHtml(); window.scrollTo(0, 0); return; }
+  if (e.target.closest("[data-st-cancel]")) { stEditing = ""; $("detailBody").innerHTML = staffScreenHtml(); return; }
+  const stg = e.target.closest("[data-st-toggle]"); if (stg) { const s = staffList.find((x) => x.id === stg.getAttribute("data-st-toggle")); if (s) setDoc(doc(db, "staff", s.id), { active: !s.active, updatedAt: serverTimestamp() }, { merge: true }).then(() => loadStaff()).then(() => { $("detailBody").innerHTML = staffScreenHtml(); stMsg(s.active ? s.name + " is now switched off." : s.name + " is now switched on.", "ok"); }).catch((err) => { console.error(err); stMsg("That did not work. Try again.", "err"); }); return; }
+  const std = e.target.closest("[data-st-del]"); if (std) { const s = staffList.find((x) => x.id === std.getAttribute("data-st-del")); if (s && confirm("Remove " + (s.name || s.id) + "? They will no longer be able to use the staff page. Their past activity stays recorded.")) deleteDoc(doc(db, "staff", s.id)).then(() => loadStaff()).then(() => { $("detailBody").innerHTML = staffScreenHtml(); stMsg("Removed.", "ok"); }).catch((err) => { console.error(err); stMsg("That did not work. Try again.", "err"); }); return; }
+  if (e.target.closest("[data-st-rebuild]")) { (async () => { stMsg("Rebuilding...", "ok"); let n = 0; for (const o of orders) { await syncStaff(o); n++; if (staffSyncErr) break; } stMsg(staffSyncErr ? "Could not save the staff copies yet (" + staffSyncErr + "). Do Step 1 (database rules) first." : "Done. " + n + " orders are ready for staff.", staffSyncErr ? "err" : "ok"); })(); return; }
+  const sf = e.target.closest("[data-sf]"); if (sf) { sfDomain = sf.getAttribute("data-sf"); $("detailBody").innerHTML = staffScreenHtml(); return; }
+  const ap = e.target.closest("[data-apply]"); if (ap) { const parts = ap.getAttribute("data-apply").split("|"); applyDelivered(parts[0], parts[1]); return; }
   const pf = e.target.closest("[data-pf]"); if (pf) { pendF = pf.getAttribute("data-pf"); $("detailBody").innerHTML = pendingScreenHtml(); return; }
   if (e.target.closest("[data-sp-fill]")) { spFill(); return; }
   if (e.target.closest("[data-sp-apply]")) { spApply(); return; }
@@ -1276,7 +1463,7 @@ function openForm(order, createdAt){
     if (el.type === "checkbox") el.checked = val !== false; else el.value = val == null ? "" : val;
   });
   $("shipBox").classList.toggle("hidden", state.customer.shipSame !== false);
-  renderDynamic(); refresh(); renderLinks(); renderConfirm(); renderPayState(); renderCustState(); resetRecord(); renderFiles(); renderStatusDates(); openSections(!state.orderNo); $("fl_show").checked = false;
+  renderDynamic(); refresh(); renderLinks(); renderConfirm(); renderPayState(); renderCustState(); resetRecord(); renderFiles(); renderStatusDates(); renderCharges(); openSections(!state.orderNo); $("fl_show").checked = false;
   $("listView").classList.add("hidden"); $("detailView").classList.add("hidden"); $("formView").classList.remove("hidden"); window.scrollTo(0, 0);
 }
 function renderDynamic(){
@@ -1333,6 +1520,7 @@ async function learnTracker(){
 const safeUrl = (u) => { u = String(u || "").trim(); return /^https?:\/\/[^\s<>"']{4,500}$/i.test(u) ? u : ""; };
 const viewOf = (o) => {
   const v = buildOrderView(o);
+  v.paidForYou = (o.otherCharges || []).filter((c) => c && c.show !== false && num(c.amount) > 0).map((c) => ({ label: String(c.label || "Other").slice(0, 40), amount: r2(num(c.amount)) }));
   v.freeLogistics = (o.freight && o.freight.mode === "ours") ? { amount: r2(num(o.freight.amount)) } : null;
   const ti = trackInfo(o);
   v.delivery = Object.assign({}, v.delivery, { trackUrl: ti.url, trackCopyLr: ti.copyLr });
@@ -1461,7 +1649,7 @@ function sectionSummaries(){
     "1": j([cu.firm || cu.name, cu.phone ? prettyPhone(normPhone(cu.phone)) : "", cu.city]) || "Not filled in yet",
     "2": items.length ? j([items.length + (items.length === 1 ? " product" : " products"), c.payable ? inr(c.payable) : ""]) : "No products yet",
     "3": c.received > 0 ? inr(c.received) + " received \u00B7 " + c.payStatus : "No payment yet",
-    "4": j([d.transporter, d.lr ? "LR " + d.lr : "", d.dispatchDate ? "Dispatched " + fmtDate(d.dispatchDate) : "", d.expectedDate ? "Expected " + fmtDate(d.expectedDate) : ""]) || "Not dispatched yet",
+    "4": j([d.transporter, d.lr ? "LR " + d.lr : "", d.agentName ? "Agent " + d.agentName : "", d.dispatchDate ? "Dispatched " + fmtDate(d.dispatchDate) : "", d.expectedDate ? "Expected " + fmtDate(d.expectedDate) : ""]) || "Not dispatched yet",
     "5": j([s.name, c.sup ? "Due " + inr(Math.max(0, c.supDue)) : ""]) || "Not filled in yet",
     "6": j(["Total " + inr(c.payable), "Balance " + inr(Math.max(0, c.balance))]),
     "7": state.viewToken ? "The customer's link is active" : "Not sent yet",
@@ -1942,7 +2130,7 @@ $("linksBox").addEventListener("click", (e) => {
 });
 function refresh(){
   const c = calc(state);
-  try { renderSectionSummaries(); renderPending(); } catch (err) { console.error(err); }
+  try { renderSectionSummaries(); renderPending(); renderStaffBox(); } catch (err) { console.error(err); }
   $("summary").innerHTML = summaryHtml(c);
   $("dueBar").textContent = inr(Math.max(0, c.balance));
   c.lines.forEach((ln, i) => {
@@ -1951,6 +2139,17 @@ function refresh(){
   });
   $("docNos").textContent = "Tax invoice no.: " + (state.invoiceNo || "given when you first download it") + "   <->   URD bill no.: " + (state.urdNo || "given when you first download it") + "   (both belong to order " + (state.orderNo || "this order") + ", so they are linked)";
 }
+const chargesTotal = (o) => r2((o.otherCharges || []).reduce((a, c) => a + num(c && c.amount), 0));
+function renderChargeTotal(){ const t = chargesTotal(state), el = $("chargeTotal"); if (el) el.textContent = t > 0 ? "Total other charges paid by us: " + inr(t) : ""; }
+function renderCharges(){
+  const box = $("chargeBox"); if (!box) return; const list = state.otherCharges || [];
+  box.innerHTML = list.length ? list.map((c, i) => '<div class="chgrow"><div class="two"><div><label>What was it for</label><input type="text" list="dlCharge" maxlength="40" data-ci="' + i + '" data-ck="label" value="' + esc(c.label || "") + '" placeholder="Porter, Labour, Packing..."></div><div><label>Amount (&#8377;)</label><input type="text" inputmode="decimal" data-ci="' + i + '" data-ck="amount" value="' + esc(c.amount || "") + '"></div></div><label class="chk"><input type="checkbox" data-ci="' + i + '" data-ck="show"' + (c.show !== false ? " checked" : "") + '> Mention it to the customer as paid by AK Brands Marketing</label><button type="button" class="small" data-crm="' + i + '">Remove</button></div>').join("") : '<p class="hint">None added.</p>';
+  renderChargeTotal();
+}
+$("chargeBox").addEventListener("input", (e) => { const t = e.target, i = t && t.getAttribute && t.getAttribute("data-ci"); if (i === null || i === undefined) return; const c = (state.otherCharges || [])[Number(i)]; if (!c) return; c[t.getAttribute("data-ck")] = t.type === "checkbox" ? t.checked : t.value; renderChargeTotal(); refresh(); });
+$("chargeBox").addEventListener("change", (e) => { const t = e.target, i = t && t.getAttribute && t.getAttribute("data-ci"); if (i === null || i === undefined) return; const c = (state.otherCharges || [])[Number(i)]; if (!c) return; c[t.getAttribute("data-ck")] = t.type === "checkbox" ? t.checked : t.value; refresh(); });
+$("chargeBox").addEventListener("click", (e) => { const b = e.target.closest && e.target.closest("[data-crm]"); if (!b) return; state.otherCharges.splice(Number(b.getAttribute("data-crm")), 1); renderCharges(); refresh(); });
+$("chargeAdd").addEventListener("click", () => { state.otherCharges = state.otherCharges || []; state.otherCharges.push({ label: "", amount: "", show: true }); renderCharges(); refresh(); const last = $("chargeBox").querySelectorAll('[data-ck="label"]'); if (last.length) last[last.length - 1].focus(); });
 function renderStatusDates(){
   const sd = state.statusDates || {};
   $("stGrid").innerHTML = STATUSES.map((s) => '<div class="strow' + (s === state.status ? " cur" : "") + '"><label>' + esc(s) + '</label><input type="date" data-st="' + esc(s) + '" value="' + esc(sd[s] || "") + '"></div>').join("");
@@ -2035,11 +2234,14 @@ async function persistOrder(){
   const sGst = String((state.supplier || {}).gstin || "").trim().toUpperCase();
   if (sGst && !/^\d{2}[A-Z]{5}\d{4}[A-Z][A-Z\d]Z[A-Z\d]$/.test(sGst)) throw new UserError("The supplier GST number does not look right. It has 15 letters and numbers, like 29ABCDE1234F1Z5. Leave it empty if you do not have it.");
   state.supplier.gstin = sGst;
+  const chargesClean = (state.otherCharges || []).map((c) => ({ label: String((c && c.label) || "").trim().slice(0, 40), amount: String((c && c.amount) || "").trim(), show: !c || c.show !== false })).filter((c) => c.label || num(c.amount) > 0);
+  for (const c of chargesClean) { if (!c.label) throw new UserError("Name each other charge, for example Porter, Labour or Packing."); if (!(num(c.amount) > 0)) throw new UserError("Type an amount for the charge \u201C" + c.label + "\u201D, or remove it."); }
+  state.otherCharges = chargesClean;
   const isNew = !state.orderNo;
   const orderNo = isNew ? await nextOrderNo() : state.orderNo;
   const data = {
     orderDate: state.orderDate || todayISO(), status: state.status, gstMode: state.gstMode === "excl" ? "excl" : "incl",
-    payTerms: (state.payTerms || "").trim(), viewToken: state.viewToken || "", payRequest: state.payRequest, files: state.files || [], statusDates: state.statusDates || {}, invoiceNo: state.invoiceNo || "", invoiceDate: state.invoiceDate || "", urdNo: state.urdNo || "", urdDate: state.urdDate || "",
+    payTerms: (state.payTerms || "").trim(), viewToken: state.viewToken || "", payRequest: state.payRequest, files: state.files || [], statusDates: state.statusDates || {}, otherCharges: state.otherCharges || [], invoiceNo: state.invoiceNo || "", invoiceDate: state.invoiceDate || "", urdNo: state.urdNo || "", urdDate: state.urdDate || "",
     customer: Object.assign(clean(state.customer), { phone }),
     supplier: clean(state.supplier), items,
     freight: clean(state.freight), delivery: clean(state.delivery),
@@ -2054,6 +2256,7 @@ async function persistOrder(){
   ["name", "firm", "city", "state", "gstin", "address"].forEach((k) => { if (c[k]) cu[k] = c[k]; }); /* blanks never erase a saved customer */
   await setDoc(doc(db, "customers", phone), cu, { merge: true });
   state.orderNo = orderNo;
+  try { await syncStaff(state); } catch (e) { console.error(e); }
   try { await learnTracker(); } catch (e) { console.error(e); }
   try { await refreshCustomerView(phone); } catch (e) { console.error(e); }
   if (state.viewToken) await setDoc(doc(db, "orderViews", state.viewToken), viewData());
@@ -2151,7 +2354,7 @@ $("delBtn").addEventListener("click", async () => {
   if (!state.orderNo) return;
   if (state.invoiceNo || state.urdNo) { show($("formMsg"), "This order has an invoice or URD bill number, so it cannot be deleted. Change its Status to Cancelled instead. That keeps your invoice numbers complete.", "err"); return; }
   if (!confirm("Delete order " + state.orderNo + " permanently? This cannot be undone.")) return;
-  try { for (const f of (state.files || [])) await removeFileDocs(f); if (state.viewToken) await deleteDoc(doc(db, "orderViews", state.viewToken)); await deleteDoc(doc(db, "orders", state.orderNo)); await loadAll(); showList(); show($("listMsg"), "Order deleted.", "ok"); }
+  try { for (const f of (state.files || [])) await removeFileDocs(f); if (state.viewToken) await deleteDoc(doc(db, "orderViews", state.viewToken)); await deleteDoc(doc(db, "orders", state.orderNo)); if (STAFF_ENABLED) { try { await deleteDoc(doc(db, "staffParcels", state.orderNo)); await deleteDoc(doc(db, "staffPayments", state.orderNo)); } catch (e2) { console.error(e2); } } await loadAll(); showList(); show($("listMsg"), "Order deleted.", "ok"); }
   catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again.", "err"); }
 });
 window.__ordersReady = true;

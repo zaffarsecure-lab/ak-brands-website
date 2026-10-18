@@ -380,6 +380,7 @@ function render(v){
   if (v.gstAdded) totals += row("Goods total (before GST)", inr(v.goods)) + row("GST", inr(v.gstAdded));
   if (v.freight) totals += row("Freight", inr(v.freight));
   if (v.freeLogistics) totals += '<div class="gift">' + (v.freeLogistics.amount > 0 ? "Logistics worth " + inr(v.freeLogistics.amount) + " paid" : "Logistics paid") + ' by AK Brands Marketing as a gift. Free for you.</div>';
+  if (v.paidForYou && v.paidForYou.length) totals += '<div class="gift">AK Brands Marketing also paid for you: ' + v.paidForYou.map((x) => esc(x.label) + " " + inr(x.amount)).join(", ") + '. Free for you.</div>';
   totals += row("Total amount", inr(v.total), "tot") + (v.gstIncluded ? '<p class="note2">The total includes GST of ' + inr(v.gstIncluded) + '.</p>' : '');
   const pays = (v.payments || []).map((p) => row(esc(p.kind) + (p.mode ? ' &middot; ' + esc(p.mode) : '') + (p.date ? ' <span style="font-weight:400;color:#5c6869">(' + esc(fmtDate(p.date)) + ')</span>' : ''), inr(p.amount))).join("");
   const payFiles = fileBtns(v.files, ["payment"], "o");

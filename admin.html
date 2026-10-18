@@ -201,12 +201,14 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;color:var(--ink)}
 
   <section class="panel hidden" id="listPanel">
     <h2>Your lots</h2>
+    <input id="lotQ" type="search" autocomplete="off" placeholder="Search lot number, product, category, location..." style="margin-bottom:.6rem">
     <div id="lotList"><p class="hint">Loading lots</p></div>
   </section>
 
   <section class="panel hidden" id="leadsPanel">
     <h2>Leads from the website</h2>
     <p class="hint" style="margin-top:-.4rem">People who used the Sell or Auction form. Newest first.</p>
+    <input id="leadQ" type="search" autocomplete="off" placeholder="Search name, phone, city, what they offered..." style="margin-bottom:.6rem">
     <div id="leadList"><p class="hint">Loading leads</p></div>
   </section>
 </main>
@@ -1014,7 +1016,9 @@ $("loginForm").addEventListener("submit", async (e) => {
 });
 $("logout").addEventListener("click", () => signOut(auth));
 
+const OWNER_UID = "E1s9qd0aGuQCudyrZMAJV8AHtY02";
 onAuthStateChanged(auth, (user) => {
+  if (user && user.uid !== OWNER_UID) { show($("loginMsg"), "This page is for the owner only.", "err"); signOut(auth); return; }
   const on = !!user;
   $("loginPanel").classList.toggle("hidden", on);
   $("shareCfg").classList.toggle("hidden", !on);
@@ -1155,9 +1159,12 @@ async function loadLots(){
   }
 }
 
+const tokens = (q) => String(q || "").toLowerCase().split(/\s+/).filter(Boolean);
 function renderList(){
   if (!lots.length){ $("lotList").innerHTML = '<p class="hint">No lots yet. Add your first lot above.</p>'; return; }
-  $("lotList").innerHTML = lots.map((l) => {
+  const tk = tokens($("lotQ").value), shownLots = lots.filter((l) => { const hay = [l.lotNo, l.title, l.category, l.condition, l.location, l.description, l.qty, l.moq, l.rate, l.waName, l.status === "sold" ? "sold" : "available"].join(" ").toLowerCase(); return tk.every((t) => hay.indexOf(t) >= 0); });
+  if (!shownLots.length){ $("lotList").innerHTML = '<p class="hint">No lot matches that.</p>'; return; }
+  $("lotList").innerHTML = (tk.length ? '<p class="hint">' + shownLots.length + ' of ' + lots.length + ' lots match.</p>' : '') + shownLots.map((l) => {
     const sold = l.status === "sold";
     return '<div class="lot">' +
       '<h3>Lot ' + esc(l.lotNo) + '<span class="tag' + (sold ? " sold" : "") + '">' + (sold ? "Sold" : "Available") + '</span></h3>' +
@@ -1173,6 +1180,8 @@ function renderList(){
   }).join("");
 }
 
+$("lotQ").addEventListener("input", () => renderList());
+$("leadQ").addEventListener("input", () => renderLeads());
 $("lotList").addEventListener("click", async (e) => {
   const b = e.target.closest("button[data-act]");
   if (!b) return;
@@ -1232,7 +1241,9 @@ async function loadLeads(){
 }
 function renderLeads(){
   if (!leads.length){ $("leadList").innerHTML = '<p class="hint">No leads yet.</p>'; return; }
-  $("leadList").innerHTML = leads.map((l) => {
+  const tk = tokens($("leadQ").value), shownLeads = leads.filter((l) => { const hay = [l.name, l.phone, l.category, l.quantity, l.city, l.details, l.type].join(" ").toLowerCase(); return tk.every((t) => hay.indexOf(t) >= 0); });
+  if (!shownLeads.length){ $("leadList").innerHTML = '<p class="hint">No lead matches that.</p>'; return; }
+  $("leadList").innerHTML = shownLeads.map((l) => {
     const when = l.createdAt && l.createdAt.seconds ? new Date(l.createdAt.seconds * 1000).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "";
     const greet = "Hello " + (l.name || "") + ", this is AK Brands Marketing. Thank you for your " + (l.type === "auction" ? "auction request" : "enquiry to sell your stock") + ". How can we help?";
     return '<div class="lot">' +

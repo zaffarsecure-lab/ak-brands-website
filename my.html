@@ -501,6 +501,7 @@ function lotCard(o, it, oi, ii){
     if (o.gstAdded) totals += row("Goods total (before GST)", inr(o.goods)) + row("GST", inr(o.gstAdded));
     if (o.freight) totals += row("Freight", inr(o.freight));
     if (o.freeLogistics) totals += '<div class="gift">' + (o.freeLogistics.amount > 0 ? "Logistics worth " + inr(o.freeLogistics.amount) + " paid" : "Logistics paid") + ' by AK Brands Marketing as a gift. Free for you.</div>';
+    if (o.paidForYou && o.paidForYou.length) totals += '<div class="gift">AK Brands Marketing also paid for you: ' + o.paidForYou.map((x) => esc(x.label) + " " + inr(x.amount)).join(", ") + '. Free for you.</div>';
     totals += row("Order total", inr(o.total), "tot");
     const pays = (o.payments || []).map((p) => row(esc(p.kind) + (p.mode ? ' &middot; ' + esc(p.mode) : '') + (p.date ? ' <span style="font-weight:400;color:#5c6869">(' + esc(fmtDate(p.date)) + ')</span>' : ''), inr(p.amount))).join("");
     const payBlock = '<div class="sec">Payments on this order</div>' + (pays || '<p class="note2" style="margin:0">No payment received yet.</p>') + fileBtns(o.files, ["payment"], String(oi)) + row("Received so far", inr(o.received)) + row(o.balance > 0 ? "Balance to pay" : "Balance", o.balance > 0 ? inr(o.balance) : "Nil", "tot");
