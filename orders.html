@@ -845,7 +845,7 @@ function customerCardHtml(g){
   return '<div class="ocard" data-cust="' + esc(g.key) + '"><h3><span>' + esc(name) + '</span><span>' + (t.payable ? inr(t.payable) : "") + '</span></h3>' +
     '<p>' + esc(sub) + '</p>' +
     '<div><span class="pill">' + n + (n === 1 ? " order" : " orders") + '</span><span class="pill">' + lots + (lots === 1 ? " lot" : " lots") + '</span><span class="pill ' + (t.balance > 0 ? "bad" : "ok") + '">' + (t.balance > 0 ? "Balance due " + inr(t.balance) : "No balance due") + '</span>' + (function(){ const k = g.orders.filter((x) => pendingInfo(x).pending > 0).length; return k ? '<span class="pill bad">' + k + (k === 1 ? " order needs action" : " orders need action") + '</span>' : ""; })() + '</div>' +
-    '<p>Last booking ' + esc(fmtDate(o.orderDate)) + ' &middot; Received ' + inr(t.received) + (t.supDue > 0 ? ' &middot; You owe suppliers ' + inr(t.supDue) : '') + ' &middot; Profit ' + inr(t.profit) + '</p><button type="button" class="small dashbtn" data-cdash="' + esc(g.key) + '" style="margin-top:.5rem">Dashboard</button></div>';
+    '<p>Last booking ' + esc(fmtDate(o.orderDate)) + ' &middot; Received ' + inr(t.received) + (t.supDue > 0 ? ' &middot; You owe suppliers ' + inr(t.supDue) : '') + ' &middot; Profit ' + inr(t.profit) + '</p><button type="button" class="small dashbtn" data-cdash="' + esc(g.key) + '" style="margin-top:.5rem">Dashboard</button> <button type="button" class="small dashbtn" data-qshare="' + esc(g.key) + '" style="margin-top:.5rem">Share balance</button></div>';
 }
 function customerOrderRowHtml(o){
   const c = calc(o);
@@ -911,7 +911,7 @@ function customerDetailHtml(key){
   const tile = (k, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-ctile="' + k + '" data-ckey="' + esc(key) + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   return '<h2>' + esc(name) + '</h2><p class="hint">' + esc(sub) + '</p>' +
     '<div class="tiles" style="margin-top:.6rem">' + tile("orders", "Orders and lots", mine.length + " &middot; " + lotCount(mine)) + tile("total", "Total ordered", inr(t.payable)) + tile("recv", "Received", inr(t.received)) + tile("owes", "Customer owes", inr(t.balance)) + tile("sup", "You owe suppliers", inr(t.supDue), "priv") + tile("profit", "Profit", inr(t.profit), "priv") + '</div>' +
-    '<button type="button" class="small" data-newfor="' + esc(key) + '" style="margin-top:.8rem">New order for this customer</button> <button type="button" class="small dashbtn" data-cdash="' + esc(key) + '" style="margin-top:.8rem">Customer dashboard</button>' + splitPanelHtml(mine) +
+    '<button type="button" class="small" data-newfor="' + esc(key) + '" style="margin-top:.8rem">New order for this customer</button> <button type="button" class="small dashbtn" data-cdash="' + esc(key) + '" style="margin-top:.8rem">Customer dashboard</button> <button type="button" class="small dashbtn" data-qshare="' + esc(key) + '" style="margin-top:.8rem">Share balance</button><span id="qsMsg" class="hint" style="display:block"></span>' + splitPanelHtml(mine) +
     '<p class="hint" style="margin-top:1rem">Newest booking first. Tap an order to open it.</p>' + mine.map(customerOrderRowHtml).join("");
 }
 function customerTileHtml(key, tile){
@@ -990,6 +990,7 @@ const OWNER_UID = "E1s9qd0aGuQCudyrZMAJV8AHtY02";
 onAuthStateChanged(auth, (user) => {
   if (user && user.uid !== OWNER_UID) { show($("loginMsg"), "This page is for the owner only.", "err"); signOut(auth); return; }
   const on = !!user;
+  try { if (on) localStorage.setItem("akOwner", "1"); else localStorage.removeItem("akOwner"); } catch (e) {}
   $("loginPanel").classList.toggle("hidden", on);
   $("logout").classList.toggle("hidden", !on);
   if (on) { showList(); loadAll(); loadBiz(); loadTeam(); loadStaffLogs().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
@@ -1461,6 +1462,7 @@ $("detailBack").addEventListener("click", () => showList());
 $("detailBody").addEventListener("change", (e) => { if (e.target && e.target.id === "sf_who") { sfWho = e.target.value; $("detailBody").innerHTML = staffScreenHtml(); } });
 $("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "dtQ") { applyDtFilter(e.target.value); return; } if (e.target && e.target.id === "sf_q") { sfQ = e.target.value; $("sfList").innerHTML = feedListHtml(); return; } if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
 $("detailBody").addEventListener("click", (e) => {
+  const qsd = e.target.closest("[data-qshare]"); if (qsd) { openShareFor(qsd.getAttribute("data-qshare")); return; }
   const dpp = e.target.closest("[data-dp]"); if (dpp) { dashPeriod = dpp.getAttribute("data-dp"); showDetail("dash"); return; }
   const dtg = e.target.closest("[data-dtoggle]"); if (dtg) { if (dtg.getAttribute("data-dtoggle") === "priv") dashPriv = !dashPriv; else dashNames = !dashNames; showDetail(lastDetail); return; }
   if (e.target.closest("[data-dprint]")) { window.print(); return; }
@@ -1531,6 +1533,7 @@ function openOrderByNo(no){
   if (o) openForm(JSON.parse(JSON.stringify(Object.assign({}, o, { createdAt: null }))), o.createdAt);
 }
 $("orderList").addEventListener("click", (e) => {
+  const qsb = e.target.closest("[data-qshare]"); if (qsb) { openShareFor(qsb.getAttribute("data-qshare")); return; }
   const cd = e.target.closest("[data-cdash]"); if (cd) { showDetail("cdash:" + cd.getAttribute("data-cdash")); return; }
   const g = e.target.closest("[data-cust]"); if (g) { showDetail("cust:" + g.getAttribute("data-cust")); return; }
   const c = e.target.closest("[data-open]"); if (c) openOrderByNo(c.getAttribute("data-open"));
@@ -2027,6 +2030,20 @@ async function customerToken(phone){
   try { const s = await getDoc(doc(db, "customers", phone)); return s.exists() ? (s.data().viewToken || "") : ""; } catch (e) { return ""; }
 }
 async function publishCustomerView(phone, token){ await setDoc(doc(db, "orderViews", token), buildCustomerView(phone)); }
+async function openShareFor(key){
+  const say = (s) => { const m = $("qsMsg"); if (m) m.textContent = s; else if (s) window.alert(s); };
+  if (!/^\d{10,}$/.test(String(key))) { say("Add this customer's WhatsApp number to an order first."); return; }
+  const w = window.open("", "_blank");
+  try {
+    say("Opening the customer page...");
+    let token = await customerToken(key);
+    if (!token) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; token = makeToken(bytes, 24); await setDoc(doc(db, "customers", key), { viewToken: token }, { merge: true }); customers[key] = Object.assign(customers[key] || {}, { viewToken: token }); }
+    await publishCustomerView(key, token);
+    const o1 = orders.find((x) => groupKeyOf(x) === key), slug = String((o1 && (o1.customer.firm || o1.customer.name)) || "customer").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 30) || "customer";
+    const url = SITE_URL + "/my.html?c=" + slug + "-" + token + "#share";
+    if (w) { w.location.href = url; say(""); } else { window.location.href = url; }
+  } catch (e) { if (w) w.close(); console.error(e); say("That did not work. Check your connection and try again."); }
+}
 async function refreshCustomerView(phone){
   const token = await customerToken(phone);
   if (token) await publishCustomerView(phone, token);

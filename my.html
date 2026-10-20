@@ -184,6 +184,9 @@ dialog::backdrop{background:rgba(10,18,30,.7)}
 .qr img{max-width:240px;width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
 .cta{display:block;text-align:center;text-decoration:none;font-weight:700;padding:.85rem 1rem;border-radius:8px;background:var(--wa);color:#0a0a0a}
 
+.qsh{display:block;width:100%;margin:.7rem 0 .2rem;font:inherit;font-weight:800;font-size:1.05rem;padding:.9rem .8rem;border-radius:14px;border:2px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
+.qsh:disabled{opacity:.6}
+.qsn{margin:.2rem 0 .6rem;text-align:center}
 .tiles3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem}
 .tl{background:#fff;border:1px solid var(--line);border-radius:8px;padding:.7rem .6rem}
 .tl small{display:block;color:var(--muted);font-size:.72rem}
@@ -579,8 +582,9 @@ function clearFilters(){
   if ($("fq")) $("fq").value = ""; if ($("ffrom")) $("ffrom").value = ""; if ($("fto")) $("fto").value = ""; if ($("ftr")) $("ftr").value = "";
   renderFilterChips(); renderLots();
 }
+let VIEW = null;
 function render(v){
-  ORD = v.orders || [];
+  VIEW = v; ORD = v.orders || [];
   const live = ORD.filter((o) => o.status !== "Cancelled");
   const total = live.reduce((a, o) => a + (Number(o.total) || 0), 0), paid = live.reduce((a, o) => a + (Number(o.received) || 0), 0), due = live.reduce((a, o) => a + (Number(o.balance) || 0), 0);
   const nLots = ORD.reduce((a, o) => a + itemsOf(o).length, 0);
@@ -592,6 +596,7 @@ function render(v){
     '<div class="tiles3"><button type="button" class="tl" data-tile="total"><small>Total ordered</small><b>' + inr(total) + '</b><span class="go">Tap to see</span></button>' +
     '<button type="button" class="tl paid" data-tile="paid"><small>Paid so far</small><b>' + inr(paid) + '</b><span class="go">Tap to see</span></button>' +
     '<button type="button" class="tl due' + (due > 0 ? '' : ' zero') + '" data-tile="due"><small>Balance to pay</small><b>' + inr(due) + '</b><span class="go">Tap to see</span></button></div>' +
+    (ownerMode() ? '<button type="button" class="qsh" data-qshare="1">Quick share: picture and link</button><p class="note2 qsn" id="qshMsg">Only you see this button. It sends the customer a picture of this summary together with the link.</p>' : '') +
     (canPay ? '<button type="button" class="paybig" data-payall="1">Pay now<small>Balance ' + inr(due) + '</small></button>' : '') +
     (nLots ? '<div class="fbar"><input id="fq" type="search" placeholder="Search lot, product, order, LR number, date, transport..." autocomplete="off">' +
       '<div class="chips" id="fship"></div><div class="chips" id="fpay"></div>' +
@@ -603,8 +608,88 @@ function render(v){
   document.title = "Your orders | AK Brands Marketing";
 }
 
+/* ---------- Owner only: quick share (a picture of the summary plus the link) ---------- */
+const ownerMode = () => { try { if (localStorage.getItem("akOwner") === "1") return true; } catch (e) {} return String(location.hash || "") === "#share"; };
+function cardData(){
+  const live = ORD.filter((o) => o.status !== "Cancelled"), sum = (k) => live.reduce((a, o) => a + (Number(o[k]) || 0), 0);
+  const unpaid = live.filter((o) => Number(o.balance) > 0).map((o) => { const its = itemsOf(o), it = its[0] || {}, more = its.filter((x) => x.name && String(x.name).trim()).length - 1; return { label: (it.lotNo ? "Lot " + it.lotNo : String(o.orderNo || "Order")) + (it.name && it.name !== "Order" ? " \u00B7 " + it.name : "") + (more > 0 ? "  +" + more + " more" : ""), amt: Number(o.balance) || 0 }; });
+  return { name: String((VIEW && VIEW.customerName) || "Your account"), total: sum("total"), paid: sum("received"), due: sum("balance"), nLots: ORD.reduce((a, o) => a + itemsOf(o).length, 0), nOrders: ORD.length, unpaid };
+}
+function rrect(c, x, y, w, h, r){ c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+function fitText(c, s, maxW){ if (c.measureText(s).width <= maxW) return s; let t = String(s); while (t.length > 1 && c.measureText(t + "\u2026").width > maxW) t = t.slice(0, -1); return t + "\u2026"; }
+function drawCard(){
+  const d = cardData(), W = 1080, P = 56, SANS = "Roboto, 'Segoe UI', Arial, sans-serif", SERIF = "Georgia, 'Times New Roman', serif";
+  const rows = Math.min(5, d.unpaid.length), extra = d.unpaid.length - rows, headH = 300, tileH = 170, barH = 196, footH = 300;
+  const H = P + headH + 34 + tileH + 30 + barH + 34 + (d.unpaid.length ? 86 + rows * 92 + (extra > 0 ? 64 : 0) + 20 : 0) + footH + P;
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H; const c = cv.getContext("2d");
+  c.fillStyle = "#f4f6f6"; c.fillRect(0, 0, W, H); c.textBaseline = "alphabetic";
+  let y = P;
+  c.fillStyle = "#02c3a3"; rrect(c, P, y + 10, W - 2 * P, headH, 36); c.fill();
+  c.fillStyle = "#0a0a0a"; rrect(c, P, y, W - 2 * P, headH, 36); c.fill();
+  c.fillStyle = "#02c3a3"; c.font = "700 34px " + SANS; try { c.letterSpacing = "4px"; } catch (e) {}
+  c.fillText(fitText(c, d.name.toUpperCase(), W - 2 * P - 90), P + 46, y + 92); try { c.letterSpacing = "0px"; } catch (e) {}
+  c.fillStyle = "#fff"; c.font = "700 100px " + SERIF; c.fillText("Your orders", P + 46, y + 200);
+  c.fillStyle = "#cfd8d8"; c.font = "400 36px " + SANS; c.fillText(d.nLots + (d.nLots === 1 ? " lot" : " lots") + "      " + d.nOrders + (d.nOrders === 1 ? " order" : " orders"), P + 46, y + 262);
+  y += headH + 34;
+  const tw = (W - 2 * P - 44) / 3, tiles = [["Total ordered", d.total, "#ffffff", "#e1e6e6", "#0a0a0a"], ["Paid so far", d.paid, "#e6f4ec", "#1b8a4a", "#0d6b33"], ["Balance to pay", d.due, d.due > 0 ? "#fdeceb" : "#e6f4ec", d.due > 0 ? "#c0392b" : "#1b8a4a", d.due > 0 ? "#a82a1c" : "#0d6b33"]];
+  tiles.forEach((t, i) => {
+    const x = P + i * (tw + 22); c.fillStyle = t[2]; rrect(c, x, y, tw, tileH, 26); c.fill(); c.lineWidth = 3; c.strokeStyle = t[3]; c.stroke();
+    c.fillStyle = "#5c6869"; c.font = "400 28px " + SANS; c.fillText(t[0], x + 24, y + 56);
+    let fs = 50; c.font = "800 " + fs + "px " + SANS; const txt = inr(t[1]); while (c.measureText(txt).width > tw - 56 && fs > 26) { fs -= 2; c.font = "800 " + fs + "px " + SANS; }
+    c.fillStyle = t[4]; c.fillText(txt, x + 24, y + 126);
+  });
+  y += tileH + 30;
+  c.textAlign = "center";
+  if (d.due > 0) {
+    c.fillStyle = "#f08a24"; rrect(c, P, y, W - 2 * P, barH, 40); c.fill();
+    c.fillStyle = "#fff"; c.font = "600 38px " + SANS; c.fillText("Balance to pay", W / 2, y + 66);
+    let fs = 88; c.font = "800 " + fs + "px " + SANS; const t2 = inr(d.due); while (c.measureText(t2).width > W - 2 * P - 80 && fs > 40) { fs -= 4; c.font = "800 " + fs + "px " + SANS; }
+    c.fillText(t2, W / 2, y + 166);
+  } else {
+    c.fillStyle = "#1b8a4a"; rrect(c, P, y, W - 2 * P, barH, 40); c.fill(); c.fillStyle = "#fff"; c.font = "800 62px " + SANS; c.fillText("All paid. Thank you.", W / 2, y + 122);
+  }
+  c.textAlign = "left"; y += barH + 34;
+  if (d.unpaid.length) {
+    c.fillStyle = "#0a0a0a"; c.font = "800 40px " + SANS; c.fillText("Unpaid lots", P + 6, y + 44);
+    for (let i = 0; i < rows; i++) {
+      const ry = y + 86 + i * 92, u = d.unpaid[i]; c.fillStyle = "#fff"; rrect(c, P, ry, W - 2 * P, 80, 18); c.fill(); c.lineWidth = 2; c.strokeStyle = "#e1e6e6"; c.stroke();
+      c.font = "800 34px " + SANS; const at = inr(u.amt), aw = c.measureText(at).width; c.fillStyle = "#a82a1c"; c.textAlign = "right"; c.fillText(at, W - P - 26, ry + 52);
+      c.textAlign = "left"; c.fillStyle = "#1f2426"; c.font = "600 32px " + SANS; c.fillText(fitText(c, u.label, W - 2 * P - 52 - aw - 24), P + 26, ry + 52);
+    }
+    if (extra > 0) { c.fillStyle = "#5c6869"; c.font = "600 30px " + SANS; c.fillText("+ " + extra + " more unpaid " + (extra === 1 ? "lot" : "lots"), P + 6, y + 86 + rows * 92 + 40); }
+    y += 86 + rows * 92 + (extra > 0 ? 64 : 0) + 20;
+  }
+  c.fillStyle = "#fff"; rrect(c, P, y, W - 2 * P, footH, 30); c.fill(); c.lineWidth = 2; c.strokeStyle = "#e1e6e6"; c.stroke();
+  c.textAlign = "center"; c.fillStyle = "#1f2426"; c.font = "400 34px " + SANS; c.fillText("Tap the link in this message to see every lot,", W / 2, y + 62); c.fillText("pay by UPI and track your parcels.", W / 2, y + 108);
+  c.fillStyle = "#5c6869"; c.font = "600 30px " + SANS; c.fillText("Source The Value   |   Trusted Firm", W / 2, y + 168);
+  c.fillStyle = "#00927a"; c.font = "800 46px " + SANS; c.fillText("AK Brands Marketing\u00A9", W / 2, y + 228);
+  c.fillStyle = "#8a9696"; c.font = "400 26px " + SANS; c.fillText("As on " + new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }), W / 2, y + 276);
+  return cv;
+}
+const cleanLink = () => location.origin + location.pathname + location.search;
+function shareText(){
+  const d = cardData();
+  return ["*" + d.name + ", your account summary*", "Total ordered " + inr(d.total) + "  |  Paid " + inr(d.paid) + "  |  Balance " + inr(d.due), "", "See every lot, pay and track your parcels:", cleanLink(), "", "Source The Value.", "Trusted Firm", "AK Brands Marketing\u00A9"].join("\n");
+}
+async function quickShare(){
+  const msgEl = $("qshMsg"), btn = document.querySelector("[data-qshare]"), say = (s) => { if (msgEl) msgEl.textContent = s; };
+  try {
+    if (btn) btn.disabled = true; say("Making the picture...");
+    const blob = await new Promise((res, rej) => drawCard().toBlob((b) => (b ? res(b) : rej(new Error("no picture"))), "image/png")), text = shareText();
+    const file = new File([blob], "AK-account-summary.png", { type: "image/png" });
+    try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(() => {}); } catch (e) {}
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: text, title: "Account summary" }); say("Shared. The message is also copied, in case the app shows only the picture."); }
+    else {
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "AK-account-summary.png"; document.body.appendChild(a); a.click(); a.remove();
+      window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank"); say("The picture is saved. Attach it in WhatsApp. The message is ready there.");
+    }
+  } catch (e) { if (e && e.name === "AbortError") say("Sharing cancelled."); else { console.error(e); say("That did not work. Tap again, or take a screenshot."); } }
+  finally { if (btn) btn.disabled = false; }
+}
+
 document.addEventListener("click", (e) => {
   const t = e.target; if (!t || !t.closest) return;
+  if (t.closest("[data-qshare]")) { quickShare(); return; }
   if (t.id === "fmodal" || t.closest("[data-fclose]")) { sheetClose(); return; }
   const fb = t.closest("[data-file]");
   if (fb) { const parts = String(fb.getAttribute("data-file")).split(":"), o = ORD[Number(parts[0])], f = o && (o.files || [])[Number(parts[1])]; if (f && okId(f.id) && okMime(f.mime)) openFile(f); return; }
