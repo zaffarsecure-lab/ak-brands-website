@@ -190,6 +190,13 @@ button.dhb{cursor:pointer}
 .dstats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
 .dstats div{background:#f7f5ef;border-radius:12px;padding:.6rem;text-align:center}.dstats b{display:block;font-size:1.3rem;color:var(--ink)}.dstats span{font-size:.74rem;color:var(--muted)}.dstats .bad b{color:var(--bad)}
 @media print{body *{visibility:hidden}#detailBody,#detailBody *{visibility:visible}#detailBody{position:absolute;left:0;top:0;width:100%}.dnoprint{display:none!important}.dk,.dcard,.dhead,.dhb .dbar i,.ddon circle,.dsvg rect{-webkit-print-color-adjust:exact;print-color-adjust:exact}.dcard,.dk{break-inside:avoid;box-shadow:none;border:1px solid #ddd}}
+.bizT{background:linear-gradient(135deg,#0a0a0a,#0f3a34);border:0}.bizT small{color:#9fe3d6}.bizT b{color:#fff}
+.bizbtns{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}.bizbtns button{background:#02c3a3;color:#04231e;border:0;font-weight:800}
+.bizc{display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:center}
+.bizav{width:46px;height:46px;border-radius:50%;background:#0a0a0a;color:#02c3a3;display:flex;align-items:center;justify-content:center;font-weight:800}
+.bizinfo p{margin:.1rem 0 0;color:var(--muted);font-size:.86rem}
+.bizbtn{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.4rem}
+.bizbtn .primary,button.small.primary{background:var(--ink);color:#fff}.bizbtn .primary{flex:1 1 100%}
 button.docbtn{display:block;width:100%;margin-top:.7rem;background:var(--ink);color:#fff;border:1px solid var(--gold);padding:.85rem;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
 button.docbtn.alt{background:#fff;color:var(--ink);border:1px solid var(--ink)}
 button.docbtn[disabled]{opacity:.6;cursor:wait}
@@ -993,7 +1000,7 @@ onAuthStateChanged(auth, (user) => {
   try { if (on) localStorage.setItem("akOwner", "1"); else localStorage.removeItem("akOwner"); } catch (e) {}
   $("loginPanel").classList.toggle("hidden", on);
   $("logout").classList.toggle("hidden", !on);
-  if (on) { showList(); loadAll(); loadBiz(); loadTeam(); loadStaffLogs().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
+  if (on) { showList(); loadAll(); loadBiz(); loadTeam(); loadCards().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadStaffLogs().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
 });
 
 /* ---------- Loading ---------- */
@@ -1404,6 +1411,148 @@ function customerDashHtml(key){
 }
 const dashTileHtml = () => '<button type="button" class="tile wide dashT" data-tile="dash"><small>Business dashboard</small><b>Sales, profit, customers and collections</b><span class="go">Tap to open the charts</span></button>';
 
+/* ---------- Business card: picture, message, contact file and share ---------- */
+const BZ_SITE = "akbrandsmarketing.com", BZ_HEAD = "India's B2B Liquidation Sourcing Partner";
+const bzDigits = (s) => String(s || "").replace(/\D/g, "");
+const bzPhone = (s) => { const d = bzDigits(s); return d.length === 12 && d.indexOf("91") === 0 ? "+91 " + d.slice(2, 7) + " " + d.slice(7) : (d ? "+" + d : ""); };
+const bzInitials = (n) => String(n || "").trim().split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("") || "AK";
+const bzFirst = (n) => String(n || "").trim().split(/\s+/)[0] || "there";
+function bzLoadLogo(){ return new Promise((res) => { const im = new Image(), t = setTimeout(() => res(null), 4000); im.onload = () => { clearTimeout(t); res(im); }; im.onerror = () => { clearTimeout(t); res(null); }; im.src = "/logo.jpg"; }); }
+const bzLogoP = bzLoadLogo();
+function bzRR(c, x, y, w, h, r){ c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+function bzFont(c, txt, maxW, start, min, weight, family){ let s = start; c.font = weight + " " + s + "px " + family; while (c.measureText(txt).width > maxW && s > min) { s -= 2; c.font = weight + " " + s + "px " + family; } return s; }
+function bzCut(c, s, maxW){ if (c.measureText(s).width <= maxW) return s; let t = String(s); while (t.length > 1 && c.measureText(t + "\u2026").width > maxW) t = t.slice(0, -1); return t + "\u2026"; }
+function bzDraw(card, logo){
+  const SANS = "Roboto, 'Segoe UI', Arial, sans-serif", SERIF = "Georgia, 'Times New Roman', serif", W = 1080, P = 84, TEAL = "#02c3a3";
+  const rows = [];
+  const wa = bzDigits(card.whatsapp) || bzDigits(card.phone), ph = bzDigits(card.phone);
+  if (ph && wa && ph !== wa) { rows.push(["CALL", bzPhone(ph)]); rows.push(["WHATSAPP", bzPhone(wa)]); } else rows.push(["CALL AND WHATSAPP", bzPhone(ph || wa)]);
+  if (card.email) rows.push(["EMAIL", card.email]);
+  rows.push(["WEBSITE", BZ_SITE]);
+  rows.push(["OFFICE", "Davangere (Registered Office)   |   Bangalore (Branch)"]);
+  const RH = 144, top = 640, H = top + rows.length * RH + 40 + 190 + 120;
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H; const c = cv.getContext("2d"); c.textBaseline = "alphabetic";
+  const g = c.createLinearGradient(0, 0, W, H); g.addColorStop(0, "#0a0a0a"); g.addColorStop(1, "#102120"); c.fillStyle = g; c.fillRect(0, 0, W, H);
+  const rg = c.createRadialGradient(W - 90, 110, 10, W - 90, 110, 560); rg.addColorStop(0, "rgba(2,195,163,.30)"); rg.addColorStop(1, "rgba(2,195,163,0)"); c.fillStyle = rg; c.fillRect(0, 0, W, 700);
+  c.lineWidth = 3; c.strokeStyle = "rgba(2,195,163,.45)"; bzRR(c, 34, 34, W - 68, H - 68, 40); c.stroke();
+  // logo and brand
+  const L = 150, LY = 100;
+  c.save(); bzRR(c, P, LY, L, L, 30); c.clip();
+  if (logo) { c.fillStyle = "#000"; c.fillRect(P, LY, L, L); const k = Math.min(L / logo.width, L / logo.height), w = logo.width * k, h = logo.height * k; c.drawImage(logo, P + (L - w) / 2, LY + (L - h) / 2, w, h); }
+  else { c.fillStyle = "#000"; c.fillRect(P, LY, L, L); c.fillStyle = TEAL; c.font = "800 72px " + SERIF; c.textAlign = "center"; c.fillText("AK", P + L / 2, LY + L / 2 + 26); c.textAlign = "left"; }
+  c.restore(); c.lineWidth = 3; c.strokeStyle = "rgba(2,195,163,.7)"; bzRR(c, P, LY, L, L, 30); c.stroke();
+  const tx = P + L + 40; c.fillStyle = TEAL; bzFont(c, "AK Brands Marketing\u00A9", W - tx - P, 52, 34, "600", SERIF); c.fillText("AK Brands Marketing\u00A9", tx, LY + 62);
+  c.fillStyle = "#a9b8b8"; c.font = "italic 400 36px " + SERIF; c.fillText("Source The Value", tx, LY + 112);
+  c.fillStyle = "#7f9090"; c.font = "400 28px " + SANS; c.fillText("Trusted Firm   |   Since 2016", tx, LY + 156);
+  c.fillStyle = TEAL; c.fillRect(P, 330, 130, 5);
+  // name and role
+  c.fillStyle = "#fff"; bzFont(c, card.name, W - 2 * P, 100, 54, "700", SERIF); c.fillText(card.name, P, 450);
+  c.fillStyle = TEAL; bzFont(c, card.role || "", W - 2 * P, 46, 28, "600", SANS); c.fillText(card.role || "", P, 520);
+  c.fillStyle = "#a9b8b8"; c.font = "400 32px " + SANS; c.fillText(BZ_HEAD, P, 580);
+  // contact rows
+  rows.forEach((r, i) => {
+    const y = top + i * RH;
+    c.fillStyle = TEAL; c.font = "700 26px " + SANS; try { c.letterSpacing = "4px"; } catch (e) {} c.fillText(r[0], P, y + 28); try { c.letterSpacing = "0px"; } catch (e) {}
+    c.fillStyle = "#fff"; const fs = bzFont(c, r[1], W - 2 * P, r[0] === "OFFICE" ? 34 : 48, 26, r[0] === "OFFICE" ? "500" : "600", SANS); c.fillText(bzCut(c, r[1], W - 2 * P), P, y + 28 + 22 + fs);
+    c.fillStyle = "rgba(255,255,255,.12)"; c.fillRect(P, y + RH - 22, W - 2 * P, 2);
+  });
+  // call to action
+  const by = top + rows.length * RH + 40;
+  c.fillStyle = TEAL; bzRR(c, P, by, W - 2 * P, 170, 36); c.fill();
+  c.fillStyle = "#0a0a0a"; c.textAlign = "center"; c.font = "800 40px " + SANS; c.fillText("Tap the link to save my contact,", W / 2, by + 74); c.fillText("message me and see live lots", W / 2, by + 126);
+  c.fillStyle = "#7f9090"; c.font = "400 28px " + SANS; c.fillText(BZ_SITE, W / 2, by + 170 + 58); c.textAlign = "left";
+  return cv;
+}
+function bzText(card, link){ return ["*" + card.name + "*", (card.role ? card.role + ", " : "") + "AK Brands Marketing\u00A9", "", "Tap to save my contact, message me on WhatsApp and see our live lots:", link, "", "Source The Value.", "Trusted Firm"].join("\n"); }
+const bzEsc = (s) => String(s || "").replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+function bzVcard(card){
+  const parts = String(card.name || "").trim().split(/\s+/), last = parts.length > 1 ? parts.pop() : "", first = parts.join(" "), ph = bzDigits(card.phone), wa = bzDigits(card.whatsapp);
+  const L = ["BEGIN:VCARD", "VERSION:3.0", "N:" + bzEsc(last) + ";" + bzEsc(first) + ";;;", "FN:" + bzEsc(card.name), "ORG:AK Brands Marketing", "TITLE:" + bzEsc(card.role || "")];
+  if (ph) L.push("TEL;TYPE=CELL,VOICE:+" + ph); if (wa && wa !== ph) L.push("TEL;TYPE=CELL:+" + wa);
+  if (card.email) L.push("EMAIL;TYPE=INTERNET,WORK:" + bzEsc(card.email));
+  L.push("URL:https://" + BZ_SITE, "ADR;TYPE=WORK:;;Registered Office\\, Davangere;;Karnataka;;India", "NOTE:" + bzEsc(BZ_HEAD + ". Source The Value. Branch office: Bangalore."), "END:VCARD");
+  return L.join("\r\n") + "\r\n";
+}
+async function bzShare(card, link, say){
+  say = say || (() => {});
+  try {
+    say("Making the card picture...");
+    const logo = await bzLogoP, blob = await new Promise((res, rej) => bzDraw(card, logo).toBlob((b) => (b ? res(b) : rej(new Error("no picture"))), "image/jpeg", 0.92)), text = bzText(card, link);
+    const file = new File([blob], "AK-business-card-" + (String(card.name || "card").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "card") + ".jpg", { type: "image/jpeg" });
+    try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(() => {}); } catch (e) {}
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: text, title: card.name + " | AK Brands Marketing" }); say("Shared. The message is also copied, in case the app shows only the picture."); }
+    else { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank"); say("The picture is saved. Attach it in WhatsApp. The message is ready there."); }
+  } catch (e) { if (e && e.name === "AbortError") say("Sharing cancelled."); else { console.error(e); say("That did not work. Tap again."); } }
+}
+function bzSaveContact(card){ const blob = new Blob([bzVcard(card)], { type: "text/vcard" }), a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = (String(card.name || "contact").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "contact") + ".vcf"; document.body.appendChild(a); a.click(); a.remove(); }
+
+/* ---------- Business cards: your card and one for each staff member ---------- */
+const CARD_ME = { name: "Abdul", role: "Founder", phone: "918660502217", whatsapp: "918660502217", email: "abdul@akbrandsmarketing.com" };
+let cardList = [], cardEditTok = "";
+async function loadCards(){ try { const s = await getDoc(doc(db, "settings", "cards")); cardList = s.exists() && Array.isArray(s.data().list) ? s.data().list : []; } catch (e) { console.error(e); cardList = []; } }
+const cardSlug = (n) => String(n || "card").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 24) || "card";
+const cardUrl = (c) => SITE_URL + "/card.html?c=" + cardSlug(c.name) + "-" + c.token;
+const cardPublic = (c) => ({ type: "card", name: c.name, role: c.role || "", phone: c.phone, whatsapp: c.whatsapp || c.phone, email: c.email || "", active: c.active !== false, updatedAt: serverTimestamp() });
+const bizTileHtml = () => '<div class="tile wide bizT"><small>Business cards</small><b>Share your card in one tap</b><span class="bizbtns"><button type="button" class="small" data-cardact="shareme">Share my card</button><button type="button" class="small" data-cardact="all">All cards (' + cardList.length + ')</button></span></div>';
+function cardRowHtml(c){
+  const sub = [c.role, bzPhone(c.phone)].filter(Boolean).join(" \u00B7 "), t = esc(c.token);
+  return '<div class="ocard bizc"><div class="bizav">' + esc(bzInitials(c.name)) + '</div><div class="bizinfo"><b>' + esc(c.name) + '</b>' + (c.me ? ' <span class="pill ok">You</span>' : '') + (c.active === false ? ' <span class="pill warn">Paused</span>' : '') + '<p>' + esc(sub) + '</p></div><div class="bizbtn">' +
+    '<button type="button" class="small primary" data-cardact="share" data-t="' + t + '">Share card</button>' +
+    (c.me ? '' : '<button type="button" class="small" data-cardact="sendstaff" data-t="' + t + '">Send link to ' + esc(bzFirst(c.name)) + '</button>') +
+    '<button type="button" class="small" data-cardact="open" data-t="' + t + '">Open</button><button type="button" class="small" data-cardact="copy" data-t="' + t + '">Copy link</button><button type="button" class="small" data-cardact="edit" data-t="' + t + '">Edit</button>' +
+    '<button type="button" class="small" data-cardact="pause" data-t="' + t + '">' + (c.active === false ? "Resume" : "Pause") + '</button><button type="button" class="small" data-cardact="del" data-t="' + t + '">Delete</button></div></div>';
+}
+function cardFormHtml(){
+  const c = cardEditTok === "new" ? {} : (cardEditTok === "me" ? CARD_ME : (cardList.find((x) => x.token === cardEditTok) || {})), isMe = cardEditTok === "me" || !!c.me;
+  const f = (id, label, val, ph, type, mode) => '<label for="' + id + '">' + label + '</label><input id="' + id + '" type="' + (type || "text") + '"' + (mode ? ' inputmode="' + mode + '"' : '') + ' value="' + esc(val || "") + '" placeholder="' + esc(ph || "") + '" autocomplete="off">';
+  return '<div class="ocard"><h3 style="margin:0 0 .3rem">' + (cardEditTok === "new" ? "New staff card" : (isMe ? "Your card" : "Edit card")) + '</h3>' + (cardEditTok === "me" ? '<p class="hint">Check these details. They are filled in for you.</p>' : '') +
+    f("card_name", "Full name", c.name, "Example: Ravi Kumar") + f("card_role", "Designation", c.role, "Example: Sales Executive") + f("card_phone", "Mobile number (for calls)", c.phone ? bzPhone(c.phone) : "", "98765 43210", "tel", "tel") + f("card_wa", "WhatsApp number (leave empty if the same)", c.whatsapp && c.whatsapp !== c.phone ? bzPhone(c.whatsapp) : "", "", "tel", "tel") + f("card_email", "Email (optional)", c.email, "name@akbrandsmarketing.com", "email", "email") +
+    '<div style="margin-top:.7rem"><button type="button" class="small" data-cardact="save">Save</button> <button type="button" class="small primary" data-cardact="saveshare">Save and share</button> <button type="button" class="small" data-cardact="all">Cancel</button></div></div>';
+}
+function cardsScreenHtml(){
+  return '<h2 style="margin-top:0">Business cards</h2><p class="hint">One card for you and one for each staff member. A card is a picture plus a link. Tap Share card to send it on WhatsApp. People tap the link to save the contact, call or message.</p>' +
+    (cardList.length ? cardList.map(cardRowHtml).join("") : '<p class="hint">No cards yet. Tap Share my card on the home screen to make yours.</p>') +
+    (cardEditTok ? cardFormHtml() : '<button type="button" class="small" data-cardact="new" style="margin:.5rem 0">Add a staff card</button>') + '<p class="hint" id="cardMsg"></p>';
+}
+async function saveCardForm(share){
+  const g = (id) => String(($(id) || {}).value || "").trim(), say = (s) => { const m = $("cardMsg"); if (m) m.textContent = s; };
+  const name = g("card_name"), role = g("card_role"), ph = normPhone(g("card_phone")), wa = g("card_wa") ? normPhone(g("card_wa")) : ph, email = g("card_email");
+  if (name.length < 2) { say("Type the full name."); return; }
+  if (!/^\d{10,15}$/.test(ph)) { say("Type a valid mobile number."); return; }
+  if (!/^\d{10,15}$/.test(wa)) { say("The WhatsApp number does not look right."); return; }
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say("That email does not look right."); return; }
+  const old = cardList.find((x) => x.token === cardEditTok); let c = old, isNew = false;
+  if (!c) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; c = { token: makeToken(bytes, 24), me: cardEditTok === "me", active: true, createdAt: todayISO() }; isNew = true; }
+  const before = Object.assign({}, c); Object.assign(c, { name, role, phone: ph, whatsapp: wa, email }); const list = isNew ? cardList.concat([c]) : cardList;
+  try { await setDoc(doc(db, "orderViews", c.token), cardPublic(c)); await setDoc(doc(db, "settings", "cards"), { list }); }
+  catch (e) { console.error(e); if (!isNew) Object.assign(c, before); say("That did not save. Check your connection and try again."); return; }
+  cardList = list; cardEditTok = ""; showDetail("cards"); try { renderTiles(); } catch (e) { console.error(e); }
+  if (share) await bzShare(c, cardUrl(c), (s) => { const m = $("cardMsg"); if (m) m.textContent = s; });
+}
+async function bizAction(act, t){
+  const c = cardList.find((x) => x.token === t), say = (s) => { const m = $("cardMsg"); if (m) m.textContent = s; else if (/^That did not/.test(s)) window.alert(s); };
+  if (act === "all") { cardEditTok = ""; showDetail("cards"); return; }
+  if (act === "new") { cardEditTok = "new"; showDetail("cards"); return; }
+  if (act === "shareme") { const me = cardList.find((x) => x.me); if (me) { await bzShare(me, cardUrl(me), say); } else { cardEditTok = "me"; showDetail("cards"); } return; }
+  if (act === "save" || act === "saveshare") { await saveCardForm(act === "saveshare"); return; }
+  if (!c) return;
+  if (act === "share") { await bzShare(c, cardUrl(c), say); return; }
+  if (act === "edit") { cardEditTok = c.token; showDetail("cards"); return; }
+  if (act === "open") { window.open(cardUrl(c), "_blank"); return; }
+  if (act === "copy") { try { await navigator.clipboard.writeText(cardUrl(c)); say("Link copied."); } catch (e) { say("Press and hold the link to copy: " + cardUrl(c)); } return; }
+  if (act === "sendstaff") { const text = ["Hi " + bzFirst(c.name) + ",", "", "This is your AK Brands Marketing\u00A9 business card. Tap the link and keep it on your phone. Use Share this card to send it to customers in one tap:", cardUrl(c), "", "Source The Value.", "Trusted Firm"].join("\n"); window.open("https://wa.me/" + bzDigits(c.whatsapp || c.phone) + "?text=" + encodeURIComponent(text), "_blank"); return; }
+  if (act === "pause") {
+    const was = c.active; c.active = c.active === false; try { await setDoc(doc(db, "orderViews", c.token), cardPublic(c)); await setDoc(doc(db, "settings", "cards"), { list: cardList }); } catch (e) { console.error(e); c.active = was; say("That did not save. Try again."); return; }
+    showDetail("cards"); return;
+  }
+  if (act === "del") {
+    if (!window.confirm("Delete the card for " + c.name + "? Its link will stop working.")) return;
+    const list = cardList.filter((x) => x.token !== c.token);
+    try { await setDoc(doc(db, "settings", "cards"), { list }); await deleteDoc(doc(db, "orderViews", c.token)); } catch (e) { console.error(e); say("That did not work. Try again."); return; }
+    cardList = list; showDetail("cards"); try { renderTiles(); } catch (e) { console.error(e); }
+  }
+}
+
 function renderTiles(){
   const live = orders.filter((o) => o.status !== "Cancelled");
   const open = live.filter((o) => o.status !== "Closed").length;
@@ -1412,7 +1561,7 @@ function renderTiles(){
   const t = (kind, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-tile="' + kind + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   const infos = live.map((o) => pendingInfo(o)), need = infos.filter((p) => p.pending > 0), onTime = infos.filter((p) => p.waiting).length, proofs = need.reduce((a, p) => a + p.proofs, 0);
   const tp = '<button type="button" class="tile wide ' + (need.length ? "alert" : "good") + '" data-tile="pending"><small>Action pending</small><b>' + (need.length ? need.length + (need.length === 1 ? " order needs action" : " orders need action") : "Nothing needs action") + '</b><span class="go">' + (need.length ? proofs + (proofs === 1 ? " proof" : " proofs") + " missing" + (onTime ? ", " + onTime + " in transit on schedule" : "") + ". Tap to see" : (onTime ? onTime + " in transit, on schedule. Tap to see" : "Tap to see details")) + '</span></button>';
-  $("tiles").innerHTML = tp + dashTileHtml() + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
+  $("tiles").innerHTML = tp + dashTileHtml() + bizTileHtml() + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
 }
 /* tap a tile: groups, then orders, then the order itself */
 let lastDetail = "";
@@ -1451,6 +1600,7 @@ function showDetail(kind){
   if (kind.indexOf("cust:") === 0) { const rest = kind.slice(5), cut = rest.lastIndexOf("|"); $("detailBody").innerHTML = cut > 0 ? customerTileHtml(rest.slice(0, cut), rest.slice(cut + 1)) : customerDetailHtml(rest); }
   else if (kind === "pending") $("detailBody").innerHTML = pendingScreenHtml();
   else if (kind === "dash") $("detailBody").innerHTML = dashboardHtml();
+  else if (kind === "cards") $("detailBody").innerHTML = cardsScreenHtml();
   else if (kind.indexOf("cdash:") === 0) $("detailBody").innerHTML = customerDashHtml(kind.slice(6));
   else $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
   $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); $("detailView").classList.remove("hidden");
@@ -1458,10 +1608,12 @@ function showDetail(kind){
   window.scrollTo(0, 0);
 }
 $("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) { if (b.getAttribute("data-tile") === "staff") { openStaff(); return; } if (b.getAttribute("data-tile") === "pending") { pendF = "all"; pendQ = ""; } showDetail(b.getAttribute("data-tile")); } });
+$("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-cardact]"); if (z) bizAction(z.getAttribute("data-cardact"), z.getAttribute("data-t") || ""); });
 $("detailBack").addEventListener("click", () => showList());
 $("detailBody").addEventListener("change", (e) => { if (e.target && e.target.id === "sf_who") { sfWho = e.target.value; $("detailBody").innerHTML = staffScreenHtml(); } });
 $("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "dtQ") { applyDtFilter(e.target.value); return; } if (e.target && e.target.id === "sf_q") { sfQ = e.target.value; $("sfList").innerHTML = feedListHtml(); return; } if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
 $("detailBody").addEventListener("click", (e) => {
+  const bzb = e.target.closest("[data-cardact]"); if (bzb) { bizAction(bzb.getAttribute("data-cardact"), bzb.getAttribute("data-t") || ""); return; }
   const qsd = e.target.closest("[data-qshare]"); if (qsd) { openShareFor(qsd.getAttribute("data-qshare")); return; }
   const dpp = e.target.closest("[data-dp]"); if (dpp) { dashPeriod = dpp.getAttribute("data-dp"); showDetail("dash"); return; }
   const dtg = e.target.closest("[data-dtoggle]"); if (dtg) { if (dtg.getAttribute("data-dtoggle") === "priv") dashPriv = !dashPriv; else dashNames = !dashNames; showDetail(lastDetail); return; }
