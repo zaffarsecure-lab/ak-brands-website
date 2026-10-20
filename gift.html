@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0a0a0a">
+<title>A gift for you | AK Brands Marketing</title>
+<meta property="og:title" content="A gift is waiting for you | AK Brands Marketing">
+<meta property="og:description" content="Enter your WhatsApp number and scratch to reveal your gift.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/logo.jpg">
+<style>
+:root{
+  --ink:#0a0a0a; --gold:#02c3a3; --bg:#f4f6f6; --paper:#ffffff;
+  --line:#e1e6e6; --text:#1f2426; --muted:#5c6869; --wa:#02c3a3; --wa-dark:#00a98c; --sold:#8a2f2f; --hl:#e6faf6;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* Header */
+.top{background:var(--ink);color:#fff;border-bottom:2px solid var(--gold)}
+.top-inner{max-width:1200px;margin:0 auto;padding:.8rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{display:flex;align-items:center;gap:.7rem;font-size:1.1rem;font-weight:600;text-decoration:none}
+.brand img{width:48px;height:48px;object-fit:contain;background:#000;border:1px solid rgba(2,195,163,.55);border-radius:8px;flex:0 0 auto}
+.brand b{color:var(--gold);font-weight:700}
+.back{font-size:.9rem;text-decoration:none;color:#d9e0ea;border:1px solid rgba(255,255,255,.25);padding:.45rem .9rem;border-radius:999px}
+.back:hover{border-color:var(--gold);color:#fff}
+
+/* Main website header and menu (same look as the homepage) */
+.site-header{background:linear-gradient(135deg,rgba(10,10,10,.95) 0%,rgba(26,26,26,.95) 100%);padding:1rem 0;box-shadow:0 4px 20px rgba(0,0,0,.15);border-bottom:1px solid rgba(2,195,163,.15)}
+.hdr{max-width:1200px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center}
+.logo-section{display:flex;align-items:center;gap:1rem;text-decoration:none}
+.logo-img{width:55px;height:55px;object-fit:contain;filter:drop-shadow(0 3px 10px rgba(2,195,163,.3))}
+.brand-text{display:flex;flex-direction:column;gap:3px}
+.brand-name{font-family:'Playfair Display',Georgia,serif;font-size:1.4rem;font-weight:500;color:#02c3a3;letter-spacing:.5px;line-height:1.2}
+.brand-name .ak{font-weight:600;color:#00a98c}
+.brand-tagline{font-family:'Playfair Display',Georgia,serif;font-size:.7rem;color:#95a5a6;font-style:italic;letter-spacing:.5px}
+@media(min-width:769px){.hdr{padding:0 2rem}.logo-img{width:70px;height:70px}.brand-name{font-size:1.75rem}.brand-tagline{font-size:.75rem}}
+.menu-dropdown{position:relative}
+.menu-button{background:none;border:none;color:#ecf0f1;font-size:1.8rem;cursor:pointer;padding:.5rem;line-height:1}
+.menu-button:hover{color:#02c3a3}
+.dropdown-content{display:none;position:absolute;right:0;top:100%;background:rgba(44,62,80,.98);min-width:180px;box-shadow:0 8px 16px rgba(0,0,0,.3);border-radius:8px;margin-top:.5rem;overflow:hidden;z-index:1001;border:1px solid rgba(2,195,163,.3)}
+.dropdown-content.show{display:block}
+.dropdown-content a{color:#ecf0f1;padding:1rem 1.5rem;text-decoration:none;display:block;font-weight:500}
+.dropdown-content a:hover{background:rgba(2,195,163,.2);color:#02c3a3}
+.dropdown-content a[aria-current="page"]{color:#02c3a3;background:rgba(2,195,163,.12)}
+
+/* Main website footer (same as the homepage) */
+.site-footer{background:#1a1a1a;color:#fff;padding:2.5rem 2rem}
+.footer-content{max-width:1200px;margin:0 auto}
+.footer-copyright{text-align:center;margin-bottom:1.5rem;font-size:.95rem;color:#ccc}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1.5rem}
+.footer-link{color:#fff;text-decoration:none;font-size:.9rem;padding:.3rem 0}
+.footer-link:hover{color:#02c3a3;text-decoration:underline}
+@media(max-width:768px){.footer-links{flex-direction:column;align-items:center;gap:.8rem}.footer-link{font-size:.85rem}}
+
+
+/* Scratch gift */
+.gwrap{max-width:520px;margin:0 auto;padding:1.1rem 1rem 2rem}
+.g-hero{background:linear-gradient(135deg,#0a0a0a 0%,#102120 100%);border-radius:22px;padding:1.3rem 1.2rem 1.4rem;border-bottom:5px solid var(--gold);color:#fff;position:relative;overflow:hidden}
+.g-hero:before{content:"";position:absolute;right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(2,195,163,.35),rgba(2,195,163,0) 70%)}
+.g-brand{display:flex;align-items:center;gap:.7rem;position:relative}
+.g-logo{width:54px;height:54px;border-radius:12px;background:#000;border:2px solid rgba(2,195,163,.7);object-fit:contain;flex:0 0 auto}
+.g-bn{font-family:'Playfair Display',Georgia,serif;color:var(--gold);font-weight:600;font-size:1.15rem;line-height:1.2}
+.g-bs{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:#a9b8b8;font-size:.85rem}
+.g-hero h1{font-family:'Playfair Display',Georgia,serif;font-size:1.9rem;line-height:1.15;margin:1.1rem 0 .3rem;position:relative}
+.g-hero p{color:#cfd8d8;position:relative}
+.g-pill{display:inline-block;margin-top:.7rem;border:1px solid rgba(2,195,163,.7);color:var(--gold);border-radius:999px;padding:.2rem .8rem;font-size:.82rem;font-weight:700;position:relative}
+.g-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.1rem 1rem;margin:.9rem 0}
+.g-card h2{font-size:1.05rem;margin-bottom:.5rem}
+.g-card label{display:block;font-weight:700;margin:.4rem 0 .2rem}
+.g-card input{width:100%;font:inherit;font-size:1.1rem;padding:.8rem .9rem;border:2px solid var(--line);border-radius:12px;background:#fff}
+.g-card input:focus{border-color:var(--gold);outline:0}
+.g-card select{width:100%;font:inherit;font-size:1.05rem;padding:.8rem .9rem;border:2px solid var(--line);border-radius:12px;background:#fff}
+.g-card select:focus{border-color:var(--gold);outline:0}
+.g-chips{display:flex;flex-wrap:wrap;gap:.45rem;margin:.2rem 0 .3rem}
+.g-chips button{font:inherit;font-weight:700;font-size:.95rem;padding:.6rem .85rem;border-radius:999px;border:2px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
+.g-chips button.on{background:var(--ink);color:var(--gold)}
+.g-btn{display:block;width:100%;font:inherit;font-weight:800;font-size:1.05rem;padding:1rem;border-radius:14px;border:0;background:var(--ink);color:var(--gold);cursor:pointer;margin-top:.8rem;text-align:center;text-decoration:none}
+.g-btn.wa{background:var(--gold);color:#04231e}
+.g-btn.ghost{background:#fff;border:2px solid var(--ink);color:var(--ink)}
+.g-err{color:#a82a1c;font-weight:600;margin-top:.5rem;min-height:1.2em}
+.g-note{color:var(--muted);font-size:.86rem;margin-top:.5rem}
+.g-scratch{position:relative;height:210px;border-radius:18px;overflow:hidden;margin:.6rem 0;background:linear-gradient(135deg,#02c3a3,#0a6b5c);box-shadow:inset 0 0 0 3px rgba(255,255,255,.25)}
+.g-prize{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:1rem}
+.g-prize small{letter-spacing:.14em;font-weight:800;opacity:.85;font-size:.74rem}
+.g-prize b{font-family:'Playfair Display',Georgia,serif;font-size:1.65rem;line-height:1.2;margin:.35rem 0}
+.g-prize span{font-size:.95rem;opacity:.95}
+.g-cover{position:absolute;inset:0;touch-action:none;cursor:grab;transition:opacity .6s}
+.g-cover.gone{opacity:0;pointer-events:none}
+.g-won{text-align:center;font-family:'Playfair Display',Georgia,serif;font-size:1.5rem;font-weight:700;margin:.2rem 0}
+.g-code{display:inline-block;background:#0a0a0a;color:var(--gold);border-radius:10px;padding:.4rem .9rem;font-weight:800;letter-spacing:.12em;font-size:1.1rem}
+.g-meta{margin:.6rem 0;color:var(--text)}
+.g-meta li{margin:.25rem 0 .25rem 1.1rem}
+.g-info{color:var(--muted);font-size:.86rem}
+.g-info ul{margin:.3rem 0 .3rem 1.1rem}
+.hidden{display:none!important}
+.state{background:#fff;border:1px solid var(--line);border-radius:16px;padding:1.4rem 1.1rem;margin:1rem 0;text-align:center}
+.state strong{display:block;font-size:1.15rem;margin-bottom:.3rem}
+.g-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:.8rem 0}
+.g-links a{display:block;text-align:center;text-decoration:none;font-weight:700;padding:.8rem .4rem;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.g-cover{transition:none}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="hdr">
+    <a class="logo-section" href="/index.html">
+      <img class="logo-img" src="/logo.jpg" alt="AK Brands Marketing logo" width="55" height="55">
+      <span class="brand-text"><span class="brand-name"><span class="ak">AK</span> Brands Marketing</span><span class="brand-tagline">Trusted Firm</span></span>
+    </a>
+    <div class="menu-dropdown">
+      <button class="menu-button" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menuDropdown">&#9776;</button>
+      <nav class="dropdown-content" id="menuDropdown" aria-label="Main menu">
+        <a href="/index.html">Home</a>
+        <a href="/catalogue.html">Buy</a>
+        <a href="/index.html#about">About</a>
+        <a href="/products.html">Products</a>
+        <a href="/services.html">Services</a>
+        <a href="/index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
+</header>
+<main class="gwrap" id="app"><div class="state"><strong>Loading your gift</strong>Please wait a moment.</div></main>
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="footer-copyright">&copy; 2026 AK Brands Marketing. All rights reserved. | Trusted B2B Liquidation Partner</p>
+    <div class="footer-links">
+      <a href="/terms.html" class="footer-link">Terms &amp; Conditions</a>
+      <a href="/return-refund.html" class="footer-link">Return &amp; Refund Policy</a>
+      <a href="/shipping-delivery.html" class="footer-link">Shipping &amp; Delivery Policy</a>
+      <a href="/privacy.html" class="footer-link">Privacy Policy</a>
+      <a href="/disclaimer.html" class="footer-link">Disclaimer</a>
+      <a href="/business-policy.html" class="footer-link">Business Policy</a>
+    </div>
+  </div>
+</footer>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyALlIObFvQc6FzIHVO4ifXZVPsCmW4_XlY",
+  authDomain: "ak-brands-marketing.firebaseapp.com",
+  projectId: "ak-brands-marketing",
+  storageBucket: "ak-brands-marketing.firebasestorage.app",
+  messagingSenderId: "458983699429",
+  appId: "1:458983699429:web:c8c95fb9ede6795d2af50c"
+};
+const app = initializeApp(firebaseConfig), db = getFirestore(app);
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const WA = "918660502217";
+const mb = $("menuBtn"), md = $("menuDropdown");
+if (mb && md) { mb.addEventListener("click", (e) => { e.stopPropagation(); md.classList.toggle("show"); }); document.addEventListener("click", () => md.classList.remove("show")); }
+/* ---------- Scratch gift: the same pick on the customer page and in your Orders page ---------- */
+const giftDigits = (s) => String(s || "").replace(/\D/g, "");
+function giftNorm(s){ let d = giftDigits(s); if (d.length === 10) d = "91" + d; else if (d.length === 11 && d[0] === "0") d = "91" + d.slice(1); return /^\d{12}$/.test(d) ? d : ""; }
+function giftHash(str){ let h = 2166136261 >>> 0; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b) >>> 0; h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35) >>> 0; h ^= h >>> 16; return h >>> 0; }
+function giftPick(token, phone, offers){
+  const w = (offers || []).map((o) => Math.max(0, Number(o.weight) || 0)), total = w.reduce((a, b) => a + b, 0); if (!(total > 0)) return 0;
+  const r = giftHash(token + "|" + phone) / 4294967296 * total; let acc = 0;
+  for (let i = 0; i < w.length; i++) { acc += w[i]; if (r < acc) return i; } return w.length - 1;
+}
+function giftCode(token, phone, idx){ const n = giftHash("code|" + token + "|" + phone + "|" + idx), A = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"; let s = ""; for (let i = 0; i < 6; i++) s += A[(n >>> (5 * i)) & 31]; return "AKG-" + s; }
+const giftISO = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+function giftState(camp, today){ if (!camp || camp.type !== "gift" && !camp.offers) return "bad"; if (camp.active === false) return "paused"; if (camp.validTill && String(camp.validTill) < today) return "ended"; return "ok"; }
+const giftDate = (iso) => { const p = String(iso || "").split("-").map(Number); return p.length === 3 && p[0] ? new Date(p[0], p[1] - 1, p[2]).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : ""; };
+
+let CAMP = null, TOK = "", PHONE = "", PICK = 0, DONE = false, JOIN = "";
+const CATS = ["Textile and Garments", "FMCG", "Electronics", "Home and Kitchen", "Furniture", "Mobiles and Accessories", "Hardware", "Luggage", "Footwear", "Other"];
+const inr0 = (n) => "\u20B9" + Math.round(Number(n) || 0).toLocaleString("en-IN");
+const phoneShow = (p) => "+91 " + p.slice(2, 7) + " " + p.slice(7);
+function message(t, s){ $("app").innerHTML = '<div class="state"><strong>' + esc(t) + '</strong>' + esc(s) + '</div><div class="g-links"><a href="/catalogue.html">Browse live lots</a><a href="/index.html">Our website</a></div>'; }
+function conditions(c){
+  const L = [];
+  if (c.validTill) L.push("Valid till " + giftDate(c.validTill) + ".");
+  if (Number(c.minOrder) > 0) L.push("Minimum order " + inr0(c.minOrder) + ".");
+  if (c.extra) L.push(String(c.extra));
+  L.push("One gift for each customer. The gift is for customers of AK Brands Marketing and cannot be exchanged for cash. Our decision is final.");
+  return L;
+}
+function render(c){
+  CAMP = c;
+  const offers = (c.offers || []).filter((o) => o && o.label);
+  $("app").innerHTML =
+    '<section class="g-hero"><div class="g-brand"><img class="g-logo" src="/logo.jpg" alt="AK Brands Marketing logo" width="54" height="54"><div><div class="g-bn">AK Brands Marketing\u00A9</div><div class="g-bs">Source The Value</div></div></div>' +
+    '<h1>' + esc(c.title) + '</h1><p>' + esc(c.line || "A gift is waiting for you.") + '</p>' + (c.validTill ? '<span class="g-pill">Valid till ' + esc(giftDate(c.validTill)) + '</span>' : '') + '</section>' +
+    '<section class="g-card" id="gStep1"><h2>Step 1. Tell us about you</h2><label for="gName">Your name</label><input id="gName" type="text" maxlength="60" autocomplete="name" placeholder="Example: Ravi Kumar"><label for="gPhone">Your WhatsApp number</label><input id="gPhone" type="tel" inputmode="tel" maxlength="16" placeholder="98765 43210" autocomplete="tel">' +
+    '<label>How long have you been in our WhatsApp group?</label><div class="g-chips" id="gJoin"><button type="button" data-join="10">About 10 days</button><button type="button" data-join="20">About 20 days</button><button type="button" data-join="30">About 30 days</button><button type="button" data-join="45">More than 30 days</button><button type="button" data-join="none">Not sure</button></div>' +
+    '<label for="gCat">Which category do you like most?</label><select id="gCat"><option value="">Choose a category</option>' + CATS.map((x) => '<option>' + esc(x) + '</option>').join("") + '<option>Not sure yet</option></select>' +
+    '<div class="g-err" id="gErr"></div><button type="button" class="g-btn" id="gGo">Show my scratch card</button><p class="g-note">Every customer wins a gift. By tapping the button you agree that AK Brands Marketing keeps these details and messages you on WhatsApp about lots. You can ask us to remove them any time.</p></section>' +
+    '<section class="g-card hidden" id="gStep2"><h2>Step 2. Scratch to reveal your gift</h2><div class="g-scratch" id="gBox"><div class="g-prize" id="gPrize"></div><canvas class="g-cover" id="gCover"></canvas></div><button type="button" class="g-btn ghost" id="gTap">Cannot scratch? Tap to reveal</button></section>' +
+    '<section class="g-card hidden" id="gStep3"></section>' +
+    '<section class="g-card g-info"><h2>Gifts you can win</h2><ul>' + offers.map((o) => '<li>' + esc(o.label) + '</li>').join("") + '</ul><h2 style="margin-top:.8rem">Conditions</h2><ul>' + conditions(c).map((t) => '<li>' + esc(t) + '</li>').join("") + '</ul></section>' +
+    '<div class="g-links"><a href="/catalogue.html">Browse live lots</a><a href="/index.html">Our website</a></div>';
+  document.title = c.title + " | AK Brands Marketing"; setTimeout(prefill, 0);
+}
+function showResult(again){
+  const o = CAMP.offers[PICK], code = giftCode(TOK, PHONE, PICK);
+  const msg = "Hello AK Brands Marketing, I scratched my gift card. Gift: " + o.label + ". My number: " + phoneShow(PHONE) + ". Code: " + code + ".";
+  $("gStep3").innerHTML = '<div class="g-won">' + (again ? "Your gift" : "Congratulations!") + '</div><div style="text-align:center"><div style="font-weight:800;font-size:1.15rem;margin:.3rem 0">' + esc(o.label) + '</div>' + (o.detail ? '<div class="g-note" style="margin:0 0 .5rem">' + esc(o.detail) + '</div>' : '') + '<span class="g-code">' + esc(code) + '</span></div>' +
+    '<ul class="g-meta">' + conditions(CAMP).slice(0, -1).map((t) => '<li>' + esc(t) + '</li>').join("") + '</ul>' +
+    '<a class="g-btn wa" href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '">Claim on WhatsApp</a><p class="g-note">Send the message so we can confirm your gift. You can also take a screenshot to keep it.</p>';
+  $("gStep3").classList.remove("hidden"); if (again) $("gStep2").classList.add("hidden");
+}
+function reveal(){
+  if (DONE) return; DONE = true; $("gCover").classList.add("gone"); $("gTap").classList.add("hidden"); { const hh = document.querySelector("#gStep2 h2"); if (hh) hh.textContent = "Your gift"; }
+  try { localStorage.setItem("akg_" + TOK + "_" + PHONE, "1"); } catch (e) {}
+  setTimeout(() => { showResult(false); $("gStep3").scrollIntoView && $("gStep3").scrollIntoView({ behavior: "smooth", block: "nearest" }); }, 450);
+}
+function setupScratch(){
+  const box = $("gBox"), cv = $("gCover"), w = Math.max(200, box.clientWidth || 320), h = 210, dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.width = w + "px"; cv.style.height = h + "px"; const c = cv.getContext("2d"); c.scale(dpr, dpr);
+  const g = c.createLinearGradient(0, 0, w, h); g.addColorStop(0, "#bfc5ce"); g.addColorStop(.5, "#f1f3f6"); g.addColorStop(1, "#a9b0bb"); c.fillStyle = g; c.fillRect(0, 0, w, h);
+  for (let i = 0; i < 1100; i++) { c.fillStyle = "rgba(255,255,255," + (Math.random() * .55) + ")"; c.fillRect(Math.random() * w, Math.random() * h, 2, 2); c.fillStyle = "rgba(110,118,130," + (Math.random() * .22) + ")"; c.fillRect(Math.random() * w, Math.random() * h, 2, 2); }
+  c.fillStyle = "#5f6876"; c.textAlign = "center"; c.font = "800 26px Georgia, serif"; c.fillText("SCRATCH HERE", w / 2, h / 2 - 2); c.font = "600 15px sans-serif"; c.fillText("Rub with your finger", w / 2, h / 2 + 24);
+  let down = false, last = null, t0 = 0;
+  const pos = (e) => { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  const erase = (p) => { c.globalCompositeOperation = "destination-out"; c.lineWidth = 46; c.lineCap = "round"; c.lineJoin = "round"; c.beginPath(); if (last) { c.moveTo(last.x, last.y); c.lineTo(p.x, p.y); } else { c.moveTo(p.x, p.y); c.lineTo(p.x + 0.1, p.y); } c.stroke(); last = p; };
+  const check = (force) => { const now = Date.now(); if (!force && now - t0 < 160) return; t0 = now; if (DONE) return; const d = c.getImageData(0, 0, cv.width, cv.height).data; let clear = 0, n = 0; for (let i = 3; i < d.length; i += 64) { n++; if (d[i] < 40) clear++; } if (n && clear / n > 0.42) reveal(); };
+  cv.addEventListener("pointerdown", (e) => { down = true; last = null; try { cv.setPointerCapture(e.pointerId); } catch (x) {} erase(pos(e)); e.preventDefault(); });
+  cv.addEventListener("pointermove", (e) => { if (!down) return; erase(pos(e)); check(false); e.preventDefault(); });
+  const up = () => { down = false; last = null; check(true); }; cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+}
+function remember(o){ try { localStorage.setItem("akgp_" + TOK, JSON.stringify(o)); } catch (e) {} }
+function prefill(){ let o = null; try { o = JSON.parse(localStorage.getItem("akgp_" + TOK) || "null"); } catch (e) {} if (!o || !$("gName")) return; if (o.name) $("gName").value = o.name; if (o.phone) $("gPhone").value = o.phone; if (o.cat) $("gCat").value = o.cat; if (o.join) { JOIN = o.join; Array.prototype.forEach.call(document.querySelectorAll("#gJoin button"), (b) => b.classList.toggle("on", b.getAttribute("data-join") === JOIN)); } }
+async function start(){
+  const name = String($("gName").value || "").trim().replace(/\s+/g, " "), p = giftNorm($("gPhone").value), cat = $("gCat").value, err = (s) => { $("gErr").textContent = s; };
+  if (name.length < 2) { err("Type your name."); return; }
+  if (!p) { err("Type your 10 digit mobile number."); return; }
+  if (!JOIN) { err("Choose how long you have been in the group, or Not sure."); return; }
+  if (!cat) { err("Choose the category you like most, or Not sure yet."); return; }
+  err(""); PHONE = p; PICK = giftPick(TOK, PHONE, CAMP.offers); DONE = false; $("gGo").disabled = true;
+  remember({ name, phone: $("gPhone").value, join: JOIN, cat });
+  const entry = { campaign: TOK, name: name.slice(0, 60), phone: PHONE, createdAt: serverTimestamp() }; if (JOIN !== "none") entry.joinedDays = Number(JOIN); if (cat !== "Not sure yet") entry.category = cat;
+  /* The sign-up is saved for the owner. If it cannot be saved, the customer still gets the gift. */
+  await Promise.race([setDoc(doc(db, "giftEntries", TOK + "_" + PHONE), entry).catch((e) => { console.warn("sign-up not saved", e && e.code); }), new Promise((r) => setTimeout(r, 3000))]);
+  let seen = false; try { seen = localStorage.getItem("akg_" + TOK + "_" + PHONE) === "1"; } catch (e) {}
+  $("gStep1").classList.add("hidden"); $("gGo").disabled = false;
+  if (seen) { DONE = true; showResult(true); return; }
+  const o = CAMP.offers[PICK]; $("gPrize").innerHTML = '<small>YOUR GIFT</small><b>' + esc(o.label) + '</b><span>' + esc(o.detail || "") + '</span>';
+  $("gStep2").classList.remove("hidden"); setupScratch();
+}
+document.addEventListener("click", (e) => { const t = e.target; if (!t || !t.closest) return; const jb = t.closest("[data-join]"); if (jb) { JOIN = jb.getAttribute("data-join"); Array.prototype.forEach.call(document.querySelectorAll("#gJoin button"), (b) => b.classList.toggle("on", b === jb)); return; } if (t.closest("#gGo")) start(); else if (t.closest("#gTap")) reveal(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target && e.target.id === "gPhone") start(); });
+/* Only the last 24 characters (the secret code) are used. The name in front is just a label. */
+const mm = String(location.search || "").replace(/^\?/, "").match(/(?:^|[-_=])([A-Za-z0-9]{24})$/); TOK = mm ? mm[1] : "";
+if (!TOK) message("This gift link is not valid", "Please ask us for the link again.");
+else getDoc(doc(db, "orderViews", TOK)).then((snap) => {
+  const d = snap.exists() ? snap.data() : null;
+  if (!d || d.type !== "gift" || !Array.isArray(d.offers) || d.offers.length < 2) { message("This gift is not available", "Please ask us for the link again."); return; }
+  const st = giftState(d, giftISO(new Date()));
+  if (st === "paused") message("This gift is not active", "Please message AK Brands Marketing on WhatsApp.");
+  else if (st === "ended") message("This gift offer has ended", "Please message us on WhatsApp to ask about the next one.");
+  else render(d);
+}).catch((err) => { console.error(err); message("We could not load this gift", "Please try again in a moment."); });
+</script>
+</body>
+</html>

@@ -190,6 +190,9 @@ button.dhb{cursor:pointer}
 .dstats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
 .dstats div{background:#f7f5ef;border-radius:12px;padding:.6rem;text-align:center}.dstats b{display:block;font-size:1.3rem;color:var(--ink)}.dstats span{font-size:.74rem;color:var(--muted)}.dstats .bad b{color:var(--bad)}
 @media print{body *{visibility:hidden}#detailBody,#detailBody *{visibility:visible}#detailBody{position:absolute;left:0;top:0;width:100%}.dnoprint{display:none!important}.dk,.dcard,.dhead,.dhb .dbar i,.ddon circle,.dsvg rect{-webkit-print-color-adjust:exact;print-color-adjust:exact}.dcard,.dk{break-inside:avoid;box-shadow:none;border:1px solid #ddd}}
+.giftT{background:linear-gradient(135deg,#1a1405,#5a430a);border:0}.giftT small{color:#f0d98a}.giftT b{color:#fff}.giftT .bizbtns button{background:#e6c35c;color:#2b2104}
+.grpT{background:linear-gradient(135deg,#102a3a,#1d5a7a);border:0}.grpT small{color:#a9d6ee}.grpT b{color:#fff}.grpT .bizbtns button{background:#7cc8ee;color:#07202e}
+.grpc{padding:.7rem .8rem}
 .bizT{background:linear-gradient(135deg,#0a0a0a,#0f3a34);border:0}.bizT small{color:#9fe3d6}.bizT b{color:#fff}
 .bizbtns{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}.bizbtns button{background:#02c3a3;color:#04231e;border:0;font-weight:800}
 .bizc{display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:center}
@@ -914,7 +917,7 @@ function customerDetailHtml(key){
   if (!mine.length) return '<p class="hint">No orders found for this customer.</p>';
   const o = mine[0], t = resultTotals(mine), cu = o.customer;
   const name = cu.name || cu.firm || prettyPhone(cu.phone) || "No name";
-  const sub = [cu.name && cu.firm ? cu.firm : "", cu.phone ? prettyPhone(cu.phone) : "", cu.city, cu.state].filter(Boolean).join(" \u00B7 ");
+  const sub = [cu.name && cu.firm ? cu.firm : "", cu.phone ? prettyPhone(cu.phone) : "", cu.city, cu.state, grpInfoText(key)].filter(Boolean).join(" \u00B7 ");
   const tile = (k, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-ctile="' + k + '" data-ckey="' + esc(key) + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   return '<h2>' + esc(name) + '</h2><p class="hint">' + esc(sub) + '</p>' +
     '<div class="tiles" style="margin-top:.6rem">' + tile("orders", "Orders and lots", mine.length + " &middot; " + lotCount(mine)) + tile("total", "Total ordered", inr(t.payable)) + tile("recv", "Received", inr(t.received)) + tile("owes", "Customer owes", inr(t.balance)) + tile("sup", "You owe suppliers", inr(t.supDue), "priv") + tile("profit", "Profit", inr(t.profit), "priv") + '</div>' +
@@ -1000,7 +1003,7 @@ onAuthStateChanged(auth, (user) => {
   try { if (on) localStorage.setItem("akOwner", "1"); else localStorage.removeItem("akOwner"); } catch (e) {}
   $("loginPanel").classList.toggle("hidden", on);
   $("logout").classList.toggle("hidden", !on);
-  if (on) { showList(); loadAll(); loadBiz(); loadTeam(); loadCards().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadStaffLogs().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
+  if (on) { showList(); Promise.resolve(loadAll()).then(() => grpSyncEntries()).then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadBiz(); loadTeam(); loadCards().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadGifts().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadStaffLogs().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
 });
 
 /* ---------- Loading ---------- */
@@ -1553,6 +1556,303 @@ async function bizAction(act, t){
   }
 }
 
+/* ---------- Scratch gift: the same pick on the customer page and in your Orders page ---------- */
+const giftDigits = (s) => String(s || "").replace(/\D/g, "");
+function giftNorm(s){ let d = giftDigits(s); if (d.length === 10) d = "91" + d; else if (d.length === 11 && d[0] === "0") d = "91" + d.slice(1); return /^\d{12}$/.test(d) ? d : ""; }
+function giftHash(str){ let h = 2166136261 >>> 0; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b) >>> 0; h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35) >>> 0; h ^= h >>> 16; return h >>> 0; }
+function giftPick(token, phone, offers){
+  const w = (offers || []).map((o) => Math.max(0, Number(o.weight) || 0)), total = w.reduce((a, b) => a + b, 0); if (!(total > 0)) return 0;
+  const r = giftHash(token + "|" + phone) / 4294967296 * total; let acc = 0;
+  for (let i = 0; i < w.length; i++) { acc += w[i]; if (r < acc) return i; } return w.length - 1;
+}
+function giftCode(token, phone, idx){ const n = giftHash("code|" + token + "|" + phone + "|" + idx), A = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"; let s = ""; for (let i = 0; i < 6; i++) s += A[(n >>> (5 * i)) & 31]; return "AKG-" + s; }
+const giftISO = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+function giftState(camp, today){ if (!camp || camp.type !== "gift" && !camp.offers) return "bad"; if (camp.active === false) return "paused"; if (camp.validTill && String(camp.validTill) < today) return "ended"; return "ok"; }
+const giftDate = (iso) => { const p = String(iso || "").split("-").map(Number); return p.length === 3 && p[0] ? new Date(p[0], p[1] - 1, p[2]).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : ""; };
+
+/* ---------- Scratch gifts: one link for all customers ---------- */
+let giftList = [], giftEdit = "", giftOut = null;
+async function loadGifts(){ try { const s = await getDoc(doc(db, "settings", "gifts")); giftList = s.exists() && Array.isArray(s.data().list) ? s.data().list : []; } catch (e) { console.error(e); giftList = []; } }
+const giftUrl = (c) => SITE_URL + "/gift.html?c=" + cardSlug(c.title) + "-" + c.token;
+const giftPublic = (c) => ({ type: "gift", title: c.title, line: c.line || "", offers: c.offers.map((o) => ({ label: o.label, detail: o.detail || "", weight: Number(o.weight) || 0 })), validTill: c.validTill || "", minOrder: Number(c.minOrder) || 0, extra: c.extra || "", active: c.active !== false, updatedAt: serverTimestamp() });
+const giftTileHtml = () => '<div class="tile wide giftT"><small>Gifts and offers</small><b>Scratch gifts for all your customers</b><span class="bizbtns"><button type="button" class="small" data-gift="sendnow">Send a gift</button><button type="button" class="small" data-gift="all">Campaigns (' + giftList.length + ')</button></span></div>';
+const giftStatus = (c) => giftState({ type: "gift", offers: c.offers, active: c.active, validTill: c.validTill }, todayISO());
+function giftText(c, link){ return ["*" + c.title + "*", "A gift is waiting for you.", "Tap the link, enter your WhatsApp number and scratch to see your gift:", link, "", "Valid till " + giftDate(c.validTill) + ".", "Source The Value.", "Trusted Firm", "AK Brands Marketing\u00A9"].join("\n"); }
+function giftPoster(c, logo){
+  const SANS = "Roboto, 'Segoe UI', Arial, sans-serif", SERIF = "Georgia, 'Times New Roman', serif", W = 1080, P = 84, TEAL = "#02c3a3", GOLD = "#e6c35c";
+  const offers = c.offers.filter((o) => o.label).slice(0, 3), H = 1118 + offers.length * 66 + 70 + 150 + 130;
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d"); x.textBaseline = "alphabetic";
+  const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, "#0a0a0a"); g.addColorStop(1, "#102120"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const rg = x.createRadialGradient(W - 90, 110, 10, W - 90, 110, 600); rg.addColorStop(0, "rgba(2,195,163,.32)"); rg.addColorStop(1, "rgba(2,195,163,0)"); x.fillStyle = rg; x.fillRect(0, 0, W, 760);
+  x.lineWidth = 3; x.strokeStyle = "rgba(2,195,163,.45)"; bzRR(x, 34, 34, W - 68, H - 68, 40); x.stroke();
+  const L = 120, LY = 90; x.save(); bzRR(x, P, LY, L, L, 26); x.clip(); x.fillStyle = "#000"; x.fillRect(P, LY, L, L);
+  if (logo) { const k = Math.min(L / logo.width, L / logo.height), w = logo.width * k, h = logo.height * k; x.drawImage(logo, P + (L - w) / 2, LY + (L - h) / 2, w, h); } else { x.fillStyle = TEAL; x.font = "800 58px " + SERIF; x.textAlign = "center"; x.fillText("AK", P + L / 2, LY + L / 2 + 20); x.textAlign = "left"; }
+  x.restore(); x.lineWidth = 3; x.strokeStyle = "rgba(2,195,163,.7)"; bzRR(x, P, LY, L, L, 26); x.stroke();
+  x.fillStyle = TEAL; bzFont(x, "AK Brands Marketing\u00A9", W - P - L - 40 - P, 46, 30, "600", SERIF); x.fillText("AK Brands Marketing\u00A9", P + L + 36, LY + 54);
+  x.fillStyle = "#a9b8b8"; x.font = "italic 400 32px " + SERIF; x.fillText("Source The Value", P + L + 36, LY + 100);
+  x.fillStyle = "#fff"; x.font = "700 96px " + SERIF; x.fillText("A gift is waiting", P, 390); x.fillText("for you", P, 500);
+  x.fillStyle = GOLD; bzFont(x, c.title, W - 2 * P, 56, 34, "700", SANS); x.fillText(c.title, P, 580);
+  // silver scratch panel
+  const sy = 640, sh = 330, sw = W - 2 * P; x.save(); bzRR(x, P, sy, sw, sh, 36); x.clip();
+  const sg = x.createLinearGradient(P, sy, P + sw, sy + sh); sg.addColorStop(0, "#b9bfc9"); sg.addColorStop(.5, "#f1f3f6"); sg.addColorStop(1, "#a3aab6"); x.fillStyle = sg; x.fillRect(P, sy, sw, sh);
+  let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  for (let i = 0; i < 1400; i++) { x.fillStyle = "rgba(255,255,255," + (rnd() * .55) + ")"; x.fillRect(P + rnd() * sw, sy + rnd() * sh, 3, 3); x.fillStyle = "rgba(110,118,130," + (rnd() * .22) + ")"; x.fillRect(P + rnd() * sw, sy + rnd() * sh, 3, 3); }
+  x.restore(); x.lineWidth = 6; x.strokeStyle = "rgba(255,255,255,.55)"; bzRR(x, P, sy, sw, sh, 36); x.stroke();
+  x.textAlign = "center"; x.fillStyle = "#5f6876"; x.font = "800 70px " + SERIF; x.fillText("SCRATCH TO REVEAL", W / 2, sy + 160); x.font = "600 38px " + SANS; x.fillText("Your gift is inside", W / 2, sy + 228);
+  const star = (cx, cy, r, col) => { x.fillStyle = col; x.beginPath(); for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, rr = i % 2 ? r * .28 : r; x.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); } x.closePath(); x.fill(); };
+  star(P + 90, sy + 80, 34, "rgba(255,255,255,.9)"); star(W - P - 100, sy + 250, 40, "rgba(255,255,255,.9)"); star(W - P - 210, sy + 70, 22, "rgba(255,255,255,.8)");
+  // possible gifts
+  x.textAlign = "left"; x.fillStyle = "#cfd8d8"; x.font = "600 38px " + SANS; x.fillText("Every customer wins a gift:", P, 1060);
+  offers.forEach((o, i) => { star(P + 22, 1118 + i * 66 - 12, 17, GOLD); x.fillStyle = "#fff"; bzFont(x, o.label, W - 2 * P - 70, 42, 26, "600", SANS); x.fillText(bzCut(x, o.label, W - 2 * P - 70), P + 62, 1118 + i * 66); });
+  x.fillStyle = TEAL; x.font = "700 40px " + SANS; x.fillText("Valid till " + giftDate(c.validTill), P, 1118 + offers.length * 66 + 30);
+  const by = 1118 + offers.length * 66 + 70; x.fillStyle = TEAL; bzRR(x, P, by, W - 2 * P, 150, 34); x.fill();
+  x.fillStyle = "#0a0a0a"; x.textAlign = "center"; x.font = "800 36px " + SANS; x.fillText("Tap the link, enter your WhatsApp number", W / 2, by + 62); x.fillText("and scratch to see your gift", W / 2, by + 112);
+  x.fillStyle = "#7f9090"; x.font = "400 28px " + SANS; x.fillText(BZ_SITE, W / 2, H - 70);
+  return cv;
+}
+async function giftShareBlobTo(blob, name, text, title, say){
+  try {
+    const file = new File([blob], name, { type: "image/jpeg" });
+    try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(() => {}); } catch (e) {}
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: text, title: title }); say("Shared. The message is also copied, in case the app shows only the picture."); }
+    else { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank"); say("The picture is saved. Attach it in WhatsApp. The message is ready there."); }
+  } catch (e) { if (e && e.name === "AbortError") say("Sharing cancelled."); else { console.error(e); say("That did not work. Tap again."); } }
+}
+async function giftShare(c, say){
+  say = say || (() => {});
+  try { say("Making the gift picture..."); const logo = await bzLogoP, blob = await new Promise((res, rej) => giftPoster(c, logo).toBlob((b) => (b ? res(b) : rej(new Error("no picture"))), "image/jpeg", 0.92));
+    await giftShareBlobTo(blob, "AK-gift-" + cardSlug(c.title) + ".jpg", giftText(c, giftUrl(c)), c.title, say);
+  } catch (e) { console.error(e); say("That did not work. Tap again."); }
+}
+function giftRowHtml(c){
+  const st = giftStatus(c), t = esc(c.token), tot = c.offers.reduce((a, o) => a + (Number(o.weight) || 0), 0) || 1;
+  const sum = c.offers.map((o) => esc(o.label) + " " + Math.round((Number(o.weight) || 0) / tot * 100) + "%").join(" \u00B7 "), used = Object.keys(c.used || {}).length;
+  return '<div class="ocard"><b>' + esc(c.title) + '</b> ' + (st === "ok" ? '<span class="pill ok">Active</span>' : (st === "ended" ? '<span class="pill bad">Ended</span>' : '<span class="pill warn">Paused</span>')) + '<p class="hint" style="margin:.2rem 0">Valid till ' + esc(giftDate(c.validTill)) + (Number(c.minOrder) > 0 ? ' \u00B7 minimum order ' + inr(c.minOrder) : '') + ' \u00B7 ' + used + ' marked as used</p><p class="hint" style="margin:.2rem 0 .5rem">' + sum + '</p><div class="bizbtn">' +
+    '<button type="button" class="small primary" data-gift="share" data-t="' + t + '">Share gift link</button><button type="button" class="small" data-gift="open" data-t="' + t + '">Open</button><button type="button" class="small" data-gift="copy" data-t="' + t + '">Copy link</button><button type="button" class="small" data-gift="edit" data-t="' + t + '">Edit</button><button type="button" class="small" data-gift="pause" data-t="' + t + '">' + (c.active === false ? "Resume" : "Pause") + '</button><button type="button" class="small" data-gift="del" data-t="' + t + '">Delete</button></div></div>';
+}
+function giftFormHtml(){
+  const c = giftEdit === "new" ? null : giftList.find((x) => x.token === giftEdit), d = new Date(); d.setDate(d.getDate() + 7);
+  const o = (i) => (c && c.offers[i]) || {}, w = (i) => (c && c.offers[i] ? c.offers[i].weight : [50, 30, 20][i]);
+  const f = (id, label, val, ph, type, extra) => '<label for="' + id + '">' + label + '</label><input id="' + id + '" type="' + (type || "text") + '" value="' + esc(val == null ? "" : val) + '" placeholder="' + esc(ph || "") + '" autocomplete="off"' + (extra || "") + '>';
+  const offer = (i) => '<div class="ocard" style="margin:.4rem 0"><b>Gift ' + (i + 1) + (i === 2 ? " (optional)" : "") + '</b>' + f("g_o" + i + "l", "What the customer wins", o(i).label, i === 0 ? "Example: Courier charges free" : (i === 1 ? "Example: Free packing" : "Example: Free 360-degree unboxing video")) + f("g_o" + i + "d", "Details (optional)", o(i).detail, "Example: On your next order. Up to \u20B9500.") + f("g_o" + i + "w", "Chance of this gift (1 to 100)", w(i), "", "number", ' inputmode="numeric" min="1" max="100"') + '</div>';
+  return '<div class="ocard"><h3 style="margin:0 0 .3rem">' + (c ? "Edit gift campaign" : "New gift campaign") + '</h3>' + (c ? '<p class="hint">Changing the gifts or chances after you have sent the link can change what customers see. Edit only to fix typing.</p>' : '<p class="hint">One link for all customers. Each customer scratches and wins one of your gifts, chosen at random by your chances.</p>') +
+    f("g_title", "Campaign name", c ? c.title : "", "Example: Diwali gift") + f("g_line", "Short line (optional)", c ? c.line : "", "Example: A thank you from AK Brands Marketing") + offer(0) + offer(1) + offer(2) +
+    f("g_till", "Valid till", c ? c.validTill : giftISO(d), "", "date") + f("g_min", "Minimum order for the gift, in rupees (optional)", c && c.minOrder ? c.minOrder : "", "Example: 5000", "number", ' inputmode="numeric" min="0"') + f("g_extra", "Extra condition (optional)", c ? c.extra : "", "Example: Courier free up to \u20B9500 only") +
+    '<p class="hint">Chances are shares: 50, 30 and 20 means about half, a third and a fifth of customers. They do not have to add up to 100.</p><div style="margin-top:.7rem"><button type="button" class="small" data-gift="save">Save</button> <button type="button" class="small primary" data-gift="saveshare">Save and share</button> <button type="button" class="small" data-gift="all">Cancel</button></div></div>';
+}
+function giftCheckHtml(){
+  const act = giftList.filter((c) => giftStatus(c) !== "bad"); if (!act.length) return "";
+  const sel = giftOut ? giftOut.tok : act[0].token;
+  return '<div class="ocard"><h3 style="margin:0 0 .3rem">Check a claim</h3><p class="hint">A customer messages you a code. Type their mobile number here to see their gift, and whether they are your customer.</p>' + (act.length > 1 ? '<label for="g_ck_t">Campaign</label><select id="g_ck_t">' + act.map((c) => '<option value="' + esc(c.token) + '"' + (c.token === sel ? " selected" : "") + '>' + esc(c.title) + '</option>').join("") + '</select>' : '<input type="hidden" id="g_ck_t" value="' + esc(act[0].token) + '">') +
+    '<label for="g_ck_p">Customer mobile number</label><input id="g_ck_p" type="tel" inputmode="tel" value="' + esc(giftOut ? giftOut.phoneRaw : "") + '" placeholder="98765 43210" autocomplete="off"><div style="margin-top:.6rem"><button type="button" class="small primary" data-gift="check">Check</button></div>' + (giftOut ? giftOut.html : "") + '</div>';
+}
+function giftScreenHtml(){
+  return '<h2 style="margin-top:0">Gifts and offers</h2><p class="hint">Make one link for all your customers. Each customer who opens it is asked for their name, number, how long they have been in your group and their favourite category. That is saved in your Group members list. Then they scratch and win one of your gifts.</p>' +
+    (giftEdit ? giftFormHtml() : (giftList.length ? giftList.map(giftRowHtml).join("") : '<p class="hint">No gift campaigns yet.</p>') + '<button type="button" class="small" data-gift="new" style="margin:.5rem 0">New gift campaign</button>' + giftCheckHtml()) + '<p class="hint" id="giftMsg"></p>';
+}
+function giftCheckRun(){
+  const tok = String(($("g_ck_t") || {}).value || ""), raw = String(($("g_ck_p") || {}).value || ""), c = giftList.find((x) => x.token === tok), say = (s) => { const m = $("giftMsg"); if (m) m.textContent = s; };
+  const ph = giftNorm(raw); if (!c) { say("Choose a campaign."); return; } if (!ph) { say("Type the customer's 10 digit mobile number."); return; }
+  const idx = giftPick(c.token, ph, c.offers), o = c.offers[idx], code = giftCode(c.token, ph, idx), mine = orders.filter((x) => giftNorm(x.customer.phone) === ph), live = mine.filter((x) => x.status !== "Cancelled"), st = giftStatus(c), usedOn = (c.used || {})[ph];
+  const total = sumOrders(live).sales;
+  const cust = mine.length ? '<b style="color:#0d6b33">' + esc(custName(mine[0])) + '</b><p class="hint" style="margin:.1rem 0">' + mine.length + (mine.length === 1 ? " order" : " orders") + " on record, " + inr(total) + " ordered in all.</p>" : '<b style="color:#a82a1c">Not a customer yet</b><p class="hint" style="margin:.1rem 0">No orders on record for this number.</p>';
+  const html = '<div class="ocard" style="margin-top:.7rem;border-left:5px solid #02c3a3">' + cust + '' + (customers[ph] && customers[ph].member ? '<p class="hint" style="margin:.1rem 0">Group list: ' + esc(grpInfoText(ph).replace(/^Group: /, "")) + '</p>' : '') + '<p style="margin:.4rem 0 .1rem">Gift: <b>' + esc(o.label) + '</b></p>' + (o.detail ? '<p class="hint" style="margin:0">' + esc(o.detail) + '</p>' : '') + '<p style="margin:.3rem 0">Code: <b>' + esc(code) + '</b></p><p class="hint" style="margin:0">' + (st === "ok" ? "Offer is active, valid till " + esc(giftDate(c.validTill)) + "." : (st === "ended" ? "This offer has ended." : "This offer is paused.")) + (Number(c.minOrder) > 0 ? " Minimum order " + inr(c.minOrder) + "." : "") + '</p>' +
+    (usedOn ? '<p style="margin:.4rem 0"><span class="pill bad">Already used on ' + esc(giftDate(usedOn)) + '</span></p><button type="button" class="small" data-gift="unused" data-t="' + esc(c.token) + '" data-p="' + esc(ph) + '">Undo, mark as not used</button>' : '<div style="margin-top:.5rem"><button type="button" class="small primary" data-gift="used" data-t="' + esc(c.token) + '" data-p="' + esc(ph) + '">Mark as used</button></div>') + '</div>';
+  giftOut = { tok: c.token, phoneRaw: raw, ph, html }; showDetail("gifts");
+}
+async function giftSave(list){ await setDoc(doc(db, "settings", "gifts"), { list }); }
+async function saveGiftForm(share){
+  const g = (id) => String(($(id) || {}).value || "").trim(), say = (s) => { const m = $("giftMsg"); if (m) m.textContent = s; };
+  const title = g("g_title"), line = g("g_line"), till = g("g_till"), minRaw = g("g_min"), extra = g("g_extra");
+  const offers = [0, 1, 2].map((i) => ({ label: g("g_o" + i + "l"), detail: g("g_o" + i + "d"), weight: Number(g("g_o" + i + "w")) })).filter((o) => o.label);
+  if (title.length < 2) { say("Give the campaign a name, for example Diwali gift."); return; }
+  if (offers.length < 2) { say("Add at least 2 gifts."); return; }
+  for (const o of offers) { if (o.label.length < 3 || o.label.length > 60) { say("Each gift name needs 3 to 60 letters."); return; } if (!(o.weight >= 1 && o.weight <= 100)) { say("The chance of each gift must be from 1 to 100."); return; } if (o.detail.length > 120) { say("Keep each gift detail under 120 letters."); return; } }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(till) || till < todayISO()) { say("Choose a valid till date that is today or later."); return; }
+  const minOrder = minRaw === "" ? 0 : Number(minRaw); if (!(minOrder >= 0) || minOrder > 100000000) { say("The minimum order must be a number, or empty."); return; }
+  if (extra.length > 120) { say("Keep the extra condition under 120 letters."); return; }
+  const old = giftList.find((x) => x.token === giftEdit); let c = old, isNew = false;
+  if (!c) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; c = { token: makeToken(bytes, 24), active: true, used: {}, createdAt: todayISO() }; isNew = true; }
+  const before = Object.assign({}, c); Object.assign(c, { title, line, offers, validTill: till, minOrder, extra }); const list = isNew ? giftList.concat([c]) : giftList;
+  try { await setDoc(doc(db, "orderViews", c.token), giftPublic(c)); await giftSave(list); }
+  catch (e) { console.error(e); if (!isNew) Object.assign(c, before); say("That did not save. Check your connection and try again."); return; }
+  giftList = list; giftEdit = ""; giftOut = null; showDetail("gifts"); try { renderTiles(); } catch (e) { console.error(e); }
+  if (share) await giftShare(c, (s) => { const m = $("giftMsg"); if (m) m.textContent = s; });
+}
+async function giftAction(act, t, p){
+  const c = giftList.find((x) => x.token === t), say = (s) => { const m = $("giftMsg"); if (m) m.textContent = s; else if (/^That did not/.test(s)) window.alert(s); };
+  if (act === "all") { giftEdit = ""; giftOut = null; showDetail("gifts"); return; }
+  if (act === "new") { giftEdit = "new"; showDetail("gifts"); return; }
+  if (act === "sendnow") { const live = giftList.filter((x) => giftStatus(x) === "ok").slice(-1)[0]; if (live) { await giftShare(live, say); } else { giftEdit = "new"; showDetail("gifts"); } return; }
+  if (act === "save" || act === "saveshare") { await saveGiftForm(act === "saveshare"); return; }
+  if (act === "check") { giftCheckRun(); return; }
+  if (!c) return;
+  if (act === "share") { await giftShare(c, say); return; }
+  if (act === "edit") { giftEdit = c.token; showDetail("gifts"); return; }
+  if (act === "open") { window.open(giftUrl(c), "_blank"); return; }
+  if (act === "copy") { try { await navigator.clipboard.writeText(giftUrl(c)); say("Link copied."); } catch (e) { say("Press and hold the link to copy: " + giftUrl(c)); } return; }
+  if (act === "used" || act === "unused") {
+    const was = Object.assign({}, c.used || {}); c.used = Object.assign({}, c.used || {}); if (act === "used") c.used[p] = todayISO(); else delete c.used[p];
+    try { await giftSave(giftList); } catch (e) { console.error(e); c.used = was; say("That did not save. Try again."); return; }
+    giftCheckRun(); return;
+  }
+  if (act === "pause") { const was = c.active; c.active = c.active === false; try { await setDoc(doc(db, "orderViews", c.token), giftPublic(c)); await giftSave(giftList); } catch (e) { console.error(e); c.active = was; say("That did not save. Try again."); return; } showDetail("gifts"); return; }
+  if (act === "del") {
+    if (!window.confirm("Delete the gift campaign " + c.title + "? Its link will stop working and the used list is lost.")) return;
+    const list = giftList.filter((x) => x.token !== c.token);
+    try { await giftSave(list); await deleteDoc(doc(db, "orderViews", c.token)); } catch (e) { console.error(e); say("That did not work. Try again."); return; }
+    giftList = list; giftOut = null; showDetail("gifts"); try { renderTiles(); } catch (e) { console.error(e); }
+  }
+}
+
+/* ---------- Group members: name, number, days in the group, favourite category ---------- */
+let grpFilter = "all", grpCatF = "", grpQ = "", grpEdit = "", grpPanel = "", grpPaste = null, grpLimit = 60;
+const GRP_BUCKETS = [["all", "All"], ["0-10", "0 to 10 days"], ["11-20", "11 to 20 days"], ["21-30", "21 to 30 days"], ["31-60", "31 to 60 days"], ["61+", "Over 60 days"], ["unknown", "Not known"]];
+const grpDays = (iso) => (iso ? Math.max(0, dayDiff(iso, todayISO())) : null);
+const grpBucket = (d) => (d === null ? "unknown" : d <= 10 ? "0-10" : d <= 20 ? "11-20" : d <= 30 ? "21-30" : d <= 60 ? "31-60" : "61+");
+const grpAgo = (n) => { const d = new Date(todayISO() + "T00:00:00"); d.setDate(d.getDate() - n); return giftISO(d); };
+function grpPhone(raw){ const n = normPhone(String(raw || "").replace(/\D/g, "")); return /^91\d{10}$/.test(n) ? n : ""; }
+function grpAll(){
+  const cnt = {}; orders.forEach((o) => { if (o.status !== "Cancelled") { const k = normPhone(o.customer.phone); cnt[k] = (cnt[k] || 0) + 1; } });
+  return Object.keys(customers).filter((k) => customers[k] && customers[k].member && customers[k].member.name).map((k) => { const m = customers[k].member, d = grpDays(m.joined); return { key: k, name: m.name, joined: m.joined || "", days: d, bucket: grpBucket(d), cat: m.cat || "", cat2: m.cat2 || "", note: m.note || "", noMsg: !!m.noMsg, src: m.src || "", orders: cnt[k] || 0 }; })
+    .sort((a, b) => (a.days === null ? 999999 : a.days) - (b.days === null ? 999999 : b.days) || a.name.localeCompare(b.name));
+}
+function grpInfoText(key){ const c = customers[key], m = c && c.member; if (!m || !m.name) return ""; const d = grpDays(m.joined); return "Group: " + (d === null ? "joined date not known" : (d === 0 ? "joined today" : d + (d === 1 ? " day" : " days"))) + (m.cat ? " \u00B7 likes " + m.cat : ""); }
+const grpDaysText = (d) => (d === null ? "Joined: not known" : (d === 0 ? "Joined today" : d + (d === 1 ? " day" : " days") + " in the group"));
+const grpTileHtml = () => '<div class="tile wide grpT"><small>Group members</small><b>Names, numbers, days in the group, favourite category</b><span class="bizbtns"><button type="button" class="small" data-grp="add">Add a member</button><button type="button" class="small" data-grp="all">All members (' + grpAll().length + ')</button></span></div>';
+function grpFilteredList(){
+  const toks = grpQ.toLowerCase().split(/\s+/).filter(Boolean);
+  return grpAll().filter((m) => (grpFilter === "all" || m.bucket === grpFilter) && (!grpCatF || m.cat === grpCatF || m.cat2 === grpCatF) && toks.every((t) => (m.name + " " + m.key + " " + m.cat + " " + m.cat2 + " " + m.note + (m.src === "gift" ? " gift link" : "")).toLowerCase().indexOf(t) >= 0));
+}
+function grpRowHtml(m){
+  const t = esc(m.key), likes = [m.cat, m.cat2].filter(Boolean).join(", ");
+  return '<div class="ocard grpc"><div><b>' + esc(m.name) + '</b>' + (m.orders ? ' <span class="pill ok">Customer \u00B7 ' + m.orders + (m.orders === 1 ? " order" : " orders") + '</span>' : '') + (m.src === "gift" ? ' <span class="pill wait">Gift link</span>' : '') + (m.noMsg ? ' <span class="pill bad">Do not message</span>' : '') + '</div>' +
+    '<p class="hint" style="margin:.15rem 0">' + esc(prettyPhone(m.key)) + ' \u00B7 ' + esc(grpDaysText(m.days)) + '</p><p class="hint" style="margin:.1rem 0">Likes: ' + (likes ? esc(likes) : "not set") + '</p>' + (m.note ? '<p class="hint" style="margin:.1rem 0">' + esc(m.note) + '</p>' : '') +
+    '<div class="bizbtn" style="margin-top:.4rem">' + (m.noMsg ? '' : '<button type="button" class="small" data-grp="wa" data-t="' + t + '">WhatsApp</button>') + '<button type="button" class="small" data-grp="edit" data-t="' + t + '">Edit</button><button type="button" class="small" data-grp="del" data-t="' + t + '">Delete</button></div></div>';
+}
+function grpListHtml(){
+  const all = grpFilteredList(), list = all.slice(0, grpLimit);
+  return '<p class="hint" id="grpCount">' + all.length + (all.length === 1 ? " member" : " members") + (grpFilter !== "all" || grpCatF || grpQ ? " match." : ".") + '</p>' + (list.length ? list.map(grpRowHtml).join("") : '<p class="hint">Nobody matches. Clear the search or filters.</p>') + (all.length > grpLimit ? '<button type="button" class="small" data-grp="more" style="margin:.4rem 0">Show more (' + (all.length - grpLimit) + ' left)</button>' : '');
+}
+const grpCatOpts = (sel, first) => '<option value="">' + first + '</option>' + CATEGORIES.map((c) => '<option' + (c === sel ? " selected" : "") + '>' + esc(c) + '</option>').join("");
+function grpFormHtml(){
+  const m = grpEdit === "new" ? null : grpAll().find((x) => x.key === grpEdit), f = (id, label, val, ph, type, extra) => '<label for="' + id + '">' + label + '</label><input id="' + id + '" type="' + (type || "text") + '" value="' + esc(val == null ? "" : val) + '" placeholder="' + esc(ph || "") + '" autocomplete="off"' + (extra || "") + '>';
+  return '<div class="ocard"><h3 style="margin:0 0 .3rem">' + (m ? "Edit member" : "New member") + '</h3>' + f("m_name", "Name", m ? m.name : "", "Example: Ravi Kumar") + f("m_phone", "Mobile number", m ? prettyPhone(m.key) : "", "98765 43210", "tel", ' inputmode="tel"' + (m ? " disabled" : "")) +
+    '<label for="m_days">Joined the group about how many days ago?</label><div class="dchips" style="margin:.2rem 0">' + [["Today", 0], ["10 days", 10], ["20 days", 20], ["30 days", 30], ["60 days", 60], ["90 days", 90]].map((x) => '<button type="button" data-grp="daysset" data-v="' + x[1] + '">' + x[0] + '</button>').join("") + '</div>' +
+    '<input id="m_days" type="number" inputmode="numeric" min="0" max="3650" value="' + (m && m.days !== null ? m.days : "") + '" placeholder="Leave empty if you do not know"><p class="hint">No exact date needed. The days count up by themselves after you save.</p>' +
+    '<label for="m_cat">Favourite category</label><select id="m_cat">' + grpCatOpts(m ? m.cat : "", "Not sure yet") + '</select><label for="m_cat2">Second favourite (optional)</label><select id="m_cat2">' + grpCatOpts(m ? m.cat2 : "", "None") + '</select>' + f("m_note", "Note (optional)", m ? m.note : "", "Example: Buys shoes in big quantity") +
+    '<label class="chk" style="margin-top:.5rem"><input type="checkbox" id="m_nomsg"' + (m && m.noMsg ? " checked" : "") + '> Do not message this person (they asked to stop)</label>' +
+    '<div style="margin-top:.7rem"><button type="button" class="small primary" data-grp="save">Save</button> <button type="button" class="small" data-grp="cancel">Cancel</button></div></div>';
+}
+function grpPanelHtml(){
+  const p = grpPaste, head = grpPanel === "contacts" ? "Add from my contacts" : "Paste a list";
+  const defaults = '<label for="m_pdays">They joined the group about how many days ago? (applies to all, optional)</label><input id="m_pdays" type="number" inputmode="numeric" min="0" max="3650" value="' + esc(p && p.days != null ? p.days : "") + '" placeholder="Example: 20"><label for="m_pcat">Favourite category (applies to all, optional)</label><select id="m_pcat">' + grpCatOpts(p ? p.cat : "", "Not sure yet") + '</select>';
+  const sum = p && p.rows ? '<p style="margin:.5rem 0"><b>' + p.rows.length + '</b> numbers found: <b>' + p.fresh.length + '</b> new, <b>' + p.dup + '</b> already in your list' + (p.bad ? ', <b>' + p.bad + '</b> lines skipped' : '') + '.</p>' + (p.fresh.length ? '<button type="button" class="small primary" data-grp="addgo">Add ' + p.fresh.length + ' new members</button>' : '') : '';
+  return '<div class="ocard"><h3 style="margin:0 0 .3rem">' + head + '</h3>' + (grpPanel === "paste" ? '<p class="hint">One person on each line, like: Ravi Kumar, 98765 43210. The order does not matter.</p><textarea id="m_paste" rows="6" placeholder="Ravi Kumar, 98765 43210&#10;Sana Fashions 99000 11122" style="width:100%;font:inherit;padding:.6rem;border:1px solid var(--line);border-radius:8px">' + esc(p ? p.text : "") + '</textarea>' : '<p class="hint">You picked names and numbers from your phone contacts.</p>') + defaults +
+    (grpPanel === "paste" ? '<div style="margin-top:.6rem"><button type="button" class="small" data-grp="pastepreview">Check the list</button></div>' : '') + sum + ' <button type="button" class="small" data-grp="cancel">Cancel</button></div>';
+}
+function grpScreenHtml(){
+  const all = grpAll(), bc = {}; all.forEach((m) => { bc[m.bucket] = (bc[m.bucket] || 0) + 1; });
+  const catc = {}; all.forEach((m) => { if (m.cat) catc[m.cat] = (catc[m.cat] || 0) + 1; });
+  const top = Object.keys(catc).map((k) => ({ label: k, value: catc[k], text: catc[k] + (catc[k] === 1 ? " member" : " members") })).sort((a, b) => b.value - a.value).slice(0, 6);
+  const canContacts = !!(navigator.contacts && navigator.contacts.select);
+  const head = '<h2 style="margin-top:0">Group members</h2><p class="hint">A private list of the people in your WhatsApp group: name, number, how long they have been in, and the category they like most. Message only people who joined your group, and tick Do not message for anyone who asks you to stop.</p>';
+  if (grpEdit) return head + grpFormHtml() + '<p class="hint" id="grpMsg"></p>';
+  if (grpPanel) return head + grpPanelHtml() + '<p class="hint" id="grpMsg"></p>';
+  return head + '<div class="bizbtn" style="margin-bottom:.5rem"><button type="button" class="small primary" data-grp="add">Add a member</button><button type="button" class="small" data-grp="paste">Paste a list</button>' + (canContacts ? '<button type="button" class="small" data-grp="contacts">Add from my contacts</button>' : '') + '<button type="button" class="small" data-grp="mycust">Add my customers</button><button type="button" class="small" data-grp="sync">Check for new sign-ups</button><button type="button" class="small" data-grp="csv">Download list</button></div>' + grpSyncHtml() +
+    (all.length ? '<div class="dchips">' + GRP_BUCKETS.filter((b) => b[0] === "all" || bc[b[0]]).map((b) => '<button type="button" data-grp="filter" data-t="' + b[0] + '" class="' + (grpFilter === b[0] ? "on" : "") + '">' + b[1] + ' (' + (b[0] === "all" ? all.length : bc[b[0]]) + ')</button>').join("") + '</div>' +
+      '<div class="dcard" style="margin:.6rem 0"><h3>Favourite categories</h3>' + hbars(top, DC.teal) + '</div>' +
+      '<input id="grp_q" type="search" autocomplete="off" placeholder="Search name, number or category..." value="' + esc(grpQ) + '" style="margin-bottom:.4rem"><select id="grp_cat" style="margin-bottom:.5rem">' + grpCatOpts(grpCatF, "All categories") + '</select><div id="grpList">' + grpListHtml() + '</div>' : '<p class="hint">Nobody added yet. Tap Add a member, or Paste a list to add many at once.</p>') + '<p class="hint" id="grpMsg"></p>';
+}
+let grpSyncNote = "", grpSyncErr = "";
+async function grpSyncEntries(){
+  try {
+    const snap = await getDocs(collection(db, "giftEntries")), writes = [];
+    snap.docs.forEach((d) => {
+      const e = d.data(), key = String(e.phone || ""); if (!/^91\d{10}$/.test(key)) return;
+      const ms = e.createdAt && (typeof e.createdAt.toDate === "function" ? e.createdAt.toDate().getTime() : (Number(e.createdAt.seconds) || 0) * 1000), created = ms ? giftISO(new Date(ms)) : todayISO();
+      const joined = typeof e.joinedDays === "number" ? addDays(created, -e.joinedDays) : "", cu = customers[key], mem = cu && cu.member && cu.member.name ? cu.member : null;
+      if (!mem) { writes.push([key, { name: String(e.name || "No name").slice(0, 60), joined, cat: e.category || "", cat2: "", note: "", noMsg: false, added: created, src: "gift" }]); return; }
+      const patch = {}; if (!mem.cat && e.category) patch.cat = e.category; if (!mem.joined && joined) patch.joined = joined; if (Object.keys(patch).length) writes.push([key, Object.assign({}, mem, patch)]);
+    });
+    for (let i = 0; i < writes.length; i += 15) await Promise.all(writes.slice(i, i + 15).map((w) => grpWrite(w[0], w[1])));
+    grpSyncErr = ""; grpSyncNote = writes.length ? writes.length + (writes.length === 1 ? " sign-up from your gift link was added." : " sign-ups from your gift links were added.") : ""; return writes.length;
+  } catch (e) { grpSyncErr = e && e.code === "permission-denied" ? "rules" : "other"; if (grpSyncErr === "other") console.error(e); return 0; }
+}
+const grpSyncHtml = () => (grpSyncErr === "rules" ? '<div class="ocard" style="border-left:5px solid #b7791f"><b>Gift sign-ups cannot be read yet</b><p class="hint" style="margin:.2rem 0">Publish the new database rules from your download page. Then tap Check for new sign-ups.</p></div>' : (grpSyncNote ? '<p class="hint" style="color:#0d6b33;font-weight:700">' + esc(grpSyncNote) + '</p>' : ''));
+const grpMember = (name, days, cat) => ({ name, joined: days === "" || days == null ? "" : grpAgo(Number(days)), cat: cat || "", cat2: "", note: "", noMsg: false, added: todayISO() });
+async function grpWrite(key, member){ await setDoc(doc(db, "customers", key), { member }, { merge: true }); customers[key] = Object.assign(customers[key] || {}, { member }); }
+async function grpWriteMany(rows, days, cat, say){
+  let done = 0; for (let i = 0; i < rows.length; i += 15) { await Promise.all(rows.slice(i, i + 15).map((r) => grpWrite(r.key, grpMember(r.name, days, cat)))); done = Math.min(rows.length, i + 15); say("Saving... " + done + " of " + rows.length); }
+}
+function grpParse(text){
+  const rows = [], seen = new Set(); let bad = 0;
+  String(text || "").split(/\r?\n/).forEach((line) => { const s = line.trim(); if (!s) return; const m = s.match(/(\+?\d[\d\s\-().]{8,}\d)/); const key = m ? grpPhone(m[1]) : ""; if (!key) { bad++; return; } if (seen.has(key)) return; seen.add(key); let name = s.replace(m[1], " ").replace(/[,;|\t]+/g, " ").replace(/\s+/g, " ").trim(); if (!name) name = "No name"; rows.push({ key, name: name.slice(0, 60) }); });
+  return { rows, bad };
+}
+function grpPrepare(rows, bad, text, days, cat){ const have = new Set(grpAll().map((m) => m.key)); const fresh = rows.filter((r) => !have.has(r.key)); grpPaste = { text: text || "", rows, fresh, dup: rows.length - fresh.length, bad, days, cat }; }
+function grpReadDefaults(){ const d = String(($("m_pdays") || {}).value || "").trim(), c = String(($("m_pcat") || {}).value || ""); return { days: d === "" ? "" : Number(d), cat: c }; }
+async function grpSaveForm(){
+  const g = (id) => String(($(id) || {}).value || "").trim(), say = (s) => { const m = $("grpMsg"); if (m) m.textContent = s; };
+  const name = g("m_name"), isNew = grpEdit === "new", key = isNew ? grpPhone(g("m_phone")) : grpEdit, dRaw = g("m_days");
+  if (name.length < 2) { say("Type the name."); return; }
+  if (!key) { say("Type a valid 10 digit mobile number."); return; }
+  if (isNew && grpAll().some((m) => m.key === key)) { say("This number is already in your list. Find it and tap Edit."); return; }
+  if (dRaw !== "" && !(Number(dRaw) >= 0 && Number(dRaw) <= 3650)) { say("Days must be a number from 0 to 3650, or empty."); return; }
+  const old = (customers[key] || {}).member || {}, oldDays = grpDays(old.joined); let joined = old.joined || "";
+  if (dRaw === "") joined = ""; else if (isNew || Number(dRaw) !== oldDays) joined = grpAgo(Number(dRaw));
+  const member = { name, joined, cat: g("m_cat"), cat2: g("m_cat2"), note: g("m_note").slice(0, 120), noMsg: !!($("m_nomsg") || {}).checked, added: old.added || todayISO(), src: old.src || "" };
+  if (member.cat2 && member.cat2 === member.cat) member.cat2 = "";
+  try { await grpWrite(key, member); } catch (e) { console.error(e); say("That did not save. Check your connection and try again."); return; }
+  grpEdit = ""; showDetail("members"); try { renderTiles(); } catch (e) { console.error(e); }
+}
+function grpCsv(){
+  const q = (s) => '"' + String(s == null ? "" : s).replace(/"/g, '""') + '"', rows = [["Name", "Mobile", "Days in group", "Favourite category", "Second favourite", "Customer", "Orders", "Do not message", "Source", "Note"]];
+  grpAll().forEach((m) => rows.push([m.name, prettyPhone(m.key), m.days === null ? "" : m.days, m.cat, m.cat2, m.orders ? "Yes" : "No", m.orders, m.noMsg ? "Yes" : "No", m.src === "gift" ? "Gift link" : "Added by you", m.note]));
+  const blob = new Blob(["\uFEFF" + rows.map((r) => r.map(q).join(",")).join("\r\n")], { type: "text/csv" }), a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "AK-group-members.csv"; document.body.appendChild(a); a.click(); a.remove();
+}
+async function grpAction(act, t, v){
+  const say = (s) => { const m = $("grpMsg"); if (m) m.textContent = s; };
+  if (act === "all") { grpEdit = ""; grpPanel = ""; grpPaste = null; grpFilter = "all"; grpCatF = ""; grpQ = ""; grpLimit = 60; showDetail("members"); return; }
+  if (act === "add") { grpEdit = "new"; grpPanel = ""; showDetail("members"); return; }
+  if (act === "cancel") { grpEdit = ""; grpPanel = ""; grpPaste = null; showDetail("members"); return; }
+  if (act === "daysset") { const i = $("m_days") || $("m_pdays"); if (i) i.value = v; return; }
+  if (act === "filter") { grpFilter = t; grpLimit = 60; showDetail("members"); return; }
+  if (act === "more") { grpLimit += 60; const l = $("grpList"); if (l) l.innerHTML = grpListHtml(); return; }
+  if (act === "save") { await grpSaveForm(); return; }
+  if (act === "csv") { grpCsv(); return; }
+  if (act === "sync") { say("Checking..."); await grpSyncEntries(); showDetail("members"); if (!grpSyncNote && !grpSyncErr) { const m = $("grpMsg"); if (m) m.textContent = "No new sign-ups."; } try { renderTiles(); } catch (e) { console.error(e); } return; }
+  if (act === "paste") { grpPanel = "paste"; grpPaste = null; showDetail("members"); return; }
+  if (act === "pastepreview") { const d = grpReadDefaults(), txt = String(($("m_paste") || {}).value || ""), r = grpParse(txt); grpPrepare(r.rows, r.bad, txt, d.days, d.cat); showDetail("members"); return; }
+  if (act === "contacts") {
+    try { const picks = await navigator.contacts.select(["name", "tel"], { multiple: true }); const seen = new Set(), rows = []; let bad = 0; (picks || []).forEach((p) => { const key = grpPhone((p.tel || [])[0]); if (!key) { bad++; return; } if (seen.has(key)) return; seen.add(key); rows.push({ key, name: String((p.name || [])[0] || "No name").slice(0, 60) }); }); grpPanel = "contacts"; grpPrepare(rows, bad, "", "", ""); showDetail("members"); }
+    catch (e) { if (!(e && e.name === "AbortError")) { console.error(e); say("Your phone did not allow the contact list. Use Paste a list instead."); } }
+    return;
+  }
+  if (act === "addgo") {
+    const d = grpReadDefaults(), rows = (grpPaste && grpPaste.fresh) || []; if (!rows.length) return;
+    try { await grpWriteMany(rows, d.days, d.cat, say); } catch (e) { console.error(e); say("Some did not save. Check your connection and try again."); return; }
+    grpPanel = ""; grpPaste = null; grpFilter = "all"; showDetail("members"); try { renderTiles(); } catch (e) { console.error(e); } return;
+  }
+  if (act === "mycust") {
+    const have = new Set(grpAll().map((m) => m.key)), seen = new Set(), rows = [];
+    orders.forEach((o) => { const k = normPhone(o.customer.phone); if (/^91\d{10}$/.test(k) && !have.has(k) && !seen.has(k)) { seen.add(k); rows.push({ key: k, name: custName(o) }); } });
+    if (!rows.length) { say("All your customers are already in the list."); return; }
+    if (!window.confirm("Add " + rows.length + " customers from your orders to the list? Their joined days will be marked as not known.")) return;
+    try { await grpWriteMany(rows, "", "", say); } catch (e) { console.error(e); say("Some did not save. Try again."); return; }
+    showDetail("members"); try { renderTiles(); } catch (e) { console.error(e); } return;
+  }
+  const m = grpAll().find((x) => x.key === t); if (!m) return;
+  if (act === "edit") { grpEdit = t; showDetail("members"); return; }
+  if (act === "wa") { window.open("https://wa.me/" + m.key + "?text=" + encodeURIComponent("Hello " + (m.name.split(/\s+/)[0] || "there") + ", this is Abdul from AK Brands Marketing."), "_blank"); return; }
+  if (act === "del") {
+    if (!window.confirm("Delete " + m.name + " from the group list?")) return;
+    const cu = customers[t] || {}, others = Object.keys(cu).filter((k) => k !== "member").length;
+    try { if (others) await setDoc(doc(db, "customers", t), { member: null }, { merge: true }); else await deleteDoc(doc(db, "customers", t)); } catch (e) { console.error(e); say("That did not work. Try again."); return; }
+    if (others) customers[t].member = null; else delete customers[t]; showDetail("members"); try { renderTiles(); } catch (e) { console.error(e); }
+  }
+}
+
 function renderTiles(){
   const live = orders.filter((o) => o.status !== "Cancelled");
   const open = live.filter((o) => o.status !== "Closed").length;
@@ -1561,7 +1861,7 @@ function renderTiles(){
   const t = (kind, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-tile="' + kind + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   const infos = live.map((o) => pendingInfo(o)), need = infos.filter((p) => p.pending > 0), onTime = infos.filter((p) => p.waiting).length, proofs = need.reduce((a, p) => a + p.proofs, 0);
   const tp = '<button type="button" class="tile wide ' + (need.length ? "alert" : "good") + '" data-tile="pending"><small>Action pending</small><b>' + (need.length ? need.length + (need.length === 1 ? " order needs action" : " orders need action") : "Nothing needs action") + '</b><span class="go">' + (need.length ? proofs + (proofs === 1 ? " proof" : " proofs") + " missing" + (onTime ? ", " + onTime + " in transit on schedule" : "") + ". Tap to see" : (onTime ? onTime + " in transit, on schedule. Tap to see" : "Tap to see details")) + '</span></button>';
-  $("tiles").innerHTML = tp + dashTileHtml() + bizTileHtml() + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
+  $("tiles").innerHTML = tp + dashTileHtml() + bizTileHtml() + giftTileHtml() + grpTileHtml() + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
 }
 /* tap a tile: groups, then orders, then the order itself */
 let lastDetail = "";
@@ -1601,6 +1901,8 @@ function showDetail(kind){
   else if (kind === "pending") $("detailBody").innerHTML = pendingScreenHtml();
   else if (kind === "dash") $("detailBody").innerHTML = dashboardHtml();
   else if (kind === "cards") $("detailBody").innerHTML = cardsScreenHtml();
+  else if (kind === "gifts") $("detailBody").innerHTML = giftScreenHtml();
+  else if (kind === "members") $("detailBody").innerHTML = grpScreenHtml();
   else if (kind.indexOf("cdash:") === 0) $("detailBody").innerHTML = customerDashHtml(kind.slice(6));
   else $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
   $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); $("detailView").classList.remove("hidden");
@@ -1609,10 +1911,14 @@ function showDetail(kind){
 }
 $("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-tile]"); if (b) { if (b.getAttribute("data-tile") === "staff") { openStaff(); return; } if (b.getAttribute("data-tile") === "pending") { pendF = "all"; pendQ = ""; } showDetail(b.getAttribute("data-tile")); } });
 $("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-cardact]"); if (z) bizAction(z.getAttribute("data-cardact"), z.getAttribute("data-t") || ""); });
+$("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-gift]"); if (z) giftAction(z.getAttribute("data-gift"), z.getAttribute("data-t") || "", z.getAttribute("data-p") || ""); });
+$("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-grp]"); if (z) grpAction(z.getAttribute("data-grp"), z.getAttribute("data-t") || "", z.getAttribute("data-v") || ""); });
 $("detailBack").addEventListener("click", () => showList());
-$("detailBody").addEventListener("change", (e) => { if (e.target && e.target.id === "sf_who") { sfWho = e.target.value; $("detailBody").innerHTML = staffScreenHtml(); } });
-$("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "dtQ") { applyDtFilter(e.target.value); return; } if (e.target && e.target.id === "sf_q") { sfQ = e.target.value; $("sfList").innerHTML = feedListHtml(); return; } if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
+$("detailBody").addEventListener("change", (e) => { if (e.target && e.target.id === "grp_cat") { grpCatF = e.target.value; grpLimit = 60; const l = $("grpList"); if (l) l.innerHTML = grpListHtml(); return; } if (e.target && e.target.id === "sf_who") { sfWho = e.target.value; $("detailBody").innerHTML = staffScreenHtml(); } });
+$("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "grp_q") { grpQ = e.target.value; grpLimit = 60; const l = $("grpList"); if (l) l.innerHTML = grpListHtml(); return; } if (e.target && e.target.id === "dtQ") { applyDtFilter(e.target.value); return; } if (e.target && e.target.id === "sf_q") { sfQ = e.target.value; $("sfList").innerHTML = feedListHtml(); return; } if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
 $("detailBody").addEventListener("click", (e) => {
+  const grb = e.target.closest("[data-grp]"); if (grb) { grpAction(grb.getAttribute("data-grp"), grb.getAttribute("data-t") || "", grb.getAttribute("data-v") || ""); return; }
+  const gfb = e.target.closest("[data-gift]"); if (gfb) { giftAction(gfb.getAttribute("data-gift"), gfb.getAttribute("data-t") || "", gfb.getAttribute("data-p") || ""); return; }
   const bzb = e.target.closest("[data-cardact]"); if (bzb) { bizAction(bzb.getAttribute("data-cardact"), bzb.getAttribute("data-t") || ""); return; }
   const qsd = e.target.closest("[data-qshare]"); if (qsd) { openShareFor(qsd.getAttribute("data-qshare")); return; }
   const dpp = e.target.closest("[data-dp]"); if (dpp) { dashPeriod = dpp.getAttribute("data-dp"); showDetail("dash"); return; }
