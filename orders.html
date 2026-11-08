@@ -193,6 +193,18 @@ button.dhb{cursor:pointer}
 .giftT{background:linear-gradient(135deg,#1a1405,#5a430a);border:0}.giftT small{color:#f0d98a}.giftT b{color:#fff}.giftT .bizbtns button{background:#e6c35c;color:#2b2104}
 .grpT{background:linear-gradient(135deg,#102a3a,#1d5a7a);border:0}.grpT small{color:#a9d6ee}.grpT b{color:#fff}.grpT .bizbtns button{background:#7cc8ee;color:#07202e}
 .grpc{padding:.7rem .8rem}
+.porow{display:flex;gap:.6rem;align-items:flex-start;padding:.55rem .6rem;border:1px solid var(--line);border-radius:10px;background:#fff;margin:.35rem 0;cursor:pointer}
+.porow input{margin-top:.25rem;transform:scale(1.25)}.porow small{display:block;color:var(--muted);font-size:.78rem;margin-top:.1rem}
+.poprev{display:block;width:100%;border-radius:14px;border:1px solid var(--line);margin:.4rem 0}
+.poprf{margin:.4rem 0}
+.pobox button.on{background:var(--ink);color:#fff}
+.poov{position:fixed;inset:0;background:rgba(10,10,10,.82);z-index:1000;display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:.7rem}
+.pobox{background:#fff;border-radius:16px;padding:.8rem;max-width:460px;width:100%}
+.pocv{background:#e9eded;border-radius:10px;padding:.4rem;margin-top:.5rem;display:flex;justify-content:center;overflow:hidden}
+.pocv canvas{touch-action:none;display:block;cursor:crosshair;max-width:100%}
+.repT{background:linear-gradient(135deg,#1c2b5a,#2f6fdb);border:0}.repT small{color:#cfe0ff}.repT b{color:#fff}.repT .go{color:#dbe7ff}
+.remT{background:linear-gradient(135deg,#7a1d12,#c0392b);border:0}.remT small{color:#ffd9d3}.remT b{color:#fff}.remT .go{color:#ffe9e5}
+.remrow{padding:.7rem .8rem}
 .bizT{background:linear-gradient(135deg,#0a0a0a,#0f3a34);border:0}.bizT small{color:#9fe3d6}.bizT b{color:#fff}
 .bizbtns{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}.bizbtns button{background:#02c3a3;color:#04231e;border:0;font-weight:800}
 .bizc{display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:center}
@@ -855,7 +867,7 @@ function customerCardHtml(g){
   return '<div class="ocard" data-cust="' + esc(g.key) + '"><h3><span>' + esc(name) + '</span><span>' + (t.payable ? inr(t.payable) : "") + '</span></h3>' +
     '<p>' + esc(sub) + '</p>' +
     '<div><span class="pill">' + n + (n === 1 ? " order" : " orders") + '</span><span class="pill">' + lots + (lots === 1 ? " lot" : " lots") + '</span><span class="pill ' + (t.balance > 0 ? "bad" : "ok") + '">' + (t.balance > 0 ? "Balance due " + inr(t.balance) : "No balance due") + '</span>' + (function(){ const k = g.orders.filter((x) => pendingInfo(x).pending > 0).length; return k ? '<span class="pill bad">' + k + (k === 1 ? " order needs action" : " orders need action") + '</span>' : ""; })() + '</div>' +
-    '<p>Last booking ' + esc(fmtDate(o.orderDate)) + ' &middot; Received ' + inr(t.received) + (t.supDue > 0 ? ' &middot; You owe suppliers ' + inr(t.supDue) : '') + ' &middot; Profit ' + inr(t.profit) + '</p><button type="button" class="small dashbtn" data-cdash="' + esc(g.key) + '" style="margin-top:.5rem">Dashboard</button> <button type="button" class="small dashbtn" data-qshare="' + esc(g.key) + '" style="margin-top:.5rem">Share balance</button></div>';
+    '<p>Last booking ' + esc(fmtDate(o.orderDate)) + ' &middot; Received ' + inr(t.received) + (t.supDue > 0 ? ' &middot; You owe suppliers ' + inr(t.supDue) : '') + ' &middot; Profit ' + inr(t.profit) + '</p><button type="button" class="small dashbtn" data-cdash="' + esc(g.key) + '" style="margin-top:.5rem">Dashboard</button> <button type="button" class="small dashbtn" data-qshare="' + esc(g.key) + '" style="margin-top:.5rem">Share balance</button> ' + (ASK_ENABLED ? '<button type="button" class="small dashbtn" data-qask="' + esc(g.key) + '" style="margin-top:.5rem">Chat link</button>' : '') + '</div>';
 }
 function customerOrderRowHtml(o){
   const c = calc(o);
@@ -921,7 +933,7 @@ function customerDetailHtml(key){
   const tile = (k, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-ctile="' + k + '" data-ckey="' + esc(key) + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   return '<h2>' + esc(name) + '</h2><p class="hint">' + esc(sub) + '</p>' +
     '<div class="tiles" style="margin-top:.6rem">' + tile("orders", "Orders and lots", mine.length + " &middot; " + lotCount(mine)) + tile("total", "Total ordered", inr(t.payable)) + tile("recv", "Received", inr(t.received)) + tile("owes", "Customer owes", inr(t.balance)) + tile("sup", "You owe suppliers", inr(t.supDue), "priv") + tile("profit", "Profit", inr(t.profit), "priv") + '</div>' +
-    '<button type="button" class="small" data-newfor="' + esc(key) + '" style="margin-top:.8rem">New order for this customer</button> <button type="button" class="small dashbtn" data-cdash="' + esc(key) + '" style="margin-top:.8rem">Customer dashboard</button> <button type="button" class="small dashbtn" data-qshare="' + esc(key) + '" style="margin-top:.8rem">Share balance</button><span id="qsMsg" class="hint" style="display:block"></span>' + splitPanelHtml(mine) +
+    '<button type="button" class="small" data-newfor="' + esc(key) + '" style="margin-top:.8rem">New order for this customer</button> <button type="button" class="small dashbtn" data-cdash="' + esc(key) + '" style="margin-top:.8rem">Customer dashboard</button> <button type="button" class="small dashbtn" data-qshare="' + esc(key) + '" style="margin-top:.8rem">Share balance</button> ' + (ASK_ENABLED ? '<button type="button" class="small dashbtn" data-qask="' + esc(key) + '" style="margin-top:.8rem">Chat link</button> ' : '') + '' + (POST_ENABLED ? '<button type="button" class="small dashbtn" data-post="' + esc(key) + '" style="margin-top:.8rem">Make post</button>' : '') + '<span id="qsMsg" class="hint" style="display:block"></span>' + splitPanelHtml(mine) +
     '<p class="hint" style="margin-top:1rem">Newest booking first. Tap an order to open it.</p>' + mine.map(customerOrderRowHtml).join("");
 }
 function customerTileHtml(key, tile){
@@ -1003,7 +1015,7 @@ onAuthStateChanged(auth, (user) => {
   try { if (on) localStorage.setItem("akOwner", "1"); else localStorage.removeItem("akOwner"); } catch (e) {}
   $("loginPanel").classList.toggle("hidden", on);
   $("logout").classList.toggle("hidden", !on);
-  if (on) { showList(); Promise.resolve(loadAll()).then(() => grpSyncEntries()).then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadBiz(); loadTeam(); loadCards().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadGifts().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadStaffLogs().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
+  if (on) { showList(); Promise.resolve(loadAll()).then(() => Promise.all([grpSyncEntries(), loadRemCfg()])).then(() => { try { renderTiles(); if (REMIND_ENABLED && String(location.hash || "") === "#reminders") remAction("open", ""); } catch (e) { console.error(e); } }); loadBiz(); loadTeam(); loadCards().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadGifts().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadStaffLogs().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
 });
 
 /* ---------- Loading ---------- */
@@ -1109,6 +1121,12 @@ $("pendBox").addEventListener("click", (e) => {
 /* ---------- Staff: cleaned copies for staff, members, and the record of what staff do ---------- */
 /* Staff access is built but switched OFF until the owner asks for it. */
 const STAFF_ENABLED = false;
+/* The "Ask about your lots" chat link is built but switched OFF until the owner asks for it (it also needs the new my.html). */
+const ASK_ENABLED = false;
+/* "Make post" (collage and message) is built but switched OFF until the owner asks for it. */
+const POST_ENABLED = false;
+/* "Payment reminders" is built but switched OFF until the owner asks for it. */
+const REMIND_ENABLED = false;
 const SL = [["slShare", "Sharing"], ["slParcel", "Logistics"], ["slPayment", "Payments"]];
 let staffList = [], staffLogs = [], staffErr = "", staffLogErr = "", staffSyncErr = "", sfDomain = "all", sfWho = "", sfQ = "", stEditing = "";
 const staffLots = (o) => (o.items || []).filter((i) => i.name || i.lotNo).map((i) => ({ lotNo: String(i.lotNo || ""), name: plain(i.name || ""), qty: String(i.qty || ""), unit: String(i.unit || "") }));
@@ -1853,6 +1871,516 @@ async function grpAction(act, t, v){
   }
 }
 
+/* ---------- Make post: collage of the lot photos and covered payment proofs, with your message ---------- */
+let postSt = null;
+const PO_UNIT = { Pcs: "Pieces", Units: "Units", Boxes: "Boxes", Kit: "Kit" }, poUnit = (u) => (Object.prototype.hasOwnProperty.call(PO_UNIT, u) ? PO_UNIT[u] : (u === "Others" ? "" : String(u || "").trim()));
+const poHash = (s) => { let h = 5381; const n = s.length, step = Math.max(1, Math.floor(n / 4000)); for (let i = 0; i < n; i += step) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36) + "_" + n; };
+const poImgCache = new Map();
+async function poLoadImg(f){
+  if (poImgCache.has(f.id)) return poImgCache.get(f.id);
+  const parts = []; for (let i = 0; i < (f.parts || 1); i++) { const sn = await getDoc(doc(db, "orderViews", f.id + "_" + i)); if (!sn.exists()) { poImgCache.set(f.id, null); return null; } parts.push(sn.data().data); }
+  const b64 = parts.join(""), img = await new Promise((res) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = "data:" + f.mime + ";base64," + b64; });
+  const r = img ? { img, hash: poHash(b64) } : null; poImgCache.set(f.id, r); return r;
+}
+const poIsPhoto = (f) => /^image\//.test(f.mime || "") && (f.section === "s2" || (!f.section && f.kind === "other"));
+const poIsProof = (f) => /^image\//.test(f.mime || "") && (f.section === "s3" || (!f.section && f.kind === "payment"));
+function poLastPay(o){ return (o.payments || []).filter((p) => num(p.amount) > 0).map((p) => String(p.date || "")).sort().pop() || ""; }
+function poOrders(key){ return orders.filter((o) => groupKeyOf(o) === key && o.status !== "Cancelled").sort((a, b) => String(a.orderDate).localeCompare(String(b.orderDate)) || a.orderNo.localeCompare(b.orderNo)); }
+function poDefaultPicks(list){
+  const paid = list.filter((o) => calc(o).balance <= 0.005 && poLastPay(o)); if (!paid.length) return new Set();
+  const last = paid.map(poLastPay).sort().pop(); return new Set(paid.filter((o) => poLastPay(o) === last).map((o) => o.orderNo));
+}
+function poPayInfo(os){
+  let rec = 0, bal = 0, any = false; const kinds = new Set();
+  os.forEach((o) => { const c = calc(o); rec += c.received; bal += Math.max(0, c.balance); (o.payments || []).forEach((p) => { if (num(p.amount) > 0) { any = true; kinds.add(p.kind); } }); });
+  let text, stamp;
+  if (!any) { text = "payment pending"; stamp = "PAYMENT PENDING"; }
+  else if (bal <= 0.005) { const had = kinds.has("Token") || kinds.has("Part payment") || kinds.has("Balance"); const onlyToken = kinds.size === 1 && kinds.has("Token"); text = onlyToken || !had ? "full amount received" : "balance full amount received"; stamp = text.toUpperCase(); }
+  else if (kinds.size === 1 && kinds.has("Token")) { text = "booking amount received"; stamp = "BOOKING AMOUNT RECEIVED"; }
+  else { text = "part payment received"; stamp = "PART PAYMENT RECEIVED"; }
+  return { rec, bal, text, stamp, full: any && bal <= 0.005 };
+}
+function poPlace(os){ const c = (os[0] && os[0].customer) || {}; return [c.city, c.state].map((x) => String(x || "").trim()).filter(Boolean).join(" "); }
+function poMessage(lots, os){
+  const pi = poPayInfo(os), place = poPlace(os), lines = lots.map((l) => "Lot " + l.no + " - " + l.name + (l.qtyNum ? " " + l.qtyNum + (l.unit ? " " + l.unit : "") : ""));
+  return lines.join("\n") + "\n\nTotal " + lots.length + " lot booked and " + pi.text + " from " + (place ? "*" + place + "* customer" : "our customer") + "\n\nThanks for trusting\nAK Brands Marketing\u00A9";
+}
+function poLotsOf(os, photoOf){
+  const lots = [];
+  os.forEach((o) => {
+    const its = (o.items || []).filter((it) => it.name && String(it.name).trim()), photos = (o.files || []).filter(poIsPhoto);
+    its.forEach((it, i) => {
+      const no = String(it.lotNo || "").trim() || o.orderNo, q = String(it.qty || "").trim(); let f = null;
+      if (its.length === 1) f = photos[0] || null;
+      else f = photos.find((p) => no && String(p.label || "").indexOf(no) >= 0) || (photos.length === its.length ? photos[i] : (i === 0 ? photos[0] : null)) || null;
+      lots.push({ no, name: String(it.name).trim(), qtyNum: q, unit: poUnit(it.unit), qty: q + (poUnit(it.unit) ? " " + (it.unit === "Pcs" ? "Pcs" : poUnit(it.unit)) : ""), file: f, orderNo: o.orderNo, img: null });
+    });
+  });
+  return lots;
+}
+function poRows(key){
+  const list = poOrders(key);
+  return list.map((o) => { const its = (o.items || []).filter((it) => it.name && String(it.name).trim()), c = calc(o), has = (o.files || []).some(poIsPhoto), pf = (o.files || []).some(poIsProof), on = postSt.picks.has(o.orderNo);
+    return '<label class="porow"><input type="checkbox" data-po="tick" data-t="' + esc(o.orderNo) + '"' + (on ? " checked" : "") + '><span><b>' + esc(its.map((it) => (it.lotNo ? "Lot " + it.lotNo + " \u00B7 " : "") + it.name).join(" + ") || o.orderNo) + '</b><small>' + esc(o.orderNo) + ' \u00B7 ' + (has ? "Photo \u2713" : "No photo") + ' \u00B7 ' + (pf ? "Payment proof \u2713" : "No payment proof") + ' \u00B7 ' + (c.balance <= 0.005 && poLastPay(o) ? "Paid in full" : (c.received > 0 ? inr(c.balance) + " pending" : "Not paid")) + '</small></span></label>'; }).join("");
+}
+function postScreenHtml(){
+  if (!postSt) return '<p class="hint">Open a customer first.</p>';
+  const list = poOrders(postSt.key), cu = list[0] ? list[0].customer : {}, nm = list[0] ? custName(list[0]) : "";
+  if (!postSt.built) return '<h2 style="margin-top:0">Make post</h2><p class="hint">For <b>' + esc(nm) + '</b>. Tick the lots to show. One picture is made from their photos, with a payment stamp, and your message is written for you.</p>' + (list.length ? '<div id="poRows">' + poRows(postSt.key) + '</div><p class="hint" id="poCount"></p><button type="button" class="small primary" data-po="build">Build the post</button> <button type="button" class="small" data-po="close">Back</button>' : '<p class="hint">This customer has no orders yet.</p>') + '<p class="hint" id="poMsg"></p>';
+  const b = postSt.built;
+  const proofs = b.proofs.map((p, i) => '<div class="ocard poprf"><b>Payment screenshot ' + (i + 1) + '</b> <span class="pill ' + (p.state === "ok" ? "ok" : (p.state === "out" ? "warn" : "bad")) + '">' + (p.state === "ok" ? "Covered, in the post" : (p.state === "out" ? "Left out" : "Not in the post yet")) + '</span><p class="hint" style="margin:.2rem 0">Used on ' + esc(p.orders.join(", ")) + '. It is hidden until you cover the private details.</p><div class="bizbtn"><button type="button" class="small primary" data-po="cover" data-t="' + i + '">' + (p.state === "ok" ? "Cover again" : "Cover the details") + '</button>' + (p.state === "out" ? '' : '<button type="button" class="small" data-po="leave" data-t="' + i + '">Leave it out</button>') + '</div></div>').join("");
+  return '<h2 style="margin-top:0">Your post</h2><p class="hint">Check the picture and the message. Then share.</p><img id="poPrev" class="poprev" alt="Post preview" src="' + esc(b.preview || "") + '">' +
+    (b.proofs.length ? '<h3 style="margin:.8rem 0 .2rem">Payment screenshots</h3><p class="hint">A customer\'s screenshot shows their UPI ID, phone number and bank details. It only goes into the post after you cover those parts.</p>' + proofs : '<p class="hint">No payment screenshot was found for these lots, so the post shows only the payment stamp.</p>') +
+    (b.proofs.some((p) => p.state === "ok") ? '<label class="chk" style="margin-top:.6rem;font-weight:700"><input type="checkbox" id="po_ok"> I checked the screenshots in the picture. No phone number, UPI ID, name or reference is visible.</label>' : '') + '<label class="chk" style="margin-top:.5rem"><input type="checkbox" data-po="amt"' + (b.showAmt ? " checked" : "") + '> Show the amount received on the stamp (' + inr(b.pay.rec) + ')</label><label for="po_text" style="margin-top:.6rem">Message (you can change it)</label><textarea id="po_text" rows="12" style="width:100%;font:inherit;padding:.6rem;border:1px solid var(--line);border-radius:8px">' + esc(b.text) + '</textarea>' +
+    '<div style="margin-top:.7rem"><button type="button" class="small primary" data-po="share">Share picture and message</button> <button type="button" class="small" data-po="back">Change the lots</button> <button type="button" class="small" data-po="close">Close</button></div><p class="hint" id="poMsg"></p>';
+}
+async function poBuild(){
+  const say = (s) => { const m = $("poMsg"); if (m) m.textContent = s; };
+  const os = poOrders(postSt.key).filter((o) => postSt.picks.has(o.orderNo)); if (!os.length) { say("Tick at least one lot."); return; }
+  say("Loading the photos...");
+  const lots = poLotsOf(os); let missing = 0;
+  for (const l of lots) { if (l.file) { const r = await poLoadImg(l.file); l.img = r ? r.img : null; } if (!l.img) missing++; }
+  const seen = new Map(); 
+  for (const o of os) for (const f of (o.files || []).filter(poIsProof)) { const r = await poLoadImg(f); if (!r) continue; const e = seen.get(r.hash); if (e) { if (e.orders.indexOf(o.orderNo) < 0) e.orders.push(o.orderNo); } else seen.set(r.hash, { hash: r.hash, img: r.img, orders: [o.orderNo], state: "todo", covered: null }); }
+  const proofs = Array.from(seen.values()), pay = poPayInfo(os);
+  postSt.built = { os: os.map((o) => o.orderNo), lots, proofs, pay, showAmt: false, text: poMessage(lots, os), preview: "", missing };
+  await poRefresh(); showDetail("post:" + postSt.key);
+}
+const poGrid = (n) => (n <= 1 ? 1 : n <= 4 ? 2 : n <= 9 ? 3 : 4);
+async function poDraw(b){
+  const logo = await bzLogoP, W = 1080, M = 40, GAP = 14, SANS = "Roboto, 'Segoe UI', Arial, sans-serif", SERIF = "Georgia, 'Times New Roman', serif", TEAL = "#02c3a3";
+  const shown = b.lots.slice(0, 16), n = shown.length, cols = poGrid(n), rows = Math.ceil(n / cols), tile = Math.floor((W - 2 * M - GAP * (cols - 1)) / cols);
+  const prf = b.proofs.filter((p) => p.state === "ok" && p.covered), ps = prf.slice(0, 3), aspects = ps.map((p) => p.covered.width / p.covered.height), PH = ps.length ? Math.max(120, Math.min(300, (W - 2 * M - 60 - 24 * (ps.length - 1)) / aspects.reduce((a, x) => a + x, 0))) : 300, headH = 170, gridH = rows * tile + (rows - 1) * GAP, bandH = ps.length ? 30 + PH + (prf.length > 3 ? 44 : 22) + 140 + 24 : 160, footH = 210;
+  const H = M + headH + 30 + gridH + 30 + bandH + 30 + footH, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const c = cv.getContext("2d"); c.textBaseline = "alphabetic";
+  const bg = c.createLinearGradient(0, 0, W, H); bg.addColorStop(0, "#0a0a0a"); bg.addColorStop(1, "#102120"); c.fillStyle = bg; c.fillRect(0, 0, W, H);
+  const rg = c.createRadialGradient(W - 90, 90, 10, W - 90, 90, 560); rg.addColorStop(0, "rgba(2,195,163,.28)"); rg.addColorStop(1, "rgba(2,195,163,0)"); c.fillStyle = rg; c.fillRect(0, 0, W, 700);
+  c.lineWidth = 3; c.strokeStyle = "rgba(2,195,163,.45)"; bzRR(c, 14, 14, W - 28, H - 28, 34); c.stroke();
+  const LX = M + 10, LY = M + 6, L = 110; c.save(); bzRR(c, LX, LY, L, L, 24); c.clip(); c.fillStyle = "#000"; c.fillRect(LX, LY, L, L);
+  if (logo) { const k = Math.min(L / logo.width, L / logo.height), w = logo.width * k, h = logo.height * k; c.drawImage(logo, LX + (L - w) / 2, LY + (L - h) / 2, w, h); } else { c.fillStyle = TEAL; c.textAlign = "center"; c.font = "800 52px " + SERIF; c.fillText("AK", LX + L / 2, LY + L / 2 + 18); c.textAlign = "left"; }
+  c.restore(); c.lineWidth = 3; c.strokeStyle = "rgba(2,195,163,.7)"; bzRR(c, LX, LY, L, L, 24); c.stroke();
+  c.fillStyle = TEAL; c.font = "600 44px " + SERIF; c.fillText("AK Brands Marketing\u00A9", LX + L + 28, LY + 52); c.fillStyle = "#a9b8b8"; c.font = "italic 400 30px " + SERIF; c.fillText("Source The Value", LX + L + 28, LY + 96);
+  const chip = b.lots.length + (b.lots.length === 1 ? " LOT BOOKED" : " LOTS BOOKED"); c.font = "800 32px " + SANS; const cw = c.measureText(chip).width + 56; c.fillStyle = TEAL; bzRR(c, W - M - cw, M + 134, cw, 56, 28); c.fill(); c.fillStyle = "#0a0a0a"; c.fillText(chip, W - M - cw + 28, M + 172);
+  const gy = M + headH + 30;
+  shown.forEach((l, i) => {
+    const r = Math.floor(i / cols), k = i % cols, inRow = r === rows - 1 ? n - r * cols : cols, off = (cols - inRow) * (tile + GAP) / 2, x = M + off + k * (tile + GAP), y = gy + r * (tile + GAP);
+    c.fillStyle = "#1d2a29"; bzRR(c, x, y, tile, tile, 22); c.fill();
+    if (l.img) { c.save(); bzRR(c, x, y, tile, tile, 22); c.clip(); const s = Math.max(tile / l.img.width, tile / l.img.height), iw = l.img.width * s, ih = l.img.height * s; c.drawImage(l.img, x + (tile - iw) / 2, y + (tile - ih) / 2, iw, ih); c.restore(); }
+    else { c.fillStyle = "#9fb0b0"; c.textAlign = "center"; c.font = "600 26px " + SANS; c.fillText("No photo", x + tile / 2, y + tile / 2 - 6); c.font = "700 30px " + SANS; c.fillStyle = "#fff"; c.fillText(bzCut(c, l.name, tile - 30), x + tile / 2, y + tile / 2 + 36); c.textAlign = "left"; }
+    c.save(); bzRR(c, x, y, tile, tile, 22); c.clip(); const sh = c.createLinearGradient(0, y + tile - 120, 0, y + tile); sh.addColorStop(0, "rgba(0,0,0,0)"); sh.addColorStop(1, "rgba(0,0,0,.82)"); c.fillStyle = sh; c.fillRect(x, y + tile - 120, tile, 120); c.restore();
+    c.fillStyle = "#fff"; c.font = "800 30px " + SANS; c.fillText("Lot " + l.no, x + 18, y + tile - 48); c.fillStyle = "#e3eded"; c.font = "500 23px " + SANS; c.fillText(bzCut(c, l.name + (l.qty ? " \u00B7 " + l.qty : ""), tile - 36), x + 18, y + tile - 18);
+  });
+  const by = gy + gridH + 30; c.fillStyle = b.pay.full ? "#1b8a4a" : "#a8741a"; bzRR(c, M, by, W - 2 * M, bandH, 34); c.fill();
+  let ty = by + bandH / 2;
+  if (ps.length) {
+    const ws = aspects.map((a) => a * PH), tot = ws.reduce((a, x) => a + x, 0) + 24 * (ws.length - 1); let px = (W - tot) / 2;
+    ps.forEach((p, i) => { c.save(); bzRR(c, px, by + 30, ws[i], PH, 16); c.clip(); c.fillStyle = "#fff"; c.fillRect(px, by + 30, ws[i], PH); c.drawImage(p.covered, px, by + 30, ws[i], PH); c.restore(); c.lineWidth = 3; c.strokeStyle = "rgba(255,255,255,.75)"; bzRR(c, px, by + 30, ws[i], PH, 16); c.stroke(); px += ws[i] + 24; });
+    if (prf.length > 3) { c.fillStyle = "#fff"; c.font = "700 26px " + SANS; c.textAlign = "center"; c.fillText("+" + (prf.length - 3) + " more payment screenshots", W / 2, by + 30 + PH + 34); c.textAlign = "left"; }
+    ty = by + 30 + PH + (prf.length > 3 ? 44 : 22) + 60;
+  }
+  const cx = W / 2; c.textAlign = "center"; c.fillStyle = "#fff"; c.font = "800 " + (ps.length ? 40 : 46) + "px " + SANS; const stampY = ps.length ? ty - 12 : by + 74; c.fillText(b.pay.stamp, cx, stampY);
+  c.font = "500 30px " + SANS; c.fillStyle = "#e5f6ea"; const place = poPlace(b.os.map((no) => orders.find((o) => o.orderNo === no)).filter(Boolean)); c.fillText((place ? "From " + place + " customer" : "From our customer") + (b.showAmt && b.pay.rec > 0 ? "  \u00B7  " + inr(b.pay.rec) + " received" : ""), cx, stampY + 48); c.textAlign = "left";
+  const fy = by + bandH + 30; c.textAlign = "center"; c.fillStyle = TEAL; c.font = "italic 600 52px " + SERIF; c.fillText("Thanks for trusting", W / 2, fy + 70); c.fillStyle = "#fff"; c.font = "800 46px " + SANS; c.fillText("AK Brands Marketing\u00A9", W / 2, fy + 136); c.fillStyle = "#7f9090"; c.font = "400 28px " + SANS; c.fillText(BZ_SITE, W / 2, fy + 184);
+  return cv;
+}
+async function poRefresh(){ const b = postSt && postSt.built; if (!b) return; const cv = await poDraw(b); b.canvas = cv; b.preview = cv.toDataURL("image/jpeg", 0.8); const im = $("poPrev"); if (im) im.src = b.preview; }
+/* the cover tool: the customer's private details are hidden before a screenshot can go in the post */
+function poCover(idx){
+  const p = postSt.built.proofs[idx]; if (!p) return; const img = p.img;
+  const ov = document.createElement("div"); ov.className = "poov"; ov.id = "poOv";
+  ov.innerHTML = '<div class="pobox"><h3 style="margin:.1rem 0">Cover the private details</h3><p class="hint" style="margin:.1rem 0 .4rem">The picture starts with only the top 40% showing. Swipe your finger over anything private that is still showing (a name, phone number, UPI ID or reference). Use the big brush.</p><div class="bizbtn"><button type="button" class="small" data-pc="top" data-v="0.3">Top 30%</button><button type="button" class="small" data-pc="top" data-v="0.4">Top 40%</button><button type="button" class="small" data-pc="top" data-v="0.55">Top 55%</button><button type="button" class="small" data-pc="top" data-v="1">Whole</button><button type="button" class="small" data-pc="undo">Undo</button></div><div class="bizbtn" style="margin-top:.3rem"><span class="hint" style="align-self:center">Brush:</span><button type="button" class="small" data-pc="size" data-v="0.035">Small</button><button type="button" class="small" data-pc="size" data-v="0.055">Medium</button><button type="button" class="small on" data-pc="size" data-v="0.08">Big</button></div><div class="pocv"><canvas id="poCv"></canvas></div><div class="bizbtn" style="margin-top:.5rem"><button type="button" class="small primary" data-pc="done">Use this in the post</button><button type="button" class="small" data-pc="out">Leave it out</button><button type="button" class="small" data-pc="cancel">Cancel</button></div></div>';
+  document.body.appendChild(ov); document.body.style.overflow = "hidden";
+  const cv = $("poCv"), maxW = Math.min(window.innerWidth - 56, 420), sc = maxW / img.width, W = Math.round(img.width * sc), Hh = Math.round(img.height * sc), BR = () => Math.max(10, Math.round(img.width * BRf * sc));
+  cv.width = W; cv.height = Hh; cv.style.width = W + "px"; cv.style.height = Hh + "px"; const c = cv.getContext("2d");
+  let BRf = 0.08, top = 0.4, strokes = [], cur = null;
+  const draw = () => { c.clearRect(0, 0, W, Hh); c.drawImage(img, 0, 0, W, Hh); c.strokeStyle = "#000"; c.fillStyle = "#000"; c.lineCap = "round"; c.lineJoin = "round"; c.lineWidth = BR() * 2; strokes.forEach((s) => { c.beginPath(); c.moveTo(s[0].x, s[0].y); s.forEach((q) => c.lineTo(q.x + 0.01, q.y)); c.stroke(); });
+    if (top < 1) { const y = Math.round(Hh * top); c.fillStyle = "rgba(0,0,0,.78)"; c.fillRect(0, y, W, Hh - y); c.fillStyle = "#fff"; c.font = "700 14px sans-serif"; c.textAlign = "center"; c.fillText("Hidden: not in the post", W / 2, y + 28); c.strokeStyle = "#02c3a3"; c.lineWidth = 2; c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); } };
+  const pos = (e) => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * (W / r.width), y: (e.clientY - r.top) * (Hh / r.height) }; };
+  cv.addEventListener("pointerdown", (e) => { cur = [pos(e)]; strokes.push(cur); try { cv.setPointerCapture(e.pointerId); } catch (x) {} draw(); e.preventDefault(); });
+  cv.addEventListener("pointermove", (e) => { if (!cur) return; cur.push(pos(e)); draw(); e.preventDefault(); });
+  const up = () => { cur = null; }; cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+  const close = () => { ov.remove(); document.body.style.overflow = ""; };
+  ov.addEventListener("click", (e) => {
+    const t = e.target.closest("[data-pc]"); if (!t) return; const a = t.getAttribute("data-pc");
+    if (a === "top") { top = Number(t.getAttribute("data-v")); draw(); }
+    else if (a === "undo") { strokes.pop(); draw(); }
+    else if (a === "size") { BRf = Number(t.getAttribute("data-v")); Array.prototype.forEach.call(ov.querySelectorAll("[data-pc=size]"), (x) => x.classList.toggle("on", x === t)); }
+    else if (a === "cancel") close();
+    else if (a === "out") { p.state = "out"; p.covered = null; close(); poAfter(); }
+    else if (a === "done") {
+      const out = document.createElement("canvas"), k = 1 / sc, fh = Math.max(1, Math.round(img.height * top)); out.width = img.width; out.height = fh; const o = out.getContext("2d"); o.drawImage(img, 0, 0);
+      o.strokeStyle = "#000"; o.lineCap = "round"; o.lineJoin = "round"; o.lineWidth = BR() * 2 * k; strokes.forEach((s) => { o.beginPath(); o.moveTo(s[0].x * k, s[0].y * k); s.forEach((q) => o.lineTo(q.x * k + 0.01, q.y * k)); o.stroke(); });
+      p.covered = out; p.state = "ok"; close(); poAfter();
+    }
+  });
+  draw();
+}
+async function poAfter(){ await poRefresh(); showDetail("post:" + postSt.key); }
+async function poShare(){
+  const b = postSt && postSt.built, say = (s) => { const m = $("poMsg"); if (m) m.textContent = s; }; if (!b) return;
+  if (b.proofs.some((p) => p.state === "ok") && !($("po_ok") || {}).checked) { say("Please tick the box to confirm you checked the screenshots."); return; }
+  const text = String(($("po_text") || {}).value || b.text).trim(); b.text = text; say("Making the picture...");
+  try { await poRefresh(); const blob = await new Promise((res, rej) => b.canvas.toBlob((x) => (x ? res(x) : rej(new Error("no picture"))), "image/jpeg", 0.92)); await giftShareBlobTo(blob, "AK-booked-lots.jpg", text, "Lots booked", say); }
+  catch (e) { console.error(e); say("That did not work. Tap again."); }
+}
+async function postAction(act, t){
+  const say = (s) => { const m = $("poMsg"); if (m) m.textContent = s; };
+  if (act === "open") { const list = poOrders(t); if (!list.length) return; postSt = { key: t, picks: poDefaultPicks(list), built: null }; showDetail("post:" + t); return; }
+  if (!postSt) return;
+  if (act === "close") { const k = postSt.key; postSt = null; showDetail("cust:" + k); return; }
+  if (act === "back") { postSt.built = null; showDetail("post:" + postSt.key); return; }
+  if (act === "build") { await poBuild(); return; }
+  if (act === "tick") return;
+  if (act === "cover") { poCover(Number(t)); return; }
+  if (act === "leave") { const p = postSt.built.proofs[Number(t)]; if (p) { p.state = "out"; p.covered = null; await poAfter(); } return; }
+  if (act === "amt") { postSt.built.showAmt = !postSt.built.showAmt; postSt.built.text = String(($("po_text") || {}).value || postSt.built.text); await poRefresh(); const im = $("poPrev"); if (im) im.src = postSt.built.preview; return; }
+  if (act === "share") { await poShare(); return; }
+}
+
+function qcRR(c, x, y, w, h, r){ c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+function qcFit(c, s, maxW){ if (c.measureText(s).width <= maxW) return s; let t = String(s); while (t.length > 1 && c.measureText(t + "\u2026").width > maxW) t = t.slice(0, -1); return t + "\u2026"; }
+function qcDraw(d){
+  const W = 1080, P = 56, SANS = "Roboto, 'Segoe UI', Arial, sans-serif", SERIF = "Georgia, 'Times New Roman', serif";
+  const rows = Math.min(5, d.unpaid.length), extra = d.unpaid.length - rows, headH = 300, tileH = 170, barH = 196, footH = 300;
+  const H = P + headH + 34 + tileH + 30 + barH + 34 + (d.unpaid.length ? 86 + rows * 92 + (extra > 0 ? 64 : 0) + 20 : 0) + footH + P;
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H; const c = cv.getContext("2d");
+  c.fillStyle = "#f4f6f6"; c.fillRect(0, 0, W, H); c.textBaseline = "alphabetic";
+  let y = P;
+  c.fillStyle = "#02c3a3"; qcRR(c, P, y + 10, W - 2 * P, headH, 36); c.fill();
+  c.fillStyle = "#0a0a0a"; qcRR(c, P, y, W - 2 * P, headH, 36); c.fill();
+  c.fillStyle = "#02c3a3"; c.font = "700 34px " + SANS; try { c.letterSpacing = "4px"; } catch (e) {}
+  c.fillText(qcFit(c, d.name.toUpperCase(), W - 2 * P - 90), P + 46, y + 92); try { c.letterSpacing = "0px"; } catch (e) {}
+  c.fillStyle = "#fff"; c.font = "700 100px " + SERIF; c.fillText("Your orders", P + 46, y + 200);
+  c.fillStyle = "#cfd8d8"; c.font = "400 36px " + SANS; c.fillText(d.nLots + (d.nLots === 1 ? " lot" : " lots") + "      " + d.nOrders + (d.nOrders === 1 ? " order" : " orders"), P + 46, y + 262);
+  y += headH + 34;
+  const tw = (W - 2 * P - 44) / 3, tiles = [["Total ordered", d.total, "#ffffff", "#e1e6e6", "#0a0a0a"], ["Paid so far", d.paid, "#e6f4ec", "#1b8a4a", "#0d6b33"], ["Balance to pay", d.due, d.due > 0 ? "#fdeceb" : "#e6f4ec", d.due > 0 ? "#c0392b" : "#1b8a4a", d.due > 0 ? "#a82a1c" : "#0d6b33"]];
+  tiles.forEach((t, i) => {
+    const x = P + i * (tw + 22); c.fillStyle = t[2]; qcRR(c, x, y, tw, tileH, 26); c.fill(); c.lineWidth = 3; c.strokeStyle = t[3]; c.stroke();
+    c.fillStyle = "#5c6869"; c.font = "400 28px " + SANS; c.fillText(t[0], x + 24, y + 56);
+    let fs = 50; c.font = "800 " + fs + "px " + SANS; const txt = inr(t[1]); while (c.measureText(txt).width > tw - 56 && fs > 26) { fs -= 2; c.font = "800 " + fs + "px " + SANS; }
+    c.fillStyle = t[4]; c.fillText(txt, x + 24, y + 126);
+  });
+  y += tileH + 30;
+  c.textAlign = "center";
+  if (d.due > 0) {
+    c.fillStyle = "#f08a24"; qcRR(c, P, y, W - 2 * P, barH, 40); c.fill();
+    c.fillStyle = "#fff"; c.font = "600 38px " + SANS; c.fillText("Balance to pay", W / 2, y + 66);
+    let fs = 88; c.font = "800 " + fs + "px " + SANS; const t2 = inr(d.due); while (c.measureText(t2).width > W - 2 * P - 80 && fs > 40) { fs -= 4; c.font = "800 " + fs + "px " + SANS; }
+    c.fillText(t2, W / 2, y + 166);
+  } else {
+    c.fillStyle = "#1b8a4a"; qcRR(c, P, y, W - 2 * P, barH, 40); c.fill(); c.fillStyle = "#fff"; c.font = "800 62px " + SANS; c.fillText("All paid. Thank you.", W / 2, y + 122);
+  }
+  c.textAlign = "left"; y += barH + 34;
+  if (d.unpaid.length) {
+    c.fillStyle = "#0a0a0a"; c.font = "800 40px " + SANS; c.fillText("Unpaid lots", P + 6, y + 44);
+    for (let i = 0; i < rows; i++) {
+      const ry = y + 86 + i * 92, u = d.unpaid[i]; c.fillStyle = "#fff"; qcRR(c, P, ry, W - 2 * P, 80, 18); c.fill(); c.lineWidth = 2; c.strokeStyle = "#e1e6e6"; c.stroke();
+      c.font = "800 34px " + SANS; const at = inr(u.amt), aw = c.measureText(at).width; c.fillStyle = "#a82a1c"; c.textAlign = "right"; c.fillText(at, W - P - 26, ry + 52);
+      c.textAlign = "left"; c.fillStyle = "#1f2426"; c.font = "600 32px " + SANS; c.fillText(qcFit(c, u.label, W - 2 * P - 52 - aw - 24), P + 26, ry + 52);
+    }
+    if (extra > 0) { c.fillStyle = "#5c6869"; c.font = "600 30px " + SANS; c.fillText("+ " + extra + " more unpaid " + (extra === 1 ? "lot" : "lots"), P + 6, y + 86 + rows * 92 + 40); }
+    y += 86 + rows * 92 + (extra > 0 ? 64 : 0) + 20;
+  }
+  c.fillStyle = "#fff"; qcRR(c, P, y, W - 2 * P, footH, 30); c.fill(); c.lineWidth = 2; c.strokeStyle = "#e1e6e6"; c.stroke();
+  c.textAlign = "center"; c.fillStyle = "#1f2426"; c.font = "400 34px " + SANS; c.fillText("Tap the link in this message to see every lot,", W / 2, y + 62); c.fillText("pay by UPI and track your parcels.", W / 2, y + 108);
+  c.fillStyle = "#5c6869"; c.font = "600 30px " + SANS; c.fillText("Source The Value   |   Trusted Firm", W / 2, y + 168);
+  c.fillStyle = "#00927a"; c.font = "800 46px " + SANS; c.fillText("AK Brands Marketing\u00A9", W / 2, y + 228);
+  c.fillStyle = "#8a9696"; c.font = "400 26px " + SANS; c.fillText("As on " + new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }), W / 2, y + 276);
+  return cv;
+}
+
+/* ---------- Payment reminders: one screen, one tap per customer, the same picture and message you send by hand ---------- */
+let remCfg = { everyDays: 1, minAge: 0, time: "10:30" }, remQ = "", remPromiseFor = "", remBusy = false, remReady = {}, remNote = "";
+async function loadRemCfg(){ try { const s = await getDoc(doc(db, "settings", "reminders")); if (s.exists()) remCfg = Object.assign({ everyDays: 1, minAge: 0, time: "10:30" }, s.data()); } catch (e) { console.error(e); } }
+function remList(){
+  const t = todayISO(), by = new Map();
+  orders.forEach((o) => { if (o.status === "Cancelled") return; const k = groupKeyOf(o); let e = by.get(k); if (!e) { e = { key: k, orders: [] }; by.set(k, e); } e.orders.push(o); });
+  const out = [];
+  by.forEach((e) => {
+    const owing = e.orders.filter((o) => calc(o).balance > 0.005); if (!owing.length) return;
+    const newest = e.orders.slice().sort(newestFirst)[0];
+    e.name = newest.customer.firm || newest.customer.name || prettyPhone(newest.customer.phone) || "No name"; e.owing = owing;
+    e.bal = owing.reduce((a, o) => a + calc(o).balance, 0); e.oldest = Math.max.apply(null, owing.map((o) => Math.max(0, dayDiff(o.orderDate || t, t))));
+    const cu = customers[e.key] || {}, rem = cu.rem || {}, mem = cu.member || {};
+    e.last = rem.last || ""; e.count = rem.count || 0; e.promise = rem.promise || ""; e.skip = rem.skip === t; e.noMsg = !!mem.noMsg; e.wa = /^91\d{10}$/.test(e.key); e.sinceLast = e.last ? dayDiff(e.last, t) : null;
+    if (!e.wa) e.group = "nowa"; else if (e.noMsg) e.group = "nomsg"; else if (e.last === t) e.group = "done"; else if ((e.promise && e.promise > t) || e.skip) e.group = "paused"; else if (e.oldest < Number(remCfg.minAge)) e.group = "young"; else if (e.sinceLast !== null && e.sinceLast < Number(remCfg.everyDays)) e.group = "wait"; else e.group = "due";
+    out.push(e);
+  });
+  return out.sort((a, b) => b.oldest - a.oldest || b.bal - a.bal);
+}
+function remTileHtml(){
+  if (!REMIND_ENABLED) return "";
+  const L = remList(), due = L.filter((e) => e.group === "due"), done = L.filter((e) => e.group === "done"), amt = due.reduce((a, e) => a + e.bal, 0);
+  return '<button type="button" class="tile wide remT" data-rem="open"><small>Payment reminders</small><b>' + (due.length ? due.length + (due.length === 1 ? " customer" : " customers") + " to remind today \u00B7 " + inr(amt) : (L.length ? "All reminders are done for today" : "Nobody owes you money")) + '</b><span class="go">' + (done.length ? done.length + " reminded today. " : "") + 'Tap to send reminders</span></button>';
+}
+async function remAccountUrl(key){
+  let token = await customerToken(key);
+  if (!token) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; token = makeToken(bytes, 24); await setDoc(doc(db, "customers", key), { viewToken: token }, { merge: true }); customers[key] = Object.assign(customers[key] || {}, { viewToken: token }); }
+  await publishCustomerView(key, token);
+  const o1 = orders.filter((x) => groupKeyOf(x) === key).sort(newestFirst)[0], slug = String((o1 && (o1.customer.firm || o1.customer.name)) || "customer").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 30) || "customer";
+  return SITE_URL + "/my.html?c=" + slug + "-" + token;
+}
+function remCardData(e){
+  const live = e.orders, pay = (o) => calc(o), items = (o) => (o.items || []).filter((it) => it.name && String(it.name).trim());
+  return { name: e.name, total: live.reduce((a, o) => a + pay(o).payable, 0), paid: live.reduce((a, o) => a + pay(o).received, 0), due: e.owing.reduce((a, o) => a + Math.max(0, pay(o).balance), 0), nLots: live.reduce((a, o) => a + items(o).length, 0), nOrders: live.length,
+    unpaid: e.owing.slice().sort(newestFirst).map((o) => { const its = items(o), it = its[0] || {}; return { label: (it.lotNo ? "Lot " + it.lotNo : "Order " + o.orderNo) + (it.name ? " \u00B7 " + it.name : "") + (its.length > 1 ? "  +" + (its.length - 1) + " more" : ""), amt: pay(o).balance }; }) };
+}
+const remText = (d, url) => ["*" + d.name + ", your account summary*", "Total ordered " + inr(d.total) + "  |  Paid " + inr(d.paid) + "  |  Balance " + inr(d.due), "", "See every lot, pay and track your parcels:", url, "", "Source The Value.", "Trusted Firm", "AK Brands Marketing\u00A9"].join("\n");
+async function remPrepare(){
+  const due = remList().filter((e) => e.group === "due" && !(remReady[e.key] && Date.now() - remReady[e.key].at < 600000)), say = (s) => { const m = $("remMsg"); if (m) m.textContent = s; };
+  for (let i = 0; i < due.length; i++) { say("Getting the links ready... " + (i + 1) + " of " + due.length); try { remReady[due[i].key] = { url: await remAccountUrl(due[i].key), at: Date.now() }; } catch (e) { console.error(e); } }
+  if (due.length) say("");
+}
+async function remMark(key, patch){
+  const old = (customers[key] || {}).rem || {}, rem = Object.assign({ last: "", count: 0, promise: "", skip: "" }, old, patch);
+  await setDoc(doc(db, "customers", key), { rem }, { merge: true }); customers[key] = Object.assign(customers[key] || {}, { rem });
+}
+async function remSend(key){
+  const say = (s) => { const m = $("remMsg"); if (m) m.textContent = s; };
+  const e = remList().find((x) => x.key === key); if (!e || remBusy) return false; remBusy = true;
+  try {
+    let url = remReady[key] && Date.now() - remReady[key].at < 600000 ? remReady[key].url : null; if (!url) { say("Getting the link ready..."); url = await remAccountUrl(key); remReady[key] = { url, at: Date.now() }; }
+    const d = remCardData(e), text = remText(d, url), blob = await new Promise((res, rej) => qcDraw(d).toBlob((b) => (b ? res(b) : rej(new Error("no picture"))), "image/jpeg", 0.92)), file = new File([blob], "AK-payment-reminder-" + cardSlug(e.name) + ".jpg", { type: "image/jpeg" });
+    try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(() => {}); } catch (x) {}
+    let shared = false;
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], text, title: e.name + " | AK Brands Marketing" }); shared = true; } catch (er) { if (!(er && er.name === "AbortError")) throw er; } }
+    else { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); window.open("https://wa.me/" + key + "?text=" + encodeURIComponent(text), "_blank"); shared = true; }
+    if (shared) { await remMark(key, { last: todayISO(), count: ((customers[key] || {}).rem || {}).count + 1 || 1, skip: "" }); remNote = e.name + " is marked as reminded today."; } else remNote = "Cancelled. " + e.name + " is not marked.";
+    showDetail("reminders"); try { renderTiles(); } catch (x) { console.error(x); }
+    return shared;
+  } catch (err) { console.error(err); say("That did not work. Check your connection and try again."); return false; }
+  finally { remBusy = false; }
+}
+function remIcs(){
+  const [hh, mm] = String(remCfg.time || "10:30").split(":").map((x) => Number(x) || 0), now = new Date(), s = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0); if (s <= now) s.setDate(s.getDate() + 1);
+  const p2 = (n) => String(n).padStart(2, "0"), f = (d) => d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()) + "T" + p2(d.getHours()) + p2(d.getMinutes()) + "00", e = new Date(s.getTime() + 15 * 60000), u = new Date(), stamp = u.getUTCFullYear() + p2(u.getUTCMonth() + 1) + p2(u.getUTCDate()) + "T" + p2(u.getUTCHours()) + p2(u.getUTCMinutes()) + "00Z";
+  const L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//AK Brands Marketing//Payment reminders//EN", "CALSCALE:GREGORIAN", "BEGIN:VEVENT", "UID:ak-payment-reminders@akbrandsmarketing.com", "DTSTAMP:" + stamp, "DTSTART:" + f(s), "DTEND:" + f(e), "RRULE:FREQ=DAILY", "SUMMARY:Send payment reminders", "DESCRIPTION:Open " + SITE_URL + "/orders.html#reminders and tap Next customer.", "URL:" + SITE_URL + "/orders.html#reminders", "BEGIN:VALARM", "TRIGGER:PT0M", "ACTION:DISPLAY", "DESCRIPTION:Send payment reminders", "END:VALARM", "END:VEVENT", "END:VCALENDAR"];
+  const blob = new Blob([L.join("\r\n") + "\r\n"], { type: "text/calendar" }), a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "AK-payment-reminders.ics"; document.body.appendChild(a); a.click(); a.remove();
+}
+const remAgo = (e) => (e.last ? (e.sinceLast === 0 ? "today" : e.sinceLast === 1 ? "yesterday" : e.sinceLast + " days ago") : "never");
+function remRowHtml(e){
+  const k = esc(e.key), g = e.group, info = inr(e.bal) + " \u00B7 " + e.oldest + (e.oldest === 1 ? " day" : " days") + " unpaid \u00B7 last reminded " + remAgo(e) + (e.count ? " \u00B7 " + e.count + (e.count === 1 ? " reminder" : " reminders") : "");
+  let extra = ""; if (g === "paused") extra = e.skip && !(e.promise && e.promise > todayISO()) ? "Skipped for today." : "Promised to pay on " + fmtDate(e.promise) + "."; if (g === "wait") extra = "Next reminder in " + (Number(remCfg.everyDays) - e.sinceLast) + " day(s)."; if (g === "young") extra = "The balance is newer than " + remCfg.minAge + " days.";
+  const btns = (g === "nomsg" || g === "nowa") ? "" : '<div class="bizbtn"><button type="button" class="small primary" data-rem="send" data-t="' + k + '">' + (g === "done" ? "Send again" : "Send reminder") + '</button>' + (g === "due" || g === "wait" || g === "young" ? '<button type="button" class="small" data-rem="promise" data-t="' + k + '">Promise date</button><button type="button" class="small" data-rem="skip" data-t="' + k + '">Skip today</button>' : '') + (g === "paused" ? '<button type="button" class="small" data-rem="clear" data-t="' + k + '">Remind again</button>' : '') + '</div>';
+  const pf = remPromiseFor === e.key ? '<div class="ocard" style="margin:.4rem 0"><label for="rem_pd">Customer promised to pay on</label><input id="rem_pd" type="date" min="' + todayISO() + '"><div style="margin-top:.4rem"><button type="button" class="small primary" data-rem="promsave" data-t="' + k + '">Save</button> <button type="button" class="small" data-rem="promcancel">Cancel</button></div></div>' : "";
+  return '<div class="ocard remrow"><div><b>' + esc(e.name) + '</b> <span class="pill ' + (g === "done" ? "ok" : g === "due" ? "bad" : "warn") + '">' + ({ due: "To remind", done: "Reminded", wait: "Not due yet", young: "New balance", paused: "Paused", nomsg: "Do not message", nowa: "No WhatsApp number" })[g] + '</span></div><p class="hint" style="margin:.15rem 0">' + esc(info) + '</p>' + (extra ? '<p class="hint" style="margin:.1rem 0">' + esc(extra) + '</p>' : '') + btns + pf + '</div>';
+}
+function remSectionsHtml(){
+  const L = remList(), toks = remQ.toLowerCase().split(/\s+/).filter(Boolean), f = L.filter((e) => toks.every((t) => (e.name + " " + e.key).toLowerCase().indexOf(t) >= 0)), grp = (id) => f.filter((e) => e.group === id);
+  const sec = (title, list) => (list.length ? '<h3 style="margin:.9rem 0 .2rem">' + title + ' (' + list.length + ')</h3>' + list.map(remRowHtml).join("") : "");
+  return sec("To remind today", grp("due")) + sec("Reminded today", grp("done")) + sec("Not due yet", grp("wait")) + sec("New balances", grp("young")) + sec("Paused", grp("paused")) + sec("Do not message", grp("nomsg")) + sec("No WhatsApp number", grp("nowa")) + (f.length ? "" : '<p class="hint">' + (L.length ? "Nobody matches that search." : "Nobody owes you money right now.") + '</p>');
+}
+function remScreenHtml(){
+  const L = remList(), due = L.filter((e) => e.group === "due"), tot = due.reduce((a, e) => a + e.bal, 0), sel = (id, cur, opts) => '<select id="' + id + '">' + opts.map((o) => '<option value="' + o[0] + '"' + (String(o[0]) === String(cur) ? " selected" : "") + '>' + o[1] + '</option>').join("") + '</select>';
+  return '<h2 style="margin-top:0">Payment reminders</h2><p class="hint">Everyone who owes you money. Tap <b>Send reminder</b> and WhatsApp opens with the same picture and message you send by hand. You choose the chat and press send. Then the customer is marked as reminded today.</p>' +
+    '<details class="ocard"><summary><b>Settings</b> \u00B7 ' + esc(({ 1: "every day", 2: "every 2 days", 3: "every 3 days", 7: "every week" })[Number(remCfg.everyDays)] || "every day") + ' \u00B7 alert ' + esc(remCfg.time) + '</summary><label for="rem_every">Remind each customer</label>' + sel("rem_every", remCfg.everyDays, [[1, "Every day"], [2, "Every 2 days"], [3, "Every 3 days"], [7, "Every week"]]) + '<label for="rem_min">Who is included</label>' + sel("rem_min", remCfg.minAge, [[0, "All customers with any balance"], [3, "Balance older than 3 days"], [7, "Balance older than 7 days"]]) + '<label for="rem_time">Your daily alert time</label><input id="rem_time" type="time" value="' + esc(remCfg.time) + '"><div style="margin-top:.5rem"><button type="button" class="small" data-rem="ics">Add the daily alert to my phone calendar</button></div><p class="hint" style="margin-top:.3rem">The alert only reminds you. WhatsApp does not allow a web page to message customers by itself.</p></details>' +
+    '<p style="margin:.7rem 0 .3rem"><b>' + due.length + '</b> to remind today, <b>' + inr(tot) + '</b> in all.</p>' + (due.length ? '<button type="button" class="small primary" data-rem="next" style="width:100%;padding:.9rem;font-size:1.05rem">Next customer</button>' : '') +
+    '<input id="rem_q" type="search" autocomplete="off" placeholder="Search customer name or number..." value="' + esc(remQ) + '" style="margin:.6rem 0 .2rem"><p class="hint" id="remMsg" style="font-weight:600;color:#0d6b33">' + esc(remNote) + '</p><div id="remList">' + remSectionsHtml() + '</div>';
+}
+async function remAction(act, t){
+  const say = (s) => { const m = $("remMsg"); if (m) m.textContent = s; };
+  if (act === "open") { remNote = ""; showDetail("reminders"); remPrepare(); return; }
+  if (act === "ics") { remIcs(); say("Your phone calendar should open. Add the alert there."); return; }
+  if (act === "next") { const first = remList().find((e) => e.group === "due" && (!remQ || (e.name + " " + e.key).toLowerCase().indexOf(remQ.toLowerCase()) >= 0)); if (first) await remSend(first.key); return; }
+  if (act === "send") { await remSend(t); return; }
+  if (act === "skip") { await remMark(t, { skip: todayISO() }); remNote = ""; showDetail("reminders"); try { renderTiles(); } catch (e) { console.error(e); } return; }
+  if (act === "clear") { await remMark(t, { skip: "", promise: "" }); remNote = ""; showDetail("reminders"); try { renderTiles(); } catch (e) { console.error(e); } return; }
+  if (act === "promise") { remPromiseFor = t; showDetail("reminders"); return; }
+  if (act === "promcancel") { remPromiseFor = ""; showDetail("reminders"); return; }
+  if (act === "promsave") { const v = String(($("rem_pd") || {}).value || ""); if (!/^\d{4}-\d{2}-\d{2}$/.test(v) || v < todayISO()) { say("Choose a date from today onwards."); return; } await remMark(t, { promise: v }); remPromiseFor = ""; remNote = ""; showDetail("reminders"); try { renderTiles(); } catch (e) { console.error(e); } }
+}
+async function remSaveCfg(){
+  remCfg = { everyDays: Number(($("rem_every") || {}).value || 1), minAge: Number(($("rem_min") || {}).value || 0), time: String(($("rem_time") || {}).value || "10:30") };
+  try { await setDoc(doc(db, "settings", "reminders"), remCfg); } catch (e) { console.error(e); } showDetail("reminders"); try { renderTiles(); } catch (e) { console.error(e); }
+}
+
+/* ---------- Reports: sales and purchase, as Excel, CSV (zip of sheets) and PDF ---------- */
+let repSt = { period: "fy", from: "", to: "", which: "both", fmt: "xlsx", msg: "" };
+const REP_MIME = { xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", csv: "application/zip", pdf: "application/pdf" };
+const REP_PERIODS = [["month", "This month"], ["last", "Last month"], ["quarter", "This quarter"], ["fy", "This financial year"], ["lastfy", "Last financial year"], ["custom", "My dates"]];
+const repMon = (ym) => MON[Number(ym.slice(5, 7)) - 1] + " " + ym.slice(0, 4);
+function repRange(){
+  const k = repSt.period, t = todayISO(); let r;
+  if (k === "last") { const d = new Date(t + "T00:00:00"), y = d.getMonth() === 0 ? d.getFullYear() - 1 : d.getFullYear(), m = d.getMonth() === 0 ? 11 : d.getMonth() - 1, e = new Date(y, m + 1, 0); r = { from: y + "-" + dz(m + 1) + "-01", to: isoOf(e) }; }
+  else if (k === "custom") r = { from: repSt.from || "0000-01-01", to: repSt.to || t };
+  else { const p = periodRange(k); r = { from: p.from, to: p.key === "lastfy" ? p.to : (p.to > t ? t : p.to) }; }
+  const nm = (REP_PERIODS.find((x) => x[0] === k) || [0, "Report"])[1];
+  r.label = nm + " (" + fmtDate(r.from === "0000-01-01" ? t : r.from) + " to " + fmtDate(r.to) + ")"; return r;
+}
+const repOrdersIn = () => { const r = repRange(); return orders.filter((o) => o.status !== "Cancelled" && o.orderDate >= r.from && o.orderDate <= r.to).sort((a, b) => String(a.orderDate).localeCompare(String(b.orderDate)) || String(a.orderNo).localeCompare(String(b.orderNo))); };
+function repTaxType(o){ try { const inv = buildInvoice(o, biz, "customer"); if (inv.seller && inv.seller.stateCode && inv.buyer && inv.buyer.stateCode) return inv.inter ? "IGST" : "CGST+SGST"; } catch (e) { console.error(e); } return "Not known"; }
+const repSum = (rows, i) => r2(rows.reduce((a, r) => a + (Number(r[i]) || 0), 0));
+function repTable(name, head, kinds, rows, widths, totalCols){
+  const total = rows.length ? head.map((h, i) => (i === 0 ? "Total" : (totalCols.indexOf(i) >= 0 ? repSum(rows, i) : ""))) : null;
+  return { name, head, kinds, rows, widths, total };
+}
+function repTables(os, which){
+  const sales = [], lots = [], pur = [], purLots = [], months = {};
+  os.forEach((o) => {
+    const c = calc(o), cu = o.customer || {}, sp = o.supplier || {}, tt = repTaxType(o), ym = String(o.orderDate).slice(0, 7), fTax = c.freightTax, fTaxable = r2(c.freightTotal - c.freightTax);
+    let cg = "", sg = "", ig = ""; if (tt === "IGST") { ig = c.tax; cg = 0; sg = 0; } else if (tt === "CGST+SGST") { cg = r2(c.tax / 2); sg = r2(c.tax - cg); ig = 0; }
+    sales.push([o.orderDate, o.orderNo, o.invoiceNo || "", o.invoiceDate || "", cu.name || "", cu.firm || "", cu.city || "", cu.state || "", cu.gstin || "", o.status || "", c.taxable, fTaxable, tt, cg, sg, ig, c.tax, c.payable, c.received, Math.max(0, c.balance), c.payStatus]);
+    (o.items || []).forEach((it, i) => { if (!(it.name && String(it.name).trim())) return; const ln = c.lines[i]; lots.push([o.orderDate, o.orderNo, o.invoiceNo || "", cu.name || cu.firm || "", cu.state || "", cu.gstin || "", it.lotNo || "", plain(it.name), it.hsn || "", num(it.qty), it.unit || "", num(it.custRate), o.gstMode === "excl" ? "No" : "Yes", num(it.gst), ln.taxable, ln.tax, ln.total]); });
+    if (c.sup > 0 || sp.name) {
+      pur.push([o.orderDate, o.orderNo, o.urdNo || "", o.urdDate || "", sp.name || "", sp.gstin || "", sp.pan || "", String(sp.address || "").replace(/\s*\n\s*/g, ", "), c.sup, c.supPaid, Math.max(0, c.supDue), c.supStatus, c.freightCost, c.extraCost]);
+      (o.items || []).forEach((it, i) => { if (!(it.name && String(it.name).trim())) return; purLots.push([o.orderDate, o.orderNo, o.urdNo || "", sp.name || "", sp.gstin || "", it.lotNo || "", plain(it.name), it.hsn || "", num(it.qty), it.unit || "", num(it.supRate), c.lines[i].sup]); });
+    }
+    const m = months[ym] || (months[ym] = { orders: 0, goods: 0, fr: 0, gst: 0, tot: 0, rec: 0, bal: 0, pur: 0, paid: 0, due: 0, cost: 0, profit: 0 });
+    m.orders++; m.goods += c.taxable; m.fr += fTaxable; m.gst += c.tax; m.tot += c.payable; m.rec += c.received; m.bal += Math.max(0, c.balance); m.pur += c.sup; m.paid += c.supPaid; m.due += Math.max(0, c.supDue); m.cost += c.freightCost + c.extraCost; m.profit += c.profit;
+  });
+  const moneyCols = (n, a) => a;
+  const sheets = [];
+  const mrows = Object.keys(months).sort().map((k) => { const m = months[k]; return [repMon(k), m.orders, r2(m.goods), r2(m.fr), r2(m.gst), r2(m.tot), r2(m.rec), r2(m.bal), r2(m.pur), r2(m.paid), r2(m.due), r2(m.cost), r2(m.profit)]; });
+  const sHead = ["Month", "Orders", "Goods before GST", "Freight before GST", "GST", "Total sales", "Received", "Balance with customers", "Purchases", "Paid to suppliers", "Due to suppliers", "Freight and extra costs paid by us", "Profit"];
+  const sKinds = ["text", "int", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money"], sW = [14, 8, 16, 16, 14, 16, 14, 18, 16, 16, 16, 22, 16];
+  const keep = which === "sales" ? [0, 1, 2, 3, 4, 5, 6, 7] : (which === "purchase" ? [0, 1, 8, 9, 10, 11] : sHead.map((x, i) => i));
+  sheets.push(repTable("Summary", keep.map((i) => sHead[i]), keep.map((i) => sKinds[i]), mrows.map((r) => keep.map((i) => r[i])), keep.map((i) => sW[i]), keep.filter((i) => i > 0).map((i) => keep.indexOf(i))));
+  if (which !== "purchase") {
+    sheets.push(repTable("Sales by order", ["Order date", "Order no", "Invoice no", "Invoice date", "Customer", "Firm", "City", "State", "Customer GSTIN", "Status", "Goods before GST", "Freight before GST", "GST type", "CGST", "SGST", "IGST", "Total GST", "Total payable", "Received", "Balance", "Payment status"], ["date", "text", "text", "date", "text", "text", "text", "text", "text", "text", "money", "money", "text", "money", "money", "money", "money", "money", "money", "money", "text"], sales, [12, 14, 14, 12, 22, 20, 14, 16, 18, 12, 16, 16, 12, 12, 12, 12, 12, 16, 14, 14, 14], [10, 11, 13, 14, 15, 16, 17, 18, 19]));
+    sheets.push(repTable("Sales by lot", ["Order date", "Order no", "Invoice no", "Customer", "State", "Customer GSTIN", "Lot no", "Product", "HSN", "Qty", "Unit", "Rate", "Rate includes GST", "GST %", "Taxable value", "GST", "Line total"], ["date", "text", "text", "text", "text", "text", "text", "text", "text", "qty", "text", "money", "text", "qty", "money", "money", "money"], lots, [12, 14, 14, 22, 16, 18, 12, 28, 10, 10, 8, 12, 12, 8, 16, 14, 16], [14, 15, 16]));
+  }
+  if (which !== "sales") {
+    sheets.push(repTable("Purchases by order", ["Order date", "Order no", "URD bill no", "URD bill date", "Supplier", "Supplier GSTIN", "Supplier PAN", "Supplier address", "Purchase value", "Paid to supplier", "Balance payable", "Payment status", "Freight paid by us", "Other charges paid by us"], ["date", "text", "text", "date", "text", "text", "text", "text", "money", "money", "money", "text", "money", "money"], pur, [12, 14, 14, 12, 24, 18, 14, 34, 16, 16, 16, 14, 16, 18], [8, 9, 10, 12, 13]));
+    sheets.push(repTable("Purchases by lot", ["Order date", "Order no", "URD bill no", "Supplier", "Supplier GSTIN", "Lot no", "Product", "HSN", "Qty", "Unit", "Supplier rate", "Purchase value"], ["date", "text", "text", "text", "text", "text", "text", "text", "qty", "text", "money", "money"], purLots, [12, 14, 14, 24, 18, 12, 28, 10, 10, 8, 14, 16], [11]));
+  }
+  const r = repRange(), notes = [["Report", (which === "sales" ? "Sales report" : which === "purchase" ? "Purchase report" : "Sales and purchase report") + " - AK Brands Marketing"], ["Period", r.label], ["Month is decided by", "Order date"], ["Generated on", fmtDate(todayISO())], ["Orders included", String(os.length)], ["Cancelled orders", "Left out"], ["Purchases", "Supplier rates are stored as one amount, so GST on purchases is not shown. The purchase sheets show purchase value, paid and balance."], ["Profit", "Goods before GST minus purchases, minus freight and extra costs paid by us."], ["Please note", "A report for your accountant. It is not a GST return. Ask your accountant to check the first one."]];
+  sheets.push({ name: "Notes", head: ["Item", "Detail"], kinds: ["text", "text"], rows: notes, widths: [22, 110], total: null });
+  return { sheets, sales, lots, pur, purLots, mrows };
+}
+/* ----- zip, xlsx ----- */
+const repCrcT = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const repCrc = (b) => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = repCrcT[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+function repZip(files){
+  const enc = new TextEncoder(), parts = [], cen = []; let off = 0;
+  const u16 = (v) => [v & 255, (v >> 8) & 255], u32 = (v) => [v & 255, (v >> 8) & 255, (v >> 16) & 255, (v >>> 24) & 255];
+  files.forEach((f) => {
+    const nm = enc.encode(f.name), d = f.data, crc = repCrc(d), hdr = [0x50, 0x4B, 3, 4].concat(u16(20), u16(0x0800), u16(0), u16(0x6000), u16(0x5A21), u32(crc), u32(d.length), u32(d.length), u16(nm.length), u16(0));
+    parts.push(new Uint8Array(hdr), nm, d);
+    cen.push(new Uint8Array([0x50, 0x4B, 1, 2].concat(u16(20), u16(20), u16(0x0800), u16(0), u16(0x6000), u16(0x5A21), u32(crc), u32(d.length), u32(d.length), u16(nm.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(off))), nm);
+    off += hdr.length + nm.length + d.length;
+  });
+  let cl = 0; cen.forEach((p) => { cl += p.length; });
+  const end = new Uint8Array([0x50, 0x4B, 5, 6].concat(u16(0), u16(0), u16(files.length), u16(files.length), u32(cl), u32(off), u16(0)));
+  const all = parts.concat(cen, [end]), len = all.reduce((a, p) => a + p.length, 0), out = new Uint8Array(len); let o = 0; all.forEach((p) => { out.set(p, o); o += p.length; }); return out;
+}
+const repXE = (s) => String(s == null ? "" : s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const repCol = (i) => { let s = "", n = i + 1; while (n > 0) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
+const repSerial = (iso) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || "")); return m ? Math.round((Date.UTC(+m[1], +m[2] - 1, +m[3]) - Date.UTC(1899, 11, 30)) / 86400000) : null; };
+function repSheetXml(t){
+  const nC = t.head.length, sty = { header: 1, money: 2, int: 3, date: 4, qty: 5, text: 0 }, tsty = { money: 6, int: 7, qty: 7, text: 8, date: 8 };
+  const cell = (r, c, v, s, kind) => {
+    const ref = repCol(c) + r;
+    if (v === "" || v == null) return s ? '<c r="' + ref + '" s="' + s + '"/>' : "";
+    if (kind === "date") { const n = repSerial(v); return n ? '<c r="' + ref + '" s="' + s + '"><v>' + n + '</v></c>' : '<c r="' + ref + '" t="inlineStr"><is><t>' + repXE(v) + '</t></is></c>'; }
+    if (typeof v === "number" && isFinite(v)) return '<c r="' + ref + '" s="' + s + '"><v>' + v + '</v></c>';
+    return '<c r="' + ref + '" s="' + s + '" t="inlineStr"><is><t xml:space="preserve">' + repXE(v) + '</t></is></c>';
+  };
+  let x = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0">' + (t.rows.length ? '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>' : "") + '</sheetView></sheetViews><cols>' + t.widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join("") + '</cols><sheetData>';
+  x += '<row r="1" ht="30" customHeight="1">' + t.head.map((h, c) => cell(1, c, h, 1, "text")).join("") + '</row>';
+  t.rows.forEach((row, ri) => { x += '<row r="' + (ri + 2) + '">' + row.map((v, c) => cell(ri + 2, c, v, sty[t.kinds[c]] || 0, t.kinds[c])).join("") + '</row>'; });
+  if (t.total) { const r = t.rows.length + 2; x += '<row r="' + r + '">' + t.total.map((v, c) => cell(r, c, v, tsty[t.kinds[c]] || 8, "text")).join("") + '</row>'; }
+  x += '</sheetData>' + (t.rows.length ? '<autoFilter ref="A1:' + repCol(nC - 1) + (t.rows.length + 1) + '"/>' : "") + '</worksheet>';
+  return x;
+}
+function repXlsx(sheets){
+  const enc = new TextEncoder(), H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>', safe = (n) => String(n).replace(/[\[\]:*?\/\\]/g, " ").slice(0, 31);
+  const files = [
+    { name: "[Content_Types].xml", data: enc.encode(H + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' + sheets.map((s, i) => '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join("") + '</Types>') },
+    { name: "_rels/.rels", data: enc.encode(H + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>') },
+    { name: "xl/workbook.xml", data: enc.encode(H + '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' + sheets.map((s, i) => '<sheet name="' + repXE(safe(s.name)) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>').join("") + '</sheets></workbook>') },
+    { name: "xl/_rels/workbook.xml.rels", data: enc.encode(H + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + sheets.map((s, i) => '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>').join("") + '<Relationship Id="rId' + (sheets.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>') },
+    { name: "xl/styles.xml", data: enc.encode(H + '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="3"><numFmt numFmtId="164" formatCode="#,##0.00"/><numFmt numFmtId="165" formatCode="dd\\-mmm\\-yyyy"/><numFmt numFmtId="166" formatCode="#,##0.##"/></numFmts><fonts count="3"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0F2B2A"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE3EEEC"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="9"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="2" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="3" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="166" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="164" fontId="1" fillId="3" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1"/><xf numFmtId="3" fontId="1" fillId="3" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1"/><xf numFmtId="0" fontId="1" fillId="3" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>') }
+  ].concat(sheets.map((s, i) => ({ name: "xl/worksheets/sheet" + (i + 1) + ".xml", data: enc.encode(repSheetXml(s)) })));
+  return repZip(files);
+}
+function repCsvFiles(sheets){
+  const enc = new TextEncoder(), q = (v) => { const s = String(v == null ? "" : v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  return sheets.map((s, i) => ({ name: String(i + 1).padStart(2, "0") + "-" + s.name.replace(/\s+/g, "-") + ".csv", data: enc.encode("\uFEFF" + [s.head].concat(s.rows, s.total ? [s.total] : []).map((r) => r.map(q).join(",")).join("\r\n") + "\r\n") }));
+}
+/* ----- pdf ----- */
+const REP_W = "278 278 355 556 556 889 667 191 333 333 389 584 278 333 278 278 556 556 556 556 556 556 556 556 556 556 278 278 584 584 584 556 1015 667 667 722 722 667 611 778 722 278 500 667 556 833 722 778 667 778 722 667 611 722 667 944 667 667 611 278 278 278 469 556 333 556 556 500 556 556 278 556 556 222 222 500 222 833 556 556 556 556 333 500 278 556 500 722 500 500 500 334 260 334 584".split(" ").map(Number);
+const repTw = (s, size, bold) => { let w = 0; for (const ch of String(s)) { const c = ch.charCodeAt(0); w += (c >= 32 && c <= 126 ? REP_W[c - 32] : 556); } return w * size / 1000 * (bold ? 1.06 : 1); };
+const repSan = (s) => String(s == null ? "" : s).replace(/\u20B9/g, "Rs ").replace(/[\u2013\u2014]/g, "-").replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/\u00B7/g, "-").replace(/[^\x20-\x7E]/g, "?");
+const repPe = (s) => repSan(s).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+const repFit = (s, size, bold, maxW) => { let t = repSan(s); if (repTw(t, size, bold) <= maxW) return t; while (t.length > 1 && repTw(t + "...", size, bold) > maxW) t = t.slice(0, -1); return t + "..."; };
+const repMoney = (v) => (typeof v === "number" ? v.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : String(v == null ? "" : v));
+function repPdf(spec){
+  const W = 842, H = 595, M = 28, pages = []; let cur = null, y = 0;
+  const newPage = () => { cur = []; pages.push(cur); y = M + 22; };
+  const fill = (r, g, b) => cur.push(r + " " + g + " " + b + " rg"), rect = (x, yy, w, h) => cur.push(x.toFixed(1) + " " + (H - yy - h).toFixed(1) + " " + w.toFixed(1) + " " + h.toFixed(1) + " re f");
+  const text = (x, yy, s, size, bold, align, w) => { const t = repSan(s), tw = repTw(t, size, bold); let px = x; if (align === "r") px = x + w - tw; else if (align === "c") px = x + (w - tw) / 2; cur.push("BT /F" + (bold ? 2 : 1) + " " + size + " Tf " + px.toFixed(1) + " " + (H - yy).toFixed(1) + " Td (" + repPe(t) + ") Tj ET"); };
+  const para = (s, size, bold, maxW) => { const words = repSan(s).split(" "), lines = []; let l = ""; words.forEach((w) => { if (repTw((l + " " + w).trim(), size, bold) > maxW && l) { lines.push(l); l = w; } else l = (l + " " + w).trim(); }); if (l) lines.push(l); return lines; };
+  newPage(); fill(0.06, 0.17, 0.16); rect(M, y - 6, W - 2 * M, 44); fill(1, 1, 1); text(M + 12, y + 14, spec.title, 17, true); fill(0.7, 0.85, 0.82); text(M + 12, y + 30, spec.subtitle, 9, false); y += 56;
+  spec.sections.forEach((sec, si) => {
+    if (sec.paras) { fill(0.1, 0.1, 0.1); sec.paras.forEach((p) => { para(p[0] + ": " + p[1], 8.5, false, W - 2 * M).forEach((ln) => { if (y > H - M - 20) newPage(); text(M, y, ln, 8.5, false); y += 12; }); }); y += 8; return; }
+    if (y > H - M - 70) newPage(); fill(0.06, 0.17, 0.16); text(M, y, sec.title + (sec.rows.length ? "  (" + sec.rows.length + (sec.rows.length === 1 ? " row)" : " rows)") : ""), 11, true); y += 8;
+    const tw = sec.widths.reduce((a, b) => a + b, 0), cw = sec.widths.map((w) => w / tw * (W - 2 * M)), RH = 15, fs = 7.2;
+    const header = () => { const hl = sec.head.map((h, i) => para(h, fs, true, cw[i] - 6).slice(0, 2)), hh = hl.some((l) => l.length > 1) ? RH + 11 : RH + 3; fill(0.06, 0.17, 0.16); rect(M, y, W - 2 * M, hh); fill(1, 1, 1); let x = M; hl.forEach((ls, i) => { ls.forEach((ln, k) => text(x + 3, y + 10 + k * 9, repFit(ln, fs, true, cw[i] - 6), fs, true, sec.align[i], cw[i] - 6)); x += cw[i]; }); y += hh; };
+    if (!sec.rows.length) { fill(0.4, 0.4, 0.4); text(M, y + 12, "Nothing in this period.", 9, false); y += 26; return; }
+    if (y > H - M - 60) newPage(); header();
+    const drawRow = (r, bold, shade) => { if (y > H - M - RH - 14) { newPage(); header(); } if (shade) { fill(0.94, 0.96, 0.96); rect(M, y, W - 2 * M, RH); } fill(0.1, 0.1, 0.1); let x = M; r.forEach((v, i) => { text(x + 3, y + 10.5, repFit(sec.fmt[i](v), fs, bold, cw[i] - 6), fs, bold, sec.align[i], cw[i] - 6); x += cw[i]; }); y += RH; };
+    sec.rows.forEach((r, i) => drawRow(r, false, i % 2 === 1)); if (sec.total) { fill(0.89, 0.93, 0.92); rect(M, y, W - 2 * M, RH + 1); drawRow(sec.total, true, false); } y += 14;
+  });
+  const n = pages.length, objs = [], add = (s) => { objs.push(s); return objs.length; };
+  add("<< /Type /Catalog /Pages 2 0 R >>"); add(""); add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>"); add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
+  const kids = [];
+  pages.forEach((ops, i) => {
+    cur = ops; fill(0.45, 0.5, 0.5); text(M, H - 14, "AK Brands Marketing (c)  |  " + spec.footer, 7.5, false); text(W - M - 120, H - 14, "Page " + (i + 1) + " of " + n, 7.5, false, "r", 120);
+    const body = ops.join("\n"), cid = add("<< /Length " + body.length + " >>\nstream\n" + body + "\nendstream"), pid = add("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + W + " " + H + "] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents " + cid + " 0 R >>"); kids.push(pid + " 0 R");
+  });
+  objs[1] = "<< /Type /Pages /Kids [" + kids.join(" ") + "] /Count " + n + " >>";
+  let pdf = "%PDF-1.4\n"; const offs = []; objs.forEach((o, i) => { offs.push(pdf.length); pdf += (i + 1) + " 0 obj\n" + o + "\nendobj\n"; });
+  const xr = pdf.length; pdf += "xref\n0 " + (objs.length + 1) + "\n0000000000 65535 f \n" + offs.map((o) => String(o).padStart(10, "0") + " 00000 n \n").join("") + "trailer\n<< /Size " + (objs.length + 1) + " /Root 1 0 R >>\nstartxref\n" + xr + "\n%%EOF";
+  const out = new Uint8Array(pdf.length); for (let i = 0; i < pdf.length; i++) out[i] = pdf.charCodeAt(i) & 255; return out;
+}
+function repPdfSpec(T, which){
+  const r = repRange(), sec = [];
+  const fmtOf = (kind) => (kind === "money" ? repMoney : (kind === "qty" || kind === "int" ? (v) => (typeof v === "number" ? v.toLocaleString("en-IN") : (v == null ? "" : String(v))) : (kind === "date" ? (v) => (/^\d{4}-\d{2}-\d{2}$/.test(String(v || "")) ? fmtDate(v) : String(v || "")) : (v) => (v == null ? "" : String(v)))));
+  const pick = (t, idx, wts) => ({ title: t.name, head: idx.map((i) => t.head[i]), rows: t.rows.map((rw) => idx.map((i) => rw[i])), total: t.total ? idx.map((i) => t.total[i]) : null, widths: wts, align: idx.map((i) => (t.kinds[i] === "money" || t.kinds[i] === "qty" || t.kinds[i] === "int" ? "r" : "l")), fmt: idx.map((i) => fmtOf(t.kinds[i])) });
+  const by = (n) => T.sheets.find((s) => s.name === n);
+  const notes = by("Notes"); sec.push({ paras: notes.rows.filter((x) => ["Period", "Month is decided by", "Cancelled orders", "Purchases", "Profit", "Please note"].indexOf(x[0]) >= 0) });
+  const sm = by("Summary"); sec.push(pick(sm, sm.head.map((h, i) => i), sm.widths));
+  if (which !== "purchase") { const a = by("Sales by order"), b = by("Sales by lot"); sec.push(pick(a, [0, 1, 2, 4, 7, 10, 16, 17, 18, 19], [9, 12, 12, 20, 14, 12, 11, 12, 12, 12])); sec.push(pick(b, [0, 1, 3, 6, 7, 8, 9, 11, 14, 15, 16], [9, 12, 18, 8, 22, 8, 8, 10, 12, 10, 12])); }
+  if (which !== "sales") { const a = by("Purchases by order"), b = by("Purchases by lot"); sec.push(pick(a, [0, 1, 2, 4, 8, 9, 10, 11], [9, 12, 12, 26, 14, 14, 14, 12])); sec.push(pick(b, [0, 1, 3, 5, 6, 8, 10, 11], [9, 12, 24, 8, 26, 8, 12, 14])); }
+  return { title: (which === "sales" ? "Sales report" : which === "purchase" ? "Purchase report" : "Sales and purchase report"), subtitle: "AK Brands Marketing  |  " + r.label + "  |  Generated " + fmtDate(todayISO()), sections: sec, footer: (which === "sales" ? "Sales report" : which === "purchase" ? "Purchase report" : "Sales and purchase report") + " " + r.from + " to " + r.to };
+}
+function repMake(){
+  const os = repOrdersIn(), T = repTables(os, repSt.which), r = repRange(), tag = (repSt.which === "both" ? "sales-purchase" : repSt.which) + "-" + (r.from === "0000-01-01" ? "all" : r.from) + "-to-" + r.to; let bytes, name, mime = REP_MIME[repSt.fmt];
+  if (repSt.fmt === "xlsx") { bytes = repXlsx(T.sheets); name = "AK-report-" + tag + ".xlsx"; }
+  else if (repSt.fmt === "csv") { bytes = repZip(repCsvFiles(T.sheets)); name = "AK-report-" + tag + "-csv.zip"; }
+  else { bytes = repPdf(repPdfSpec(T, repSt.which)); name = "AK-report-" + tag + ".pdf"; }
+  return { bytes, name, mime, T, os };
+}
+async function repGo(share){
+  const say = (s) => { const m = $("repMsg"); if (m) m.textContent = s; };
+  try {
+    const f = repMake(); if (!f.os.length) { say("There are no orders in this period."); return; }
+    const blob = new Blob([f.bytes], { type: f.mime }), file = new File([blob], f.name, { type: f.mime });
+    if (share && navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title: f.name, text: "AK Brands Marketing report" }); say("Shared."); } catch (e) { if (e && e.name === "AbortError") say("Sharing cancelled."); else throw e; } return; }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); say((share ? "Your phone cannot share this file here, so it was saved instead. " : "Saved. ") + f.name);
+  } catch (e) { console.error(e); say("That did not work. Please try again."); }
+}
+const repTileHtml = () => '<button type="button" class="tile wide repT" data-rep="open"><small>Reports</small><b>Sales and purchase reports</b><span class="go">Excel, CSV or PDF. Tap to open</span></button>';
+function repScreenHtml(){
+  const os = repOrdersIn(), T = repTables(os, "both"), r = repRange(), so = T.sheets.find((s) => s.name === "Sales by order"), po = T.sheets.find((s) => s.name === "Purchases by order");
+  const g = (t, i) => (t && t.total ? Number(t.total[i]) || 0 : 0);
+  const chip = (list, cur, key) => '<div class="dchips">' + list.map((p) => '<button type="button" data-rep="' + key + '" data-t="' + p[0] + '" class="' + (cur === p[0] ? "on" : "") + '">' + p[1] + '</button>').join("") + '</div>';
+  const taxable = g(so, 10) + g(so, 11), gst = g(so, 16), tot = g(so, 17), pur = g(po, 8), prof = os.reduce((a, o) => a + calc(o).profit, 0);
+  return '<h2 style="margin-top:0">Reports</h2><p class="hint">Sales and purchase reports from your orders. Each month is decided by the <b>order date</b>. Cancelled orders are left out.</p>' +
+    '<label>Period</label>' + chip(REP_PERIODS, repSt.period, "period") + (repSt.period === "custom" ? '<div class="ocard" style="margin:.3rem 0"><label for="rep_from">From</label><input id="rep_from" type="date" value="' + esc(repSt.from) + '"><label for="rep_to">To</label><input id="rep_to" type="date" value="' + esc(repSt.to) + '"></div>' : "") +
+    '<div class="dk-grid"><div class="dk" style="--c:#2f6fdb"><small>Sales (total payable)</small><b>' + inr(tot) + '</b><span class="dsub"><span>' + os.length + (os.length === 1 ? " order" : " orders") + ' \u00B7 GST ' + inr(gst) + '</span></span></div><div class="dk" style="--c:#7a4fd1"><small>Purchases</small><b>' + inr(pur) + '</b><span class="dsub"><span>from suppliers</span></span></div><div class="dk" style="--c:#12803f"><small>Profit</small><b>' + inr(prof) + '</b><span class="dsub"><span>goods before GST ' + inr(taxable) + '</span></span></div></div>' +
+    '<label>Which report</label>' + chip([["sales", "Sales"], ["purchase", "Purchase"], ["both", "Both"]], repSt.which, "which") + '<label>File type</label>' + chip([["xlsx", "Excel"], ["csv", "CSV"], ["pdf", "PDF"]], repSt.fmt, "fmt") +
+    '<div class="bizbtn" style="margin-top:.7rem"><button type="button" class="small primary" data-rep="download" style="flex:1 1 40%">Download</button><button type="button" class="small" data-rep="share" style="flex:1 1 40%">Share</button></div><p class="hint" id="repMsg" style="font-weight:600;color:#0d6b33"></p>' +
+    '<div class="ocard"><b>What is inside</b><p class="hint" style="margin:.2rem 0">Every file has a <b>Summary</b> by month and a <b>Notes</b> sheet. Sales have one sheet by order and one by lot. Purchases have one sheet by order and one by lot, with totals. Excel keeps them as sheets. CSV gives one file for each sheet, packed in a zip. PDF puts them one after another.</p><p class="hint" style="margin:.2rem 0">Purchases show value, paid and balance. GST on purchases is not shown, because supplier rates are saved as one amount.</p></div>';
+}
+function repAction(act, t){
+  if (act === "open") { repSt.msg = ""; showDetail("reports"); return; }
+  if (act === "period") { repSt.period = t; showDetail("reports"); return; }
+  if (act === "which") { repSt.which = t; showDetail("reports"); return; }
+  if (act === "fmt") { repSt.fmt = t; showDetail("reports"); return; }
+  if (act === "download") { repGo(false); return; }
+  if (act === "share") { repGo(true); return; }
+}
+
 function renderTiles(){
   const live = orders.filter((o) => o.status !== "Cancelled");
   const open = live.filter((o) => o.status !== "Closed").length;
@@ -1861,7 +2389,7 @@ function renderTiles(){
   const t = (kind, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-tile="' + kind + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   const infos = live.map((o) => pendingInfo(o)), need = infos.filter((p) => p.pending > 0), onTime = infos.filter((p) => p.waiting).length, proofs = need.reduce((a, p) => a + p.proofs, 0);
   const tp = '<button type="button" class="tile wide ' + (need.length ? "alert" : "good") + '" data-tile="pending"><small>Action pending</small><b>' + (need.length ? need.length + (need.length === 1 ? " order needs action" : " orders need action") : "Nothing needs action") + '</b><span class="go">' + (need.length ? proofs + (proofs === 1 ? " proof" : " proofs") + " missing" + (onTime ? ", " + onTime + " in transit on schedule" : "") + ". Tap to see" : (onTime ? onTime + " in transit, on schedule. Tap to see" : "Tap to see details")) + '</span></button>';
-  $("tiles").innerHTML = tp + dashTileHtml() + bizTileHtml() + giftTileHtml() + grpTileHtml() + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
+  $("tiles").innerHTML = tp + remTileHtml() + dashTileHtml() + repTileHtml() + bizTileHtml() + giftTileHtml() + grpTileHtml() + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
 }
 /* tap a tile: groups, then orders, then the order itself */
 let lastDetail = "";
@@ -1903,6 +2431,9 @@ function showDetail(kind){
   else if (kind === "cards") $("detailBody").innerHTML = cardsScreenHtml();
   else if (kind === "gifts") $("detailBody").innerHTML = giftScreenHtml();
   else if (kind === "members") $("detailBody").innerHTML = grpScreenHtml();
+  else if (kind === "reminders") $("detailBody").innerHTML = remScreenHtml();
+  else if (kind === "reports") $("detailBody").innerHTML = repScreenHtml();
+  else if (kind.indexOf("post:") === 0) $("detailBody").innerHTML = postScreenHtml();
   else if (kind.indexOf("cdash:") === 0) $("detailBody").innerHTML = customerDashHtml(kind.slice(6));
   else $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
   $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); $("detailView").classList.remove("hidden");
@@ -1913,13 +2444,23 @@ $("tiles").addEventListener("click", (e) => { const b = e.target.closest("[data-
 $("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-cardact]"); if (z) bizAction(z.getAttribute("data-cardact"), z.getAttribute("data-t") || ""); });
 $("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-gift]"); if (z) giftAction(z.getAttribute("data-gift"), z.getAttribute("data-t") || "", z.getAttribute("data-p") || ""); });
 $("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-grp]"); if (z) grpAction(z.getAttribute("data-grp"), z.getAttribute("data-t") || "", z.getAttribute("data-v") || ""); });
+$("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-rem]"); if (z) remAction(z.getAttribute("data-rem"), z.getAttribute("data-t") || ""); });
+$("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-rep]"); if (z) repAction(z.getAttribute("data-rep"), z.getAttribute("data-t") || ""); });
 $("detailBack").addEventListener("click", () => showList());
-$("detailBody").addEventListener("change", (e) => { if (e.target && e.target.id === "grp_cat") { grpCatF = e.target.value; grpLimit = 60; const l = $("grpList"); if (l) l.innerHTML = grpListHtml(); return; } if (e.target && e.target.id === "sf_who") { sfWho = e.target.value; $("detailBody").innerHTML = staffScreenHtml(); } });
-$("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "grp_q") { grpQ = e.target.value; grpLimit = 60; const l = $("grpList"); if (l) l.innerHTML = grpListHtml(); return; } if (e.target && e.target.id === "dtQ") { applyDtFilter(e.target.value); return; } if (e.target && e.target.id === "sf_q") { sfQ = e.target.value; $("sfList").innerHTML = feedListHtml(); return; } if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
+$("detailBody").addEventListener("change", (e) => { if (e.target && (e.target.id === "rep_from" || e.target.id === "rep_to")) { repSt.from = String(($("rep_from") || {}).value || ""); repSt.to = String(($("rep_to") || {}).value || ""); showDetail("reports"); return; }
+  if (e.target && (e.target.id === "rem_every" || e.target.id === "rem_min" || e.target.id === "rem_time")) { remSaveCfg(); return; }
+  if (e.target && e.target.getAttribute && e.target.getAttribute("data-po") === "tick" && postSt) { const no = e.target.getAttribute("data-t"); if (e.target.checked) postSt.picks.add(no); else postSt.picks.delete(no); const c = $("poCount"); if (c) c.textContent = postSt.picks.size + (postSt.picks.size === 1 ? " lot ticked." : " lots ticked."); return; }
+  if (e.target && e.target.id === "grp_cat") { grpCatF = e.target.value; grpLimit = 60; const l = $("grpList"); if (l) l.innerHTML = grpListHtml(); return; } if (e.target && e.target.id === "sf_who") { sfWho = e.target.value; $("detailBody").innerHTML = staffScreenHtml(); } });
+$("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "rem_q") { remQ = e.target.value; const l = $("remList"); if (l) l.innerHTML = remSectionsHtml(); return; } if (e.target && e.target.id === "grp_q") { grpQ = e.target.value; grpLimit = 60; const l = $("grpList"); if (l) l.innerHTML = grpListHtml(); return; } if (e.target && e.target.id === "dtQ") { applyDtFilter(e.target.value); return; } if (e.target && e.target.id === "sf_q") { sfQ = e.target.value; $("sfList").innerHTML = feedListHtml(); return; } if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
 $("detailBody").addEventListener("click", (e) => {
+  const rpb = e.target.closest("[data-rep]"); if (rpb) { repAction(rpb.getAttribute("data-rep"), rpb.getAttribute("data-t") || ""); return; }
+  const rmb = e.target.closest("[data-rem]"); if (rmb) { remAction(rmb.getAttribute("data-rem"), rmb.getAttribute("data-t") || ""); return; }
+  const pob = e.target.closest("[data-post]"); if (pob) { postAction("open", pob.getAttribute("data-post")); return; }
+  const poa = e.target.closest("[data-po]"); if (poa) { postAction(poa.getAttribute("data-po"), poa.getAttribute("data-t") || ""); return; }
   const grb = e.target.closest("[data-grp]"); if (grb) { grpAction(grb.getAttribute("data-grp"), grb.getAttribute("data-t") || "", grb.getAttribute("data-v") || ""); return; }
   const gfb = e.target.closest("[data-gift]"); if (gfb) { giftAction(gfb.getAttribute("data-gift"), gfb.getAttribute("data-t") || "", gfb.getAttribute("data-p") || ""); return; }
   const bzb = e.target.closest("[data-cardact]"); if (bzb) { bizAction(bzb.getAttribute("data-cardact"), bzb.getAttribute("data-t") || ""); return; }
+  const qad = e.target.closest("[data-qask]"); if (qad) { shareAskFor(qad.getAttribute("data-qask")); return; }
   const qsd = e.target.closest("[data-qshare]"); if (qsd) { openShareFor(qsd.getAttribute("data-qshare")); return; }
   const dpp = e.target.closest("[data-dp]"); if (dpp) { dashPeriod = dpp.getAttribute("data-dp"); showDetail("dash"); return; }
   const dtg = e.target.closest("[data-dtoggle]"); if (dtg) { if (dtg.getAttribute("data-dtoggle") === "priv") dashPriv = !dashPriv; else dashNames = !dashNames; showDetail(lastDetail); return; }
@@ -1991,6 +2532,7 @@ function openOrderByNo(no){
   if (o) openForm(JSON.parse(JSON.stringify(Object.assign({}, o, { createdAt: null }))), o.createdAt);
 }
 $("orderList").addEventListener("click", (e) => {
+  const qak = e.target.closest("[data-qask]"); if (qak) { shareAskFor(qak.getAttribute("data-qask")); return; }
   const qsb = e.target.closest("[data-qshare]"); if (qsb) { openShareFor(qsb.getAttribute("data-qshare")); return; }
   const cd = e.target.closest("[data-cdash]"); if (cd) { showDetail("cdash:" + cd.getAttribute("data-cdash")); return; }
   const g = e.target.closest("[data-cust]"); if (g) { showDetail("cust:" + g.getAttribute("data-cust")); return; }
@@ -2488,6 +3030,22 @@ async function customerToken(phone){
   try { const s = await getDoc(doc(db, "customers", phone)); return s.exists() ? (s.data().viewToken || "") : ""; } catch (e) { return ""; }
 }
 async function publishCustomerView(phone, token){ await setDoc(doc(db, "orderViews", token), buildCustomerView(phone)); }
+async function shareAskFor(key){
+  const say = (s) => { const m = $("qsMsg"); if (m) m.textContent = s; else if (s) window.alert(s); };
+  if (!/^\d{10,}$/.test(String(key))) { say("Add this customer's WhatsApp number to an order first."); return; }
+  const w = window.open("", "_blank");
+  try {
+    say("Getting the chat link ready...");
+    let token = await customerToken(key);
+    if (!token) { const bytes = (n) => { const a = new Uint8Array(n); crypto.getRandomValues(a); return a; }; token = makeToken(bytes, 24); await setDoc(doc(db, "customers", key), { viewToken: token }, { merge: true }); customers[key] = Object.assign(customers[key] || {}, { viewToken: token }); }
+    await publishCustomerView(key, token);
+    const o1 = orders.find((x) => groupKeyOf(x) === key), slug = String((o1 && (o1.customer.firm || o1.customer.name)) || "customer").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 30) || "customer", first = String((o1 && custName(o1)) || "").trim().split(/\s+/)[0] || "there";
+    const url = SITE_URL + "/my.html?c=" + slug + "-" + token + "#ask";
+    const text = ["Hi " + first + ",", "", "You can now ask about your lots any time on your account page: where your parcel is, your balance, payments and lot details.", "", "Tap the link, then type your question in the box called Ask about your lots:", url, "", "Source The Value.", "Trusted Firm", "AK Brands Marketing\u00A9"].join("\n");
+    const wa = "https://wa.me/" + key + "?text=" + encodeURIComponent(text);
+    if (w) { w.location.href = wa; say(""); } else { window.location.href = wa; }
+  } catch (e) { if (w) w.close(); console.error(e); say("That did not work. Check your connection and try again."); }
+}
 async function openShareFor(key){
   const say = (s) => { const m = $("qsMsg"); if (m) m.textContent = s; else if (s) window.alert(s); };
   if (!/^\d{10,}$/.test(String(key))) { say("Add this customer's WhatsApp number to an order first."); return; }
@@ -2527,7 +3085,7 @@ async function custAction(kind){
     customers[phone] = Object.assign(customers[phone] || {}, { viewToken: token });
     const url = SITE_URL + "/my.html?c=" + custSlug() + "-" + token;
     const nm = String(state.customer.name || state.customer.firm || "").trim();
-    const text = [(nm ? "*" + nm + ", your lots in one place*" : "*Your lots in one place*"), "", "Every lot you book. Every payment. Every delivery.", "Track it all here:", url, "", "Source The Value.", "Trusted Firm", "AK Brands Marketing\u00A9"].join("\n");
+    const text = [(nm ? "*" + nm + ", your lots in one place*" : "*Your lots in one place*"), "", "Every lot you book. Every payment. Every delivery.", (ASK_ENABLED ? "Track it all here, and ask about any lot:" : "Track it all here:"), url, "", "Source The Value.", "Trusted Firm", "AK Brands Marketing\u00A9"].join("\n");
     $("custText").value = text; $("custPreview").classList.remove("hidden");
     const wa = "https://wa.me/" + phone + "?text=" + encodeURIComponent(text); $("custOpen").href = wa;
     $("custLinkState").textContent = "Account link is active (it never expires)."; $("custStop").disabled = false;
