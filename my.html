@@ -187,6 +187,28 @@ dialog::backdrop{background:rgba(10,18,30,.7)}
 .qsh{display:block;width:100%;margin:.7rem 0 .2rem;font:inherit;font-weight:800;font-size:1.05rem;padding:.9rem .8rem;border-radius:14px;border:2px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
 .qsh:disabled{opacity:.6}
 .qsn{margin:.2rem 0 .6rem;text-align:center}
+.askbox{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1rem;margin:.9rem 0;box-shadow:0 6px 18px rgba(15,27,45,.06)}
+.askbox h2{font-size:1.15rem;margin:0}
+.askchips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0 .6rem}
+.askchips button{font:inherit;font-weight:600;font-size:.88rem;padding:.45rem .75rem;border-radius:999px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
+.asklog{max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:.5rem;margin-bottom:.5rem}
+.asklog:empty{display:none}
+.askm{max-width:94%;padding:.6rem .8rem;border-radius:14px;line-height:1.4;overflow-wrap:anywhere}
+.askm.me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:4px}
+.askm.bot{align-self:flex-start;background:#f1f6f5;border:1px solid #dbe6e4;border-bottom-left-radius:4px}
+.ak-o{background:#fff;border:1px solid #dbe6e4;border-radius:10px;padding:.5rem .6rem;margin:.3rem 0}
+.ak-r{display:flex;justify-content:space-between;gap:.6rem;padding:.15rem 0}
+.ak-r span:first-child{min-width:6em}
+.ak-r span:last-child{text-align:right;overflow-wrap:anywhere}
+.ak-r.bal{font-weight:800;color:#a82a1c;border-top:1px solid #dbe6e4;margin-top:.2rem;padding-top:.3rem}
+.ak-more{color:var(--muted);font-size:.84rem;margin:.3rem 0}
+.askbtn{display:block;text-align:center;text-decoration:none;font:inherit;font-weight:700;font-size:.92rem;padding:.65rem .6rem;border-radius:10px;border:2px solid var(--ink);background:#fff;color:var(--ink);margin:.35rem 0;cursor:pointer;width:100%}
+.askbtn.wa{background:var(--gold);border-color:var(--gold);color:#04231e}
+.askbtn.pay{background:var(--ink);color:var(--gold)}
+.askrow{display:flex;gap:.5rem}
+.askrow input{flex:1;font:inherit;font-size:1rem;padding:.75rem .8rem;border:2px solid var(--line);border-radius:12px;min-width:0}
+.askrow input:focus{border-color:var(--gold);outline:0}
+.askrow button{font:inherit;font-weight:800;padding:.75rem 1.1rem;border-radius:12px;border:0;background:var(--ink);color:var(--gold);cursor:pointer}
 .tiles3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem}
 .tl{background:#fff;border:1px solid var(--line);border-radius:8px;padding:.7rem .6rem}
 .tl small{display:block;color:var(--muted);font-size:.72rem}
@@ -406,7 +428,7 @@ function modalTotal(){
     let lotSum = 0;
     (o.items || []).forEach((it, ii) => { lotSum += Number(it.amount) || 0; h += '<button type="button" class="mline" data-goto="lot-' + oi + '-' + ii + '"><span class="l"><b>' + (it.lotNo ? 'Lot ' + esc(it.lotNo) : esc(it.name)) + '</b><small>' + (it.lotNo ? esc(it.name) + ' &middot; ' : '') + esc(it.qty || "") + ' &middot; Order ' + esc(o.orderNo) + '</small></span><span class="rt">' + inr(it.amount) + '</span></button>'; });
     const extra = money2((Number(o.total) || 0) - lotSum);
-    if (Math.abs(extra) > 0.5) h += '<div class="mline plain"><span class="l"><b>Tax and freight</b><small>Order ' + esc(o.orderNo) + '</small></span><span class="rt">' + inr(extra) + '</span></div>';
+    if (Math.abs(extra) > 0.5) h += '<div class="mline plain"><span class="l"><b>' + (o.extras && o.extras.length ? 'Tax, freight and additional charges' : 'Tax and freight') + '</b><small>Order ' + esc(o.orderNo) + '</small></span><span class="rt">' + inr(extra) + '</span></div>';
     sum += Number(o.total) || 0;
   });
   return h + '<div class="mtotal"><span>Total ordered</span><span>' + inr(sum) + '</span></div>';
@@ -503,6 +525,7 @@ function lotCard(o, it, oi, ii){
     let totals = "";
     if (o.gstAdded) totals += row("Goods total (before GST)", inr(o.goods)) + row("GST", inr(o.gstAdded));
     if (o.freight) totals += row("Freight", inr(o.freight));
+    (o.extras || []).forEach((x) => { totals += row(esc(x.label) + " (additional charge)", inr(x.amount)); });
     if (o.freeLogistics) totals += '<div class="gift">' + (o.freeLogistics.amount > 0 ? "Logistics worth " + inr(o.freeLogistics.amount) + " paid" : "Logistics paid") + ' by AK Brands Marketing as a gift. Free for you.</div>';
     if (o.paidForYou && o.paidForYou.length) totals += '<div class="gift">AK Brands Marketing also paid for you: ' + o.paidForYou.map((x) => esc(x.label) + " " + inr(x.amount)).join(", ") + '. Free for you.</div>';
     totals += row("Order total", inr(o.total), "tot");
@@ -582,6 +605,109 @@ function clearFilters(){
   if ($("fq")) $("fq").value = ""; if ($("ffrom")) $("ffrom").value = ""; if ($("fto")) $("fto").value = ""; if ($("ftr")) $("ftr").value = "";
   renderFilterChips(); renderLots();
 }
+/* ---------- Ask about your lots: answers come only from this customer's own records (no AI) ---------- */
+const askISO = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+/* The "Ask about your lots" chat helper is built but switched OFF until the owner asks for it. */
+const ASK_ENABLED = false;
+const ASK_RULES = [
+  ["track", ["track", "tracking", "where is", "where's", "parcel", "courier", "dispatch", "shipment", "shipped", "delivery", "deliver", "arrive", "reach", "eta", "lr", "bilty", "transport", "transporter", "truck", "vehicle", "kab aayega", "kab ayega", "kab milega", "kab tak", "kahan hai", "kaha hai", "kidhar", "maal", "ಪಾರ್ಸೆಲ್", "ತಲುಪ", "ಯಾವಾಗ", "ಕಳುಹಿಸ", "पार्सल", "कब आएगा", "कहां", "डिलीवरी", "भेज"]],
+  ["received", ["received", "got my payment", "did you get", "payment done", "paid already", "i paid", "i have paid", "payment status", "confirm payment", "confirm my payment", "payment confirmed", "payment confirm", "mila", "mil gaya", "payment mila", "ಸಿಕ್ಕಿದೆ", "पेमेंट मिला", "मिल गया"]],
+  ["balance", ["balance", "due", "pending", "how much", "kitna", "baki", "baaki", "outstanding", "owe", "remaining", "amount", "ಬಾಕಿ", "ಎಷ್ಟು", "बकाया", "बाकी", "कितना"]],
+  ["pay", ["pay", "how to pay", "upi", "bank", "account number", "ifsc", "qr", "gpay", "phonepe", "paytm", "payment link", "ಪಾವತಿ", "भुगतान", "पेमेंट"]],
+  ["proof", ["video", "photo", "picture", "packing", "packed", "unboxing", "360", "proof", "image", "pic", "files", "bilty copy", "lr copy", "copy of bilty", "copy of lr", "send bilty", "send lr", "ಫೋಟೋ", "ವೀಡಿಯೋ", "वीडियो", "फोटो"]],
+  ["docs", ["invoice", "bill", "pdf", "gst", "tax", "receipt", "document", "challan", "eway", "e way", "ಬಿಲ್", "बिल", "इनवॉइस"]],
+  ["freight", ["freight", "courier charge", "courier charges", "transport charge", "transport charges", "delivery charge", "delivery charges", "freight charges", "shipping charges", "shipping", "free delivery", "free courier", "courier free", "porter", "labour", "ಸಾಗಣೆ"]],
+  ["gift", ["gift", "scratch", "offer", "coupon", "code", "reward", "ಉಡುಗೊರೆ", "गिफ्ट", "ऑफर"]],
+  ["policy", ["return", "refund", "claim", "damage", "damaged", "short", "missing", "short quantity", "less quantity", "quantity short", "missing quantity", "less pieces", "wrong item", "cancel my order", "cancel order", "cancel", "cancellation", "replace", "replacement", "complaint", "problem", "issue", "wrong", "defect", "terms", "policy", "warranty", "ಹಿಂತಿರುಗ", "रिफंड", "वापसी", "शिकायत"]],
+  ["order", ["my order", "my orders", "what did i order", "what i ordered", "order summary", "my lots", "how many lots", "total", "order number", "order no", "ordered", "kya order", "ಆರ್ಡರ್", "ऑर्डर"]],
+  ["lot", ["lot", "detail", "details", "condition", "quality", "brand", "size", "mrp", "category", "location", "quantity", "qty", "pieces", "pcs", "minimum", "moq", "product", "description", "kya hai", "kitne", "ಲಾಟ್", "ವಿವರ", "विवरण", "माल"]],
+  ["contact", ["contact", "call", "phone", "number", "talk", "speak", "human", "person", "agent", "whatsapp", "help", "support", "address", "office", "email", "ಕರೆ", "संपर्क", "बात"]],
+  ["greet", ["hi", "hello", "hey", "namaste", "namaskara", "good morning", "good evening", "thanks", "thank you", "thank", "ok", "okay", "dhanyavad", "ಧನ್ಯವಾದ", "नमस्ते", "धन्यवाद"]]
+];
+function askNorm(s){ return " " + String(s || "").toLowerCase().replace(/[^a-z0-9\u0900-\u097F\u0C80-\u0CFF']+/g, " ").replace(/\s+/g, " ").trim() + " "; }
+function askIntent(text){
+  const n = askNorm(text), tokens = n.trim().split(" "), score = {};
+  ASK_RULES.forEach((r) => { let s = 0; r[1].forEach((kw) => {
+    if (/[^\x00-\x7F]/.test(kw)) { if (n.indexOf(kw) >= 0) s += 2; }
+    else if (kw.indexOf(" ") >= 0) { if (n.indexOf(" " + kw + " ") >= 0) s += 3; }
+    else if (tokens.indexOf(kw) >= 0) s += 1; else if (kw.length >= 5 && tokens.some((t) => t.indexOf(kw) === 0)) s += 1;
+  }); if (s) score[r[0]] = s; });
+  let best = "", top = 0; ASK_RULES.forEach((r) => { if ((score[r[0]] || 0) > top) { top = score[r[0]]; best = r[0]; } });
+  return best;
+}
+function askTargets(text){
+  const n = askNorm(text), flat = n.replace(/ /g, ""), live = ORD.map((o, oi) => ({ o, oi })).filter((x) => x.o.status !== "Cancelled"), hit = [];
+  live.forEach((x) => {
+    const ono = String(x.o.orderNo || "").toLowerCase().replace(/[^a-z0-9]/g, ""); let ok = ono.length >= 6 && flat.indexOf(ono) >= 0;
+    if (!ok) itemsOf(x.o).forEach((it) => { const lot = String(it.lotNo || "").toLowerCase().replace(/[^a-z0-9]/g, ""), num = lot.replace(/[a-z]+$/, ""); if ((lot.length >= 4 && flat.indexOf(lot) >= 0) || (num.length >= 4 && n.indexOf(" " + num + " ") >= 0)) ok = true; });
+    if (ok) hit.push(x);
+  });
+  return { hit, all: live };
+}
+const askLabel = (o) => { const its = itemsOf(o), it = its[0] || {}, more = its.filter((x) => x.name && String(x.name).trim()).length - 1; return (it.lotNo ? "Lot " + it.lotNo : "Order " + o.orderNo) + (it.name && it.name !== "Order" ? " \u00B7 " + it.name : "") + (more > 0 ? " +" + more + " more" : ""); };
+const askWa = (q, o) => '<a class="askbtn wa" href="https://wa.me/' + WA + '?text=' + encodeURIComponent("Hello AK Brands Marketing" + (o ? ", about " + askLabel(o) + " (order " + o.orderNo + ")" : "") + ". " + q) + '">Message us on WhatsApp</a>';
+function askTrackOne(o, oi){
+  const d = o.delivery || {}, today = askISO(new Date()); let t = "";
+  if (d.deliveredDate || o.status === "Delivered" || o.status === "Closed") t = "Delivered" + (d.deliveredDate ? " on " + esc(fmtDate(d.deliveredDate)) : "") + (d.transporter ? " by " + esc(d.transporter) : "") + ".";
+  else if (d.dispatchDate || o.status === "Dispatched") {
+    t = "Dispatched" + (d.dispatchDate ? " on " + esc(fmtDate(d.dispatchDate)) : "") + (d.transporter ? " with <b>" + esc(d.transporter) + "</b>" : "") + "." + (d.lr ? " LR number: <b>" + esc(d.lr) + "</b>." : "");
+    if (d.expectedDate) t += d.expectedDate < today ? " It was expected by " + esc(fmtDate(d.expectedDate)) + " and has not been marked delivered yet. Please message us and we will check with the transporter." : " Expected by <b>" + esc(fmtDate(d.expectedDate)) + "</b>.";
+  } else t = "Booked on " + esc(fmtDate(o.orderDate)) + ". It has not been dispatched yet. This page updates by itself when it is sent.";
+  return '<div class="ak-o"><b>' + esc(askLabel(o)) + '</b><div>' + t + '</div>' + (okUrl(d.trackUrl) ? trackBtn(d).replace('class="cta"', 'class="askbtn"') : "") + '</div>';
+}
+function askMoney(os){
+  const t = os.reduce((a, x) => a + (Number(x.o.total) || 0), 0), r = os.reduce((a, x) => a + (Number(x.o.received) || 0), 0), b = os.reduce((a, x) => a + Math.max(0, Number(x.o.balance) || 0), 0);
+  return { t, r, b };
+}
+function askLines(os, fn){ const max = 3, shown = os.slice(0, max).map((x) => fn(x.o, x.oi)).join(""); return shown + (os.length > max ? '<div class="ak-more">And ' + (os.length - max) + ' more. Ask again with the lot number, for example "track 23049".</div>' : ""); }
+async function askLotDetails(o){
+  const its = itemsOf(o).filter((x) => x.lotNo), out = [];
+  for (const it of its.slice(0, 2)) {
+    let lot = null; try { const s = await getDoc(doc(db, "lots", String(it.lotNo))); if (s.exists()) lot = s.data(); } catch (e) { console.error(e); }
+    const rows = [["Lot", esc(it.lotNo) + (it.name ? " \u00B7 " + esc(it.name) : "")], it.qty ? ["Quantity in your order", esc(it.qty)] : null, it.rate ? ["Your lot rate", esc(it.rate)] : null, it.amount ? ["Amount", inr(it.amount)] : null];
+    if (lot) { if (lot.category) rows.push(["Category", esc(lot.category)]); if (lot.condition) rows.push(["Condition", esc(lot.condition)]); if (lot.location) rows.push(["Location", esc(lot.location)]); if (lot.moq) rows.push(["Minimum quantity", esc(lot.moq)]); if (lot.mrp) rows.push(["MRP", esc(/^\d+(\.\d+)?$/.test(lot.mrp) ? inr(lot.mrp) : lot.mrp)]); if (lot.description) rows.push(["Details", esc(String(lot.description).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 400))]); }
+    out.push('<div class="ak-o">' + rows.filter(Boolean).map((r) => '<div class="ak-r"><span>' + r[0] + '</span><span>' + r[1] + '</span></div>').join("") + (lot ? "" : '<div class="ak-more">More details of this lot are not on our site any more. Message us if you need them.</div>') + '</div>');
+  }
+  return out.join("") || '<div class="ak-o">' + esc(askLabel(o)) + '</div>';
+}
+async function askAnswer(text){
+  const intent0 = askIntent(text), tg = askTargets(text), os = tg.hit.length ? tg.hit : tg.all, focus = tg.hit.length > 0; let intent = intent0 || (focus ? "lot" : "");
+  const wa = (o) => askWa(text, focus && os.length === 1 ? os[0].o : null), open = os.filter((x) => !(x.o.delivery && x.o.delivery.deliveredDate) && x.o.status !== "Delivered" && x.o.status !== "Closed");
+  if (!os.length) return '<div>You have no active orders on this page yet.</div>' + askWa(text);
+  if (intent === "track") { const list = focus ? os : (open.length ? open : os); return askLines(list, askTrackOne) + (focus ? "" : (open.length ? "" : '<div class="ak-more">All your orders show as delivered.</div>')); }
+  if (intent === "balance" || intent === "pay") {
+    const m = askMoney(os), ob = os.filter((x) => payable(x.o));
+    if (!(m.b > 0)) return '<div><b>Nothing to pay.</b> All ' + (focus ? "this order is" : "your orders are") + ' paid. Total ' + inr(m.t) + ', paid ' + inr(m.r) + '. Thank you.</div>';
+    return '<div class="ak-o"><div class="ak-r"><span>Total ordered</span><span>' + inr(m.t) + '</span></div><div class="ak-r"><span>Paid so far</span><span>' + inr(m.r) + '</span></div><div class="ak-r bal"><span>Balance to pay</span><span>' + inr(m.b) + '</span></div></div>' + askLines(os.filter((x) => Number(x.o.balance) > 0), (o) => '<div class="ak-r"><span>' + esc(askLabel(o)) + '</span><span>' + inr(o.balance) + '</span></div>') +
+      (ob.length ? (focus && ob.length === 1 ? '<button type="button" class="askbtn pay" data-order="' + ob[0].oi + '">Pay now ' + inr(ob[0].o.balance) + '</button>' : '<button type="button" class="askbtn pay" data-payall="1">Pay now</button>') : '<div class="ak-more">Online payment is not switched on for this order. Please message us to pay.</div>' + wa());
+  }
+  if (intent === "received") {
+    const lines = os.map((x) => { const ps = (x.o.payments || []); return '<div class="ak-o"><b>' + esc(askLabel(x.o)) + '</b>' + (ps.length ? ps.map((p) => '<div class="ak-r"><span>' + esc(p.kind || "Payment") + (p.mode ? " \u00B7 " + esc(p.mode) : "") + (p.date ? " (" + esc(fmtDate(p.date)) + ")" : "") + '</span><span>' + inr(p.amount) + '</span></div>').join("") + '<div class="ak-r"><span>Received so far</span><span><b>' + inr(x.o.received) + '</b></span></div>' : '<div>No payment is recorded on this order yet. If you have paid, please send us your payment screenshot on WhatsApp.</div>') + '</div>'; });
+    return lines.slice(0, 3).join("") + (os.length > 3 ? '<div class="ak-more">And ' + (os.length - 3) + ' more orders. Ask with the lot number.</div>' : "") + askWa("Please confirm my payment.", focus && os.length === 1 ? os[0].o : null);
+  }
+  if (intent === "order") { const m = askMoney(os); return askLines(os, (o) => { const its = itemsOf(o); return '<div class="ak-o"><b>' + esc(o.orderNo) + '</b> \u00B7 ' + esc(fmtDate(o.orderDate)) + ' \u00B7 ' + esc(o.status) + its.map((it) => '<div class="ak-r"><span>' + esc((it.lotNo ? "Lot " + it.lotNo + " \u00B7 " : "") + (it.name || "")) + (it.qty ? " \u00B7 " + esc(it.qty) : "") + '</span><span>' + (it.amount ? inr(it.amount) : "") + '</span></div>').join("") + '<div class="ak-r"><span>Order total</span><span><b>' + inr(o.total) + '</b></span></div></div>'; }) + '<div class="ak-more">All orders: ' + inr(m.t) + ' ordered, ' + inr(m.r) + ' paid, ' + inr(m.b) + ' to pay.</div>'; }
+  if (intent === "lot") { const t = os.slice(0, focus ? 2 : 1); let h = ""; for (const x of t) h += await askLotDetails(x.o); return h + (focus || os.length === 1 ? "" : '<div class="ak-more">This is your newest lot. Ask with a lot number for another, for example "details 23049".</div>'); }
+  if (intent === "proof") {
+    const fb = os.map((x) => fileBtns(x.o.files, ["bilty", "other"], String(x.oi)).replace(/class="cta alt"/g, 'class="askbtn"')).join("");
+    return '<div>Your <b>packing and unboxing videos</b> are shared with you on WhatsApp by our team. Your bilty and other documents appear here when they are ready.</div>' + (fb ? '<div class="ak-o">' + fb + '</div>' : '<div class="ak-more">No bilty or document is on this page yet.</div>') + askWa("Please send me the packing video and photos.", focus && os.length === 1 ? os[0].o : null);
+  }
+  if (intent === "docs") { const links = os.filter((x) => x.o.orderToken).slice(0, 3).map((x) => '<a class="askbtn" href="order.html?o=' + esc(x.o.orderToken) + '">Open ' + esc(x.o.orderNo) + '</a>').join(""); return '<div>Your full order page has your order details and your documents. Tax invoices are shared with you personally by AK Brands Marketing.</div>' + links + askWa("Please send me the invoice.", focus && os.length === 1 ? os[0].o : null); }
+  if (intent === "freight") { const lines = os.slice(0, 3).map((x) => { const o = x.o; return '<div class="ak-o"><b>' + esc(askLabel(o)) + '</b><div>' + (o.freeLogistics ? "Logistics " + (o.freeLogistics.amount > 0 ? "worth " + inr(o.freeLogistics.amount) + " " : "") + "is paid by AK Brands Marketing as a gift. Free for you." : (Number(o.freight) > 0 ? "Freight added on this order: " + inr(o.freight) + "." : "No freight amount is added to this order total.")) + ((o.paidForYou || []).length ? " Also paid for you: " + o.paidForYou.map((p) => esc(p.label) + " " + inr(p.amount)).join(", ") + "." : "") + '</div></div>'; }); return lines.join("") + '<div class="ak-more">Transport charges can depend on how your parcel is sent. If you are not sure, please ask our team.</div>' + askWa("I have a question about transport charges.", focus && os.length === 1 ? os[0].o : null); }
+  if (intent === "gift") return '<div>If we sent you a gift link, open it, enter your number and scratch the card. Your gift code looks like <b>AKG-XXXXXX</b>. Send it to us on WhatsApp to claim it.</div>' + askWa("I want to claim my gift. My gift code is: ");
+  if (intent === "policy") return '<div>Our <b>Return and Refund policy</b> explains claims and time limits. For any problem, please message us with your order number, the lot number and your unboxing video.</div><a class="askbtn" href="return-refund.html">Read the Return and Refund policy</a><a class="askbtn" href="terms.html">Terms</a>' + askWa(text, focus && os.length === 1 ? os[0].o : null);
+  if (intent === "contact") return '<div>You can reach AK Brands Marketing here:</div><a class="askbtn" href="tel:+' + WA + '">Call +91 86605 02217</a>' + askWa("I need help with my order.");
+  if (intent === "greet") return '<div>Hello! Ask me about your parcel, balance, payments, lot details or documents. You can also tap a question below.</div>';
+  return '<div>I could not find an answer to that here. Tap below and message us. Your question goes with it.</div>' + askWa(text);
+}
+const ASK_CHIPS = ["Where is my parcel?", "What is my balance?", "Did you get my payment?", "What did I order?", "Lot details", "Packing video and bilty", "Invoice or bill", "Return or claim", "Talk to you"];
+const askBoxHtml = () => '<section class="askbox" id="askBox"><h2>Ask about your lots</h2><p class="note2" style="margin:.1rem 0 .5rem">Type a question or tap one. I answer from your own records.</p><div class="askchips">' + ASK_CHIPS.map((c) => '<button type="button" data-askq="' + esc(c) + '">' + esc(c) + '</button>').join("") + '</div><div id="askLog" class="asklog" aria-live="polite"></div><div class="askrow"><input id="askIn" type="text" maxlength="200" placeholder="Example: where is my parcel? or lot 23049 details" autocomplete="off"><button type="button" id="askGo" data-askgo="1">Ask</button></div></section>';
+function askPost(text){
+  const q = String(text || "").trim(); if (!q) return; const log = $("askLog"); if (!log) return;
+  log.insertAdjacentHTML("beforeend", '<div class="askm me">' + esc(q) + '</div>'); $("askIn").value = "";
+  const id = "askb" + Date.now(); log.insertAdjacentHTML("beforeend", '<div class="askm bot" id="' + id + '"><i>...</i></div>'); log.scrollTop = log.scrollHeight;
+  askAnswer(q).then((html) => { const b = $(id); if (b) b.innerHTML = html; log.scrollTop = log.scrollHeight; }).catch((e) => { console.error(e); const b = $(id); if (b) b.innerHTML = 'Sorry, something went wrong. Please message us.' + askWa(q); });
+}
+
 let VIEW = null;
 function render(v){
   VIEW = v; ORD = v.orders || [];
@@ -598,6 +724,7 @@ function render(v){
     '<button type="button" class="tl due' + (due > 0 ? '' : ' zero') + '" data-tile="due"><small>Balance to pay</small><b>' + inr(due) + '</b><span class="go">Tap to see</span></button></div>' +
     (ownerMode() ? '<button type="button" class="qsh" data-qshare="1">Quick share: picture and link</button><p class="note2 qsn" id="qshMsg">Only you see this button. It sends the customer a picture of this summary together with the link.</p>' : '') +
     (canPay ? '<button type="button" class="paybig" data-payall="1">Pay now<small>Balance ' + inr(due) + '</small></button>' : '') +
+    (ASK_ENABLED && nLots ? askBoxHtml() : '') +
     (nLots ? '<div class="fbar"><input id="fq" type="search" placeholder="Search lot, product, order, LR number, date, transport..." autocomplete="off">' +
       '<div class="chips" id="fship"></div><div class="chips" id="fpay"></div>' +
       '<details><summary>More filters</summary><label for="ffrom">Booked from</label><input id="ffrom" type="date"><label for="fto">Booked to</label><input id="fto" type="date"><label for="ftr">Transport</label><select id="ftr"><option value="">Any transport</option>' + trs.map((t) => '<option>' + esc(t) + '</option>').join("") + '</select></details>' +
@@ -606,6 +733,7 @@ function render(v){
     '<a class="cta" href="https://wa.me/' + WA + '?text=' + encodeURIComponent("Hello AK Brands Marketing, I have a question about my orders.") + '">Questions? Message us on WhatsApp</a>';
   if (nLots) { renderFilterChips(); renderLots(); }
   document.title = "Your orders | AK Brands Marketing";
+  if (String(location.hash || "") === "#ask" && $("askBox")) setTimeout(() => { $("askBox").scrollIntoView({ behavior: "smooth", block: "start" }); }, 300);
 }
 
 /* ---------- Owner only: quick share (a picture of the summary plus the link) ---------- */
@@ -687,9 +815,12 @@ async function quickShare(){
   finally { if (btn) btn.disabled = false; }
 }
 
+document.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target && e.target.id === "askIn") { e.preventDefault(); askPost(e.target.value); } });
 document.addEventListener("click", (e) => {
   const t = e.target; if (!t || !t.closest) return;
   if (t.closest("[data-qshare]")) { quickShare(); return; }
+  const aq = t.closest("[data-askq]"); if (aq) { askPost(aq.getAttribute("data-askq")); return; }
+  if (t.closest("[data-askgo]")) { askPost(($("askIn") || {}).value); return; }
   if (t.id === "fmodal" || t.closest("[data-fclose]")) { sheetClose(); return; }
   const fb = t.closest("[data-file]");
   if (fb) { const parts = String(fb.getAttribute("data-file")).split(":"), o = ORD[Number(parts[0])], f = o && (o.files || [])[Number(parts[1])]; if (f && okId(f.id) && okMime(f.mime)) openFile(f); return; }

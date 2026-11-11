@@ -472,8 +472,8 @@ button.docbtn[disabled]{opacity:.6;cursor:wait}
         <div><label for="f_gst">GST % on freight <span class="hint">(if billed)</span></label><input id="f_gst" type="text" inputmode="decimal" list="dlGst" data-sec="freight" data-k="gst"></div>
         <div></div>
       </div>
-      <label>Other charges paid by AK Brands Marketing</label>
-      <p class="hint" style="margin-top:0">Porter, labour, packing, loading and so on, that you paid and did not bill to the customer. Each one reduces your profit. Tick the box to mention it on the customer's page as paid by AK Brands Marketing as a gift.</p>
+      <label>Additional charges</label>
+      <p class="hint" style="margin-top:0">Porter, labour, packing, courier, loading and so on. For each one, choose who pays. <b>We pay</b>: it is not billed, so it reduces your profit (you can tell the customer it was a gift). <b>Customer pays</b>: it is added to the customer's bill as its own line, apart from the main purchase, and it also appears on the tax invoice.</p>
       <datalist id="dlCharge"><option value="Porter"></option><option value="Labour"></option><option value="Packing"></option><option value="Loading"></option><option value="Unloading"></option><option value="Other"></option></datalist>
       <div id="chargeBox"></div>
       <button class="small" type="button" id="chargeAdd">Add a charge</button>
@@ -760,11 +760,13 @@ function summaryHtml(c){
   return row("Goods total", inr(c.goods)) +
     (c.tax && c.mode === "excl" ? row("GST added", inr(c.tax)) : "") +
     (c.freightTotal ? row("Freight added to bill", inr(c.freightTotal)) : "") +
+    (c.chargesBilled ? row("Additional charges added to bill", inr(c.chargesBilled)) : "") +
     row("Customer payable", inr(c.payable), "sep") + (c.tax && c.mode === "incl" ? row("of which GST", inr(c.tax)) : "") + row("Received so far", inr(c.received)) +
     row(c.balance < 0 ? "Overpaid by" : "Balance due", inr(Math.abs(c.balance)), "sep") + row("Customer payment", c.payStatus) +
     row("Supplier total (private)", inr(c.sup), "sep") + row("Paid to supplier", inr(c.supPaid)) + row("Supplier due", inr(Math.max(0, c.supDue))) + row("Supplier payment", c.supStatus) +
     (c.freightCost ? row("Freight (our cost)", inr(c.freightCost)) : "") +
     (c.tax ? row("Sale value before GST", inr(c.taxable)) : "") +
+    (c.chargesCost ? row("Cost of the charged items (our cost)", inr(c.chargesCost)) : "") +
     (chargesTotal(state) > 0 ? row("Other charges paid by us", inr(chargesTotal(state)) + (c.extraCost === undefined ? " (not in profit yet)" : "")) : "") +
     row("Profit (private)", inr(c.profit) + " &middot; " + r2(c.margin) + "%", "sep pr");
 }
@@ -2218,31 +2220,31 @@ function repTables(os, which){
   os.forEach((o) => {
     const c = calc(o), cu = o.customer || {}, sp = o.supplier || {}, tt = repTaxType(o), ym = String(o.orderDate).slice(0, 7), fTax = c.freightTax, fTaxable = r2(c.freightTotal - c.freightTax);
     let cg = "", sg = "", ig = ""; if (tt === "IGST") { ig = c.tax; cg = 0; sg = 0; } else if (tt === "CGST+SGST") { cg = r2(c.tax / 2); sg = r2(c.tax - cg); ig = 0; }
-    sales.push([o.orderDate, o.orderNo, o.invoiceNo || "", o.invoiceDate || "", cu.name || "", cu.firm || "", cu.city || "", cu.state || "", cu.gstin || "", o.status || "", c.taxable, fTaxable, tt, cg, sg, ig, c.tax, c.payable, c.received, Math.max(0, c.balance), c.payStatus]);
+    sales.push([o.orderDate, o.orderNo, o.invoiceNo || "", o.invoiceDate || "", cu.name || "", cu.firm || "", cu.city || "", cu.state || "", cu.gstin || "", o.status || "", c.taxable, fTaxable, c.chargesTaxable, tt, cg, sg, ig, c.tax, c.payable, c.received, Math.max(0, c.balance), c.payStatus]);
     (o.items || []).forEach((it, i) => { if (!(it.name && String(it.name).trim())) return; const ln = c.lines[i]; lots.push([o.orderDate, o.orderNo, o.invoiceNo || "", cu.name || cu.firm || "", cu.state || "", cu.gstin || "", it.lotNo || "", plain(it.name), it.hsn || "", num(it.qty), it.unit || "", num(it.custRate), o.gstMode === "excl" ? "No" : "Yes", num(it.gst), ln.taxable, ln.tax, ln.total]); });
     if (c.sup > 0 || sp.name) {
-      pur.push([o.orderDate, o.orderNo, o.urdNo || "", o.urdDate || "", sp.name || "", sp.gstin || "", sp.pan || "", String(sp.address || "").replace(/\s*\n\s*/g, ", "), c.sup, c.supPaid, Math.max(0, c.supDue), c.supStatus, c.freightCost, c.extraCost]);
+      pur.push([o.orderDate, o.orderNo, o.urdNo || "", o.urdDate || "", sp.name || "", sp.gstin || "", sp.pan || "", String(sp.address || "").replace(/\s*\n\s*/g, ", "), c.sup, c.supPaid, Math.max(0, c.supDue), c.supStatus, c.freightCost, r2(c.extraCost + c.chargesCost)]);
       (o.items || []).forEach((it, i) => { if (!(it.name && String(it.name).trim())) return; purLots.push([o.orderDate, o.orderNo, o.urdNo || "", sp.name || "", sp.gstin || "", it.lotNo || "", plain(it.name), it.hsn || "", num(it.qty), it.unit || "", num(it.supRate), c.lines[i].sup]); });
     }
-    const m = months[ym] || (months[ym] = { orders: 0, goods: 0, fr: 0, gst: 0, tot: 0, rec: 0, bal: 0, pur: 0, paid: 0, due: 0, cost: 0, profit: 0 });
-    m.orders++; m.goods += c.taxable; m.fr += fTaxable; m.gst += c.tax; m.tot += c.payable; m.rec += c.received; m.bal += Math.max(0, c.balance); m.pur += c.sup; m.paid += c.supPaid; m.due += Math.max(0, c.supDue); m.cost += c.freightCost + c.extraCost; m.profit += c.profit;
+    const m = months[ym] || (months[ym] = { orders: 0, goods: 0, fr: 0, ch: 0, gst: 0, tot: 0, rec: 0, bal: 0, pur: 0, paid: 0, due: 0, cost: 0, profit: 0 });
+    m.orders++; m.goods += c.taxable; m.fr += fTaxable; m.ch += c.chargesTaxable; m.gst += c.tax; m.tot += c.payable; m.rec += c.received; m.bal += Math.max(0, c.balance); m.pur += c.sup; m.paid += c.supPaid; m.due += Math.max(0, c.supDue); m.cost += c.freightCost + c.extraCost + c.chargesCost; m.profit += c.profit;
   });
   const moneyCols = (n, a) => a;
   const sheets = [];
-  const mrows = Object.keys(months).sort().map((k) => { const m = months[k]; return [repMon(k), m.orders, r2(m.goods), r2(m.fr), r2(m.gst), r2(m.tot), r2(m.rec), r2(m.bal), r2(m.pur), r2(m.paid), r2(m.due), r2(m.cost), r2(m.profit)]; });
-  const sHead = ["Month", "Orders", "Goods before GST", "Freight before GST", "GST", "Total sales", "Received", "Balance with customers", "Purchases", "Paid to suppliers", "Due to suppliers", "Freight and extra costs paid by us", "Profit"];
-  const sKinds = ["text", "int", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money"], sW = [14, 8, 16, 16, 14, 16, 14, 18, 16, 16, 16, 22, 16];
-  const keep = which === "sales" ? [0, 1, 2, 3, 4, 5, 6, 7] : (which === "purchase" ? [0, 1, 8, 9, 10, 11] : sHead.map((x, i) => i));
+  const mrows = Object.keys(months).sort().map((k) => { const m = months[k]; return [repMon(k), m.orders, r2(m.goods), r2(m.fr), r2(m.ch), r2(m.gst), r2(m.tot), r2(m.rec), r2(m.bal), r2(m.pur), r2(m.paid), r2(m.due), r2(m.cost), r2(m.profit)]; });
+  const sHead = ["Month", "Orders", "Goods before GST", "Freight before GST", "Additional charges before GST", "GST", "Total sales", "Received", "Balance with customers", "Purchases", "Paid to suppliers", "Due to suppliers", "Freight and extra costs paid by us", "Profit"];
+  const sKinds = ["text", "int", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money"], sW = [14, 8, 16, 16, 18, 14, 16, 14, 18, 16, 16, 16, 22, 16];
+  const keep = which === "sales" ? [0, 1, 2, 3, 4, 5, 6, 7, 8] : (which === "purchase" ? [0, 1, 9, 10, 11, 12] : sHead.map((x, i) => i));
   sheets.push(repTable("Summary", keep.map((i) => sHead[i]), keep.map((i) => sKinds[i]), mrows.map((r) => keep.map((i) => r[i])), keep.map((i) => sW[i]), keep.filter((i) => i > 0).map((i) => keep.indexOf(i))));
   if (which !== "purchase") {
-    sheets.push(repTable("Sales by order", ["Order date", "Order no", "Invoice no", "Invoice date", "Customer", "Firm", "City", "State", "Customer GSTIN", "Status", "Goods before GST", "Freight before GST", "GST type", "CGST", "SGST", "IGST", "Total GST", "Total payable", "Received", "Balance", "Payment status"], ["date", "text", "text", "date", "text", "text", "text", "text", "text", "text", "money", "money", "text", "money", "money", "money", "money", "money", "money", "money", "text"], sales, [12, 14, 14, 12, 22, 20, 14, 16, 18, 12, 16, 16, 12, 12, 12, 12, 12, 16, 14, 14, 14], [10, 11, 13, 14, 15, 16, 17, 18, 19]));
+    sheets.push(repTable("Sales by order", ["Order date", "Order no", "Invoice no", "Invoice date", "Customer", "Firm", "City", "State", "Customer GSTIN", "Status", "Goods before GST", "Freight before GST", "Additional charges before GST", "GST type", "CGST", "SGST", "IGST", "Total GST", "Total payable", "Received", "Balance", "Payment status"], ["date", "text", "text", "date", "text", "text", "text", "text", "text", "text", "money", "money", "money", "text", "money", "money", "money", "money", "money", "money", "money", "text"], sales, [12, 14, 14, 12, 22, 20, 14, 16, 18, 12, 16, 16, 18, 12, 12, 12, 12, 12, 16, 14, 14, 14], [10, 11, 12, 14, 15, 16, 17, 18, 19, 20]));
     sheets.push(repTable("Sales by lot", ["Order date", "Order no", "Invoice no", "Customer", "State", "Customer GSTIN", "Lot no", "Product", "HSN", "Qty", "Unit", "Rate", "Rate includes GST", "GST %", "Taxable value", "GST", "Line total"], ["date", "text", "text", "text", "text", "text", "text", "text", "text", "qty", "text", "money", "text", "qty", "money", "money", "money"], lots, [12, 14, 14, 22, 16, 18, 12, 28, 10, 10, 8, 12, 12, 8, 16, 14, 16], [14, 15, 16]));
   }
   if (which !== "sales") {
     sheets.push(repTable("Purchases by order", ["Order date", "Order no", "URD bill no", "URD bill date", "Supplier", "Supplier GSTIN", "Supplier PAN", "Supplier address", "Purchase value", "Paid to supplier", "Balance payable", "Payment status", "Freight paid by us", "Other charges paid by us"], ["date", "text", "text", "date", "text", "text", "text", "text", "money", "money", "money", "text", "money", "money"], pur, [12, 14, 14, 12, 24, 18, 14, 34, 16, 16, 16, 14, 16, 18], [8, 9, 10, 12, 13]));
     sheets.push(repTable("Purchases by lot", ["Order date", "Order no", "URD bill no", "Supplier", "Supplier GSTIN", "Lot no", "Product", "HSN", "Qty", "Unit", "Supplier rate", "Purchase value"], ["date", "text", "text", "text", "text", "text", "text", "text", "qty", "text", "money", "money"], purLots, [12, 14, 14, 24, 18, 12, 28, 10, 10, 8, 14, 16], [11]));
   }
-  const r = repRange(), notes = [["Report", (which === "sales" ? "Sales report" : which === "purchase" ? "Purchase report" : "Sales and purchase report") + " - AK Brands Marketing"], ["Period", r.label], ["Month is decided by", "Order date"], ["Generated on", fmtDate(todayISO())], ["Orders included", String(os.length)], ["Cancelled orders", "Left out"], ["Purchases", "Supplier rates are stored as one amount, so GST on purchases is not shown. The purchase sheets show purchase value, paid and balance."], ["Profit", "Goods before GST minus purchases, minus freight and extra costs paid by us."], ["Please note", "A report for your accountant. It is not a GST return. Ask your accountant to check the first one."]];
+  const r = repRange(), notes = [["Report", (which === "sales" ? "Sales report" : which === "purchase" ? "Purchase report" : "Sales and purchase report") + " - AK Brands Marketing"], ["Period", r.label], ["Month is decided by", "Order date"], ["Generated on", fmtDate(todayISO())], ["Orders included", String(os.length)], ["Cancelled orders", "Left out"], ["Purchases", "Supplier rates are stored as one amount, so GST on purchases is not shown. The purchase sheets show purchase value, paid and balance."], ["Profit", "Goods before GST plus additional charges before GST, minus purchases, minus freight and extra costs paid by us."], ["Please note", "A report for your accountant. It is not a GST return. Ask your accountant to check the first one."]];
   sheets.push({ name: "Notes", head: ["Item", "Detail"], kinds: ["text", "text"], rows: notes, widths: [22, 110], total: null });
   return { sheets, sales, lots, pur, purLots, mrows };
 }
@@ -2339,7 +2341,7 @@ function repPdfSpec(T, which){
   const by = (n) => T.sheets.find((s) => s.name === n);
   const notes = by("Notes"); sec.push({ paras: notes.rows.filter((x) => ["Period", "Month is decided by", "Cancelled orders", "Purchases", "Profit", "Please note"].indexOf(x[0]) >= 0) });
   const sm = by("Summary"); sec.push(pick(sm, sm.head.map((h, i) => i), sm.widths));
-  if (which !== "purchase") { const a = by("Sales by order"), b = by("Sales by lot"); sec.push(pick(a, [0, 1, 2, 4, 7, 10, 16, 17, 18, 19], [9, 12, 12, 20, 14, 12, 11, 12, 12, 12])); sec.push(pick(b, [0, 1, 3, 6, 7, 8, 9, 11, 14, 15, 16], [9, 12, 18, 8, 22, 8, 8, 10, 12, 10, 12])); }
+  if (which !== "purchase") { const a = by("Sales by order"), b = by("Sales by lot"); sec.push(pick(a, [0, 1, 2, 4, 7, 10, 17, 18, 19, 20], [9, 12, 12, 20, 14, 12, 11, 12, 12, 12])); sec.push(pick(b, [0, 1, 3, 6, 7, 8, 9, 11, 14, 15, 16], [9, 12, 18, 8, 22, 8, 8, 10, 12, 10, 12])); }
   if (which !== "sales") { const a = by("Purchases by order"), b = by("Purchases by lot"); sec.push(pick(a, [0, 1, 2, 4, 8, 9, 10, 11], [9, 12, 12, 26, 14, 14, 14, 12])); sec.push(pick(b, [0, 1, 3, 5, 6, 8, 10, 11], [9, 12, 24, 8, 26, 8, 12, 14])); }
   return { title: (which === "sales" ? "Sales report" : which === "purchase" ? "Purchase report" : "Sales and purchase report"), subtitle: "AK Brands Marketing  |  " + r.label + "  |  Generated " + fmtDate(todayISO()), sections: sec, footer: (which === "sales" ? "Sales report" : which === "purchase" ? "Purchase report" : "Sales and purchase report") + " " + r.from + " to " + r.to };
 }
@@ -2364,7 +2366,7 @@ function repScreenHtml(){
   const os = repOrdersIn(), T = repTables(os, "both"), r = repRange(), so = T.sheets.find((s) => s.name === "Sales by order"), po = T.sheets.find((s) => s.name === "Purchases by order");
   const g = (t, i) => (t && t.total ? Number(t.total[i]) || 0 : 0);
   const chip = (list, cur, key) => '<div class="dchips">' + list.map((p) => '<button type="button" data-rep="' + key + '" data-t="' + p[0] + '" class="' + (cur === p[0] ? "on" : "") + '">' + p[1] + '</button>').join("") + '</div>';
-  const taxable = g(so, 10) + g(so, 11), gst = g(so, 16), tot = g(so, 17), pur = g(po, 8), prof = os.reduce((a, o) => a + calc(o).profit, 0);
+  const taxable = g(so, 10) + g(so, 11) + g(so, 12), gst = g(so, 17), tot = g(so, 18), pur = g(po, 8), prof = os.reduce((a, o) => a + calc(o).profit, 0);
   return '<h2 style="margin-top:0">Reports</h2><p class="hint">Sales and purchase reports from your orders. Each month is decided by the <b>order date</b>. Cancelled orders are left out.</p>' +
     '<label>Period</label>' + chip(REP_PERIODS, repSt.period, "period") + (repSt.period === "custom" ? '<div class="ocard" style="margin:.3rem 0"><label for="rep_from">From</label><input id="rep_from" type="date" value="' + esc(repSt.from) + '"><label for="rep_to">To</label><input id="rep_to" type="date" value="' + esc(repSt.to) + '"></div>' : "") +
     '<div class="dk-grid"><div class="dk" style="--c:#2f6fdb"><small>Sales (total payable)</small><b>' + inr(tot) + '</b><span class="dsub"><span>' + os.length + (os.length === 1 ? " order" : " orders") + ' \u00B7 GST ' + inr(gst) + '</span></span></div><div class="dk" style="--c:#7a4fd1"><small>Purchases</small><b>' + inr(pur) + '</b><span class="dsub"><span>from suppliers</span></span></div><div class="dk" style="--c:#12803f"><small>Profit</small><b>' + inr(prof) + '</b><span class="dsub"><span>goods before GST ' + inr(taxable) + '</span></span></div></div>' +
@@ -2748,7 +2750,7 @@ async function learnTracker(){
 const safeUrl = (u) => { u = String(u || "").trim(); return /^https?:\/\/[^\s<>"']{4,500}$/i.test(u) ? u : ""; };
 const viewOf = (o) => {
   const v = buildOrderView(o);
-  v.paidForYou = (o.otherCharges || []).filter((c) => c && c.show !== false && num(c.amount) > 0).map((c) => ({ label: String(c.label || "Other").slice(0, 40), amount: r2(num(c.amount)) }));
+  v.paidForYou = (o.otherCharges || []).filter((c) => c && c.payer !== "customer" && c.show !== false && num(c.amount) > 0).map((c) => ({ label: String(c.label || "Other").slice(0, 40), amount: r2(num(c.amount)) }));
   v.freeLogistics = (o.freight && o.freight.mode === "ours") ? { amount: r2(num(o.freight.amount)) } : null;
   const ti = trackInfo(o);
   v.delivery = Object.assign({}, v.delivery, { trackUrl: ti.url, trackCopyLr: ti.copyLr });
@@ -3397,17 +3399,22 @@ function refresh(){
   });
   $("docNos").textContent = "Tax invoice no.: " + (state.invoiceNo || "given when you first download it") + "   <->   URD bill no.: " + (state.urdNo || "given when you first download it") + "   (both belong to order " + (state.orderNo || "this order") + ", so they are linked)";
 }
-const chargesTotal = (o) => r2((o.otherCharges || []).reduce((a, c) => a + num(c && c.amount), 0));
-function renderChargeTotal(){ const t = chargesTotal(state), el = $("chargeTotal"); if (el) el.textContent = t > 0 ? "Total other charges paid by us: " + inr(t) : ""; }
+const chargesTotal = (o) => r2((o.otherCharges || []).filter((c) => !(c && c.payer === "customer")).reduce((a, c) => a + num(c && c.amount), 0));
+const billedChargesTotal = (o) => r2((o.otherCharges || []).filter((c) => c && c.payer === "customer").reduce((a, c) => a + num(c.amount), 0));
+function renderChargeTotal(){ const t = chargesTotal(state), b = billedChargesTotal(state), el = $("chargeTotal"); if (el) el.textContent = [t > 0 ? "We paid: " + inr(t) : "", b > 0 ? "Added to the customer's bill: " + inr(b) : ""].filter(Boolean).join("   |   "); }
 function renderCharges(){
   const box = $("chargeBox"); if (!box) return; const list = state.otherCharges || [];
-  box.innerHTML = list.length ? list.map((c, i) => '<div class="chgrow"><div class="two"><div><label>What was it for</label><input type="text" list="dlCharge" maxlength="40" data-ci="' + i + '" data-ck="label" value="' + esc(c.label || "") + '" placeholder="Porter, Labour, Packing..."></div><div><label>Amount (&#8377;)</label><input type="text" inputmode="decimal" data-ci="' + i + '" data-ck="amount" value="' + esc(c.amount || "") + '"></div></div><label class="chk"><input type="checkbox" data-ci="' + i + '" data-ck="show"' + (c.show !== false ? " checked" : "") + '> Mention it to the customer as paid by AK Brands Marketing</label><button type="button" class="small" data-crm="' + i + '">Remove</button></div>').join("") : '<p class="hint">None added.</p>';
+  box.innerHTML = list.length ? list.map((c, i) => { const cu = c.payer === "customer", k = ' data-ci="' + i + '" data-ck="';
+    return '<div class="chgrow"><div class="two"><div><label>What was it for</label><input type="text" list="dlCharge" maxlength="40"' + k + 'label" value="' + esc(c.label || "") + '" placeholder="Porter, Labour, Packing..."></div><div><label>' + (cu ? "Amount charged to customer (&#8377;)" : "Amount we paid (&#8377;)") + '</label><input type="text" inputmode="decimal"' + k + 'amount" value="' + esc(c.amount || "") + '"></div></div>' +
+      '<label>Who pays</label><select' + k + 'payer"><option value="us"' + (cu ? "" : " selected") + '>We pay (not billed to the customer)</option><option value="customer"' + (cu ? " selected" : "") + '>Customer pays (added to the bill)</option></select>' +
+      (cu ? '<div class="two"><div><label>GST % on it <span class="hint">(if any)</span></label><input type="text" inputmode="decimal" list="dlGst"' + k + 'gst" value="' + esc(c.gst || "") + '"></div><div><label>What it cost us (&#8377;) <span class="hint">(optional)</span></label><input type="text" inputmode="decimal"' + k + 'cost" value="' + esc(c.cost || "") + '"></div></div><p class="hint" style="margin-top:0">The customer sees this as its own line. Leave "What it cost us" empty if the whole amount is your income. Type the cost if you paid someone for it, so your profit is right.</p>' : '<label class="chk"><input type="checkbox"' + k + 'show"' + (c.show !== false ? " checked" : "") + '> Mention it to the customer as paid by AK Brands Marketing</label>') +
+      '<button type="button" class="small" data-crm="' + i + '">Remove</button></div>'; }).join("") : '<p class="hint">None added.</p>';
   renderChargeTotal();
 }
 $("chargeBox").addEventListener("input", (e) => { const t = e.target, i = t && t.getAttribute && t.getAttribute("data-ci"); if (i === null || i === undefined) return; const c = (state.otherCharges || [])[Number(i)]; if (!c) return; c[t.getAttribute("data-ck")] = t.type === "checkbox" ? t.checked : t.value; renderChargeTotal(); refresh(); });
-$("chargeBox").addEventListener("change", (e) => { const t = e.target, i = t && t.getAttribute && t.getAttribute("data-ci"); if (i === null || i === undefined) return; const c = (state.otherCharges || [])[Number(i)]; if (!c) return; c[t.getAttribute("data-ck")] = t.type === "checkbox" ? t.checked : t.value; refresh(); });
+$("chargeBox").addEventListener("change", (e) => { const t = e.target, i = t && t.getAttribute && t.getAttribute("data-ci"); if (i === null || i === undefined) return; const c = (state.otherCharges || [])[Number(i)]; if (!c) return; c[t.getAttribute("data-ck")] = t.type === "checkbox" ? t.checked : t.value; if (t.getAttribute("data-ck") === "payer") renderCharges(); refresh(); });
 $("chargeBox").addEventListener("click", (e) => { const b = e.target.closest && e.target.closest("[data-crm]"); if (!b) return; state.otherCharges.splice(Number(b.getAttribute("data-crm")), 1); renderCharges(); refresh(); });
-$("chargeAdd").addEventListener("click", () => { state.otherCharges = state.otherCharges || []; state.otherCharges.push({ label: "", amount: "", show: true }); renderCharges(); refresh(); const last = $("chargeBox").querySelectorAll('[data-ck="label"]'); if (last.length) last[last.length - 1].focus(); });
+$("chargeAdd").addEventListener("click", () => { state.otherCharges = state.otherCharges || []; state.otherCharges.push({ label: "", amount: "", payer: "us", show: true, gst: "", cost: "" }); renderCharges(); refresh(); const last = $("chargeBox").querySelectorAll('[data-ck="label"]'); if (last.length) last[last.length - 1].focus(); });
 function renderStatusDates(){
   const sd = state.statusDates || {};
   $("stGrid").innerHTML = STATUSES.map((s) => '<div class="strow' + (s === state.status ? " cur" : "") + '"><label>' + esc(s) + '</label><input type="date" data-st="' + esc(s) + '" value="' + esc(sd[s] || "") + '"></div>').join("");
@@ -3492,8 +3499,9 @@ async function persistOrder(){
   const sGst = String((state.supplier || {}).gstin || "").trim().toUpperCase();
   if (sGst && !/^\d{2}[A-Z]{5}\d{4}[A-Z][A-Z\d]Z[A-Z\d]$/.test(sGst)) throw new UserError("The supplier GST number does not look right. It has 15 letters and numbers, like 29ABCDE1234F1Z5. Leave it empty if you do not have it.");
   state.supplier.gstin = sGst;
-  const chargesClean = (state.otherCharges || []).map((c) => ({ label: String((c && c.label) || "").trim().slice(0, 40), amount: String((c && c.amount) || "").trim(), show: !c || c.show !== false })).filter((c) => c.label || num(c.amount) > 0);
-  for (const c of chargesClean) { if (!c.label) throw new UserError("Name each other charge, for example Porter, Labour or Packing."); if (!(num(c.amount) > 0)) throw new UserError("Type an amount for the charge \u201C" + c.label + "\u201D, or remove it."); }
+  const chargesClean = (state.otherCharges || []).map((c) => { const cu = !!c && c.payer === "customer"; return { label: String((c && c.label) || "").trim().slice(0, 40), amount: String((c && c.amount) || "").trim(), payer: cu ? "customer" : "us", show: !c || c.show !== false, gst: cu ? String(c.gst || "").trim() : "", cost: cu ? String(c.cost || "").trim() : "" }; }).filter((c) => c.label || num(c.amount) > 0);
+  const okNum = (x) => /^\d+(\.\d+)?$/.test(String(x).replace(/,/g, ""));
+  for (const c of chargesClean) { if (!c.label) throw new UserError("Name each additional charge, for example Porter, Labour or Packing."); if (!(num(c.amount) > 0)) throw new UserError("Type an amount for the charge \u201C" + c.label + "\u201D, or remove it."); if (c.payer === "customer") { if (c.gst && !(okNum(c.gst) && num(c.gst) <= 100)) throw new UserError("The GST % for \u201C" + c.label + "\u201D must be a number from 0 to 100."); if (c.cost && !okNum(c.cost)) throw new UserError("\u201CWhat it cost us\u201D for \u201C" + c.label + "\u201D must be an amount, or leave it empty."); } }
   state.otherCharges = chargesClean;
   const isNew = !state.orderNo;
   const orderNo = isNew ? await nextOrderNo() : state.orderNo;

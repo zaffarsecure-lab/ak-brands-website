@@ -109,17 +109,21 @@ export function calc(o){
   const fAmt = num(o.freight && o.freight.amount), fMode = (o.freight && o.freight.mode) || "billed";
   const fs = fMode === "billed" ? splitTax(fAmt, num(o.freight && o.freight.gst), mode) : { taxable: 0, tax: 0, total: 0 };
   const freightBilled = fMode === "billed" ? fAmt : 0, freightCost = fMode === "ours" ? fAmt : 0;
-  const extraCost = r2((o.otherCharges || []).reduce((a, c) => a + num(c && c.amount), 0));
-  const payable = goodsTotal + fs.total;
+  /* Additional charges: payer "us" = we paid it, not billed (reduces profit). payer "customer" = added to the bill, with its own GST and an optional cost to us. */
+  const chargeList = (o.otherCharges || []).filter((c) => c && num(c.amount) > 0);
+  const extraCost = r2(chargeList.filter((c) => c.payer !== "customer").reduce((a, c) => a + num(c.amount), 0));
+  let chTaxable = 0, chTax = 0, chTotal = 0, chCost = 0;
+  chargeList.filter((c) => c.payer === "customer").forEach((c) => { const t = splitTax(num(c.amount), num(c.gst), mode); chTaxable += t.taxable; chTax += t.tax; chTotal += t.total; chCost += num(c.cost); });
+  const payable = goodsTotal + fs.total + chTotal;
   const received = (o.payments || []).reduce((a, p) => a + num(p.amount), 0);
   const balance = r2(payable - received);
   const supPaid = (o.supplierPayments || []).reduce((a, p) => a + num(p.amount), 0);
   const supDue = r2(sup - supPaid);
-  const profit = r2(taxable - sup - freightCost - extraCost);
+  const profit = r2(taxable + chTaxable - sup - freightCost - extraCost - chCost);
   const margin = taxable > 0 ? (profit / taxable) * 100 : 0;
   const payStatus = payable <= 0 ? "No amount yet" : (balance <= 0 ? "Paid in full" : (received > 0 ? "Part paid" : "Unpaid"));
   const supStatus = sup <= 0 ? "No supplier amount" : (supDue <= 0 ? "Paid" : (supPaid > 0 ? "Part paid" : "Not paid"));
-  return { lines, mode, goods: r2(goods), taxable: r2(taxable), goodsTax: r2(goodsTax), freightTax: fs.tax, tax: r2(goodsTax + fs.tax), freightBilled, freightTotal: fs.total, freightCost, extraCost,
+  return { lines, mode, goods: r2(goods), taxable: r2(taxable), goodsTax: r2(goodsTax), freightTax: fs.tax, tax: r2(goodsTax + fs.tax + chTax), chargesBilled: r2(chTotal), chargesTaxable: r2(chTaxable), chargesTax: r2(chTax), chargesCost: r2(chCost), freightBilled, freightTotal: fs.total, freightCost, extraCost,
     payable: r2(payable), received: r2(received), balance, sup: r2(sup), supPaid: r2(supPaid), supDue, profit, margin, payStatus, supStatus };
 }
 
@@ -208,8 +212,9 @@ export function buildInvoice(o, biz, audience){
   const fAmt = num(o.freight && o.freight.amount), fBilled = (o.freight && o.freight.mode) === "billed" && fAmt > 0;
   let freightRow = null;
   if (fBilled) { const t = splitTax(fAmt, num(o.freight.gst), mode); freightRow = { desc: "Freight charges", hsn: "", gst: num(o.freight.gst), amount: t.taxable, tax: t.tax }; }
+  const chargeRows = (o.otherCharges || []).filter((x) => x && x.payer === "customer" && num(x.amount) > 0).map((x) => { const t = splitTax(num(x.amount), num(x.gst), mode), nm = plain(String(x.label || "Additional")).trim(); return { desc: /charge/i.test(nm) ? nm : nm + " charges", hsn: "", gst: num(x.gst), amount: t.taxable, tax: t.tax }; });
   const buckets = {}; // key hsn|rate
-  rows.concat(freightRow ? [freightRow] : []).forEach((r) => {
+  rows.concat(freightRow ? [freightRow] : [], chargeRows).forEach((r) => {
     const key = (r.hsn || "") + "|" + r.gst;
     const b = buckets[key] || (buckets[key] = { hsn: r.hsn || "", rate: r.gst, taxable: 0, tax: 0 });
     b.taxable += r.amount; b.tax += r.tax;
@@ -238,7 +243,7 @@ export function buildInvoice(o, biz, audience){
     kind: "invoice", audience: audience === "transporter" ? "transporter" : "customer", sender, no: o.invoiceNo || "", date: o.invoiceDate || todayISO(), orderRef: o.orderNo || "", inter, mode,
     seller, buyer, ship, shipSame: c.shipSame !== false || !(c.shipName || c.shipAddress),
     meta: { payTerms: o.payTerms || biz.payTerms || "", lr: d.lr || "", transporter: d.transporter || "", vehicle: d.vehicle || "", eway: d.eway || "", destination: c.city || "", freightNote: (o.freight && o.freight.mode) ? FREIGHT_MODES[o.freight.mode] : "" },
-    rows, freightRow, taxLines, hsn, totalQty: r2(totalQty), singleUnit: units.size === 1 ? Array.from(units)[0] : "",
+    rows, freightRow, chargeRows, taxLines, hsn, totalQty: r2(totalQty), singleUnit: units.size === 1 ? Array.from(units)[0] : "",
     totals: { taxable, cgst: tot.cgst, sgst: tot.sgst, igst: tot.igst, tax, raw, roundOff, total },
     words: "INR " + inWords(total) + " Only", taxWords: "INR " + inWords(tax) + " Only",
     bank, terms: addrLines(biz.terms || DEFAULT_TERMS), signatory: biz.signatory || "Authorised Signatory", pan: biz.pan || "", extra: lines
@@ -345,8 +350,9 @@ export function buildOrderView(o){
     const q = num(it.qty);
     return { lotNo: it.lotNo || "", name: plain(it.name), qty: q ? q.toLocaleString("en-IN") + " " + (it.unit || "Pcs") : "", rate: rateText(it, "\u20B9"), amount: r2(q * num(it.custRate)) };
   });
+  const extras = (o.otherCharges || []).filter((x) => x && x.payer === "customer" && num(x.amount) > 0).map((x) => ({ label: String(x.label || "Additional charge").slice(0, 40), amount: splitTax(num(x.amount), num(x.gst), c.mode).total }));
   return {
-    orderNo: o.orderNo || "", orderDate: o.orderDate || "", status: o.status || "Booked",
+    orderNo: o.orderNo || "", orderDate: o.orderDate || "", status: o.status || "Booked", extras,
     customerName: o.customer.firm || o.customer.name || "",
     items, mode: c.mode, goods: c.goods, gstAdded: c.mode === "excl" ? c.goodsTax : 0, gstIncluded: c.mode === "incl" ? c.tax : 0,
     freight: c.freightTotal, total: c.payable, received: c.received, balance: Math.max(0, c.balance),

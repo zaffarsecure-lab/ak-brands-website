@@ -173,6 +173,12 @@ export function drawInvoice(doc, inv, opts){
     cellText(cols[1], 1, f.desc, ty, { style: "bold" }); cellText(cols[3], 3, f.gst ? f.gst + "%" : "", ty); cellText(cols[7], 7, money2(f.amount), ty, { style: "bold" });
     y += 5.6;
   }
+  (inv.chargeRows || []).forEach((f) => {
+    if (y + 6 > BOTTOM - 8) { closeBody(); doc.addPage(); title(true); header(); }
+    const ty = y + 0.9;
+    cellText(cols[1], 1, f.desc, ty, { style: "bold" }); cellText(cols[3], 3, f.gst ? f.gst + "%" : "", ty); cellText(cols[7], 7, money2(f.amount), ty, { style: "bold" });
+    y += 5.6;
+  });
   y += 2;
   inv.taxLines.forEach((t) => {
     if (y + 5 > BOTTOM - 8) { closeBody(); doc.addPage(); title(true); header(); }
