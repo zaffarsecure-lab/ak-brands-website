@@ -202,6 +202,9 @@ button.dhb{cursor:pointer}
 .pobox{background:#fff;border-radius:16px;padding:.8rem;max-width:460px;width:100%}
 .pocv{background:#e9eded;border-radius:10px;padding:.4rem;margin-top:.5rem;display:flex;justify-content:center;overflow:hidden}
 .pocv canvas{touch-action:none;display:block;cursor:crosshair;max-width:100%}
+.expT{background:linear-gradient(135deg,#6b3a12,#c9792b);border:0}.expT small{color:#ffe3c4}.expT b{color:#fff}.expT .go{color:#ffeedb}
+.exr1{display:flex;justify-content:space-between;gap:.6rem}.exrow{padding:.7rem .8rem}
+.exbar{height:6px;border-radius:4px;background:#e5eceb;margin:.15rem 0 .2rem;overflow:hidden}.exbar i{display:block;height:100%;background:#c9792b;border-radius:4px}
 .repT{background:linear-gradient(135deg,#1c2b5a,#2f6fdb);border:0}.repT small{color:#cfe0ff}.repT b{color:#fff}.repT .go{color:#dbe7ff}
 .remT{background:linear-gradient(135deg,#7a1d12,#c0392b);border:0}.remT small{color:#ffd9d3}.remT b{color:#fff}.remT .go{color:#ffe9e5}
 .remrow{padding:.7rem .8rem}
@@ -1017,7 +1020,7 @@ onAuthStateChanged(auth, (user) => {
   try { if (on) localStorage.setItem("akOwner", "1"); else localStorage.removeItem("akOwner"); } catch (e) {}
   $("loginPanel").classList.toggle("hidden", on);
   $("logout").classList.toggle("hidden", !on);
-  if (on) { showList(); Promise.resolve(loadAll()).then(() => Promise.all([grpSyncEntries(), loadRemCfg()])).then(() => { try { renderTiles(); if (REMIND_ENABLED && String(location.hash || "") === "#reminders") remAction("open", ""); } catch (e) { console.error(e); } }); loadBiz(); loadTeam(); loadCards().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadGifts().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadStaffLogs().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
+  if (on) { showList(); Promise.resolve(loadAll()).then(() => Promise.all([grpSyncEntries(), loadRemCfg(), expLoad(new Date().getFullYear())])).then(() => { try { renderTiles(); if (REMIND_ENABLED && String(location.hash || "") === "#reminders") remAction("open", ""); } catch (e) { console.error(e); } }); loadBiz(); loadTeam(); loadCards().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadGifts().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); loadStaffLogs().then(() => { try { renderTiles(); } catch (e) { console.error(e); } }); } else { $("listView").classList.add("hidden"); $("formView").classList.add("hidden"); }
 });
 
 /* ---------- Loading ---------- */
@@ -2195,19 +2198,115 @@ async function remSaveCfg(){
   try { await setDoc(doc(db, "settings", "reminders"), remCfg); } catch (e) { console.error(e); } showDetail("reminders"); try { renderTiles(); } catch (e) { console.error(e); }
 }
 
+/* ---------- Expenses: salaries, marketing, advertising and other business costs (private, owner only) ---------- */
+const EXP_CATS = ["Salaries", "Marketing", "Advertising", "Rent", "Travel and transport", "Packing material", "Office", "Phone and internet", "Software and subscriptions", "Professional fees (CA, lawyer)", "Bank charges", "Electricity and utilities", "Repairs and maintenance", "Other"];
+const EXP_MODES = ["UPI", "Cash", "Bank transfer", "Card", "Cheque"];
+let expData = {}, expSt = { period: "month", from: "", to: "", q: "", editing: "", note: "", ok: true };
+const expYearOf = (d) => Number(String(d || "").slice(0, 4));
+const expClean = (e) => ({ id: String(e.id || ""), date: String(e.date || ""), cat: String(e.cat || "Other"), amount: Number(e.amount) || 0, to: String(e.to || ""), mode: String(e.mode || ""), note: String(e.note || ""), lot: String(e.lot || ""), repeat: !!e.repeat, src: String(e.src || "") });
+const expNewId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+async function expLoad(y){
+  if (Array.isArray(expData[y])) return true;
+  try { const s = await getDoc(doc(db, "settings", "expenses-" + y)); expData[y] = s.exists() && Array.isArray(s.data().list) ? s.data().list.map(expClean) : []; return true; }
+  catch (e) { console.error(e); expData[y] = null; return false; }
+}
+async function expEnsure(r){
+  const ty = new Date().getFullYear(), y0 = r.from === "0000-01-01" ? ty - 3 : Math.max(2000, expYearOf(r.from)), y1 = Math.min(2100, expYearOf(r.to) || ty); let ok = true;
+  for (let y = y0; y <= y1; y++) ok = (await expLoad(y)) && ok; return ok;
+}
+const expAll = () => Object.keys(expData).filter((k) => Array.isArray(expData[k])).reduce((a, k) => a.concat(expData[k]), []);
+const expIn = (r) => expAll().filter((e) => e.date >= r.from && e.date <= r.to);
+async function expSaveYear(y){ if (!Array.isArray(expData[y])) throw new Error("not loaded"); await setDoc(doc(db, "settings", "expenses-" + y), { list: expData[y], updatedAt: serverTimestamp() }); }
+async function expPut(e, replaceId){
+  const y = expYearOf(e.date); if (!(await expLoad(y))) throw new Error("load failed"); const years = new Set([y]), bak = JSON.stringify(expData);
+  if (replaceId) Object.keys(expData).forEach((k) => { if (Array.isArray(expData[k]) && expData[k].some((x) => x.id === replaceId)) { expData[k] = expData[k].filter((x) => x.id !== replaceId); years.add(Number(k)); } });
+  expData[y] = expData[y].concat([e]);
+  try { for (const yy of years) await expSaveYear(yy); } catch (er) { expData = JSON.parse(bak); throw er; }
+}
+async function expDel(id){ const bak = JSON.stringify(expData); try { for (const k of Object.keys(expData)) { if (Array.isArray(expData[k]) && expData[k].some((x) => x.id === id)) { expData[k] = expData[k].filter((x) => x.id !== id); await expSaveYear(Number(k)); } } } catch (er) { expData = JSON.parse(bak); throw er; } }
+function expRepeatList(){
+  const cm = todayISO().slice(0, 7), all = expAll(), rp = all.filter((e) => e.repeat && e.date.slice(0, 7) < cm); if (!rp.length) return [];
+  const last = rp.map((e) => e.date.slice(0, 7)).sort().pop(), cur = all.filter((e) => e.date.slice(0, 7) === cm);
+  return rp.filter((e) => e.date.slice(0, 7) === last).filter((c) => !cur.some((x) => (x.src || x.id) === (c.src || c.id)));
+}
+async function expRepeatNow(){
+  const cm = todayISO().slice(0, 7), y = Number(cm.slice(0, 4)), mo = Number(cm.slice(5, 7)), dim = new Date(y, mo, 0).getDate(), c = expRepeatList(); if (!c.length) return 0;
+  if (!(await expLoad(y))) throw new Error("load failed");
+  const bak = JSON.stringify(expData);
+  c.forEach((e) => { expData[y] = expData[y].concat([Object.assign({}, e, { id: expNewId(), date: cm + "-" + dz(Math.min(Number(e.date.slice(8, 10)) || 1, dim)), src: e.src || e.id })]); });
+  try { await expSaveYear(y); } catch (er) { expData = JSON.parse(bak); throw er; }
+  return c.length;
+}
+const expRange = () => repRangeFor(expSt.period, expSt.from, expSt.to);
+function expTileHtml(){
+  const list = expIn(repRangeFor("month")), tot = r2(list.reduce((a, e) => a + e.amount, 0));
+  return '<button type="button" class="tile wide expT" data-exp="open"><small>Expenses</small><b>' + (list.length ? "This month " + inr(tot) + " \u00B7 " + list.length + (list.length === 1 ? " entry" : " entries") : "No expenses added this month") + '</b><span class="go">Salaries, marketing, advertising and more. Tap to open</span></button>';
+}
+function expRowHtml(e){
+  return '<div class="ocard exrow"><div class="exr1"><b>' + esc(e.cat) + '</b><b>' + inr(e.amount) + '</b></div><div class="hint" style="margin:.1rem 0">' + esc(fmtDate(e.date)) + (e.to ? " \u00B7 " + esc(e.to) : "") + (e.mode ? " \u00B7 " + esc(e.mode) : "") + (e.repeat ? ' \u00B7 <span class="pill ok">Repeats monthly</span>' : "") + (e.lot ? " \u00B7 Lot " + esc(e.lot) : "") + '</div>' + (e.note ? '<div class="hint" style="margin:.1rem 0">' + esc(e.note) + '</div>' : "") +
+    '<div class="bizbtn"><button type="button" class="small" data-exp="edit" data-t="' + esc(e.id) + '">Edit</button><button type="button" class="small" data-exp="del" data-t="' + esc(e.id) + '">Delete</button></div></div>';
+}
+function expListHtml(){
+  const toks = expSt.q.toLowerCase().split(/\s+/).filter(Boolean), r = expRange(), all = expIn(r).sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id)), f = all.filter((e) => toks.every((t) => (e.cat + " " + e.to + " " + e.note + " " + e.lot + " " + e.mode).toLowerCase().indexOf(t) >= 0));
+  return f.length ? f.map(expRowHtml).join("") : '<p class="hint">' + (all.length ? "Nothing matches that search." : "No expenses in this period yet.") + '</p>';
+}
+function expScreenHtml(){
+  const r = expRange(), list = expIn(r), total = r2(list.reduce((a, e) => a + e.amount, 0)), os = orders.filter((o) => o.status !== "Cancelled" && o.orderDate >= r.from && o.orderDate <= r.to), profit = r2(os.reduce((a, o) => a + calc(o).profit, 0)), net = r2(profit - total);
+  const by = {}; list.forEach((e) => { by[e.cat] = (by[e.cat] || 0) + e.amount; }); const cats = Object.keys(by).sort((a, b) => by[b] - by[a]);
+  const ed = expSt.editing ? expAll().find((e) => e.id === expSt.editing) : null, v = ed || { date: todayISO(), cat: "", amount: "", to: "", mode: "UPI", note: "", lot: "", repeat: false };
+  const rc = expRepeatList().length;
+  const chips = '<div class="dchips">' + REP_PERIODS.map((p) => '<button type="button" data-exp="period" data-t="' + p[0] + '" class="' + (expSt.period === p[0] ? "on" : "") + '">' + p[1] + '</button>').join("") + '</div>';
+  return '<h2 style="margin-top:0">Expenses</h2><p class="hint">Salaries, marketing, advertising and other business costs. They are private to you. The reports take them off your profit.</p>' + chips +
+    (expSt.period === "custom" ? '<div class="ocard" style="margin:.3rem 0"><label for="ex_from">From</label><input id="ex_from" type="date" value="' + esc(expSt.from) + '"><label for="ex_to2">To</label><input id="ex_to2" type="date" value="' + esc(expSt.to) + '"></div>' : "") +
+    '<div class="dk-grid"><div class="dk" style="--c:#c9792b"><small>Expenses</small><b>' + inr(total) + '</b><span class="dsub"><span>' + list.length + (list.length === 1 ? " entry" : " entries") + '</span></span></div><div class="dk" style="--c:#7a4fd1"><small>Profit before expenses</small><b>' + inr(profit) + '</b><span class="dsub"><span>from ' + os.length + (os.length === 1 ? " order" : " orders") + '</span></span></div><div class="dk" style="--c:' + (net < 0 ? "#a82a1c" : "#12803f") + '"><small>Net profit</small><b>' + inr(net) + '</b><span class="dsub"><span>after expenses</span></span></div></div>' +
+    (cats.length ? '<div class="ocard"><b>By category</b>' + cats.map((c) => '<div class="exr1" style="margin-top:.35rem"><span>' + esc(c) + '</span><span><b>' + inr(by[c]) + '</b> <span class="hint">' + Math.round(by[c] / total * 100) + '%</span></span></div><div class="exbar"><i style="width:' + Math.max(2, Math.round(by[c] / total * 100)) + '%"></i></div>').join("") + '</div>' : "") +
+    '<details class="ocard" id="exForm"' + (ed || expSt.open ? " open" : "") + '><summary><b>' + (ed ? "Edit this expense" : "Add an expense") + '</b></summary>' +
+    '<label for="ex_date">Date</label><input id="ex_date" type="date" value="' + esc(v.date) + '"><label for="ex_cat">Category</label><input id="ex_cat" type="text" list="dlExpCat" maxlength="40" placeholder="Salaries, Advertising..." value="' + esc(v.cat) + '"><datalist id="dlExpCat">' + EXP_CATS.map((c) => '<option value="' + esc(c) + '"></option>').join("") + '</datalist>' +
+    '<label for="ex_amt">Amount (&#8377;)</label><input id="ex_amt" type="text" inputmode="decimal" value="' + esc(v.amount === "" ? "" : String(v.amount)) + '"><label for="ex_to">Paid to <span class="hint">(a person or company, optional)</span></label><input id="ex_to" type="text" maxlength="60" value="' + esc(v.to) + '">' +
+    '<label for="ex_mode">Paid by</label><select id="ex_mode">' + EXP_MODES.map((m) => '<option' + (m === v.mode ? " selected" : "") + '>' + m + '</option>').join("") + '</select><label for="ex_lot">Related lot <span class="hint">(optional, for example an ad for one lot)</span></label><input id="ex_lot" type="text" maxlength="30" value="' + esc(v.lot) + '">' +
+    '<label for="ex_note">Note <span class="hint">(optional)</span></label><input id="ex_note" type="text" maxlength="120" value="' + esc(v.note) + '"><label class="chk" style="margin-top:.5rem"><input type="checkbox" id="ex_rep"' + (v.repeat ? " checked" : "") + '> This repeats every month (salary, rent)</label>' +
+    '<div style="margin-top:.6rem"><button type="button" class="small primary" data-exp="save">' + (ed ? "Save changes" : "Save expense") + '</button>' + (ed ? ' <button type="button" class="small" data-exp="cancel">Cancel</button>' : "") + '</div></details>' +
+    (rc ? '<button type="button" class="small primary" data-exp="repeat" style="width:100%;margin:.4rem 0">Add this month\'s repeating expenses (' + rc + ')</button>' : "") +
+    '<p class="hint" id="exMsg" style="font-weight:600;color:' + (expSt.ok ? "#0d6b33" : "#a82a1c") + '">' + esc(expSt.note) + '</p><input id="ex_q" type="search" autocomplete="off" placeholder="Search category, name, note or lot..." value="' + esc(expSt.q) + '" style="margin:.2rem 0 .4rem"><div id="expList">' + expListHtml() + '</div>';
+}
+async function expAction(act, t){
+  const say = (s, ok) => { expSt.note = s; expSt.ok = ok !== false; const m = $("exMsg"); if (m) { m.textContent = s; m.style.color = expSt.ok ? "#0d6b33" : "#a82a1c"; } };
+  const redraw = () => { showDetail("expenses"); try { renderTiles(); } catch (e) { console.error(e); } };
+  const after = () => expEnsure(expRange()).then(() => { if (lastDetail === "expenses") showDetail("expenses"); });
+  if (act === "open") { expSt.note = ""; expSt.editing = ""; showDetail("expenses"); await after(); return; }
+  if (act === "period") { expSt.period = t; showDetail("expenses"); await after(); return; }
+  if (act === "edit") { expSt.editing = t; expSt.note = ""; showDetail("expenses"); const f = $("exForm"); if (f) f.scrollIntoView({ block: "start" }); return; }
+  if (act === "cancel") { expSt.editing = ""; expSt.note = ""; showDetail("expenses"); return; }
+  if (act === "del") { if (!confirm("Delete this expense?")) return; try { await expDel(t); expSt.editing = ""; expSt.note = "Expense deleted."; expSt.ok = true; redraw(); } catch (e) { console.error(e); say("That did not work. Please try again.", false); } return; }
+  if (act === "repeat") { try { const n = await expRepeatNow(); expSt.note = n + (n === 1 ? " repeating expense was added for this month." : " repeating expenses were added for this month.") + " Check the amounts and tap Edit if one has changed."; expSt.ok = true; redraw(); } catch (e) { console.error(e); say("That did not work. Please try again.", false); } return; }
+  if (act === "save") {
+    const g = (i) => String(($(i) || {}).value || "").trim(), date = g("ex_date"), cat = g("ex_cat"), amt = g("ex_amt").replace(/,/g, "");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || isNaN(new Date(date + "T00:00:00"))) { say("Choose the date of the expense.", false); return; }
+    if (expYearOf(date) < 2000 || expYearOf(date) > 2100) { say("That date does not look right.", false); return; }
+    if (!cat) { say("Type or choose a category, for example Salaries.", false); return; }
+    if (!/^\d+(\.\d{1,2})?$/.test(amt) || !(Number(amt) > 0) || Number(amt) > 100000000) { say("Type the amount as a number, for example 25000.", false); return; }
+    const old = expSt.editing ? expAll().find((e) => e.id === expSt.editing) : null;
+    const e = { id: old ? old.id : expNewId(), date, cat: cat.slice(0, 40), amount: r2(Number(amt)), to: g("ex_to").slice(0, 60), mode: g("ex_mode"), note: g("ex_note").slice(0, 120), lot: g("ex_lot").slice(0, 30), repeat: !!($("ex_rep") || {}).checked, src: old ? old.src : "" };
+    try { await expPut(e, old ? old.id : ""); expSt.editing = ""; expSt.open = true; expSt.note = (old ? "Changes saved. " : "Expense saved. ") + inr(e.amount) + " on " + fmtDate(date) + (date >= expRange().from && date <= expRange().to ? "." : ", which is outside the period shown above."); expSt.ok = true; redraw(); }
+    catch (er) { console.error(er); say("That did not work. Check your connection and try again.", false); }
+  }
+}
+
 /* ---------- Reports: sales and purchase, as Excel, CSV (zip of sheets) and PDF ---------- */
 let repSt = { period: "fy", from: "", to: "", which: "both", fmt: "xlsx", msg: "" };
 const REP_MIME = { xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", csv: "application/zip", pdf: "application/pdf" };
 const REP_PERIODS = [["month", "This month"], ["last", "Last month"], ["quarter", "This quarter"], ["fy", "This financial year"], ["lastfy", "Last financial year"], ["custom", "My dates"]];
 const repMon = (ym) => MON[Number(ym.slice(5, 7)) - 1] + " " + ym.slice(0, 4);
-function repRange(){
-  const k = repSt.period, t = todayISO(); let r;
+function repRangeFor(k, fromV, toV){
+  const t = todayISO(); let r;
   if (k === "last") { const d = new Date(t + "T00:00:00"), y = d.getMonth() === 0 ? d.getFullYear() - 1 : d.getFullYear(), m = d.getMonth() === 0 ? 11 : d.getMonth() - 1, e = new Date(y, m + 1, 0); r = { from: y + "-" + dz(m + 1) + "-01", to: isoOf(e) }; }
-  else if (k === "custom") r = { from: repSt.from || "0000-01-01", to: repSt.to || t };
+  else if (k === "custom") r = { from: fromV || "0000-01-01", to: toV || t };
   else { const p = periodRange(k); r = { from: p.from, to: p.key === "lastfy" ? p.to : (p.to > t ? t : p.to) }; }
   const nm = (REP_PERIODS.find((x) => x[0] === k) || [0, "Report"])[1];
   r.label = nm + " (" + fmtDate(r.from === "0000-01-01" ? t : r.from) + " to " + fmtDate(r.to) + ")"; return r;
 }
+const repRange = () => repRangeFor(repSt.period, repSt.from, repSt.to);
+const repTitle = (w) => ({ sales: "Sales report", purchase: "Purchase report", expenses: "Expenses report", both: "Sales, purchase and expenses report" })[w] || "Report";
 const repOrdersIn = () => { const r = repRange(); return orders.filter((o) => o.status !== "Cancelled" && o.orderDate >= r.from && o.orderDate <= r.to).sort((a, b) => String(a.orderDate).localeCompare(String(b.orderDate)) || String(a.orderNo).localeCompare(String(b.orderNo))); };
 function repTaxType(o){ try { const inv = buildInvoice(o, biz, "customer"); if (inv.seller && inv.seller.stateCode && inv.buyer && inv.buyer.stateCode) return inv.inter ? "IGST" : "CGST+SGST"; } catch (e) { console.error(e); } return "Not known"; }
 const repSum = (rows, i) => r2(rows.reduce((a, r) => a + (Number(r[i]) || 0), 0));
@@ -2215,7 +2314,8 @@ function repTable(name, head, kinds, rows, widths, totalCols){
   const total = rows.length ? head.map((h, i) => (i === 0 ? "Total" : (totalCols.indexOf(i) >= 0 ? repSum(rows, i) : ""))) : null;
   return { name, head, kinds, rows, widths, total };
 }
-function repTables(os, which){
+function repTables(os, which, exps){
+  exps = exps || [];
   const sales = [], lots = [], pur = [], purLots = [], months = {};
   os.forEach((o) => {
     const c = calc(o), cu = o.customer || {}, sp = o.supplier || {}, tt = repTaxType(o), ym = String(o.orderDate).slice(0, 7), fTax = c.freightTax, fTaxable = r2(c.freightTotal - c.freightTax);
@@ -2229,24 +2329,29 @@ function repTables(os, which){
     const m = months[ym] || (months[ym] = { orders: 0, goods: 0, fr: 0, ch: 0, gst: 0, tot: 0, rec: 0, bal: 0, pur: 0, paid: 0, due: 0, cost: 0, profit: 0 });
     m.orders++; m.goods += c.taxable; m.fr += fTaxable; m.ch += c.chargesTaxable; m.gst += c.tax; m.tot += c.payable; m.rec += c.received; m.bal += Math.max(0, c.balance); m.pur += c.sup; m.paid += c.supPaid; m.due += Math.max(0, c.supDue); m.cost += c.freightCost + c.extraCost + c.chargesCost; m.profit += c.profit;
   });
-  const moneyCols = (n, a) => a;
+  exps.forEach((e) => { const ym = e.date.slice(0, 7), m = months[ym] || (months[ym] = { orders: 0, goods: 0, fr: 0, ch: 0, gst: 0, tot: 0, rec: 0, bal: 0, pur: 0, paid: 0, due: 0, cost: 0, profit: 0 }); m.exp = (m.exp || 0) + e.amount; });
   const sheets = [];
-  const mrows = Object.keys(months).sort().map((k) => { const m = months[k]; return [repMon(k), m.orders, r2(m.goods), r2(m.fr), r2(m.ch), r2(m.gst), r2(m.tot), r2(m.rec), r2(m.bal), r2(m.pur), r2(m.paid), r2(m.due), r2(m.cost), r2(m.profit)]; });
-  const sHead = ["Month", "Orders", "Goods before GST", "Freight before GST", "Additional charges before GST", "GST", "Total sales", "Received", "Balance with customers", "Purchases", "Paid to suppliers", "Due to suppliers", "Freight and extra costs paid by us", "Profit"];
-  const sKinds = ["text", "int", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money"], sW = [14, 8, 16, 16, 18, 14, 16, 14, 18, 16, 16, 16, 22, 16];
-  const keep = which === "sales" ? [0, 1, 2, 3, 4, 5, 6, 7, 8] : (which === "purchase" ? [0, 1, 9, 10, 11, 12] : sHead.map((x, i) => i));
+  const mrows = Object.keys(months).sort().filter((k) => (which === "expenses" ? months[k].exp : (which === "both" ? true : months[k].orders > 0))).map((k) => { const m = months[k]; return [repMon(k), m.orders, r2(m.goods), r2(m.fr), r2(m.ch), r2(m.gst), r2(m.tot), r2(m.rec), r2(m.bal), r2(m.pur), r2(m.paid), r2(m.due), r2(m.cost), r2(m.profit), r2(m.exp || 0), r2(m.profit - (m.exp || 0))]; });
+  const sHead = ["Month", "Orders", "Goods before GST", "Freight before GST", "Additional charges before GST", "GST", "Total sales", "Received", "Balance with customers", "Purchases", "Paid to suppliers", "Due to suppliers", "Freight and extra costs paid by us", "Profit", "Expenses", "Net profit after expenses"];
+  const sKinds = ["text", "int", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money", "money"], sW = [14, 11, 16, 16, 18, 14, 16, 14, 18, 16, 16, 16, 22, 16, 16, 22];
+  const keep = which === "sales" ? [0, 1, 2, 3, 4, 5, 6, 7, 8] : (which === "purchase" ? [0, 1, 9, 10, 11, 12] : (which === "expenses" ? [0, 14] : sHead.map((x, i) => i)));
   sheets.push(repTable("Summary", keep.map((i) => sHead[i]), keep.map((i) => sKinds[i]), mrows.map((r) => keep.map((i) => r[i])), keep.map((i) => sW[i]), keep.filter((i) => i > 0).map((i) => keep.indexOf(i))));
-  if (which !== "purchase") {
+  if (which === "sales" || which === "both") {
     sheets.push(repTable("Sales by order", ["Order date", "Order no", "Invoice no", "Invoice date", "Customer", "Firm", "City", "State", "Customer GSTIN", "Status", "Goods before GST", "Freight before GST", "Additional charges before GST", "GST type", "CGST", "SGST", "IGST", "Total GST", "Total payable", "Received", "Balance", "Payment status"], ["date", "text", "text", "date", "text", "text", "text", "text", "text", "text", "money", "money", "money", "text", "money", "money", "money", "money", "money", "money", "money", "text"], sales, [12, 14, 14, 12, 22, 20, 14, 16, 18, 12, 16, 16, 18, 12, 12, 12, 12, 12, 16, 14, 14, 14], [10, 11, 12, 14, 15, 16, 17, 18, 19, 20]));
     sheets.push(repTable("Sales by lot", ["Order date", "Order no", "Invoice no", "Customer", "State", "Customer GSTIN", "Lot no", "Product", "HSN", "Qty", "Unit", "Rate", "Rate includes GST", "GST %", "Taxable value", "GST", "Line total"], ["date", "text", "text", "text", "text", "text", "text", "text", "text", "qty", "text", "money", "text", "qty", "money", "money", "money"], lots, [12, 14, 14, 22, 16, 18, 12, 28, 10, 10, 8, 12, 12, 8, 16, 14, 16], [14, 15, 16]));
   }
-  if (which !== "sales") {
+  if (which === "purchase" || which === "both") {
     sheets.push(repTable("Purchases by order", ["Order date", "Order no", "URD bill no", "URD bill date", "Supplier", "Supplier GSTIN", "Supplier PAN", "Supplier address", "Purchase value", "Paid to supplier", "Balance payable", "Payment status", "Freight paid by us", "Other charges paid by us"], ["date", "text", "text", "date", "text", "text", "text", "text", "money", "money", "money", "text", "money", "money"], pur, [12, 14, 14, 12, 24, 18, 14, 34, 16, 16, 16, 14, 16, 18], [8, 9, 10, 12, 13]));
     sheets.push(repTable("Purchases by lot", ["Order date", "Order no", "URD bill no", "Supplier", "Supplier GSTIN", "Lot no", "Product", "HSN", "Qty", "Unit", "Supplier rate", "Purchase value"], ["date", "text", "text", "text", "text", "text", "text", "text", "qty", "text", "money", "money"], purLots, [12, 14, 14, 24, 18, 12, 28, 10, 10, 8, 14, 16], [11]));
   }
-  const r = repRange(), notes = [["Report", (which === "sales" ? "Sales report" : which === "purchase" ? "Purchase report" : "Sales and purchase report") + " - AK Brands Marketing"], ["Period", r.label], ["Month is decided by", "Order date"], ["Generated on", fmtDate(todayISO())], ["Orders included", String(os.length)], ["Cancelled orders", "Left out"], ["Purchases", "Supplier rates are stored as one amount, so GST on purchases is not shown. The purchase sheets show purchase value, paid and balance."], ["Profit", "Goods before GST plus additional charges before GST, minus purchases, minus freight and extra costs paid by us."], ["Please note", "A report for your accountant. It is not a GST return. Ask your accountant to check the first one."]];
+  if (which === "both" || which === "expenses") {
+    const byCat = {}; exps.forEach((e) => { const b = byCat[e.cat] || (byCat[e.cat] = { n: 0, amt: 0 }); b.n++; b.amt += e.amount; }); const totE = exps.reduce((a, e) => a + e.amount, 0);
+    sheets.push(repTable("Expenses by category", ["Category", "Entries", "Amount", "Share %"], ["text", "int", "money", "money"], Object.keys(byCat).sort((a, b) => byCat[b].amt - byCat[a].amt).map((k) => [k, byCat[k].n, r2(byCat[k].amt), totE ? r2(byCat[k].amt / totE * 100) : 0]), [30, 10, 16, 12], [1, 2, 3]));
+    sheets.push(repTable("Expenses list", ["Date", "Category", "Paid to", "Paid by", "Amount", "Note", "Related lot", "Repeats monthly"], ["date", "text", "text", "text", "money", "text", "text", "text"], exps.slice().sort((a, b) => a.date.localeCompare(b.date) || String(a.id).localeCompare(String(b.id))).map((e) => [e.date, e.cat, e.to || "", e.mode || "", r2(e.amount), e.note || "", e.lot || "", e.repeat ? "Yes" : ""]), [12, 26, 24, 14, 16, 36, 14, 14], [4]));
+  }
+  const r = repRange(), notes = [["Report", repTitle(which) + " - AK Brands Marketing"], ["Period", r.label], ["Month is decided by", "Order date"], ["Generated on", fmtDate(todayISO())], ["Orders included", String(os.length)], ["Cancelled orders", "Left out"], ["Purchases", "Supplier rates are stored as one amount, so GST on purchases is not shown. The purchase sheets show purchase value, paid and balance."], ["Profit", "Goods before GST plus additional charges before GST, minus purchases, minus freight and extra costs paid by us."], ["Please note", "A report for your accountant. It is not a GST return. Ask your accountant to check the first one."]].concat(which === "both" || which === "expenses" ? [["Expenses", "Entered in the Expenses box and counted by the expense date. They are private business costs."], ["Net profit", "Profit minus expenses."]] : []);
   sheets.push({ name: "Notes", head: ["Item", "Detail"], kinds: ["text", "text"], rows: notes, widths: [22, 110], total: null });
-  return { sheets, sales, lots, pur, purLots, mrows };
+  return { sheets, sales, lots, pur, purLots, mrows, exps };
 }
 /* ----- zip, xlsx ----- */
 const repCrcT = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
@@ -2339,44 +2444,47 @@ function repPdfSpec(T, which){
   const fmtOf = (kind) => (kind === "money" ? repMoney : (kind === "qty" || kind === "int" ? (v) => (typeof v === "number" ? v.toLocaleString("en-IN") : (v == null ? "" : String(v))) : (kind === "date" ? (v) => (/^\d{4}-\d{2}-\d{2}$/.test(String(v || "")) ? fmtDate(v) : String(v || "")) : (v) => (v == null ? "" : String(v)))));
   const pick = (t, idx, wts) => ({ title: t.name, head: idx.map((i) => t.head[i]), rows: t.rows.map((rw) => idx.map((i) => rw[i])), total: t.total ? idx.map((i) => t.total[i]) : null, widths: wts, align: idx.map((i) => (t.kinds[i] === "money" || t.kinds[i] === "qty" || t.kinds[i] === "int" ? "r" : "l")), fmt: idx.map((i) => fmtOf(t.kinds[i])) });
   const by = (n) => T.sheets.find((s) => s.name === n);
-  const notes = by("Notes"); sec.push({ paras: notes.rows.filter((x) => ["Period", "Month is decided by", "Cancelled orders", "Purchases", "Profit", "Please note"].indexOf(x[0]) >= 0) });
+  const notes = by("Notes"); sec.push({ paras: notes.rows.filter((x) => ["Period", "Month is decided by", "Cancelled orders", "Purchases", "Profit", "Expenses", "Net profit", "Please note"].indexOf(x[0]) >= 0) });
   const sm = by("Summary"); sec.push(pick(sm, sm.head.map((h, i) => i), sm.widths));
-  if (which !== "purchase") { const a = by("Sales by order"), b = by("Sales by lot"); sec.push(pick(a, [0, 1, 2, 4, 7, 10, 17, 18, 19, 20], [9, 12, 12, 20, 14, 12, 11, 12, 12, 12])); sec.push(pick(b, [0, 1, 3, 6, 7, 8, 9, 11, 14, 15, 16], [9, 12, 18, 8, 22, 8, 8, 10, 12, 10, 12])); }
-  if (which !== "sales") { const a = by("Purchases by order"), b = by("Purchases by lot"); sec.push(pick(a, [0, 1, 2, 4, 8, 9, 10, 11], [9, 12, 12, 26, 14, 14, 14, 12])); sec.push(pick(b, [0, 1, 3, 5, 6, 8, 10, 11], [9, 12, 24, 8, 26, 8, 12, 14])); }
-  return { title: (which === "sales" ? "Sales report" : which === "purchase" ? "Purchase report" : "Sales and purchase report"), subtitle: "AK Brands Marketing  |  " + r.label + "  |  Generated " + fmtDate(todayISO()), sections: sec, footer: (which === "sales" ? "Sales report" : which === "purchase" ? "Purchase report" : "Sales and purchase report") + " " + r.from + " to " + r.to };
+  if (which === "sales" || which === "both") { const a = by("Sales by order"), b = by("Sales by lot"); sec.push(pick(a, [0, 1, 2, 4, 7, 10, 17, 18, 19, 20], [9, 12, 12, 20, 14, 12, 11, 12, 12, 12])); sec.push(pick(b, [0, 1, 3, 6, 7, 8, 9, 11, 14, 15, 16], [9, 12, 18, 8, 22, 8, 8, 10, 12, 10, 12])); }
+  if (which === "purchase" || which === "both") { const a = by("Purchases by order"), b = by("Purchases by lot"); sec.push(pick(a, [0, 1, 2, 4, 8, 9, 10, 11], [9, 12, 12, 26, 14, 14, 14, 12])); sec.push(pick(b, [0, 1, 3, 5, 6, 8, 10, 11], [9, 12, 24, 8, 26, 8, 12, 14])); }
+  if (which === "both" || which === "expenses") { const a = by("Expenses by category"), b2 = by("Expenses list"); sec.push(pick(a, [0, 1, 2, 3], [34, 10, 16, 12])); sec.push(pick(b2, [0, 1, 2, 3, 4, 5, 6], [10, 22, 20, 12, 14, 30, 10])); }
+  return { title: repTitle(which), subtitle: "AK Brands Marketing  |  " + r.label + "  |  Generated " + fmtDate(todayISO()), sections: sec, footer: repTitle(which) + " " + r.from + " to " + r.to };
 }
 function repMake(){
-  const os = repOrdersIn(), T = repTables(os, repSt.which), r = repRange(), tag = (repSt.which === "both" ? "sales-purchase" : repSt.which) + "-" + (r.from === "0000-01-01" ? "all" : r.from) + "-to-" + r.to; let bytes, name, mime = REP_MIME[repSt.fmt];
+  const r = repRange(), os = repSt.which === "expenses" ? [] : repOrdersIn(), exps = repSt.which === "both" || repSt.which === "expenses" ? expIn(r) : [], T = repTables(os, repSt.which, exps), tag = (repSt.which === "both" ? "sales-purchase-expenses" : repSt.which) + "-" + (r.from === "0000-01-01" ? "all" : r.from) + "-to-" + r.to; let bytes, name, mime = REP_MIME[repSt.fmt];
   if (repSt.fmt === "xlsx") { bytes = repXlsx(T.sheets); name = "AK-report-" + tag + ".xlsx"; }
   else if (repSt.fmt === "csv") { bytes = repZip(repCsvFiles(T.sheets)); name = "AK-report-" + tag + "-csv.zip"; }
   else { bytes = repPdf(repPdfSpec(T, repSt.which)); name = "AK-report-" + tag + ".pdf"; }
-  return { bytes, name, mime, T, os };
+  return { bytes, name, mime, T, os, exps };
 }
 async function repGo(share){
   const say = (s) => { const m = $("repMsg"); if (m) m.textContent = s; };
   try {
-    const f = repMake(); if (!f.os.length) { say("There are no orders in this period."); return; }
+    if (repSt.which === "both" || repSt.which === "expenses") { if (!(await expEnsure(repRange()))) { say("Your expenses could not be loaded. Check your connection and try again."); return; } }
+    const f = repMake(); if (repSt.which === "expenses" ? !f.exps.length : !f.os.length) { say(repSt.which === "expenses" ? "There are no expenses in this period." : "There are no orders in this period."); return; }
     const blob = new Blob([f.bytes], { type: f.mime }), file = new File([blob], f.name, { type: f.mime });
     if (share && navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title: f.name, text: "AK Brands Marketing report" }); say("Shared."); } catch (e) { if (e && e.name === "AbortError") say("Sharing cancelled."); else throw e; } return; }
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); say((share ? "Your phone cannot share this file here, so it was saved instead. " : "Saved. ") + f.name);
   } catch (e) { console.error(e); say("That did not work. Please try again."); }
 }
-const repTileHtml = () => '<button type="button" class="tile wide repT" data-rep="open"><small>Reports</small><b>Sales and purchase reports</b><span class="go">Excel, CSV or PDF. Tap to open</span></button>';
+const repTileHtml = () => '<button type="button" class="tile wide repT" data-rep="open"><small>Reports</small><b>Sales, purchase and expense reports</b><span class="go">Excel, CSV or PDF. Tap to open</span></button>';
 function repScreenHtml(){
   const os = repOrdersIn(), T = repTables(os, "both"), r = repRange(), so = T.sheets.find((s) => s.name === "Sales by order"), po = T.sheets.find((s) => s.name === "Purchases by order");
   const g = (t, i) => (t && t.total ? Number(t.total[i]) || 0 : 0);
   const chip = (list, cur, key) => '<div class="dchips">' + list.map((p) => '<button type="button" data-rep="' + key + '" data-t="' + p[0] + '" class="' + (cur === p[0] ? "on" : "") + '">' + p[1] + '</button>').join("") + '</div>';
-  const taxable = g(so, 10) + g(so, 11) + g(so, 12), gst = g(so, 17), tot = g(so, 18), pur = g(po, 8), prof = os.reduce((a, o) => a + calc(o).profit, 0);
-  return '<h2 style="margin-top:0">Reports</h2><p class="hint">Sales and purchase reports from your orders. Each month is decided by the <b>order date</b>. Cancelled orders are left out.</p>' +
+  const taxable = g(so, 10) + g(so, 11) + g(so, 12), gst = g(so, 17), tot = g(so, 18), pur = g(po, 8), prof = os.reduce((a, o) => a + calc(o).profit, 0), expT = r2(expIn(r).reduce((a, e) => a + e.amount, 0)), netP = r2(prof - expT);
+  return '<h2 style="margin-top:0">Reports</h2><p class="hint">Sales, purchase and expense reports. Orders are counted by the <b>order date</b> and expenses by the expense date. Cancelled orders are left out.</p>' +
     '<label>Period</label>' + chip(REP_PERIODS, repSt.period, "period") + (repSt.period === "custom" ? '<div class="ocard" style="margin:.3rem 0"><label for="rep_from">From</label><input id="rep_from" type="date" value="' + esc(repSt.from) + '"><label for="rep_to">To</label><input id="rep_to" type="date" value="' + esc(repSt.to) + '"></div>' : "") +
-    '<div class="dk-grid"><div class="dk" style="--c:#2f6fdb"><small>Sales (total payable)</small><b>' + inr(tot) + '</b><span class="dsub"><span>' + os.length + (os.length === 1 ? " order" : " orders") + ' \u00B7 GST ' + inr(gst) + '</span></span></div><div class="dk" style="--c:#7a4fd1"><small>Purchases</small><b>' + inr(pur) + '</b><span class="dsub"><span>from suppliers</span></span></div><div class="dk" style="--c:#12803f"><small>Profit</small><b>' + inr(prof) + '</b><span class="dsub"><span>goods before GST ' + inr(taxable) + '</span></span></div></div>' +
-    '<label>Which report</label>' + chip([["sales", "Sales"], ["purchase", "Purchase"], ["both", "Both"]], repSt.which, "which") + '<label>File type</label>' + chip([["xlsx", "Excel"], ["csv", "CSV"], ["pdf", "PDF"]], repSt.fmt, "fmt") +
+    '<div class="dk-grid"><div class="dk" style="--c:#2f6fdb"><small>Sales (total payable)</small><b>' + inr(tot) + '</b><span class="dsub"><span>' + os.length + (os.length === 1 ? " order" : " orders") + ' \u00B7 GST ' + inr(gst) + '</span></span></div><div class="dk" style="--c:#7a4fd1"><small>Purchases</small><b>' + inr(pur) + '</b><span class="dsub"><span>from suppliers</span></span></div><div class="dk" style="--c:#12803f"><small>Profit before expenses</small><b>' + inr(prof) + '</b><span class="dsub"><span>before expenses \u00B7 goods before GST ' + inr(taxable) + '</span></span></div><div class="dk" style="--c:#c9792b"><small>Expenses</small><b>' + inr(expT) + '</b><span class="dsub"><span>salaries, marketing and more</span></span></div><div class="dk" style="--c:' + (netP < 0 ? '#a82a1c' : '#12803f') + '"><small>Net profit</small><b>' + inr(netP) + '</b><span class="dsub"><span>after expenses</span></span></div></div>' +
+    '<label>Which report</label>' + chip([["sales", "Sales"], ["purchase", "Purchase"], ["both", "Both"], ["expenses", "Expenses"]], repSt.which, "which") + '<p class="hint" style="margin:.1rem 0">Both means sales, purchase and expenses together, with net profit.</p>' + '<label>File type</label>' + chip([["xlsx", "Excel"], ["csv", "CSV"], ["pdf", "PDF"]], repSt.fmt, "fmt") +
     '<div class="bizbtn" style="margin-top:.7rem"><button type="button" class="small primary" data-rep="download" style="flex:1 1 40%">Download</button><button type="button" class="small" data-rep="share" style="flex:1 1 40%">Share</button></div><p class="hint" id="repMsg" style="font-weight:600;color:#0d6b33"></p>' +
-    '<div class="ocard"><b>What is inside</b><p class="hint" style="margin:.2rem 0">Every file has a <b>Summary</b> by month and a <b>Notes</b> sheet. Sales have one sheet by order and one by lot. Purchases have one sheet by order and one by lot, with totals. Excel keeps them as sheets. CSV gives one file for each sheet, packed in a zip. PDF puts them one after another.</p><p class="hint" style="margin:.2rem 0">Purchases show value, paid and balance. GST on purchases is not shown, because supplier rates are saved as one amount.</p></div>';
+    '<div class="ocard"><b>What is inside</b><p class="hint" style="margin:.2rem 0">Every file has a <b>Summary</b> by month and a <b>Notes</b> sheet. <b>Both</b> and <b>Expenses</b> also have an expenses sheet by category and a list of every expense. Sales have one sheet by order and one by lot. Purchases have one sheet by order and one by lot, with totals. Excel keeps them as sheets. CSV gives one file for each sheet, packed in a zip. PDF puts them one after another.</p><p class="hint" style="margin:.2rem 0">Purchases show value, paid and balance. GST on purchases is not shown, because supplier rates are saved as one amount.</p></div>';
 }
 function repAction(act, t){
-  if (act === "open") { repSt.msg = ""; showDetail("reports"); return; }
-  if (act === "period") { repSt.period = t; showDetail("reports"); return; }
+  const again = () => expEnsure(repRange()).then(() => { if (lastDetail === "reports") showDetail("reports"); });
+  if (act === "open") { repSt.msg = ""; showDetail("reports"); again(); return; }
+  if (act === "period") { repSt.period = t; showDetail("reports"); again(); return; }
   if (act === "which") { repSt.which = t; showDetail("reports"); return; }
   if (act === "fmt") { repSt.fmt = t; showDetail("reports"); return; }
   if (act === "download") { repGo(false); return; }
@@ -2391,7 +2499,7 @@ function renderTiles(){
   const t = (kind, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-tile="' + kind + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   const infos = live.map((o) => pendingInfo(o)), need = infos.filter((p) => p.pending > 0), onTime = infos.filter((p) => p.waiting).length, proofs = need.reduce((a, p) => a + p.proofs, 0);
   const tp = '<button type="button" class="tile wide ' + (need.length ? "alert" : "good") + '" data-tile="pending"><small>Action pending</small><b>' + (need.length ? need.length + (need.length === 1 ? " order needs action" : " orders need action") : "Nothing needs action") + '</b><span class="go">' + (need.length ? proofs + (proofs === 1 ? " proof" : " proofs") + " missing" + (onTime ? ", " + onTime + " in transit on schedule" : "") + ". Tap to see" : (onTime ? onTime + " in transit, on schedule. Tap to see" : "Tap to see details")) + '</span></button>';
-  $("tiles").innerHTML = tp + remTileHtml() + dashTileHtml() + repTileHtml() + bizTileHtml() + giftTileHtml() + grpTileHtml() + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
+  $("tiles").innerHTML = tp + remTileHtml() + dashTileHtml() + repTileHtml() + expTileHtml() + bizTileHtml() + giftTileHtml() + grpTileHtml() + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
 }
 /* tap a tile: groups, then orders, then the order itself */
 let lastDetail = "";
@@ -2435,6 +2543,7 @@ function showDetail(kind){
   else if (kind === "members") $("detailBody").innerHTML = grpScreenHtml();
   else if (kind === "reminders") $("detailBody").innerHTML = remScreenHtml();
   else if (kind === "reports") $("detailBody").innerHTML = repScreenHtml();
+  else if (kind === "expenses") $("detailBody").innerHTML = expScreenHtml();
   else if (kind.indexOf("post:") === 0) $("detailBody").innerHTML = postScreenHtml();
   else if (kind.indexOf("cdash:") === 0) $("detailBody").innerHTML = customerDashHtml(kind.slice(6));
   else $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
@@ -2447,14 +2556,16 @@ $("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-
 $("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-gift]"); if (z) giftAction(z.getAttribute("data-gift"), z.getAttribute("data-t") || "", z.getAttribute("data-p") || ""); });
 $("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-grp]"); if (z) grpAction(z.getAttribute("data-grp"), z.getAttribute("data-t") || "", z.getAttribute("data-v") || ""); });
 $("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-rem]"); if (z) remAction(z.getAttribute("data-rem"), z.getAttribute("data-t") || ""); });
-$("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-rep]"); if (z) repAction(z.getAttribute("data-rep"), z.getAttribute("data-t") || ""); });
+$("tiles").addEventListener("click", (e) => { const z = e.target.closest("[data-rep]"); if (z) repAction(z.getAttribute("data-rep"), z.getAttribute("data-t") || ""); const x = e.target.closest("[data-exp]"); if (x) expAction(x.getAttribute("data-exp"), x.getAttribute("data-t") || ""); });
 $("detailBack").addEventListener("click", () => showList());
-$("detailBody").addEventListener("change", (e) => { if (e.target && (e.target.id === "rep_from" || e.target.id === "rep_to")) { repSt.from = String(($("rep_from") || {}).value || ""); repSt.to = String(($("rep_to") || {}).value || ""); showDetail("reports"); return; }
+$("detailBody").addEventListener("change", (e) => { if (e.target && (e.target.id === "ex_from" || e.target.id === "ex_to2")) { expSt.from = String(($("ex_from") || {}).value || ""); expSt.to = String(($("ex_to2") || {}).value || ""); showDetail("expenses"); expEnsure(expRange()).then(() => { if (lastDetail === "expenses") showDetail("expenses"); }); return; }
+  if (e.target && (e.target.id === "rep_from" || e.target.id === "rep_to")) { repSt.from = String(($("rep_from") || {}).value || ""); repSt.to = String(($("rep_to") || {}).value || ""); showDetail("reports"); return; }
   if (e.target && (e.target.id === "rem_every" || e.target.id === "rem_min" || e.target.id === "rem_time")) { remSaveCfg(); return; }
   if (e.target && e.target.getAttribute && e.target.getAttribute("data-po") === "tick" && postSt) { const no = e.target.getAttribute("data-t"); if (e.target.checked) postSt.picks.add(no); else postSt.picks.delete(no); const c = $("poCount"); if (c) c.textContent = postSt.picks.size + (postSt.picks.size === 1 ? " lot ticked." : " lots ticked."); return; }
   if (e.target && e.target.id === "grp_cat") { grpCatF = e.target.value; grpLimit = 60; const l = $("grpList"); if (l) l.innerHTML = grpListHtml(); return; } if (e.target && e.target.id === "sf_who") { sfWho = e.target.value; $("detailBody").innerHTML = staffScreenHtml(); } });
-$("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "rem_q") { remQ = e.target.value; const l = $("remList"); if (l) l.innerHTML = remSectionsHtml(); return; } if (e.target && e.target.id === "grp_q") { grpQ = e.target.value; grpLimit = 60; const l = $("grpList"); if (l) l.innerHTML = grpListHtml(); return; } if (e.target && e.target.id === "dtQ") { applyDtFilter(e.target.value); return; } if (e.target && e.target.id === "sf_q") { sfQ = e.target.value; $("sfList").innerHTML = feedListHtml(); return; } if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
+$("detailBody").addEventListener("input", (e) => { if (e.target && e.target.id === "ex_q") { expSt.q = e.target.value; const l = $("expList"); if (l) l.innerHTML = expListHtml(); return; } if (e.target && e.target.id === "rem_q") { remQ = e.target.value; const l = $("remList"); if (l) l.innerHTML = remSectionsHtml(); return; } if (e.target && e.target.id === "grp_q") { grpQ = e.target.value; grpLimit = 60; const l = $("grpList"); if (l) l.innerHTML = grpListHtml(); return; } if (e.target && e.target.id === "dtQ") { applyDtFilter(e.target.value); return; } if (e.target && e.target.id === "sf_q") { sfQ = e.target.value; $("sfList").innerHTML = feedListHtml(); return; } if (e.target && e.target.id === "pendQ") { pendQ = e.target.value; $("pendList").innerHTML = pendingListHtml(); return; } if (e.target && (e.target.id === "sp_amount" || (e.target.classList && e.target.classList.contains("spA")))) spSum(); });
 $("detailBody").addEventListener("click", (e) => {
+  const exb = e.target.closest("[data-exp]"); if (exb) { expAction(exb.getAttribute("data-exp"), exb.getAttribute("data-t") || ""); return; }
   const rpb = e.target.closest("[data-rep]"); if (rpb) { repAction(rpb.getAttribute("data-rep"), rpb.getAttribute("data-t") || ""); return; }
   const rmb = e.target.closest("[data-rem]"); if (rmb) { remAction(rmb.getAttribute("data-rem"), rmb.getAttribute("data-t") || ""); return; }
   const pob = e.target.closest("[data-post]"); if (pob) { postAction("open", pob.getAttribute("data-post")); return; }
