@@ -3764,6 +3764,10 @@ async function makeDoc(kind){
   const btns = document.querySelectorAll("[data-doc]"); btns.forEach((b) => { b.disabled = true; });
   try {
     if (!window.jspdf || !window.jspdf.jsPDF) throw new UserError("The PDF tool did not load. Check your internet connection, reload this page and try again.");
+    if (kind === "supplier" && state.orderNo) {
+      const gsn = await getDoc(doc(db, "orders", state.orderNo)), gg = gsn.exists() ? gsn.data().invGroup : null;
+      if (Array.isArray(gg) && gg.length > 1) { location.href = "invoices.html#" + encodeURIComponent(state.orderNo); return; }
+    }
     if (kind === "supplier") {
       if (!(state.supplier.name || "").trim()) throw new UserError("Add the supplier's name first (section 5).");
       if (!state.items.some((it) => num(it.supRate) > 0)) throw new UserError("Add the supplier rate for at least one product (section 2).");
