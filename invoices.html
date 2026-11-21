@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Invoice Desk | AK Brands Marketing</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--navy:#0f1b2d;--gold:#c9a227;--bg:#f4f2ec;--card:#fff;--ink:#101b2d;--mute:#5d6778;--line:#d9d3c4;--ok:#1d7a46;--okBg:#e3f3e9;--bad:#a12b2b;--badBg:#fbe9e9;--warnBg:#fff3cf;--warnInk:#6b5200;--chg:#e8f0ff;--chgLine:#3b6fd4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+header{background:var(--navy);color:#fff;border-bottom:3px solid var(--gold)}
+.bar{max-width:640px;margin:0 auto;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.bar h1{margin:0;font-size:1.3rem}.bar a,.bar button{color:#fff;border:1px solid #6b7890;background:transparent;border-radius:99px;padding:8px 14px;font:inherit;font-size:.9rem;text-decoration:none;cursor:pointer}
+main{max-width:640px;margin:0 auto;padding:14px 16px 60px}
+.hidden{display:none!important}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;min-width:0}
+h2{font-size:1.05rem;margin:0 0 8px}
+label{display:block;font-size:.85rem;font-weight:600;color:var(--mute);margin:10px 0 0}
+input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:4px;min-width:0}
+input:disabled,select:disabled{opacity:.65}
+.chg{background:var(--chg);border-color:var(--chgLine)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.btn{font:inherit;font-weight:700;border:1px solid var(--navy);background:var(--card);color:var(--ink);border-radius:10px;padding:12px 14px;width:100%;margin-top:10px;cursor:pointer}
+.btn.p{background:var(--navy);color:#fff}.btn.s{width:auto;padding:7px 12px;font-size:.85rem;margin-top:0}.btn:disabled{opacity:.45;cursor:not-allowed}
+.sub,.hint{color:var(--mute);font-size:.85rem}
+.row{display:flex;justify-content:space-between;gap:10px;padding:5px 0}.row.big{font-weight:800;font-size:1.1rem;border-top:1px solid var(--line);margin-top:4px;padding-top:8px}
+.pill{display:inline-block;font-size:.78rem;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.pill.ok{background:var(--okBg);color:var(--ok)}.pill.no{background:var(--badBg);color:var(--bad)}
+.msg{font-weight:600;font-size:.92rem;min-height:1.2em;margin:8px 0 0}.msg.ok{color:var(--ok)}.msg.err{color:var(--bad)}
+.item{border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:10px}
+.item .top{display:flex;justify-content:space-between;align-items:center}
+.ol{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.ol:first-of-type{border-top:0}.ol b{display:block}
+.chk{display:flex;gap:10px;align-items:center;font-weight:600;color:var(--ink)}.chk input{width:auto;margin:0}
+.note{background:var(--chg);border-left:4px solid var(--chgLine);padding:8px 10px;border-radius:6px;font-size:.88rem;margin-top:10px}
+.warn{background:var(--warnBg);color:var(--warnInk);padding:10px;border-radius:8px;font-size:.9rem;margin-top:10px}
+</style>
+</head>
+<body>
+<header><div class="bar"><h1>Invoice Desk</h1><div style="display:flex;gap:8px"><a href="orders.html">Orders</a><button id="logout" class="hidden" type="button">Log out</button></div></div></header>
+<main>
+<div id="loginPanel" class="sec hidden">
+  <h2>Owner login</h2><p class="sub">Use the same email and password as the Orders page.</p>
+  <form id="loginForm"><label>Email<input id="email" type="email" autocomplete="username"></label><label>Password<input id="password" type="password" autocomplete="current-password"></label><button class="btn p" type="submit">Log in</button></form>
+  <p id="loginMsg" class="msg err"></p>
+</div>
+<div id="app" class="hidden"></div>
+</main>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, getDoc, doc, setDoc, serverTimestamp, query, orderBy, limit, runTransaction } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { STATES, FREIGHT_MODES, GST_MODES, DEFAULT_TERMS, num, r2, inr, plain, todayISO, fmtDate, fyShort, newItem, fromDoc, buildInvoice, buildUrd, invoiceIssues } from "./ak-core.js";
+import { makeCustomerCopyPdf, makeTransporterCopyPdf, makeSupplierCopyPdf } from "./ak-pdf.js";
+
+const app = initializeApp({ apiKey: "AIzaSyALlIObFvQc6FzIHVO4ifXZVPsCmW4_XlY", authDomain: "ak-brands-marketing.firebaseapp.com", projectId: "ak-brands-marketing", storageBucket: "ak-brands-marketing.firebasestorage.app", messagingSenderId: "458983699429", appId: "1:458983699429:web:c8c95fb9ede6795d2af50c" });
+const auth = getAuth(app), db = getFirestore(app), OWNER_UID = "E1s9qd0aGuQCudyrZMAJV8AHtY02";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+class UserError extends Error {}
+const SUP_CUST_PHONE = "", SUP_FROM_PHONE = "";
+let biz = { name: "AK Brands Marketing", address: "", city: "", pincode: "", state: "Karnataka", gstin: "", pan: "", phone: "", email: "", invPrefix: "AKB", urdPrefix: "URD", terms: DEFAULT_TERMS, signatory: "Authorised Signatory", accounts: [] };
+const clone = (o) => JSON.parse(JSON.stringify(o));
+const OWN = "ak brands marketing";
+
+let V = { no: "", msg: "", err: "", raw: null, base: null, cur: null, unlocked: false, busy: false, list: [], onlyPending: true, copyMsg: "" };
+
+/* ---------- Login ---------- */
+$("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try { await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value); $("password").value = ""; }
+  catch (err) { $("loginMsg").textContent = "Login failed. Check your email and password and try again."; }
+});
+$("logout").addEventListener("click", () => signOut(auth));
+onAuthStateChanged(auth, async (user) => {
+  if (user && user.uid !== OWNER_UID) { $("loginMsg").textContent = "This page is for the owner only."; signOut(auth); return; }
+  const on = !!user;
+  $("loginPanel").classList.toggle("hidden", on); $("logout").classList.toggle("hidden", !on); $("app").classList.toggle("hidden", !on);
+  if (!on) return;
+  try { const s = await getDoc(doc(db, "settings", "business")); if (s.exists()) biz = Object.assign(biz, s.data()); } catch (e) { console.error(e); }
+  render();
+  await loadList();
+  const h = decodeURIComponent((location.hash || "").replace("#", "")).trim();
+  if (h) { V.no = h.toUpperCase(); await loadOrder(V.no); }
+});
+
+/* ---------- Helpers ---------- */
+const P = (o, p) => p.split(".").reduce((a, k) => (a == null ? "" : a[k]), o);
+function setP(o, p, v){ const ks = p.split("."); let a = o; for (let i = 0; i < ks.length - 1; i++) { if (a[ks[i]] == null) a[ks[i]] = {}; a = a[ks[i]]; } a[ks[ks.length - 1]] = v; }
+const pick = (o) => ({
+  payTerms: o.payTerms || "", invoiceDate: o.invoiceDate || "", gstMode: o.gstMode === "excl" ? "excl" : "incl",
+  customer: { name: o.customer.name || "", firm: o.customer.firm || "", phone: o.customer.phone || "", address: o.customer.address || "", city: o.customer.city || "", state: o.customer.state || "", gstin: o.customer.gstin || "", shipSame: o.customer.shipSame !== false, shipName: o.customer.shipName || "", shipAddress: o.customer.shipAddress || "" },
+  items: o.items.map((it) => ({ name: it.name || "", hsn: it.hsn || "", qty: it.qty || "", unit: it.unit || "Pcs", custRate: it.custRate || "", gst: it.gst || "" })),
+  freight: { mode: (o.freight && o.freight.mode) || "billed", amount: (o.freight && o.freight.amount) || "", gst: (o.freight && o.freight.gst) || "" },
+  otherCharges: (o.otherCharges || []).map((c) => ({ label: c.label || "", amount: c.amount || "", gst: c.gst || "", payer: c.payer || "us" })),
+  delivery: { transporter: (o.delivery || {}).transporter || "", lr: (o.delivery || {}).lr || "", vehicle: (o.delivery || {}).vehicle || "", eway: (o.delivery || {}).eway || "" },
+  supplier: { name: (o.supplier || {}).name || "", address: (o.supplier || {}).address || "", phone: (o.supplier || {}).phone || "" }
+});
+function applyOverlay(o, ov){
+  if (!ov) return o;
+  o.payTerms = ov.payTerms != null ? ov.payTerms : o.payTerms; o.invoiceDate = ov.invoiceDate || o.invoiceDate; o.gstMode = ov.gstMode || o.gstMode;
+  Object.assign(o.customer, ov.customer || {}); Object.assign(o.delivery, ov.delivery || {}); Object.assign(o.supplier, ov.supplier || {}); Object.assign(o.freight, ov.freight || {});
+  if (Array.isArray(ov.items) && ov.items.length) o.items = ov.items.map((it) => Object.assign(newItem(), it));
+  if (Array.isArray(ov.otherCharges)) o.otherCharges = ov.otherCharges.map((c) => Object.assign({}, c));
+  return o;
+}
+async function nextDocNo(kind, dateISO){
+  const fy = fyShort(dateISO), key = kind + "_" + fy.replace("-", "_"), ref = doc(db, "settings", "counters");
+  const n = await runTransaction(db, async (tx) => { const sn = await tx.get(ref), cur = sn.exists() ? (Number(sn.data()[key]) || 0) : 0; tx.set(ref, { [key]: cur + 1 }, { merge: true }); return cur + 1; });
+  return (kind === "inv" ? (biz.invPrefix || "AKB") : (biz.urdPrefix || "URD")) + "/" + fy + "/" + String(n).padStart(4, "0");
+}
+let logoCache;
+async function loadLogo(){
+  if (logoCache !== undefined) return logoCache;
+  try {
+    const r = await fetch("logo.jpg"); if (!r.ok) throw new Error("no logo");
+    const blob = await r.blob();
+    const data = await new Promise((res, rej) => { const f = new FileReader(); f.onload = () => res(f.result); f.onerror = rej; f.readAsDataURL(blob); });
+    const dim = await new Promise((res) => { const i = new Image(); i.onload = () => res({ w: i.naturalWidth || 1, h: i.naturalHeight || 1 }); i.onerror = () => res({ w: 1, h: 1 }); i.src = data; });
+    logoCache = { data, w: dim.w, h: dim.h, type: "JPEG" };
+  } catch (e) { logoCache = null; }
+  return logoCache;
+}
+const safeName = (s) => String(s || "").replace(/[^A-Za-z0-9._-]+/g, "-");
+const locked = () => !!(V.cur && V.cur.invoiceNo) && !V.unlocked;
+const changed = (p) => V.base && String(P(V.cur, p)) !== String(P(V.base, p));
+const countChanges = () => { if (!V.cur) return 0; const a = pick(V.cur), b = pick(V.base); let n = 0; const w = (x, y) => { if (x && typeof x === "object") Object.keys(x).forEach((k) => w(x[k], y == null ? y : y[k])); else if (String(x) !== String(y == null ? "" : y)) n++; }; w(a, b); return n; };
+
+/* ---------- Data ---------- */
+async function loadList(){
+  try {
+    const s = await getDocs(query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(150)));
+    V.list = s.docs.map((d) => fromDoc(d.id, d.data())).filter((o) => o.status !== "Cancelled" && !((o.customer.name || "") + " " + (o.customer.firm || "")).toLowerCase().includes(OWN));
+  } catch (e) { console.error(e); V.list = []; }
+  render();
+}
+async function loadOrder(noRaw){
+  const m = String(noRaw || "").toUpperCase().match(/[A-Z]{2,5}-\d{2}-\d{3,5}/);
+  const no = m ? m[0] : String(noRaw || "").trim().toUpperCase().replace(/\s+/g, "");
+  V.no = no; V.msg = ""; V.err = ""; V.copyMsg = ""; V.unlocked = false;
+  if (!no) { V.err = "Type or paste the order number first."; V.cur = null; render(); return; }
+  try {
+    const snap = await getDoc(doc(db, "orders", no));
+    if (!snap.exists()) { V.err = "Order " + no + " was not found."; V.cur = null; render(); return; }
+    const d = snap.data(), o = fromDoc(no, d); o.otherCharges = Array.isArray(d.otherCharges) ? d.otherCharges : [];
+    V.raw = d; V.base = clone(o); V.cur = applyOverlay(clone(o), d.invDoc); V.cur.invRev = Number(d.invRev) || 0;
+    V.msg = "Order " + no + " found." + (V.cur.invoiceNo ? " Its invoice is already generated." : " Check the details below.");
+  } catch (e) { console.error(e); V.err = "That did not load. Check your connection and try again."; V.cur = null; }
+  render(); if (V.cur) setTimeout(() => { const t = $("invTop"); if (t) scrollTo({ top: t.offsetTop - 8, behavior: "smooth" }); }, 60);
+}
+function issues(o, aud){
+  const m = invoiceIssues(o, biz, aud || "customer");
+  if (!o.items.some((it) => (it.name || "").trim())) m.push("at least one product");
+  o.items.forEach((it, i) => { const n = "item " + (i + 1); if (!(it.name || "").trim()) m.push("the product name in " + n); if (!(num(it.qty) > 0)) m.push("the quantity in " + n); if (!(num(it.custRate) > 0)) m.push("the rate in " + n); if (!String(it.hsn || "").trim()) m.push("the HSN code in " + n); });
+  return m;
+}
+
+/* ---------- Screen ---------- */
+function f(p, label, o){
+  o = o || {}; const L = locked(), v = P(V.cur, p);
+  return '<label>' + label + '<input data-p="' + p + '" type="' + (o.type || "text") + '"' + (o.num ? ' inputmode="decimal"' : "") + ' value="' + esc(v) + '" class="' + (changed(p) ? "chg" : "") + '"' + (L ? " disabled" : "") + '></label>';
+}
+function sel(p, label, options, valueOf){
+  const L = locked(), v = P(V.cur, p);
+  return '<label>' + label + '<select data-p="' + p + '" class="' + (changed(p) ? "chg" : "") + '"' + (L ? " disabled" : "") + '>' + options.map((x) => '<option value="' + esc(x[0]) + '"' + (String(x[0]) === String(v) ? " selected" : "") + '>' + esc(x[1]) + '</option>').join("") + '</select></label>';
+}
+function render(){
+  let h = '<div class="sec"><h2>Order number</h2><p class="sub">Copy the order number from the Orders page and paste it here. The invoice details come in. Change what you need here. The order itself is not changed.</p>' +
+    '<label>Order number<input id="no" type="text" value="' + esc(V.no) + '" placeholder="AKO-26-0290" autocapitalize="characters" autocomplete="off"></label>' +
+    '<button class="btn p" data-a="load">Get invoice details</button><p class="msg ' + (V.err ? "err" : "ok") + '">' + esc(V.err || V.msg) + '</p></div>';
+  if (V.cur) h += body();
+  h += listHtml();
+  $("app").innerHTML = h;
+}
+function body(){
+  const o = V.cur, L = locked(), gen = !!o.invoiceNo, n = countChanges(), iss = issues(o), cu = o.customer;
+  let inv = null, invErr = ""; try { inv = buildInvoice(o, biz, "customer"); } catch (e) { invErr = "Totals cannot be worked out yet."; }
+  let h = '<div class="sec" id="invTop"><div class="row"><h2 style="margin:0">Invoice for ' + esc(o.orderNo) + '</h2>' + (gen ? '<span class="pill ok">Generated</span>' : '<span class="pill no">Not generated</span>') + '</div>' +
+    '<div class="sub">' + esc(cu.firm || cu.name || "No name") + ' &middot; order date ' + esc(fmtDate(o.orderDate)) + '</div>' +
+    (gen ? '<div class="note"><b>' + esc(o.invoiceNo) + '</b> dated ' + esc(fmtDate(o.invoiceDate)) + (o.invRev ? ' &middot; corrected ' + o.invRev + (o.invRev > 1 ? " times" : " time") : "") + '. The order shows this invoice number.</div>' : '<div class="note">The invoice number is given when you tap Generate. Leave the invoice date empty to use today.</div>') +
+    (n && !L ? '<div class="sub" style="margin-top:8px">' + n + ' change' + (n > 1 ? "s" : "") + ' from the order (blue boxes). <button class="btn s" data-a="reset" type="button">Reset to order</button></div>' : "") + '</div>';
+  h += '<div class="sec"><h2>1. Invoice details</h2><div class="g2">' + f("invoiceDate", "Invoice date", { type: "date" }) + sel("gstMode", "Rates", Object.keys(GST_MODES).map((k) => [k, GST_MODES[k]])) + '</div>' + f("payTerms", "Payment terms on invoice") + '</div>';
+  h += '<div class="sec"><h2>2. Bill to</h2>' + f("customer.firm", "Firm name") + f("customer.name", "Contact person") + f("customer.address", "Address") + '<div class="g2">' + f("customer.city", "City") + sel("customer.state", "State", [["", "Choose state"]].concat(STATES.map((s) => [s[0], s[0]]))) + '</div>' + f("customer.gstin", "Customer GSTIN (if any)") + f("customer.phone", "Phone") +
+    '<label class="chk"><input type="checkbox" data-p="customer.shipSame"' + (cu.shipSame !== false ? " checked" : "") + (L ? " disabled" : "") + '>Ship to the same address</label>' + (cu.shipSame !== false ? "" : f("customer.shipName", "Ship to name") + f("customer.shipAddress", "Ship to address")) + '</div>';
+  h += '<div class="sec"><h2>3. Items</h2>' + o.items.map((it, i) => '<div class="item"><div class="top"><b>Item ' + (i + 1) + '</b>' + (L || o.items.length < 2 ? "" : '<button class="btn s" type="button" data-a="delItem" data-i="' + i + '">Remove</button>') + '</div>' + f("items." + i + ".name", "Product") + '<div class="g2">' + f("items." + i + ".hsn", "HSN code") + f("items." + i + ".gst", "GST %", { num: 1 }) + '</div><div class="g3">' + f("items." + i + ".qty", "Quantity", { num: 1 }) + f("items." + i + ".unit", "Unit") + f("items." + i + ".custRate", "Rate (&#8377;)", { num: 1 }) + '</div></div>').join("") + (L ? "" : '<button class="btn" type="button" data-a="addItem">+ Add an item</button>') + '</div>';
+  const fr = o.freight || {};
+  h += '<div class="sec"><h2>4. Freight and other charges</h2>' + sel("freight.mode", "Freight", Object.keys(FREIGHT_MODES).map((k) => [k, FREIGHT_MODES[k]])) + (fr.mode === "billed" ? '<div class="g2">' + f("freight.amount", "Freight amount (&#8377;)", { num: 1 }) + f("freight.gst", "GST % on freight", { num: 1 }) + '</div>' : "");
+  let shown = 0; o.otherCharges.forEach((c, i) => { if (c.payer !== "customer") return; shown++; h += '<div class="item"><div class="top"><b>Charge billed to customer</b>' + (L ? "" : '<button class="btn s" type="button" data-a="delCharge" data-i="' + i + '">Remove</button>') + '</div>' + f("otherCharges." + i + ".label", "Name") + '<div class="g2">' + f("otherCharges." + i + ".amount", "Amount (&#8377;)", { num: 1 }) + f("otherCharges." + i + ".gst", "GST %", { num: 1 }) + '</div></div>'; });
+  h += (L ? "" : '<button class="btn" type="button" data-a="addCharge">+ Add a charge billed to the customer</button>') + '</div>';
+  h += '<div class="sec"><h2>5. Transport and sender (transporter copy)</h2><div class="g2">' + f("delivery.transporter", "Transporter") + f("delivery.lr", "LR number") + f("delivery.vehicle", "Vehicle number") + f("delivery.eway", "E-way bill number") + '</div>' + f("supplier.name", "Sender name (pick-up place)") + f("supplier.address", "Sender address") + '<p class="hint">The sender shows only on the transporter copy. The customer copy never shows the supplier.</p></div>';
+  h += '<div class="sec"><h2>Invoice total</h2>';
+  if (inv) {
+    h += '<p class="sub">' + esc(cu.state || "State not chosen") + ' &larr; ' + esc(biz.state || "your state") + ': ' + (inv.inter ? "different state, so IGST" : "same state, so CGST + SGST") + '</p><div class="row"><span>Taxable value</span><span>' + inr(inv.totals.taxable) + '</span></div>' +
+      inv.taxLines.map((t) => '<div class="row"><span>' + esc(t.label) + ' ' + t.rate + '%</span><span>' + inr(t.amount) + '</span></div>').join("") + '<div class="row"><span>Round off</span><span>' + inr(inv.totals.roundOff) + '</span></div><div class="row big"><span>Total</span><span>' + inr(inv.totals.total) + '</span></div>';
+  } else h += '<p class="hint">' + esc(invErr) + '</p>';
+  h += '</div>';
+  if (!gen) h += '<button class="btn p" type="button" data-a="gen"' + (iss.length || V.busy ? " disabled" : "") + '>Generate invoice and mark the order</button>' + (iss.length ? '<p class="msg err">Add first: ' + esc(iss.join(", ")) + '.</p>' : "") + '<p class="msg err" id="gm"></p>';
+  else if (L) h += '<div class="sec"><h2>Download copies</h2><button class="btn p" type="button" data-a="dl" data-k="customer">Download Customer copy</button><button class="btn" type="button" data-a="dl" data-k="transporter">Download Transporter copy</button><button class="btn" type="button" data-a="dl" data-k="supplier">Download Supplier copy (URD bill)</button><p class="msg ' + (/did not|add |Add /.test(V.copyMsg) ? "err" : "ok") + '" id="cm">' + esc(V.copyMsg) + '</p><button class="btn" type="button" data-a="unlock" style="margin-top:18px">Correct this invoice</button></div>';
+  else h += '<div class="warn">You are correcting an invoice that is already generated. The number ' + esc(o.invoiceNo) + ' stays the same. Once an invoice has gone to a customer, a big change is normally done with a credit note and a new invoice. Ask your CA if unsure.</div><button class="btn p" type="button" data-a="save"' + (iss.length || V.busy ? " disabled" : "") + '>Save correction</button><button class="btn" type="button" data-a="cancel">Cancel correction</button>' + (iss.length ? '<p class="msg err">Add first: ' + esc(iss.join(", ")) + '.</p>' : "") + '<p class="msg err" id="gm"></p>';
+  return h;
+}
+function listHtml(){
+  const rows = V.list.filter((o) => !V.onlyPending || !o.invoiceNo);
+  return '<div class="sec"><h2>Your orders</h2><label class="chk"><input type="checkbox" data-a="pend"' + (V.onlyPending ? " checked" : "") + '>Show only orders without an invoice</label>' +
+    (rows.length ? rows.map((o) => '<div class="ol" data-a="open" data-n="' + esc(o.orderNo) + '"><div><b>' + esc(o.orderNo) + '</b><span class="sub">' + esc(o.customer.firm || o.customer.name || "No name") + '</span></div>' + (o.invoiceNo ? '<span class="pill ok">' + esc(o.invoiceNo) + '</span>' : '<span class="pill no">Invoice pending</span>') + '</div>').join("") : '<p class="hint">Nothing to show.</p>') + '<p class="hint">Your own purchase orders (customer AK Brands Marketing) and cancelled orders are not listed.</p></div>';
+}
+function say(id, t, bad){ const x = $(id); if (x) { x.textContent = t; x.className = "msg " + (bad ? "err" : "ok"); x.scrollIntoView({ block: "center" }); } }
+
+/* ---------- Actions ---------- */
+document.addEventListener("change", (e) => {
+  const t = e.target;
+  if (t.dataset.a === "pend") { V.onlyPending = t.checked; render(); return; }
+  if (!t.dataset.p || !V.cur) return;
+  setP(V.cur, t.dataset.p, t.type === "checkbox" ? t.checked : t.value.trim() === t.value ? t.value : t.value.trim());
+  render();
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.id === "no") loadOrder(e.target.value); });
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-a]"); if (!b || b.tagName === "INPUT") return; const a = b.dataset.a;
+  if (a === "load") loadOrder($("no").value);
+  else if (a === "open") { loadOrder(b.dataset.n); scrollTo(0, 0); }
+  else if (a === "reset") { V.cur = applyOverlay(clone(V.base), null); V.cur.invRev = Number(V.raw.invRev) || 0; render(); }
+  else if (a === "addItem") { V.cur.items.push(Object.assign(newItem(), { gst: V.cur.items.length ? V.cur.items[0].gst : "" })); render(); }
+  else if (a === "delItem") { V.cur.items.splice(+b.dataset.i, 1); render(); }
+  else if (a === "addCharge") { V.cur.otherCharges.push({ label: "", amount: "", gst: "", payer: "customer" }); render(); }
+  else if (a === "delCharge") { V.cur.otherCharges.splice(+b.dataset.i, 1); render(); }
+  else if (a === "unlock") { V.unlocked = true; render(); }
+  else if (a === "cancel") { V.cur = applyOverlay(clone(V.base), V.raw.invDoc); V.cur.invRev = Number(V.raw.invRev) || 0; V.unlocked = false; render(); }
+  else if (a === "gen" || a === "save") saveInvoice(a === "gen");
+  else if (a === "dl") download(b.dataset.k);
+});
+async function saveInvoice(first){
+  if (V.busy) return; V.busy = true;
+  try {
+    const o = V.cur; if (issues(o).length) throw new UserError("Some details are missing.");
+    const upd = { updatedAt: serverTimestamp() };
+    if (first) { o.invoiceDate = o.invoiceDate || todayISO(); o.invoiceNo = o.invoiceNo || await nextDocNo("inv", o.invoiceDate); upd.invoiceNo = o.invoiceNo; upd.invGenerated = true; upd.invGeneratedAt = serverTimestamp(); }
+    else { o.invRev = (Number(o.invRev) || 0) + 1; upd.invRev = o.invRev; upd.invCorrectedAt = serverTimestamp(); }
+    upd.invoiceDate = o.invoiceDate; upd.invDoc = pick(o);
+    await setDoc(doc(db, "orders", o.orderNo), upd, { merge: true });
+    const s = await getDoc(doc(db, "orders", o.orderNo)); V.raw = s.data(); V.base = (function(){ const x = fromDoc(o.orderNo, V.raw); x.otherCharges = Array.isArray(V.raw.otherCharges) ? V.raw.otherCharges : []; return clone(x); })();
+    V.unlocked = false; V.msg = first ? "Invoice " + o.invoiceNo + " generated. The order is marked." : "Correction saved on " + o.invoiceNo + "."; V.err = "";
+    V.busy = false; render(); loadList(); scrollTo(0, 0);
+  } catch (err) {
+    V.busy = false; if (!(err instanceof UserError)) console.error(err);
+    render(); say("gm", err instanceof UserError ? err.message : "That did not save. Check your connection and try again.", true);
+  }
+}
+async function download(kind){
+  try {
+    if (!window.jspdf || !window.jspdf.jsPDF) throw new UserError("The PDF tool did not load. Check your internet connection, reload this page and try again.");
+    const JsPDF = window.jspdf.jsPDF, o = V.cur; let pdf, name;
+    if (kind === "supplier") {
+      const base = clone(V.base);
+      if (!(base.supplier.name || "").trim()) throw new UserError("Add the supplier's name in the order first.");
+      if (!base.items.some((it) => num(it.supRate) > 0)) throw new UserError("Add the supplier rate in the order first.");
+      if (!base.urdNo) { base.urdDate = base.urdDate || todayISO(); base.urdNo = await nextDocNo("urd", base.urdDate); await setDoc(doc(db, "orders", base.orderNo), { urdNo: base.urdNo, urdDate: base.urdDate }, { merge: true }); V.base.urdNo = base.urdNo; V.base.urdDate = base.urdDate; }
+      pdf = makeSupplierCopyPdf(JsPDF, buildUrd(base, biz)); name = "Supplier-Copy-" + safeName(base.urdNo) + ".pdf";
+    } else {
+      const miss = issues(o, kind); if (miss.length) throw new UserError("Add " + miss.join(", ") + " first.");
+      const logo = await loadLogo();
+      if (kind === "transporter") { pdf = makeTransporterCopyPdf(JsPDF, buildInvoice(o, biz, "transporter"), logo); name = "Transporter-Copy-" + safeName(o.invoiceNo) + ".pdf"; }
+      else { pdf = makeCustomerCopyPdf(JsPDF, buildInvoice(o, biz, "customer"), logo); name = "Customer-Copy-" + safeName(o.invoiceNo) + ".pdf"; }
+    }
+    pdf.save(name); V.copyMsg = name + " is downloading. Check your Downloads folder."; render(); say("cm", V.copyMsg, false);
+  } catch (err) {
+    if (!(err instanceof UserError)) console.error(err);
+    V.copyMsg = err instanceof UserError ? err.message : "That did not work. Check your connection and try again."; render(); say("cm", V.copyMsg, true);
+  }
+}
+window.__invoicesReady = true;
+</script>
+</body>
+</html>
