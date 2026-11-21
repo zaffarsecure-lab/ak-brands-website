@@ -249,15 +249,11 @@ export function drawInvoice(doc, inv, opts){
   p.text("for " + inv.seller.name, MX + CW - 1.5, y + fh - 17, { size: 8.5, style: "bold", align: "right" });
   p.text(inv.signatory, MX + CW - 1.5, y + fh - 5, { size: 8, align: "right" });
   y += fh;
-  if (opts.ack) {
-    const tr = opts.ack === "transporter";
-    need(17); p.rect(MX, y, CW, 16);
-    p.text(tr ? "Received the above goods from the sender for transport, in good condition." : "Received the above goods in good condition.", MX + 1.5, y + 1.2, { size: 8, style: "bold" });
-    const bx = [MX + 1.5, MX + 70, MX + 135];
-    [[tr ? "Transporter / Driver Name" : "Receiver's Name", 58], ["Signature & Stamp", 58], ["Date & Time", 56]].forEach((f, i) => { p.line(bx[i], y + 12.5, bx[i] + f[1], y + 12.5); p.text(f[0], bx[i], y + 12.9, { size: 6.8, color: [70, 70, 70] }); });
-    y += 16;
-  }
-  p.text("This is a Computer Generated Invoice", PW / 2, Math.min(y + 1.5, 291), { size: 7, style: "italic", align: "center", color: [90, 90, 90] });
+  /* Footer: computer-generated notice and the date and time this copy was downloaded (phone clock, India time) */
+  need(12);
+  const dl = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: true }).replace(/\b(am|pm)\b/i, (m) => m.toUpperCase());
+  p.text("This is a computer generated invoice. Stamp and signature are not required.", PW / 2, y + 1.5, { size: 7.5, style: "italic", align: "center", color: [70, 70, 70] });
+  p.text("Downloaded on " + dl, PW / 2, y + 5, { size: 7.5, style: "bold", align: "center", color: [70, 70, 70] });
 }
 
 /* ================= URD PURCHASE BILL ================= */
