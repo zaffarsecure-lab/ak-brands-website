@@ -401,11 +401,11 @@ async function saveInvoice(first, lock){
     V.busy = false; await loadOrder(grp[0], msg + (added.length && urdNo ? " Now save the URD bill below again so it includes the new order." : "")); loadList(); scrollTo(0, 0);
   } catch (err) {
     V.busy = false; if (!(err instanceof UserError)) console.error(err);
-    render(); say("gm", err instanceof UserError ? err.message : "That did not save. Check your connection and try again.", true);
+    render(); say("gm", err instanceof UserError ? err.message : "That did not save. Technical reason: " + String((err && (err.code || err.message)) || err).slice(0, 160), true);
   }
 }
 async function makeUrd(){
-  if (V.busy) return; V.busy = true;
+  if (V.busy) return; V.busy = true; V.urdStage = "start";
   try {
     if (!window.jspdf || !window.jspdf.jsPDF) throw new UserError("The PDF tool did not load. Check your internet connection, reload this page and try again.");
     const os = V.os, grp = V.group, u = V.urd, added = os.filter((x) => !V.saved.has(x.orderNo));
@@ -415,10 +415,12 @@ async function makeUrd(){
     const UL = urdLocked(), each = os[0].urdNo ? os[0].urdMode === "each" : (V.urdMode === "each" && os.length > 1);
     let date = u.date || os[0].urdDate || todayISO(), nums = {};
     if (!UL) {
+      V.urdStage = "numbering";
       for (const x of added) { const f = await fetchOrder(x.orderNo); if (!f || orderLocked(f)) throw new UserError("Order " + x.orderNo + " already has an invoice or URD bill. Reload and check."); }
       let one = os[0].urdNo;
       if (each) { for (const x of os) nums[x.orderNo] = x.urdNo || await nextDocNo("urd", date); }
       else { if (!one) one = await nextDocNo("urd", date); os.forEach((x) => { nums[x.orderNo] = one; }); }
+      V.urdStage = "saving";
       const batch = writeBatch(db);
       os.forEach((x, i) => {
         const d = { urdNo: nums[x.orderNo], urdDate: date, urdMode: each ? "each" : "one", updatedAt: serverTimestamp() };
@@ -431,7 +433,7 @@ async function makeUrd(){
       os.forEach((x) => { x.urdNo = nums[x.orderNo]; x.urdDate = date; x.urdMode = each ? "each" : "one"; if (grp.length > 1) x.invGroup = grp; V.saved.add(x.orderNo); });
       V.base.urdNo = os[0].urdNo; V.base.urdDate = date; u.date = date; V.urdDirty = false;
     } else { os.forEach((x) => { nums[x.orderNo] = x.urdNo; }); date = os[0].urdDate || date; }
-    const names = [];
+    V.urdStage = "making the PDF (the URD number is already saved)"; const names = [];
     const mk = async (no, list, ordNo) => {
       const base = clone(V.base); base.supplier = Object.assign({}, base.supplier, u.supplier); base.items = list; base.urdNo = no; base.urdDate = date; base.orderNo = ordNo;
       const pdf = makeSupplierCopyPdf(window.jspdf.jsPDF, buildUrd(base, biz)), name = "Supplier-Copy-" + safeName(no) + ".pdf"; pdf.save(name); names.push(name);
@@ -441,7 +443,7 @@ async function makeUrd(){
     V.urdMsg = names.join(", ") + (names.length > 1 ? " are" : " is") + " downloading. Check your Downloads folder." + (names.length > 1 ? " If only one arrived, allow multiple downloads when your phone asks." : ""); V.busy = false; render(); loadList();
   } catch (err) {
     V.busy = false; if (!(err instanceof UserError)) console.error(err);
-    V.urdMsg = err instanceof UserError ? err.message : "That did not work. Check your connection and try again."; render(); say("um", V.urdMsg, true);
+    V.urdMsg = err instanceof UserError ? err.message : "That did not work. Technical reason: " + String((err && (err.code || err.message)) || err).slice(0, 160) + (V.urdStage ? " (at: " + V.urdStage + ")" : ""); render(); say("um", V.urdMsg, true);
   }
 }
 async function download(kind){
