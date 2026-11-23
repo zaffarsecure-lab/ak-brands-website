@@ -737,7 +737,8 @@ function payRowHtml(p, i, sec, withKind){
     '<div><label>Amount (&#8377;)</label><input type="text" inputmode="decimal" data-sec="' + sec + '" data-i="' + i + '" data-k="amount" value="' + esc(p.amount) + '"></div></div>' +
     '<div class="two">' + (withKind ? '<div><label>Type</label><select data-sec="' + sec + '" data-i="' + i + '" data-k="kind">' + opts(PAY_KINDS, p.kind) + '</select></div>' : '<div></div>') +
     '<div><label>Paid by</label><select data-sec="' + sec + '" data-i="' + i + '" data-k="mode">' + opts(PAY_MODES, p.mode) + '</select></div></div>' +
-    '<label>Reference / note</label><input type="text" data-sec="' + sec + '" data-i="' + i + '" data-k="ref" value="' + esc(p.ref) + '"></div>';
+    '<label>Reference / note</label><input type="text" data-sec="' + sec + '" data-i="' + i + '" data-k="ref" value="' + esc(p.ref) + '">' +
+    (p.rcpt ? '<p class="hint" style="margin-top:.5rem"><b>' + esc(p.rcpt) + '</b> &middot; ' + (Array.isArray(p.rcptSplit) && p.rcptSplit.length > 1 ? 'part of ' + inr(num(p.rcptTotal)) + ' received in one payment' : 'receipt for ' + inr(num(p.rcptTotal))) + (Array.isArray(p.rcptSplit) && p.rcptSplit.length > 1 ? '<br>Split across: ' + p.rcptSplit.map((x) => esc(x.no || 'this order') + ' ' + inr(num(x.a))).join(' &middot; ') : '') + (p.rcptFile ? '<br>Screenshot: see ' + esc(p.rcpt) : '') + '</p><button class="small" type="button" data-rcpt-open="' + esc(p.rcpt) + '">Open receipt ' + esc(p.rcpt) + '</button>' : '') + '</div>';
 }
 function orderCardHtml(o){
   const c = calc(o);
@@ -892,6 +893,7 @@ function splitPanelHtml(mine){
     '<p class="hint">For when this customer pays one amount for several lots. Type the amount, tap Fill oldest first, change any share you like, then add it. Each order gets its own payment line.</p>' +
     '<div class="two"><div><label for="sp_amount">Amount received (&#8377;)</label><input id="sp_amount" type="text" inputmode="decimal"></div><div><label for="sp_mode">Paid by</label><select id="sp_mode">' + opts(PAY_MODES, "UPI") + '</select></div></div>' +
     '<div class="two"><div><label for="sp_date">Date</label><input id="sp_date" type="date" value="' + todayISO() + '"></div><div><label for="sp_ref">Reference <span class="hint">(optional)</span></label><input id="sp_ref" type="text"></div></div>' +
+    '<label for="sp_file">Payment screenshot <span class="hint">(optional, kept once with the receipt)</span></label><input id="sp_file" type="file" accept="image/*,application/pdf">' +
     '<button class="small" type="button" data-sp-fill="1">Fill oldest first</button>' + rows +
     '<p class="hint" id="sp_sum" style="margin-top:.5rem">Shared \u20B90 of \u20B90</p>' +
     '<button class="docbtn" type="button" data-sp-apply="1">Add these payments</button></details>';
@@ -917,20 +919,140 @@ async function spApply(){
     const over = parts.find((x) => x.a > x.bal + 0.005); if (over) throw new UserError(over.no + " only has " + inr(over.bal) + " pending. Lower that share.");
     const mode = $("sp_mode").value || "UPI", date = $("sp_date").value || todayISO(), ref = $("sp_ref").value.trim();
     const key = (lastDetail || "").replace(/^cust:/, "").split("|")[0];
+    const rcpt = await nextReceiptNo("customer"), splitInfo = parts.map((x) => ({ no: x.no, a: x.a })), spFile = (($("sp_file") || {}).files || [])[0];
+    let fileEntry = null; if (spFile) fileEntry = await makeFileEntry({ kind: "payment", label: "Payment screenshot " + rcpt, show: false, file: spFile });
+    let firstDone = false;
     for (const x of parts) {
       const o = orders.find((q) => q.orderNo === x.no); if (!o) continue;
       const had = (o.payments || []).some((q) => num(q.amount) > 0), kind = x.a >= calc(o).balance - 0.005 ? "Balance" : (had ? "Part payment" : "Token");
-      o.payments = (o.payments || []).concat([{ date, kind, mode, amount: String(x.a), ref }]);
-      await setDoc(doc(db, "orders", o.orderNo), { payments: o.payments, updatedAt: serverTimestamp() }, { merge: true });
+      const line = { date, kind, mode, amount: String(x.a), ref, rcpt, rcptTotal: String(amt), rcptSplit: splitInfo };
+      if (fileEntry) line.rcptFile = { id: fileEntry.id, parts: fileEntry.parts, mime: fileEntry.mime, name: fileEntry.name, order: parts[0].no };
+      o.payments = (o.payments || []).concat([line]);
+      const upd = { payments: o.payments, updatedAt: serverTimestamp() };
+      if (fileEntry && !firstDone) { o.files = (o.files || []).concat([Object.assign({}, fileEntry, { rcpt })]); upd.files = o.files; }
+      firstDone = true;
+      await setDoc(doc(db, "orders", o.orderNo), upd, { merge: true });
       if (o.viewToken) await setDoc(doc(db, "orderViews", o.viewToken), Object.assign(viewOf(o), { pay: payDataFor(o, false), updatedAt: serverTimestamp() }));
       await syncStaff(o);
     }
     state = withPay(newOrder());
     if (/^\d{10,}$/.test(key)) { try { await refreshCustomerView(key); } catch (e) { console.error(e); } }
-    await loadAll(); showDetail("cust:" + key);
-    show($("listMsg"), inr(amt) + " received by " + mode + " is added to " + parts.length + (parts.length === 1 ? " order" : " orders") + ". Customer pages are updated.", "ok");
+    await loadAll(true); showDetail("cust:" + key);
+    show($("listMsg"), "Saved as " + rcpt + ". " + inr(amt) + " received by " + mode + " is added to " + parts.length + (parts.length === 1 ? " order" : " orders") + ". Customer pages are updated.", "ok");
   } catch (err) { if (!(err instanceof UserError)) console.error(err); show($("listMsg"), err instanceof UserError ? err.message : "That did not save. Check your connection and try again.", "err"); }
 }
+
+/* ---------- Receipts: one payment shared across several orders, kept together so you can find it later ---------- */
+async function nextReceiptNo(side){
+  const key = side === "supplier" ? "rcpt_s" : "rcpt_c", ref = doc(db, "settings", "counters");
+  const n = await runTransaction(db, async (tx) => { const sn = await tx.get(ref), cur = sn.exists() ? (Number(sn.data()[key]) || 0) : 0; tx.set(ref, { [key]: cur + 1 }, { merge: true }); return cur + 1; });
+  return (side === "supplier" ? "S-" : "R-") + String(n).padStart(4, "0");
+}
+function rcptAll(){
+  const m = {};
+  orders.forEach((o) => [["payments", "customer"], ["supplierPayments", "supplier"]].forEach((z) => (o[z[0]] || []).forEach((p) => {
+    if (!p.rcpt || !(num(p.amount) > 0)) return;
+    const r = m[p.rcpt] || (m[p.rcpt] = { id: p.rcpt, side: z[1], date: p.date || "", mode: p.mode || "", ref: p.ref || "", total: num(p.rcptTotal), split: Array.isArray(p.rcptSplit) ? p.rcptSplit : [], file: null, lines: [], party: "" });
+    r.lines.push({ no: o.orderNo, a: num(p.amount) }); if (p.rcptFile && !r.file) r.file = p.rcptFile;
+    r.party = z[1] === "customer" ? (o.customer.name || o.customer.firm || "") : ((o.supplier || {}).name || "");
+  })));
+  return m;
+}
+const rcptSorted = () => Object.values(rcptAll()).sort((a, b) => String(b.date).localeCompare(String(a.date)) || String(b.id).localeCompare(String(a.id)));
+function rcTileHtml(){
+  const n = Object.keys(rcptAll()).length;
+  return '<button type="button" class="tile" data-tile="receipts"><small>Receipts</small><b>' + n + '</b><span class="go">Payments shared across orders</span></button>' +
+    '<button type="button" class="tile priv" data-tile="supsplit"><small>Pay a supplier</small><b>Split one payment</b><span class="go">Across several orders</span></button>';
+}
+function receiptsListHtml(q){
+  const toks = String(q || "").toLowerCase().split(/\s+/).filter(Boolean);
+  const rows = rcptSorted().filter((r) => { const hay = (r.id + " " + r.party + " " + r.mode + " " + r.ref + " " + r.total + " " + r.lines.map((l) => l.no + " " + l.a).join(" ")).toLowerCase(); return toks.every((t) => hay.indexOf(t) >= 0); });
+  return rows.length ? rows.map((r) => '<button type="button" class="drow" data-rcpt-open="' + esc(r.id) + '"><span class="r1"><span><b>' + esc(r.id) + '</b> &middot; ' + inr(r.total || r.lines.reduce((a, l) => a + l.a, 0)) + ' &middot; ' + esc(r.mode) + '</span><span>' + esc(fmtDate(r.date)) + '</span></span><span class="r2">' + esc(r.party) + ' &middot; ' + r.lines.map((l) => esc(l.no)).join(", ") + '</span></button>').join("") : '<p class="hint">Nothing here yet. A receipt is made when you split one payment across several orders.</p>';
+}
+function receiptsScreenHtml(){
+  return '<h2>Receipts</h2><p class="hint">Each time you share one payment across several orders, it is saved here with its number, the orders and the screenshot. R- is money received from customers. S- is money you paid to suppliers. Only the latest 500 orders are searched.</p>' +
+    '<label for="rcQ" style="font-weight:700">Search</label><input id="rcQ" type="search" autocomplete="off" placeholder="Receipt number, order number, amount, name..."><div id="rcList">' + receiptsListHtml("") + '</div>';
+}
+function receiptDetailHtml(id){
+  const r = rcptAll()[id]; if (!r) return '<p class="hint">Receipt ' + esc(id) + ' was not found.</p><button class="small" type="button" data-rcpt-back="1">Back to Receipts</button>';
+  const got = r2(r.lines.reduce((a, l) => a + l.a, 0)), ok = r.total > 0 && Math.abs(got - r.total) < 0.01;
+  const gone = r.split.filter((x) => x.no && !r.lines.some((l) => l.no === x.no));
+  return '<h2>Receipt ' + esc(r.id) + '</h2><p class="hint">' + (r.side === "customer" ? "Money received from " : "Money paid to ") + esc(r.party) + '</p>' +
+    '<div class="lnk"><span>Total</span><b>' + inr(r.total || got) + '</b></div><div class="lnk"><span>Date &middot; Paid by</span><span>' + esc(fmtDate(r.date)) + ' &middot; ' + esc(r.mode) + '</span></div>' + (r.ref ? '<div class="lnk"><span>Reference</span><span>' + esc(r.ref) + '</span></div>' : "") +
+    (r.file ? '<button class="small" type="button" data-rcpt-file="' + esc(r.id) + '" style="margin:.6rem 0">Open payment screenshot</button>' : '<p class="hint">No screenshot was attached to this receipt.</p>') +
+    '<p style="font-weight:700;margin:.8rem 0 .2rem">Split across</p>' + r.lines.map((l) => '<div class="lnk"><span><b>' + esc(l.no) + '</b></span><span>' + inr(l.a) + ' <button class="small" type="button" data-open="' + esc(l.no) + '">Open order</button></span></div>').join("") +
+    '<div class="lnk"><span><b>Total shared</b></span><span class="pill ' + (ok ? "ok" : "bad") + '">' + inr(got) + (ok ? " matches" : " does not match " + inr(r.total)) + '</span></div>' +
+    (ok ? "" : '<p class="hint" style="color:#b3261e">The shares no longer add up to the amount received.' + (gone.length ? " A payment line was removed from: " + gone.map((x) => esc(x.no)).join(", ") + "." : " A payment amount was changed in one of these orders.") + " Check those orders.</p>") +
+    '<button class="small" type="button" data-rcpt-back="1" style="margin-top:.8rem">Back to Receipts</button>';
+}
+let ssSel = "";
+function supSplitHtml(){
+  const live = orders.filter((o) => o.status !== "Cancelled" && String((o.supplier || {}).name || "").trim() && calc(o).supDue > 0.5);
+  const keyOf = (o) => String(o.supplier.name).trim().toLowerCase().replace(/\s+/g, " "), by = {};
+  live.forEach((o) => { (by[keyOf(o)] = by[keyOf(o)] || { name: String(o.supplier.name).trim(), os: [] }).os.push(o); });
+  const keys = Object.keys(by).sort((a, b) => by[a].name.localeCompare(by[b].name));
+  if (!keys.length) return '<h2>Pay a supplier</h2><p class="hint">No supplier has money pending right now.</p>';
+  if (!by[ssSel]) ssSel = keys[0];
+  const g = by[ssSel], mine = g.os.slice().sort((a, b) => String(a.orderDate || "").localeCompare(String(b.orderDate || "")) || String(a.orderNo).localeCompare(String(b.orderNo)));
+  const rows = mine.map((o) => { const c = calc(o), lots = (o.items || []).filter((x) => x.lotNo).map((x) => "Lot " + x.lotNo).join(", ");
+    return '<div class="lnk"><span><b>' + esc(o.orderNo) + '</b><br><small>' + esc(lots) + ' &middot; You owe ' + inr(c.supDue) + '</small></span><input class="ssA" data-ss-order="' + esc(o.orderNo) + '" data-bal="' + c.supDue + '" type="text" inputmode="decimal" placeholder="0" style="max-width:7rem"></div>'; }).join("");
+  return '<h2>Pay a supplier across several orders</h2><p class="hint">For when you pay one amount to a supplier for several orders. Type the amount, tap Fill oldest first, change any share, then add it. Each order gets its own payment line and all of them carry one receipt number (S-).</p>' +
+    '<label for="ss_sup">Supplier</label><select id="ss_sup">' + keys.map((k) => '<option value="' + esc(k) + '"' + (k === ssSel ? " selected" : "") + '>' + esc(by[k].name) + ' (owe ' + inr(by[k].os.reduce((a, o) => a + calc(o).supDue, 0)) + ')</option>').join("") + '</select>' +
+    '<div class="two"><div><label for="ss_amount">Amount paid (&#8377;)</label><input id="ss_amount" type="text" inputmode="decimal"></div><div><label for="ss_mode">Paid by</label><select id="ss_mode">' + opts(PAY_MODES, "UPI") + '</select></div></div>' +
+    '<div class="two"><div><label for="ss_date">Date</label><input id="ss_date" type="date" value="' + todayISO() + '"></div><div><label for="ss_ref">Reference <span class="hint">(optional)</span></label><input id="ss_ref" type="text"></div></div>' +
+    '<label for="ss_file">Payment screenshot <span class="hint">(optional, kept once with the receipt)</span></label><input id="ss_file" type="file" accept="image/*,application/pdf">' +
+    '<button class="small" type="button" data-ss-fill="1">Fill oldest first</button>' + rows + '<p class="hint" id="ss_sum" style="margin-top:.5rem">Shared ₹0 of ₹0</p><button class="docbtn" type="button" data-ss-apply="1">Add these payments</button>';
+}
+function ssSum(){
+  const amt = num(($("ss_amount") || {}).value), got = Array.from(document.querySelectorAll("#detailBody .ssA")).reduce((a, i) => a + num(i.value), 0);
+  if ($("ss_sum")) $("ss_sum").textContent = "Shared " + inr(got) + " of " + inr(amt) + (Math.abs(got - amt) < 0.005 && amt > 0 ? " - matches" : (amt > 0 ? " - still " + inr(amt - got) + " to share" : ""));
+}
+function ssFill(){
+  let left = num($("ss_amount").value);
+  Array.from(document.querySelectorAll("#detailBody .ssA")).forEach((i) => { const take = Math.max(0, Math.min(left, num(i.getAttribute("data-bal")))); i.value = take ? String(r2(take)) : ""; left = r2(left - take); });
+  ssSum();
+}
+async function ssApply(){
+  hideMsg($("listMsg"));
+  try {
+    const amt = r2(num($("ss_amount").value)), parts = Array.from(document.querySelectorAll("#detailBody .ssA")).map((i) => ({ no: i.getAttribute("data-ss-order"), a: r2(num(i.value)), bal: num(i.getAttribute("data-bal")) })).filter((x) => x.a > 0);
+    if (!(amt > 0)) throw new UserError("Type the amount you paid first.");
+    if (!parts.length) throw new UserError("Share the amount across the orders, or tap Fill oldest first.");
+    const got = r2(parts.reduce((a, x) => a + x.a, 0));
+    if (Math.abs(got - amt) > 0.009) throw new UserError("The shares add up to " + inr(got) + " but you paid " + inr(amt) + ". Make them match.");
+    const over = parts.find((x) => x.a > x.bal + 0.005); if (over) throw new UserError(over.no + " only has " + inr(over.bal) + " left to pay. Lower that share.");
+    const mode = $("ss_mode").value || "UPI", date = $("ss_date").value || todayISO(), ref = $("ss_ref").value.trim();
+    const rcpt = await nextReceiptNo("supplier"), splitInfo = parts.map((x) => ({ no: x.no, a: x.a })), f = (($("ss_file") || {}).files || [])[0];
+    let fileEntry = null; if (f) fileEntry = await makeFileEntry({ kind: "payment", label: "Supplier payment screenshot " + rcpt, show: false, file: f });
+    let firstDone = false;
+    for (const x of parts) {
+      const o = orders.find((q) => q.orderNo === x.no); if (!o) continue;
+      const line = { date, mode, amount: String(x.a), ref, rcpt, rcptTotal: String(amt), rcptSplit: splitInfo };
+      if (fileEntry) line.rcptFile = { id: fileEntry.id, parts: fileEntry.parts, mime: fileEntry.mime, name: fileEntry.name, order: parts[0].no };
+      o.supplierPayments = (o.supplierPayments || []).concat([line]);
+      const upd = { supplierPayments: o.supplierPayments, updatedAt: serverTimestamp() };
+      if (fileEntry && !firstDone) { o.files = (o.files || []).concat([Object.assign({}, fileEntry, { rcpt })]); upd.files = o.files; }
+      firstDone = true;
+      await setDoc(doc(db, "orders", o.orderNo), upd, { merge: true });
+    }
+    await loadAll(true); showDetail("receipts");
+    show($("listMsg"), "Saved as " + rcpt + ". " + inr(amt) + " paid to the supplier by " + mode + " is added to " + parts.length + (parts.length === 1 ? " order." : " orders."), "ok");
+  } catch (err) { if (!(err instanceof UserError)) console.error(err); show($("listMsg"), err instanceof UserError ? err.message : "That did not save. Technical reason: " + String((err && (err.code || err.message)) || err).slice(0, 140), "err"); }
+}
+document.addEventListener("click", async (e) => {
+  const t = e.target; if (!t || !t.closest) return;
+  const ro = t.closest("[data-rcpt-open]"); if (ro) { showDetail("rcpt:" + ro.getAttribute("data-rcpt-open")); return; }
+  if (t.closest("[data-rcpt-back]")) { showDetail("receipts"); return; }
+  const rf = t.closest("[data-rcpt-file]"); if (rf) { const r = rcptAll()[rf.getAttribute("data-rcpt-file")]; if (r && r.file) { try { await viewFileEntry(r.file); } catch (err) { console.error(err); show($("listMsg"), "The screenshot could not be opened. Please try again.", "err"); } } return; }
+  if (t.closest("[data-ss-fill]")) { ssFill(); return; }
+  if (t.closest("[data-ss-apply]")) { ssApply(); return; }
+});
+document.addEventListener("input", (e) => {
+  const t = e.target; if (!t) return;
+  if (t.id === "rcQ") { const l = $("rcList"); if (l) l.innerHTML = receiptsListHtml(t.value); return; }
+  if (t.id === "ss_amount" || (t.classList && t.classList.contains("ssA"))) ssSum();
+});
+document.addEventListener("change", (e) => { const t = e.target; if (t && t.id === "ss_sup") { ssSel = t.value; showDetail("supsplit"); } });
 function customerDetailHtml(key){
   const mine = orders.filter((o) => groupKeyOf(o) === key).sort(newestFirst);
   if (!mine.length) return '<p class="hint">No orders found for this customer.</p>';
@@ -1026,7 +1148,17 @@ onAuthStateChanged(auth, (user) => {
 });
 
 /* ---------- Loading ---------- */
-async function loadAll(){
+let loadedOnce = false;
+const mapOrderDoc = (d) => { const x = fromDoc(d.id, d.data()); x.payRequest = d.data().payRequest || null; x.files = d.data().files || []; x.statusDates = d.data().statusDates || {}; x.otherCharges = d.data().otherCharges || []; return withPay(x); };
+/* After the first full load, a refresh reads only the order you just worked on (1 read), not every order, customer and lot again. */
+async function loadAll(full, onlyNo){
+  const no = onlyNo || (state && state.orderNo);
+  if (loadedOnce && !full && no) {
+    try {
+      const sn = await getDoc(doc(db, "orders", no));
+      if (sn.exists()) { const x = mapOrderDoc(sn), i = orders.findIndex((y) => y.orderNo === no); if (i >= 0) orders[i] = x; else orders.unshift(x); rebuildLinks(); fillLists(); renderList(); return; }
+    } catch (e) { console.error(e); }
+  }
   try {
     const [o, c, l, lk] = await Promise.all([
       getDocs(query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(500))),
@@ -1034,7 +1166,7 @@ async function loadAll(){
       getDocs(collection(db, "lots")),
       getDoc(doc(db, "settings", "doclinks"))
     ]);
-    orders = o.docs.map((d) => { const x = fromDoc(d.id, d.data()); x.payRequest = d.data().payRequest || null; x.files = d.data().files || []; x.statusDates = d.data().statusDates || {}; x.otherCharges = d.data().otherCharges || []; return withPay(x); });
+    orders = o.docs.map(mapOrderDoc); loadedOnce = true;
     customers = {}; c.docs.forEach((d) => { customers[d.id] = d.data(); });
     lots = l.docs.map((d) => Object.assign({ id: d.id }, d.data()));
     linkPairs = lk.exists() && Array.isArray(lk.data().pairs) ? lk.data().pairs.slice() : [];
@@ -2568,7 +2700,7 @@ function renderTiles(){
   const t = (kind, a, b, cls) => '<button type="button" class="tile ' + (cls || "") + '" data-tile="' + kind + '"><small>' + a + '</small><b>' + b + '</b><span class="go">Tap to see details</span></button>';
   const infos = live.map((o) => pendingInfo(o)), need = infos.filter((p) => p.pending > 0), onTime = infos.filter((p) => p.waiting).length, proofs = need.reduce((a, p) => a + p.proofs, 0);
   const tp = '<button type="button" class="tile wide ' + (need.length ? "alert" : "good") + '" data-tile="pending"><small>Action pending</small><b>' + (need.length ? need.length + (need.length === 1 ? " order needs action" : " orders need action") : "Nothing needs action") + '</b><span class="go">' + (need.length ? proofs + (proofs === 1 ? " proof" : " proofs") + " missing" + (onTime ? ", " + onTime + " in transit on schedule" : "") + ". Tap to see" : (onTime ? onTime + " in transit, on schedule. Tap to see" : "Tap to see details")) + '</span></button>';
-  $("tiles").innerHTML = tp + remTileHtml() + dashTileHtml() + repTileHtml() + expTileHtml() + bakTileHtml() + bizTileHtml() + giftTileHtml() + grpTileHtml() + staffTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
+  $("tiles").innerHTML = tp + remTileHtml() + dashTileHtml() + repTileHtml() + expTileHtml() + bakTileHtml() + bizTileHtml() + giftTileHtml() + grpTileHtml() + staffTileHtml() + rcTileHtml() + t("open", "Open orders", open) + t("owes", "Customers owe you", inr(bal)) + t("supdue", "You owe suppliers", inr(sup), "priv") + t("profit", "Profit, all orders", inr(profit), "priv");
 }
 /* tap a tile: groups, then orders, then the order itself */
 let lastDetail = "";
@@ -2614,6 +2746,9 @@ function showDetail(kind){
   else if (kind === "reports") $("detailBody").innerHTML = repScreenHtml();
   else if (kind === "expenses") $("detailBody").innerHTML = expScreenHtml();
   else if (kind === "backup") $("detailBody").innerHTML = bakScreenHtml();
+  else if (kind === "receipts") $("detailBody").innerHTML = receiptsScreenHtml();
+  else if (kind.indexOf("rcpt:") === 0) $("detailBody").innerHTML = receiptDetailHtml(kind.slice(5));
+  else if (kind === "supsplit") $("detailBody").innerHTML = supSplitHtml();
   else if (kind.indexOf("post:") === 0) $("detailBody").innerHTML = postScreenHtml();
   else if (kind.indexOf("cdash:") === 0) $("detailBody").innerHTML = customerDashHtml(kind.slice(6));
   else $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
@@ -3112,6 +3247,11 @@ async function shrinkImage(file){
 }
 async function attachFile(opts){
   if ((state.files || []).length >= FILE_MAX_COUNT) throw new UserError("This order already has " + FILE_MAX_COUNT + " files. Remove one first.");
+  const entry = await makeFileEntry(opts);
+  state.files = (state.files || []).concat([entry]);
+  return entry;
+}
+async function makeFileEntry(opts){
   const file = opts.file, isPdf = file.type === "application/pdf", isImg = /^image\//.test(file.type || "");
   if (!isPdf && !isImg) throw new UserError("Please choose a photo or a PDF.");
   const dataUrl = isImg ? await shrinkImage(file) : await readDataUrl(file);
@@ -3125,8 +3265,12 @@ async function attachFile(opts){
     for (let i = 0; i < parts; i++) { await setDoc(doc(db, "orderViews", id + "_" + i), { type: "file", part: i, parts, mime, data: b64.slice(i * FILE_CHUNK, (i + 1) * FILE_CHUNK), createdAt: serverTimestamp() }); written.push(i); }
   } catch (err) { for (const i of written) { try { await deleteDoc(doc(db, "orderViews", id + "_" + i)); } catch (e) {} } throw err; }
   const entry = { id, section: opts.section || "", kind: opts.kind, label: String(opts.label || "").trim().slice(0, 60) || kindName(opts.kind), name: String(file.name || "file").slice(0, 80), mime, size: Math.round(b64.length * 3 / 4), parts, show: !!opts.show, date: todayISO() };
-  state.files = (state.files || []).concat([entry]);
   return entry;
+}
+async function viewFileEntry(f){
+  const chunks = []; for (let i = 0; i < f.parts; i++) { const sn = await getDoc(doc(db, "orderViews", f.id + "_" + i)); if (!sn.exists()) throw new Error("missing part"); chunks.push(sn.data().data); }
+  const bin = atob(chunks.join("")), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  const url = URL.createObjectURL(new Blob([u8], { type: f.mime })), a = document.createElement("a"); a.href = url; a.target = "_blank"; a.rel = "noopener"; a.click();
 }
 async function removeFileDocs(f){ for (let i = 0; i < (f.parts || 0); i++) { try { await deleteDoc(doc(db, "orderViews", f.id + "_" + i)); } catch (e) { console.error(e); } } }
 function fileRowHtml(f, can){
@@ -3383,12 +3527,15 @@ $("rcAdd").addEventListener("click", async () => {
   if (!(a > 0)) { show($("formMsg"), "Type the amount you received.", "err"); return; }
   const c = calc(state), mode = $("rc_mode").value || "UPI";
   const kind = a >= c.balance - 0.005 ? "Balance" : (state.payments.some((p) => num(p.amount) > 0) ? "Part payment" : "Token");
-  state.payments.push({ date: $("rc_date").value || todayISO(), kind, mode, amount: String(a), ref: $("rc_ref").value.trim() });
+  let rcpt = "";
+  try { rcpt = await nextReceiptNo("customer"); } catch (err) { console.error(err); show($("formMsg"), "That did not work. Check your connection and try again. Technical reason: " + String((err && (err.code || err.message)) || err).slice(0, 120), "err"); return; }
+  const line = { date: $("rc_date").value || todayISO(), kind, mode, amount: String(a), ref: $("rc_ref").value.trim(), rcpt, rcptTotal: String(a), rcptSplit: [{ no: state.orderNo || "", a }] };
+  state.payments.push(line);
   const shot = ($("rc_file").files || [])[0], when = $("rc_date").value;
   resetRecord(); renderDynamic(); refresh();
-  let extra = "";
+  let extra = " Receipt number " + rcpt + ".";
   if (shot) {
-    try { await attachFile({ kind: "payment", label: "Payment " + rs(a) + " (" + mode + (when ? ", " + fmtDate(when) : "") + ")", show: true, file: shot }); renderFiles(); extra = " The screenshot is attached and the customer can see it."; }
+    try { const en = await attachFile({ kind: "payment", label: "Payment " + rcpt + " " + rs(a) + " (" + mode + (when ? ", " + fmtDate(when) : "") + ")", show: true, file: shot }); en.rcpt = rcpt; line.rcptFile = { id: en.id, parts: en.parts, mime: en.mime, name: en.name, order: state.orderNo || "" }; renderDynamic(); renderFiles(); extra += " The screenshot is attached and the customer can see it."; }
     catch (err) { if (!(err instanceof UserError)) console.error(err); extra = " The screenshot was NOT attached: " + (err instanceof UserError ? err.message : "it did not save. Try again in section 7d."); }
   }
   $("rc_file").value = "";
@@ -3726,7 +3873,7 @@ $("saveBtn").addEventListener("click", async () => {
   const btn = $("saveBtn"); btn.disabled = true;
   try {
     const orderNo = await persistOrder();
-    await loadAll(); showList();
+    await loadAll(false, orderNo); showList();
     show($("listMsg"), "Order " + orderNo + " saved." + (learnedTracker ? " The " + learnedTracker + " tracking page is learned: new " + learnedTracker + " orders will link to it automatically." : ""), "ok");
   } catch (err) {
     if (!(err instanceof UserError)) console.error(err);
