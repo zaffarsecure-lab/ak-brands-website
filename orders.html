@@ -918,7 +918,7 @@ async function spApply(){
     if (Math.abs(got - amt) > 0.009) throw new UserError("The shares add up to " + inr(got) + " but you received " + inr(amt) + ". Make them match.");
     const over = parts.find((x) => x.a > x.bal + 0.005); if (over) throw new UserError(over.no + " only has " + inr(over.bal) + " pending. Lower that share.");
     const mode = $("sp_mode").value || "UPI", date = $("sp_date").value || todayISO(), ref = $("sp_ref").value.trim();
-    const key = (lastDetail || "").replace(/^cust:/, "").split("|")[0];
+    const fromHome = lastDetail === "custsplit", key = fromHome ? csSel : (lastDetail || "").replace(/^cust:/, "").split("|")[0];
     const rcpt = await nextReceiptNo("customer"), splitInfo = parts.map((x) => ({ no: x.no, a: x.a })), spFile = (($("sp_file") || {}).files || [])[0];
     let fileEntry = null; if (spFile) fileEntry = await makeFileEntry({ kind: "payment", label: "Payment screenshot " + rcpt, show: false, file: spFile });
     let firstDone = false;
@@ -937,7 +937,7 @@ async function spApply(){
     }
     state = withPay(newOrder());
     if (/^\d{10,}$/.test(key)) { try { await refreshCustomerView(key); } catch (e) { console.error(e); } }
-    await loadAll(true); showDetail("cust:" + key);
+    await loadAll(true); showDetail(fromHome ? "receipts" : "cust:" + key);
     show($("listMsg"), "Saved as " + rcpt + ". " + inr(amt) + " received by " + mode + " is added to " + parts.length + (parts.length === 1 ? " order" : " orders") + ". Customer pages are updated.", "ok");
   } catch (err) { if (!(err instanceof UserError)) console.error(err); show($("listMsg"), err instanceof UserError ? err.message : "That did not save. Check your connection and try again.", "err"); }
 }
@@ -961,7 +961,7 @@ function rcptAll(){
 const rcptSorted = () => Object.values(rcptAll()).sort((a, b) => String(b.date).localeCompare(String(a.date)) || String(b.id).localeCompare(String(a.id)));
 function rcTileHtml(){
   const n = Object.keys(rcptAll()).length;
-  return '<button type="button" class="tile" data-tile="receipts"><small>Receipts</small><b>' + n + '</b><span class="go">Payments shared across orders</span></button>' +
+  return '<button type="button" class="tile" data-tile="custsplit"><small>Receive a payment</small><b>Split one payment</b><span class="go">Across several orders</span></button>' + '<button type="button" class="tile" data-tile="receipts"><small>Receipts</small><b>' + n + '</b><span class="go">Payments shared across orders</span></button>' +
     '<button type="button" class="tile priv" data-tile="supsplit"><small>Pay a supplier</small><b>Split one payment</b><span class="go">Across several orders</span></button>';
 }
 function receiptsListHtml(q){
@@ -984,6 +984,17 @@ function receiptDetailHtml(id){
     '<div class="lnk"><span><b>Total shared</b></span><span class="pill ' + (ok ? "ok" : "bad") + '">' + inr(got) + (ok ? " matches" : " does not match " + inr(r.total)) + '</span></div>' +
     (ok ? "" : '<p class="hint" style="color:#b3261e">The shares no longer add up to the amount received.' + (gone.length ? " A payment line was removed from: " + gone.map((x) => esc(x.no)).join(", ") + "." : " A payment amount was changed in one of these orders.") + " Check those orders.</p>") +
     '<button class="small" type="button" data-rcpt-back="1" style="margin-top:.8rem">Back to Receipts</button>';
+}
+let csSel = "";
+function custSplitHtml(){
+  const by = {};
+  orders.filter((o) => o.status !== "Cancelled" && calc(o).balance > 0.5).forEach((o) => { const k = groupKeyOf(o), g = by[k] || (by[k] = { key: k, name: o.customer.name || o.customer.firm || prettyPhone(o.customer.phone) || "No name", os: [] }); g.os.push(o); });
+  const keys = Object.keys(by).sort((a, b) => by[a].name.localeCompare(by[b].name));
+  if (!keys.length) return '<h2>Receive a payment</h2><p class="hint">No customer has a balance pending right now.</p>';
+  if (!by[csSel]) csSel = keys[0];
+  const panel = splitPanelHtml(by[csSel].os).replace('<details class="grp"', '<details class="grp" open');
+  return '<h2>Receive a payment across several orders</h2><p class="hint">Pick the customer. Then type the amount, attach the screenshot, tap Fill oldest first, change any share, and add it. Every order gets its own payment line, and all of them carry one receipt number (R-).</p>' +
+    '<label for="cs_cust">Customer</label><select id="cs_cust">' + keys.map((k) => '<option value="' + esc(k) + '"' + (k === csSel ? " selected" : "") + '>' + esc(by[k].name) + ' (balance ' + inr(by[k].os.reduce((a, o) => a + calc(o).balance, 0)) + ')</option>').join("") + '</select>' + panel;
 }
 let ssSel = "";
 function supSplitHtml(){
@@ -1052,7 +1063,7 @@ document.addEventListener("input", (e) => {
   if (t.id === "rcQ") { const l = $("rcList"); if (l) l.innerHTML = receiptsListHtml(t.value); return; }
   if (t.id === "ss_amount" || (t.classList && t.classList.contains("ssA"))) ssSum();
 });
-document.addEventListener("change", (e) => { const t = e.target; if (t && t.id === "ss_sup") { ssSel = t.value; showDetail("supsplit"); } });
+document.addEventListener("change", (e) => { const t = e.target; if (t && t.id === "ss_sup") { ssSel = t.value; showDetail("supsplit"); } if (t && t.id === "cs_cust") { csSel = t.value; showDetail("custsplit"); } });
 function customerDetailHtml(key){
   const mine = orders.filter((o) => groupKeyOf(o) === key).sort(newestFirst);
   if (!mine.length) return '<p class="hint">No orders found for this customer.</p>';
@@ -2749,6 +2760,7 @@ function showDetail(kind){
   else if (kind === "receipts") $("detailBody").innerHTML = receiptsScreenHtml();
   else if (kind.indexOf("rcpt:") === 0) $("detailBody").innerHTML = receiptDetailHtml(kind.slice(5));
   else if (kind === "supsplit") $("detailBody").innerHTML = supSplitHtml();
+  else if (kind === "custsplit") $("detailBody").innerHTML = custSplitHtml();
   else if (kind.indexOf("post:") === 0) $("detailBody").innerHTML = postScreenHtml();
   else if (kind.indexOf("cdash:") === 0) $("detailBody").innerHTML = customerDashHtml(kind.slice(6));
   else $("detailBody").innerHTML = detailHtml(tileDetail(kind, orders));
