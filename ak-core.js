@@ -379,8 +379,8 @@ export function tokenFromSearch(search){
 /* ---------- Delivery details message for the supplier ----------
    This is the ONLY place the customer's name and address are given to a supplier. The customer's real phone is never included:
    the supplier sees AK Brands Marketing's standard number instead. */
-export const SUP_CUST_PHONE = "+91 86605 02217";
-export const SUP_FROM_PHONE = "+91 97429 26238";
+export const SUP_CUST_PHONE = "+91 8660502217";
+export const SUP_FROM_PHONE = "+91 9742926238";
 export function supplierDeliveryIssues(o){
   const c = o.customer || {}, miss = [];
   const ship = c.shipSame === false && (c.shipName || c.shipAddress);
@@ -393,21 +393,23 @@ export function supplierDeliveryMessage(o, biz){
   biz = biz || {};
   const c = o.customer || {}, L = [];
   const ship = c.shipSame === false && (c.shipName || c.shipAddress);
-  L.push("*Delivery address*", "");
+  const tight = (p) => { const s = String(p || "").replace(/\s+/g, ""); return s.indexOf("+91") === 0 ? "+91 " + s.slice(3) : s; };
+  L.push("*Delivery address*");
   (o.items || []).filter((it) => it.name && it.name.trim()).forEach((it) => {
     const q = num(it.qty);
-    if (it.lotNo) L.push("Lot number - " + it.lotNo);
-    if (q) L.push("Quantity - " + q.toLocaleString("en-IN") + " " + (it.unit || "Pcs"));
-    L.push("Product - " + plain(it.name), "");
+    if (it.lotNo) L.push("Lot No - " + it.lotNo);
+    L.push("Product - " + plain(it.name));
+    if (q) L.push("QTY - " + q.toLocaleString("en-IN") + " " + (it.unit || "Pcs"));
+    L.push("");
   });
-  const nm = ship && c.shipName ? c.shipName : (c.firm ? c.firm + (c.name ? " (" + c.name + ")" : "") : c.name);
-  L.push("Name of customer - " + (nm || ""));
-  L.push("Phone number - " + (biz.supCustPhone || SUP_CUST_PHONE), "");
+  const nm = ship && c.shipName ? c.shipName : (c.name || c.firm);
+  L.push("Name - *" + (nm || "") + "*");
+  L.push(tight(biz.supCustPhone || SUP_CUST_PHONE), "");
   const addr = String((ship ? c.shipAddress : c.address) || "").split(/\r?\n/).map((x) => x.trim()).filter(Boolean);
   if (!ship) { const cs = [c.city, c.state].filter(Boolean).join(", "); if (cs) addr.push(cs); }
-  L.push("Complete customer address -");
+  L.push("*Address*");
   addr.forEach((x) => L.push(x));
-  L.push("", "From", "AK Brands Marketing\u00A9", biz.supFromPhone || SUP_FROM_PHONE);
+  L.push("", "From", "AK Brands Marketing\u00A9", tight(biz.supFromPhone || SUP_FROM_PHONE));
   return L.join("\n");
 }
 
